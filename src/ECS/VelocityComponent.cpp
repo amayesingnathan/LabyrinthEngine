@@ -3,8 +3,7 @@
 
 void VelocityComponent::update()
 {
-	auto& physics = entity->getComponent<PhysicsComponent>();
 	//velocity = acceleration * time delta
-	vel.x += (physics.acc.x * configuration::frameDelay);
-	vel.y += (physics.acc.y * configuration::frameDelay);
+	vel.x += (phys->acc.x * configuration::frameDelay);
+	vel.y += (phys->acc.y * configuration::frameDelay);
 }

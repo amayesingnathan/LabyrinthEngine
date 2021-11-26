@@ -1,15 +1,18 @@
 #include "Labyrinth.h"
 
+#include "ECS/Entity.h"
+
 SDL_Renderer* Labyrinth::renderer = nullptr;
+SDL_Event Labyrinth::event;
+
+bool Labyrinth::isRunning;
 
 int configuration::FPS;
 float configuration::frameDelay;
 int configuration::mFrameDelay;
 
 Labyrinth::Labyrinth() :
-	isRunning(false),
-	window(NULL),
-	player(entt::null)
+	window(NULL)
 {}
 
 Labyrinth::~Labyrinth()
@@ -25,7 +28,7 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 	configuration::mFrameDelay = 1000 / configuration::FPS;
 
 	//The Player entity. This should be initialised by your game. WASD support is added by default.
-	player = m_Registry.create();
+	player = CreateEntity("Player");
 
 	int flags = 0;
 	if (fullscreen)
@@ -60,34 +63,25 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 
 void Labyrinth::handleEvents()
 {
-	SDL_Event event;
 	SDL_PollEvent(&event);
-	Entity Player = Entity(player, &m_Registry);
 	switch (event.type) {
 	case SDL_QUIT:
 		isRunning = false;
-		break;
-
-	case SDL_KEYDOWN:
-	{
-		const auto& key = event.key.keysym.sym;
-		handleKeyEvent(key, true);
-		break;
-	}
-
-	case SDL_KEYUP:	
-	{
-		const auto& key = event.key.keysym.sym;
-		handleKeyEvent(key, false);
-		break;
-	}
-	default:
 		break;
 	}
 }
 
 void Labyrinth::update()
 {
+	//Get entities that have Keyboard control
+	auto players = m_Registry.view<KeyboardController>();
+
+	for (auto control : players) 
+	{
+		auto& keyControl = players.get<KeyboardController>(control);
+		keyControl.update();
+	}
+
 	//Get entities that have required components to update physics
 	auto bodies = m_Registry.view<TransformComponent, VelocityComponent, PhysicsComponent>();
 
@@ -103,12 +97,22 @@ void Labyrinth::update()
 
 	}
 
+	auto sprites = m_Registry.view<SpriteComponent>();
+
+	for (auto sprite : sprites)
+	{
+		//Get components for physics from entity
+		auto& draw = sprites.get<SpriteComponent>(sprite);
+
+		//Update sprite
+		draw.update();
+
+	}
 }
 
 void Labyrinth::render()
 {
 	SDL_RenderClear(renderer);
-	//Add stuff to render
 
 	//Get entities with textures
 	auto sprites = m_Registry.view<SpriteComponent>();
@@ -122,60 +126,14 @@ void Labyrinth::render()
 
 }
 
-void Labyrinth::handleKeyEvent(const SDL_Keycode& key, bool pressed)
+Entity Labyrinth::CreateEntity(const std::string tag)
 {
-	//Wrap entity ID for easier component access
-	Entity Player(player, &m_Registry);
-	auto& vel = Player.getComponent<VelocityComponent>();
-
-	if (pressed)
-	{
-		switch (key)
-		{
-		case SDLK_w:
-			vel.vel.y = -3;
-			break;
-
-		case SDLK_a:
-			vel.vel.x = -3;
-			break;
-
-		case SDLK_s:
-			vel.vel.y = 3;
-			break;
-
-		case SDLK_d:
-			vel.vel.x = 3;
-			break;
-
-		default:
-			break;
-		}
-	}
-	else
-	{
-		switch (key)
-		{
-		case SDLK_w:
-			if (vel.vel.y < 0) vel.vel.y = 0;
-			break;
-
-		case SDLK_a:
-			if (vel.vel.x < 0) vel.vel.x = 0;
-			break;
-
-		case SDLK_s:
-			if (vel.vel.y > 0) vel.vel.y = 0;
-			break;
-
-		case SDLK_d:
-			if (vel.vel.x > 0) vel.vel.x = 0;
-			break;
-
-		default:
-			break;
-		}
-	}
+	player = { m_Registry.create(), &m_Registry };
+	player.addComponent<TagComponent>(player, tag);
+	auto& phys = player.addComponent<PhysicsComponent>(player, 0.0f, false);
+	auto& vel = player.addComponent<VelocityComponent>(player, 0.0f, &phys);
+	player.addComponent<TransformComponent>(player, 0.0f, &vel);
+	return player;
 }
 
 void Labyrinth::clean()

@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\KeyboardController.cpp" />
     <ClCompile Include="src\ECS\TransformComponent.cpp" />
     <ClCompile Include="src\ECS\VelocityComponent.cpp" />
     <ClCompile Include="src\Game.cpp" />
@@ -174,8 +175,10 @@
   <ItemGroup>
     <ClInclude Include="inc\ECS\Component.h" />
     <ClInclude Include="inc\ECS\Entity.h" />
+    <ClInclude Include="inc\ECS\KeyboardController.h" />
     <ClInclude Include="inc\ECS\SpriteComponent.h" />
     <ClInclude Include="inc\ECS\entt.hpp" />
+    <ClInclude Include="inc\ECS\TagComponent.h" />
     <ClInclude Include="inc\Game.h" />
     <ClInclude Include="inc\ECS\GameComponents.h" />
     <ClInclude Include="inc\config.h" />

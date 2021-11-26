@@ -10,7 +10,7 @@ struct PhysicsComponent : public Component
 
 	PhysicsComponent() : acc(0.0f), grav(false), Component() {}
 	PhysicsComponent(const PhysicsComponent&) = default;
-	PhysicsComponent(Vector2D acceleration, bool gravity, Entity& entt) : grav(gravity), Component(entt)
+	PhysicsComponent(Entity& entt, Vector2D acceleration, bool gravity) : Component(entt), grav(gravity)
 	{
 		const float g = 9.8f;
 
@@ -20,7 +20,7 @@ struct PhysicsComponent : public Component
 			acc.y += g;
 		}
 	}
-	PhysicsComponent(float acc_x, float acc_y, bool gravity, Entity& entt) : grav(gravity), acc(Vector2D(acc_x, acc_y)), Component(entt)
+	PhysicsComponent(Entity& entt, float acc_x, float acc_y, bool gravity) : Component(entt), grav(gravity), acc(Vector2D(acc_x, acc_y))
 	{
 		const float g = 9.8f;
 

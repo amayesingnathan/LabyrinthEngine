@@ -7,9 +7,10 @@
 //ECS Components
 #include "ECS/GameComponents.h"
 
-
 //Standard Library Includes
 #include <iostream>
+
+class Entity;
 
 class Labyrinth
 {
@@ -27,18 +28,21 @@ public:
 	void render();
 	void clean();
 
-	void handleKeyEvent(const SDL_Keycode& keyPressed, bool pressed);
 
-	bool running() { return isRunning; };
+	Entity CreateEntity(const std::string tag);
+
+	static bool running() { return isRunning; };
 
 	static SDL_Renderer* renderer;
+
+	static SDL_Event event;
+
+	static bool isRunning;
 
 protected:
 	entt::registry m_Registry;
 	SDL_Window* window;
-	entt::entity player;
+	Entity player;
 
-private:
-	bool isRunning;
 };
 

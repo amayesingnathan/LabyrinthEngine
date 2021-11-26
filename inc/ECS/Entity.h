@@ -14,7 +14,7 @@ public:
 	T& addComponent(Args&&... args)
 	{
 		assert(!hasComponent<T>());
-		return m_Registry->emplace<T>(m_EntID, std::forward<Args>(args));
+		return m_Registry->emplace<T>(m_EntID, std::forward<Args>(args)...);
 	}
 
 	template<typename T>
@@ -37,8 +37,8 @@ public:
 		return m_Registry->all_of<T>(m_EntID);
 	}
 
-	entt::entity getID() { return m_EntID; };
 
+	entt::entity getID() { return m_EntID; };
 
 private:
 	entt::entity m_EntID;

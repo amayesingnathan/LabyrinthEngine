@@ -4,25 +4,25 @@
 
 struct SpriteComponent : public Component
 {
-	TransformComponent* position;
+	TransformComponent position;
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;
 
-	SpriteComponent() = default;
-	SpriteComponent(const char* path, Entity& entt) : 
-		Component(entt)
+	SpriteComponent() : texture(nullptr), position(), srcRect(), destRect() {}
+	SpriteComponent(Entity& entt, const char* path) :
+		Component(entt), srcRect(), destRect()
 	{
 		texture = TextureManager::LoadTexture(path);
-	}
-
-	void init() override
-	{
-		position = &entity->getComponent<TransformComponent>();
+		position = entity->getComponent<TransformComponent>();
+		srcRect.x = srcRect.y = 0;
+		srcRect.w = srcRect.h = 32;
+		destRect.w = destRect.h = 64;
 	}
 
 	void update() override
 	{
-
+		destRect.x = static_cast<int>(position.pos.x);
+		destRect.x = static_cast<int>(position.pos.x);
 	}
 
 	void draw() override
