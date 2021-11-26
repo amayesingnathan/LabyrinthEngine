@@ -1,7 +1,6 @@
 #pragma once
-#include "ECS\TransformComponent.h"
-#include "ECS\Entity.h"
-#include "ECS\Component.h"
+
+#include "TextureManager.h"
 
 struct SpriteComponent : public Component
 {
@@ -10,15 +9,15 @@ struct SpriteComponent : public Component
 	SDL_Rect srcRect, destRect;
 
 	SpriteComponent() = default;
-	SpriteComponent(const char* path, Entity& entt, const entt::registry& reg)
+	SpriteComponent(const char* path, Entity& entt) : 
+		Component(entt)
 	{
-		Component(entt, reg);
 		texture = TextureManager::LoadTexture(path);
 	}
 
 	void init() override
 	{
-		position = &entity.getComponent<TransformComponent>();
+		position = &entity->getComponent<TransformComponent>();
 	}
 
 	void update() override

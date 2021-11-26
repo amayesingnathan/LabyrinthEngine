@@ -1,17 +1,16 @@
 #pragma once
-#include "ECS\Component.h"
 #include "Vector2D.h"
-#include "config.h"
+#include "ECS/Component.h"
 
-struct PhysicsComponent
+struct PhysicsComponent : public Component
 {
 
 	Vector2D acc;
 	bool grav;
 
-	PhysicsComponent() : acc(0, 0), grav(false) {}
+	PhysicsComponent() : acc(0.0f), grav(false), Component() {}
 	PhysicsComponent(const PhysicsComponent&) = default;
-	PhysicsComponent(Vector2D acceleration, bool gravity) : grav(gravity)
+	PhysicsComponent(Vector2D acceleration, bool gravity, Entity& entt) : grav(gravity), Component(entt)
 	{
 		const float g = 9.8f;
 
@@ -21,7 +20,7 @@ struct PhysicsComponent
 			acc.y += g;
 		}
 	}
-	PhysicsComponent(float acc_x, float acc_y, bool gravity) : grav(gravity), acc(Vector2D(acc_x, acc_y))
+	PhysicsComponent(float acc_x, float acc_y, bool gravity, Entity& entt) : grav(gravity), acc(Vector2D(acc_x, acc_y)), Component(entt)
 	{
 		const float g = 9.8f;
 

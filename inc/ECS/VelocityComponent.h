@@ -1,14 +1,17 @@
 #pragma once
-#include "PhysicsComponent.h"
+
+#include "ECS/Component.h"
+#include "Vector2D.h"
 
 struct VelocityComponent : public Component
 {
 	Vector2D vel;
-	void update() override
-	{
-		auto& physics = entity.getComponent<PhysicsComponent>();
-		//velocity = acceleration * time delta
-		vel.x += (physics.acc.x * configuration::frameDelay);
-		vel.y += (physics.acc.y * configuration::frameDelay);
-	}
+
+	VelocityComponent() : vel(0.0f), Component() {}
+	VelocityComponent(const VelocityComponent&) = default;
+
+	template<typename T>
+	VelocityComponent(T velocity, Entity& entt) : vel(velocity), Component(entt) {}
+
+	void update() override;
 };

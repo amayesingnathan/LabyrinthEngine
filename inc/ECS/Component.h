@@ -1,16 +1,18 @@
 #pragma once
-#include "entt.hpp"
+
+#include "ECS/Entity.h"
+#include "config.h"
+
 
 struct Component
 {
-	const Entity& entity;
-	const entt::registry* ecs;
+	Entity* entity;
 
 	virtual void init() {}
 	virtual void update() {}
 	virtual void draw() {}
 
-	Component() : entity(entt::null), ecs(nullptr) {}
-	Component(const Entity& entt, const entt::registry& reg) : entity(entt), ecs(&reg) {}
+	Component() : entity() {}
+	Component(Entity& entt) : entity(&entt){}
 	virtual ~Component() {}
 };

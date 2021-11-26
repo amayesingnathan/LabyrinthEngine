@@ -4,15 +4,9 @@
 #include <SDL.h>
 #include <SDL_image.h>
 
-//EnTT
-#include <entt.hpp>
+//ECS Components
+#include "ECS/GameComponents.h"
 
-//Components
-#include "ECS\GameComponents.h"
-
-//Systems
-#include "TextureManager.h"
-#include "config.h"
 
 //Standard Library Includes
 #include <iostream>
@@ -36,8 +30,6 @@ public:
 	void handleKeyEvent(const SDL_Keycode& keyPressed, bool pressed);
 
 	bool running() { return isRunning; };
-
-	static configuration config;
 
 	static SDL_Renderer* renderer;
 

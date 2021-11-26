@@ -1,13 +1,12 @@
 #include "Game.h"
 
+//Config Struct
+#include "config.h"
+
 Game* game = nullptr;
 
 int main(int argc, char* args[])
 {
-	//Define refresh rate
-	configuration::FPS = 60;
-	configuration::frameDelay = static_cast<float>(1) / static_cast<float>(configuration::FPS);
-	configuration::mFrameDelay = 1000 / configuration::FPS;
 
 	Uint32 frameStart;
 	int frameTime;

@@ -2,6 +2,10 @@
 
 SDL_Renderer* Labyrinth::renderer = nullptr;
 
+int configuration::FPS;
+float configuration::frameDelay;
+int configuration::mFrameDelay;
+
 Labyrinth::Labyrinth() :
 	isRunning(false),
 	window(NULL),
@@ -15,6 +19,11 @@ Labyrinth::~Labyrinth()
 //Initialisation of the game engine. This should be called from the init function of your game instance.
 void Labyrinth::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
+	//Define refresh rate
+	configuration::FPS = 60;
+	configuration::frameDelay = static_cast<float>(1) / static_cast<float>(configuration::FPS);
+	configuration::mFrameDelay = 1000 / configuration::FPS;
+
 	//The Player entity. This should be initialised by your game. WASD support is added by default.
 	player = m_Registry.create();
 
@@ -53,7 +62,7 @@ void Labyrinth::handleEvents()
 {
 	SDL_Event event;
 	SDL_PollEvent(&event);
-	Entity Player = Entity(player, this);
+	Entity Player = Entity(player, &m_Registry);
 	switch (event.type) {
 	case SDL_QUIT:
 		isRunning = false;
@@ -116,7 +125,7 @@ void Labyrinth::render()
 void Labyrinth::handleKeyEvent(const SDL_Keycode& key, bool pressed)
 {
 	//Wrap entity ID for easier component access
-	Entity Player(player, this);
+	Entity Player(player, &m_Registry);
 	auto& vel = Player.getComponent<VelocityComponent>();
 
 	if (pressed)

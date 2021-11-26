@@ -1,21 +1,17 @@
 #pragma once
 
-#include "VelocityComponent.h"
+#include "ECS/Component.h"
+#include "Vector2D.h"
 
 struct TransformComponent : public Component
 {
 	Vector2D position;
 	Vector2D scale;
 
-	void update() override
-	{
-		//position += scaling factor * velocity * time delta
-		position.x += configuration::FPS * vel.vel.x * configuration::frameDelay;
-		position.y += configuration::FPS * vel.vel.y * configuration::frameDelay;
-	}	
+	void update() override;
 
-	TransformComponent() : position(0.0f), scale(1.0f) {}
+	TransformComponent() : position(0.0f), scale(1.0f), Component() {}
 	TransformComponent(const TransformComponent&) = default;
 	template<typename Tpos, typename Tscale>
-	TransformComponent(Tpos pos, Tscale scale) : position(pos), scale(scale){}
+	TransformComponent(Tpos pos, Tscale scale, Entity& entt) : position(pos), scale(scale), Component(entt){}
 };

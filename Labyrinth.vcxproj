@@ -163,16 +163,19 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\TransformComponent.cpp" />
+    <ClCompile Include="src\ECS\VelocityComponent.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\TextureManager.cpp" />
     <ClCompile Include="src\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\ECS\Component.h" />
     <ClInclude Include="inc\ECS\Entity.h" />
     <ClInclude Include="inc\ECS\SpriteComponent.h" />
-    <ClInclude Include="inc\entt.hpp" />
+    <ClInclude Include="inc\ECS\entt.hpp" />
     <ClInclude Include="inc\Game.h" />
     <ClInclude Include="inc\ECS\GameComponents.h" />
     <ClInclude Include="inc\config.h" />
