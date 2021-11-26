@@ -13,7 +13,7 @@ struct TransformComponent : public Component
 
 	void update() override;
 
-	TransformComponent() : Component(), pos(0.0f), velocity() {}
+	TransformComponent() : Component(), pos(0.0f), velocity(nullptr) {}
 	TransformComponent(const TransformComponent&) = default;
 	template<typename T>
 	TransformComponent(Entity& entt, T position, VelocityComponent* vel) :

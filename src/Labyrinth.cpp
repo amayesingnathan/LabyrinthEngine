@@ -128,7 +128,7 @@ void Labyrinth::render()
 
 Entity Labyrinth::CreateEntity(const std::string tag)
 {
-	player = { m_Registry.create(), &m_Registry };
+	Entity player = { m_Registry.create(), &m_Registry };
 	player.addComponent<TagComponent>(player, tag);
 	auto& phys = player.addComponent<PhysicsComponent>(player, 0.0f, false);
 	auto& vel = player.addComponent<VelocityComponent>(player, 0.0f, &phys);
