@@ -19,5 +19,6 @@ struct VelocityComponent : public Component
 		Component(entt), vel(velocity), phys(physics) {}
 
 	void update() override;
+
 };
 

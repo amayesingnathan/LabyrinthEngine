@@ -18,6 +18,16 @@ struct SpriteComponent : public Component
 		destRect.w = destRect.h = 64;
 	}
 
+	~SpriteComponent() override
+	{
+		TextureManager::DestroyTexture(texture);
+	}
+
+	void setTex(const char* path)
+	{
+		texture = TextureManager::LoadTexture(path);
+	}
+
 	void update() override
 	{
 		destRect.x = static_cast<int>(position->pos.x);

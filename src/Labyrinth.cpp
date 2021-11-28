@@ -5,6 +5,8 @@
 SDL_Renderer* Labyrinth::renderer = nullptr;
 SDL_Event Labyrinth::event;
 
+Map Labyrinth::map;
+
 bool Labyrinth::isRunning;
 
 int configuration::FPS;
@@ -30,6 +32,7 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 	//The Player entity. This should be initialised by your game. WASD support is added by default.
 	player = CreateEntity("Player");
 
+
 	int flags = 0;
 	if (fullscreen)
 	{
@@ -50,8 +53,13 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 		if (renderer)
 		{
 			std::cout << "Renderer created..." << std::endl;
-			SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
 		}
+
+		//Load map textures from file
+		map.init();
+
+		//Load level 1 map
+		map.loadLevel(1);
 
 		isRunning = true;
 	}
@@ -106,13 +114,17 @@ void Labyrinth::update()
 
 		//Update sprite
 		draw.update();
-
 	}
+
+
 }
 
 void Labyrinth::render()
 {
-	SDL_RenderClear(renderer);
+	SDL_RenderClear(Labyrinth::renderer);
+
+	//Draw map
+	map.drawMap();
 
 	//Get entities with textures
 	auto sprites = m_Registry.view<SpriteComponent>();
@@ -122,24 +134,24 @@ void Labyrinth::render()
 		TextureManager::Draw(sprite.texture, sprite.srcRect, sprite.destRect);
 	}
 
-	SDL_RenderPresent(renderer);
+	SDL_RenderPresent(Labyrinth::renderer);
 
 }
 
 Entity Labyrinth::CreateEntity(const std::string tag)
 {
-	Entity player = { m_Registry.create(), &m_Registry };
-	player.addComponent<TagComponent>(player, tag);
-	auto& phys = player.addComponent<PhysicsComponent>(player, 0.0f, false);
-	auto& vel = player.addComponent<VelocityComponent>(player, 0.0f, &phys);
-	player.addComponent<TransformComponent>(player, 0.0f, &vel);
-	return player;
+	Entity newEnt = { m_Registry.create(), &m_Registry };
+	newEnt.addComponent<TagComponent>(newEnt, tag);
+	auto& phys = newEnt.addComponent<PhysicsComponent>(newEnt, 0.0f, false);
+	auto& vel = newEnt.addComponent<VelocityComponent>(newEnt, 0.0f, &phys);
+	newEnt.addComponent<TransformComponent>(newEnt, 0.0f, &vel);
+	return newEnt;
 }
 
 void Labyrinth::clean()
 {
 	SDL_DestroyWindow(window);
-	SDL_DestroyRenderer(renderer);
+	SDL_DestroyRenderer(Labyrinth::renderer);
 	SDL_Quit();
 	std::cout << "Game Cleaned." << std::endl;
 }

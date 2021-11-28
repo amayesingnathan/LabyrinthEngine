@@ -19,4 +19,5 @@ struct TransformComponent : public Component
 	TransformComponent(Entity& entt, T position, VelocityComponent* vel) :
 		Component(entt), pos(position), velocity(vel)
 	{}
+
 };

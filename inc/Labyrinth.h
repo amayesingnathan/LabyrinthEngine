@@ -7,6 +7,9 @@
 //ECS Components
 #include "ECS/GameComponents.h"
 
+//Map
+#include "Map.h"
+
 //Standard Library Includes
 #include <iostream>
 
@@ -36,6 +39,8 @@ public:
 	static SDL_Renderer* renderer;
 
 	static SDL_Event event;
+
+	static Map map;
 
 	static bool isRunning;
 

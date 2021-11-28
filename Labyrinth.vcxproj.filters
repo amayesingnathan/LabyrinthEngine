@@ -39,6 +39,12 @@
     <ClCompile Include="src\ECS\KeyboardController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ECS\ColliderComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Map.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\ECS\entt.hpp">
@@ -86,5 +92,18 @@
     <ClInclude Include="inc\ECS\KeyboardController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="inc\ECS\ColliderComponent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Map.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="SDL2.lib" />
+    <Library Include="SDL2main.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="SDL2_image.dll" />
   </ItemGroup>
 </Project>
