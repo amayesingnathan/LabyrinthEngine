@@ -15,7 +15,7 @@ struct ColliderComponent : public Component
 
 	ColliderComponent() : collider(), tag(nullptr), transform(nullptr) {}
 	ColliderComponent(const ColliderComponent&) = default;
-	ColliderComponent(Entity& entt, SDL_Rect rect);
+	ColliderComponent(Entity& entt);
 
 	void update() override;
 };

@@ -12,7 +12,7 @@ Map::Map() :
 	{
 		for (int col = 0; col < 50; col++)
 		{
-			map[row][col] = 0;
+			map[row][col] = -1;
 		}
 	}
 
@@ -74,24 +74,24 @@ void Map::drawMap()
 			switch (type)
 			{
 			case Type::Grass:
-				//Grass texture location in file
-				src.x = 320; 
-				src.y = 640;
+				//Grass texture location in sheet
+				src = TextureManager::setSubTex(320, 640);
 				TextureManager::Draw(textures, src, dest);
 				break;
 
 			case Type::Dirt:
-				//Dirt texture location in file
-				src.x = 0;
-				src.y = 576;
+				//Dirt texture location in sheet
+				src = TextureManager::setSubTex(0, 576);
 				TextureManager::Draw(textures, src, dest);
 				break;
 
 			case Type::Stone:
-				//Stone texture location in file
-				src.x = 96;
-				src.y = 896;
+				//Stone texture location in sheet
+				src = TextureManager::setSubTex(96, 896);
 				TextureManager::Draw(textures, src, dest);
+				break;
+
+			case Type::Invalid:
 				break;
 
 			default:

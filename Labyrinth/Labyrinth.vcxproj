@@ -163,6 +163,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Collision.cpp" />
+    <ClCompile Include="src\ECS\TileComponent.cpp" />
     <ClCompile Include="src\Map.cpp" />
     <ClCompile Include="src\ECS\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\KeyboardController.cpp" />
@@ -172,9 +174,10 @@
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
-    <ClCompile Include="src\Vector2D.cpp" />
+    <ClCompile Include="src\ECS\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\Collision.h" />
     <ClInclude Include="inc\ECS\ColliderComponent.h" />
     <ClInclude Include="inc\ECS\Component.h" />
     <ClInclude Include="inc\ECS\Entity.h" />
@@ -182,6 +185,7 @@
     <ClInclude Include="inc\ECS\SpriteComponent.h" />
     <ClInclude Include="inc\ECS\entt.hpp" />
     <ClInclude Include="inc\ECS\TagComponent.h" />
+    <ClInclude Include="inc\ECS\TileComponent.h" />
     <ClInclude Include="inc\Game.h" />
     <ClInclude Include="inc\ECS\GameComponents.h" />
     <ClInclude Include="inc\config.h" />

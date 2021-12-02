@@ -71,3 +71,25 @@ Vector2D& Vector2D::operator/=(const Vector2D& vec)
 {
 	return Divide(vec);
 }
+
+bool operator==(const Vector2D& a, const Vector2D& b)
+{
+	if ((a.x != b.x) || (a.y != b.y)) { return false; }
+	return true;
+}
+
+bool operator!=(const Vector2D& a, const Vector2D& b)
+{
+	if ((a.x != b.x) || (a.y != b.y)) { return true; }
+	return false;
+}
+
+float Vector2D::lerp(float a, float b, float t)
+{
+	if ((t >= 0) && (t <= 1))
+	{
+		return a + ((b - a) * t);
+	}
+
+	return 0.0f;
+}

@@ -1,17 +1,20 @@
 #pragma once
 
 #include "ECS/Component.h"
+#include "ECS/Vector2D.h"
 
-struct TransformComponent;
+struct VelocityComponent;
 
 struct KeyboardController : public Component
 {
-	TransformComponent* transform;
+	VelocityComponent* velocity;
+
+	Vector2D lerpTime;
 
 	KeyboardController();
-
-	KeyboardController(Entity entt, TransformComponent* transform);
+	KeyboardController(Entity entt);
 
 	void update() override;
+	void updateVelocity(VelocityComponent& vel);
 
 };

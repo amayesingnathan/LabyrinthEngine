@@ -5,6 +5,8 @@ struct Vector2D
 	float x;
 	float y;
 
+	static float lerpDur;
+
 	Vector2D() : x(0.0f), y(0.0f) {};
 	Vector2D(float x, float y) : x(x), y(y) {};
 	Vector2D(float scalar) : x(scalar), y(scalar) {}
@@ -26,4 +28,9 @@ struct Vector2D
 	Vector2D& operator-=(const Vector2D& vec);
 	Vector2D& operator*=(const Vector2D& vec);
 	Vector2D& operator/=(const Vector2D& vec);
+
+	friend bool operator==(const Vector2D& a, const Vector2D& b);
+	friend bool operator!=(const Vector2D& a, const Vector2D& b);
+
+	static float lerp(float minVal, float maxVal, float interpolation);
 };

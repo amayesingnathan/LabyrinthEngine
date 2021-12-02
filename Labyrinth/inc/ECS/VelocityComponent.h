@@ -15,8 +15,10 @@ struct VelocityComponent : public Component
 	VelocityComponent(const VelocityComponent&) = default;
 
 	template<typename T>
-	VelocityComponent(Entity& entt, T velocity, PhysicsComponent* physics) :
-		Component(entt), vel(velocity), phys(physics) {}
+	VelocityComponent(Entity& entt, T velocity) :
+		Component(entt), vel(velocity) {
+		phys = &entity.getComponent<PhysicsComponent>();
+	}
 
 	void update() override;
 

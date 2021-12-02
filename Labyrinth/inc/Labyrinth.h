@@ -10,6 +10,9 @@
 //Map
 #include "Map.h"
 
+//Systems
+#include "Collision.h"
+
 //Standard Library Includes
 #include <iostream>
 
@@ -32,13 +35,16 @@ public:
 	void clean();
 
 
-	Entity CreateEntity(const std::string tag);
+	Entity CreateEntity(const std::string tag, int x = 0, int y = 0, int w = 32, int h = 32, int sc = 1);
 
 	static bool running() { return isRunning; };
 
 	static SDL_Renderer* renderer;
 
 	static SDL_Event event;
+
+	static const Uint8* prevKeyboard;
+	static const Uint8* keyboard;
 
 	static Map map;
 
@@ -48,6 +54,7 @@ protected:
 	entt::registry m_Registry;
 	SDL_Window* window;
 	Entity player;
+	Entity testWall;
 
 };
 
