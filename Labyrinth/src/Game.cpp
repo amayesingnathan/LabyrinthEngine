@@ -16,13 +16,14 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	if (running())
 	{
 		std::string playerSpritePath = "assets/PlayerSprite.png";
-		player.addComponent<SpriteComponent>(player, playerSpritePath.c_str(), 4, 2, 8, 14);
+		auto& playerSprite = player.addComponent<SpriteComponent>(player, playerSpritePath.c_str(), SDL_Rect{ 0, 0, 10, 14 }, true);
 		player.addComponent<KeyboardController>(player);
 		player.addComponent<ColliderComponent>(player);
 
 		std::string wallSpritePath = "assets/textures/worldtextures.png";
-		auto& sprite = testWall.addComponent<SpriteComponent>(testWall, wallSpritePath.c_str(), 32, 288, 32, 32);
+		testWall.addComponent<SpriteComponent>(testWall, wallSpritePath.c_str(), SDL_Rect{32, 288, 32, 32});
 		testWall.addComponent<ColliderComponent>(testWall);
 	}
 }
 
+ 

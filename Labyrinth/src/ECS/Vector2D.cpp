@@ -84,6 +84,12 @@ bool operator!=(const Vector2D& a, const Vector2D& b)
 	return false;
 }
 
+bool Vector2D::isNull()
+{
+	if ((x == 0) && (y == 0)) return true;
+	return false;
+}
+
 float Vector2D::lerp(float a, float b, float t)
 {
 	if ((t >= 0) && (t <= 1))

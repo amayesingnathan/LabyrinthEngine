@@ -37,6 +37,13 @@ public:
 		return m_Registry->all_of<T>(m_EntID);
 	}
 
+	////Template to connect destruction of one component to the destruction of another.
+	//template<typename TDestroy, typename TLink>
+	//void connectDestruct()
+	//{
+	//	//m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
+	//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
+	//}
 
 	entt::entity getID() { return m_EntID; };
 

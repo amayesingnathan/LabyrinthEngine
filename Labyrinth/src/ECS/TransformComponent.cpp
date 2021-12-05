@@ -1,8 +1,6 @@
 #include "ECS/TransformComponent.h"
 
-#include "ECS/VelocityComponent.h"
 #include "config.h"
-
 
 void TransformComponent::update()
 {

@@ -62,7 +62,7 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 		}
 
 		//Load map textures from file
-		map.init();
+		map.init(&m_Registry);
 
 		//Load level 1 map
 		map.loadLevel(1);
@@ -101,18 +101,39 @@ void Labyrinth::update()
 	}
 
 	//Get entities that have required components to update physics
-	auto bodies = m_Registry.view<TransformComponent, VelocityComponent, PhysicsComponent>();
+	auto physics = m_Registry.view<PhysicsComponent>();
 
-	for (auto body : bodies)
+	for (auto entity : physics)
 	{
 		//Get components for physics from entity
-		auto [position, velocity, physics] = bodies.get<TransformComponent, VelocityComponent, PhysicsComponent>(body);
+		auto& phys = physics.get<PhysicsComponent>(entity);
 		
 		//Update physics
-		physics.update();
-		velocity.update();
-		position.update();
+		phys.update();
+	}
 
+	//Get entities that have required components to update velocity
+	auto velocities = m_Registry.view<VelocityComponent>();
+
+	for (auto entity : velocities)
+	{
+		//Get components for physics from entity
+		auto& vel = velocities.get<VelocityComponent>(entity);
+
+		//Update velocity
+		vel.update();
+	}
+
+	//Get entities that have required components to update transform
+	auto transforms = m_Registry.view<TransformComponent>();
+
+	for (auto entity : transforms)
+	{
+		//Get components for physics from entity
+		auto& trans = transforms.get<TransformComponent>(entity);
+
+		//Update transform
+		trans.update();
 	}
 
 	auto sprites = m_Registry.view<SpriteComponent>();
@@ -150,15 +171,24 @@ void Labyrinth::render()
 {
 	SDL_RenderClear(Labyrinth::renderer);
 
-	//Draw map
-	map.drawMap();
+	//Get entities with textures
+	auto tiles = m_Registry.view<TileComponent>();
+	for (auto entity : tiles)
+	{
+		auto& tile = m_Registry.get<TileComponent>(entity);
+		tile.sprite->draw();
+	}
 
 	//Get entities with textures
 	auto sprites = m_Registry.view<SpriteComponent>();
 	for (auto entity : sprites)
 	{
-		auto& sprite = m_Registry.get<SpriteComponent>(entity);
-		TextureManager::Draw(sprite.texture, sprite.srcRect, sprite.destRect);
+		//Only draw sprites for entities that dont have a tile component because this was drawn already
+		if (!m_Registry.all_of<TileComponent>(entity))
+		{
+			auto& sprite = m_Registry.get<SpriteComponent>(entity);
+			sprite.draw();
+		}
 	}
 
 	SDL_RenderPresent(Labyrinth::renderer);
@@ -169,8 +199,6 @@ Entity Labyrinth::CreateEntity(const std::string tag, int x, int y, int w, int h
 {
 	Entity newEnt = { m_Registry.create(), &m_Registry };
 	newEnt.addComponent<TagComponent>(newEnt, tag);
-	newEnt.addComponent<PhysicsComponent>(newEnt, 0.0f, false);
-	newEnt.addComponent<VelocityComponent>(newEnt, 0.0f);
 	newEnt.addComponent<TransformComponent>(newEnt, Vector2D(x, y), w, h, sc);
 	return newEnt;
 }

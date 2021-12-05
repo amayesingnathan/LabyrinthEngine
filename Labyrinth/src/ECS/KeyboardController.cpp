@@ -1,16 +1,18 @@
 #include "ECS/KeyboardController.h"
 #include "ECS/VelocityComponent.h"
+#include "ECS/SpriteComponent.h"
 #include "ECS/Entity.h"
 #include "Labyrinth.h"
 
 float Vector2D::lerpDur = 0.1f;
 
-KeyboardController::KeyboardController() : Component(), velocity(nullptr), lerpTime(0.0f) {}
+KeyboardController::KeyboardController() : Component(), velocity(nullptr), sprite(nullptr), lerpTime(0.0f) {}
 
 KeyboardController::KeyboardController(Entity entt) :
 	Component(entt), lerpTime(0.0f)
 {
 	velocity = &entity.getComponent<VelocityComponent>();
+	sprite = &entity.getComponent<SpriteComponent>();
 }
 
 void KeyboardController::update()
@@ -19,6 +21,8 @@ void KeyboardController::update()
 	Vector2D prevVel = velocity->vel;
 
 	updateVelocity(*velocity);
+
+	sprite->spriteFlip = (velocity->vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 
 	if (prevVel.x != velocity->vel.x)
 	{

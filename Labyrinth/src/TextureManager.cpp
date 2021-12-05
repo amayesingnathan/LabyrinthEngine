@@ -28,7 +28,7 @@ void TextureManager::DestroyTexture(SDL_Texture* tex)
 	SDL_DestroyTexture(tex);
 }
 
-void TextureManager::Draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest)
+void TextureManager::Draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip)
 {
-	SDL_RenderCopy(Labyrinth::renderer, tex, &src, &dest);
+	SDL_RenderCopyEx(Labyrinth::renderer, tex, &src, &dest, NULL, NULL, flip);
 }

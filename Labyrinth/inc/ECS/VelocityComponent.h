@@ -1,9 +1,9 @@
 #pragma once
 
+#include "ECS/PhysicsComponent.h"
 #include "ECS/Component.h"
 #include "Vector2D.h"
 
-struct PhysicsComponent;
 
 struct VelocityComponent : public Component
 {
@@ -17,7 +17,7 @@ struct VelocityComponent : public Component
 	template<typename T>
 	VelocityComponent(Entity& entt, T velocity) :
 		Component(entt), vel(velocity) {
-		phys = &entity.getComponent<PhysicsComponent>();
+		phys = &entity.addComponent<PhysicsComponent>(entity, 0.0f, false);
 	}
 
 	void update() override;

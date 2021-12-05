@@ -1,5 +1,7 @@
 #include "Map.h"
 
+#include "ECS/Entity.h"
+#include "ECS/GameComponents.h"
 #include "TextureManager.h"
 #include <fstream>
 #include <iostream>
@@ -16,7 +18,9 @@ Map::Map() :
 		}
 	}
 
-	textures = NULL;
+	registry = nullptr;
+
+	textures = nullptr;
 
 	src.w = src.h = 32;
 
@@ -29,9 +33,20 @@ Map::~Map()
 	TextureManager::DestroyTexture(textures);
 }
 
-void Map::init()
+void Map::init(entt::registry* reg)
 {
+	registry = reg;
 	textures = TextureManager::LoadTexture("assets/textures/worldtextures.png");
+
+	for (int row = 0; row < 40; row++)
+	{
+		for (int col = 0; col < 50; col++)
+		{
+			dest.x = col * 16;
+			dest.y = row * 16;
+			TileComponent::TileID type = static_cast<TileComponent::TileID>(map[row][col]);
+		}
+	}
 }
 
 void Map::loadLevel(int lvl)
@@ -41,14 +56,29 @@ void Map::loadLevel(int lvl)
 
 	lvlPath = lvlPath + std::to_string(lvl) + fileType;
 
+	//Clear previous tile entities
+	auto view = registry->view<TransformComponent, SpriteComponent, TileComponent>();
+
+	for (auto entity : view)
+	{
+		registry->destroy(entity);
+	}
+
 	std::ifstream tiles(lvlPath);
 	if (tiles)
 	{
-		for (int i = 0; i < 40; i++)
+		for (int row = 0; row < 40; row++)
 		{
-			for (int j = 0; j < 50; j++)
+			for (int col = 0; col < 50; col++)
 			{
-				tiles >> map[i][j];
+				dest.x = col * 16;
+				dest.y = row * 16;
+
+				int fileType;
+				tiles >> fileType;
+
+				TileComponent::TileID type = static_cast<TileComponent::TileID>(fileType);
+				CreateTileEntity(type, false);
 			}
 		}
 	}
@@ -58,45 +88,11 @@ void Map::loadLevel(int lvl)
 	}
 }
 
-void Map::drawMap()
+void Map::CreateTileEntity(TileComponent::TileID typeID, bool collider)
 {
-	int fileType;
+	if (registry == nullptr) return;
 
-	for (int row = 0; row < 40; row++)
-	{
-		for (int col = 0; col < 50; col++)
-		{
-			fileType = map[row][col];
-			dest.x = col * 16;
-			dest.y = row * 16;
-			Type type = static_cast<Type>(fileType);
-
-			switch (type)
-			{
-			case Type::Grass:
-				//Grass texture location in sheet
-				src = TextureManager::setSubTex(320, 640);
-				TextureManager::Draw(textures, src, dest);
-				break;
-
-			case Type::Dirt:
-				//Dirt texture location in sheet
-				src = TextureManager::setSubTex(0, 576);
-				TextureManager::Draw(textures, src, dest);
-				break;
-
-			case Type::Stone:
-				//Stone texture location in sheet
-				src = TextureManager::setSubTex(96, 896);
-				TextureManager::Draw(textures, src, dest);
-				break;
-
-			case Type::Invalid:
-				break;
-
-			default:
-				break;
-			}	
-		}
-	}
+	Entity newEnt = { registry->create(), registry };
+	newEnt.addComponent<TagComponent>(newEnt, "Tile");
+	newEnt.addComponent<TileComponent>(newEnt, dest, *textures, typeID);
 }

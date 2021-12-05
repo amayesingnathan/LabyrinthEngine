@@ -4,10 +4,12 @@
 #include "ECS/Vector2D.h"
 
 struct VelocityComponent;
+struct SpriteComponent;
 
 struct KeyboardController : public Component
 {
 	VelocityComponent* velocity;
+	SpriteComponent* sprite;
 
 	Vector2D lerpTime;
 

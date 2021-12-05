@@ -32,5 +32,6 @@ struct Vector2D
 	friend bool operator==(const Vector2D& a, const Vector2D& b);
 	friend bool operator!=(const Vector2D& a, const Vector2D& b);
 
+	bool isNull();
 	static float lerp(float minVal, float maxVal, float interpolation);
 };
