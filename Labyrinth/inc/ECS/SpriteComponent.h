@@ -2,10 +2,11 @@
 
 #include "TextureManager.h"
 #include "ECS/TransformComponent.h"
+#include "ECS/Animation.h"
 
 struct SpriteComponent : public Component
 {
-	enum class Animations {Idle = 0, Moving = 1};
+	enum class suppAnimations { None = -1, Idle = 0, Moving = 1 };
 
 	TransformComponent* transform;
 	SDL_Texture* texture;
@@ -15,14 +16,18 @@ struct SpriteComponent : public Component
 	int frames;
 	int speed;
 
-	Animations animation = Animations::Idle;
+	suppAnimations currAnimation;
+	std::map<suppAnimations, Animation> animations;
 
 	SDL_RendererFlip spriteFlip;
 
 	SpriteComponent(Entity& entt, const char* path, const SDL_Rect& src, bool mAnimated = false) :
-		Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE)
+		Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
 	{
 		animated = mAnimated;
+		
+		animations.emplace(suppAnimations::Idle, Animation(2, 200));
+		animations.emplace(suppAnimations::Moving, Animation(12, 100));
 
 		texture = TextureManager::LoadTexture(path);
 		transform = &entity.getComponent<TransformComponent>();
@@ -35,9 +40,12 @@ struct SpriteComponent : public Component
 	}
 
 	SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated = false) :
-		Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE)
+		Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
 	{
 		animated = mAnimated;
+
+		animations.emplace(suppAnimations::Idle, Animation(2, 200));
+		animations.emplace(suppAnimations::Moving, Animation(12, 100));
 
 		texture = &tex;
 		transform = &entity.getComponent<TransformComponent>();
@@ -64,26 +72,20 @@ struct SpriteComponent : public Component
 		srcRect = TextureManager::setSubTex(x, y, w, h);
 	}
 
-	void setAnimation(Animations newAnimation) { animation = newAnimation; };
-
 	void update() override
 	{
 		if (animated)
 		{
 			if (transform->velocity->vel.isNull())
 			{
-				animation = Animations::Idle; 
-				frames = 2;
-				speed = 200;
+				play(suppAnimations::Idle);
 			}
 			else
 			{
-				animation = Animations::Moving;
-				frames = 12;
-				speed = 100;
+				play(suppAnimations::Moving);
 			}
 			srcRect.x = srcRect.w * static_cast<int>((SDL_GetTicks() / speed) % frames);
-			srcRect.y = srcRect.h * static_cast<int>(animation);
+			srcRect.y = srcRect.h * static_cast<int>(currAnimation);
 		}
 
 		destRect.x = static_cast<int>(transform->pos.x);
@@ -96,4 +98,19 @@ struct SpriteComponent : public Component
 	{
 		TextureManager::Draw(texture, srcRect, destRect, spriteFlip);
 	}
+
+	void addAnimation(suppAnimations anim, int f, int s)
+	{
+		animations.emplace(anim, Animation(f, s));
+	}
+
+	void play(suppAnimations anim)
+	{
+		if (!animations.count(anim)) return; //Return if animation has not been added
+
+		currAnimation = anim;
+		frames = animations[anim].frames;
+		speed = animations[anim].speed;
+	}
+
 };
