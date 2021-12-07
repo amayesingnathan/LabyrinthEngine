@@ -1,42 +1,28 @@
-#include "Map.h"
+#include "ECS/Systems/MapSystem.h"
 
-#include "ECS/Entity.h"
-#include "ECS/GameComponents.h"
-#include "TextureManager.h"
+#include "Labyrinth.h"
+#include "ECS/Entity/Entity.h"
+#include "ECS/Components/GameComponents.h"
+
 #include <fstream>
 #include <iostream>
 #include <string>
 
-Map::Map() :
-	src(), dest()
+Map::~Map()
 {
-	for (int row = 0; row < 40; row++)
-	{
-		for (int col = 0; col < 50; col++)
-		{
-			map[row][col] = -1;
-		}
-	}
+	Labyrinth::sysTex.destroyTexture(textures);
+}
 
-	registry = nullptr;
+void Map::init(entt::registry& reg)
+{
 
-	textures = nullptr;
+	System::init(reg);
 
 	src.w = src.h = 32;
 
 	dest.w = dest.h = 16;
 
-}
-
-Map::~Map()
-{
-	TextureManager::DestroyTexture(textures);
-}
-
-void Map::init(entt::registry* reg)
-{
-	registry = reg;
-	textures = TextureManager::LoadTexture("assets/textures/worldtextures.png");
+	textures = Labyrinth::sysTex.loadTexture("assets/textures/worldtextures.png");
 
 	for (int row = 0; row < 40; row++)
 	{
@@ -57,11 +43,11 @@ void Map::loadLevel(int lvl)
 	lvlPath = lvlPath + std::to_string(lvl) + fileType;
 
 	//Clear previous tile entities
-	auto view = registry->view<TransformComponent, SpriteComponent, TileComponent>();
+	auto view = registry->view<TileComponent>();
 
 	for (auto entity : view)
 	{
-		registry->destroy(entity);
+		
 	}
 
 	std::ifstream tiles(lvlPath);

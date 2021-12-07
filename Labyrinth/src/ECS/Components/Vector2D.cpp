@@ -1,4 +1,4 @@
-#include "ECS\Vector2D.h"
+#include "ECS\Components\Vector2D.h"
 
 Vector2D& Vector2D::Add(const Vector2D& vec)
 {

@@ -1,6 +1,6 @@
 #include "Labyrinth.h"
 
-#include "ECS/Entity.h"
+#include "ECS/Entity/Entity.h"
 
 SDL_Renderer* Labyrinth::renderer = nullptr;
 SDL_Event Labyrinth::event;
@@ -8,7 +8,14 @@ SDL_Event Labyrinth::event;
 const Uint8* Labyrinth::prevKeyboard;
 const Uint8* Labyrinth::keyboard;
 
-Map Labyrinth::map;
+entt::registry Labyrinth::m_Registry;
+
+
+PhysicsEngine Labyrinth::sysPhysics;
+InputManager Labyrinth::sysInput;
+TextureManager Labyrinth::sysTex;
+Map Labyrinth::sysMap;
+Collision Labyrinth::sysCollisions;
 
 bool Labyrinth::isRunning;
 
@@ -27,6 +34,11 @@ Labyrinth::~Labyrinth()
 //Initialisation of the game engine. This should be called from the init function of your game instance.
 void Labyrinth::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
 {
+	//Initialise systems to the registry they are used for
+	sysInput.init(m_Registry);
+	sysPhysics.init(m_Registry);
+	sysTex.init(m_Registry);
+
 	keyboard = SDL_GetKeyboardState(NULL);
 	prevKeyboard = SDL_GetKeyboardState(NULL);
 
@@ -36,8 +48,11 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 	configuration::mFrameDelay = 1000 / configuration::FPS;
 
 	//The Player entity. This should be initialised by your game. WASD support is added by default.
-	player = CreateEntity("Player", 0, 0, 8, 14, 3);
-	testWall = CreateEntity("Wall", 250, 250, 32, 32, 2);
+	player = CreateEntity("Player");
+	testWall = CreateEntity("Wall", { 250, 250, 32, 32 }, 2);
+
+	//Initialise collision system once player has been created
+	sysCollisions.init(m_Registry, player);
 
 	int flags = 0;
 	if (fullscreen)
@@ -61,11 +76,11 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 			std::cout << "Renderer created..." << std::endl;
 		}
 
-		//Load map textures from file
-		map.init(&m_Registry);
+		//Initialise map system once renderer has been created
+		sysMap.init(m_Registry);
 
 		//Load level 1 map
-		map.loadLevel(1);
+		sysMap.loadLevel(1);
 
 		isRunning = true;
 	}
@@ -90,116 +105,40 @@ void Labyrinth::handleEvents()
 
 void Labyrinth::update()
 {
+	//Input Manager call to handle all keyboard & mouse components
+	sysInput.update();
 
-	//Get entities that have Keyboard control and handle their key events
-	auto players = m_Registry.view<KeyboardController>();
+	//Physics Engine call to handle all physics related components
+	sysPhysics.update();
 
-	for (auto control : players)
-	{
-		auto& keyControl = players.get<KeyboardController>(control);
-		keyControl.update();
-	}
+	//Texture Manager call to handle drawing all textures and sprites
+	sysTex.update();
 
-	//Get entities that have required components to update physics
-	auto physics = m_Registry.view<PhysicsComponent>();
-
-	for (auto entity : physics)
-	{
-		//Get components for physics from entity
-		auto& phys = physics.get<PhysicsComponent>(entity);
-		
-		//Update physics
-		phys.update();
-	}
-
-	//Get entities that have required components to update velocity
-	auto velocities = m_Registry.view<VelocityComponent>();
-
-	for (auto entity : velocities)
-	{
-		//Get components for physics from entity
-		auto& vel = velocities.get<VelocityComponent>(entity);
-
-		//Update velocity
-		vel.update();
-	}
-
-	//Get entities that have required components to update transform
-	auto transforms = m_Registry.view<TransformComponent>();
-
-	for (auto entity : transforms)
-	{
-		//Get components for physics from entity
-		auto& trans = transforms.get<TransformComponent>(entity);
-
-		//Update transform
-		trans.update();
-	}
-
-	auto sprites = m_Registry.view<SpriteComponent>();
-
-	for (auto sprite : sprites)
-	{
-		//Get components for physics from entity
-		auto& draw = sprites.get<SpriteComponent>(sprite);
-
-		//Update sprite
-		draw.update();
-	}
-
-	auto colliders = m_Registry.view<ColliderComponent>();
-
-	for (auto collider : colliders)
-	{
-		//Get collider component from entity
-		auto& box = colliders.get<ColliderComponent>(collider);
-
-		//Update collider
-		box.update();
-	}
-
-	if (Collision::AABB(&player.getComponent<ColliderComponent>(), &testWall.getComponent<ColliderComponent>()))
-	{
-		std::cout << player.getComponent<TagComponent>().tag << " hit " << testWall.getComponent<TagComponent>().tag << std::endl;
-		auto& vel = player.getComponent<VelocityComponent>();
-		vel.vel *= -1;
-	}
+	//Collision System call to handle collisions with the player
+	sysCollisions.update();
 
 }
 
 void Labyrinth::render()
 {
 	SDL_RenderClear(Labyrinth::renderer);
-
-	//Get entities with textures
-	auto tiles = m_Registry.view<TileComponent>();
-	for (auto entity : tiles)
-	{
-		auto& tile = m_Registry.get<TileComponent>(entity);
-		tile.sprite->draw();
-	}
-
-	//Get entities with textures
-	auto sprites = m_Registry.view<SpriteComponent>();
-	for (auto entity : sprites)
-	{
-		//Only draw sprites for entities that dont have a tile component because this was drawn already
-		if (!m_Registry.all_of<TileComponent>(entity))
-		{
-			auto& sprite = m_Registry.get<SpriteComponent>(entity);
-			sprite.draw();
-		}
-	}
-
+	sysTex.render();
 	SDL_RenderPresent(Labyrinth::renderer);
 
 }
 
-Entity Labyrinth::CreateEntity(const std::string tag, int x, int y, int w, int h, int sc)
+Entity Labyrinth::CreateEntity(const std::string tag)
 {
 	Entity newEnt = { m_Registry.create(), &m_Registry };
 	newEnt.addComponent<TagComponent>(newEnt, tag);
-	newEnt.addComponent<TransformComponent>(newEnt, Vector2D(x, y), w, h, sc);
+	return newEnt;
+}
+
+Entity Labyrinth::CreateEntity(const std::string tag, const SDL_Rect& rect, int sc)
+{
+	Entity newEnt = { m_Registry.create(), &m_Registry };
+	newEnt.addComponent<TagComponent>(newEnt, tag);
+	newEnt.addComponent<TransformComponent>(newEnt, rect, sc);
 	return newEnt;
 }
 

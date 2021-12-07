@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS/Component.h"
+#include "ECS/Components/Component.h"
 
 #include <string>
 

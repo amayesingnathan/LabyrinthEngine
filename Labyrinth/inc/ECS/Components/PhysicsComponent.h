@@ -1,6 +1,6 @@
 #pragma once
 #include "Vector2D.h"
-#include "ECS/Component.h"
+#include "ECS/Components/Component.h"
 
 struct PhysicsComponent : public Component
 {
@@ -28,11 +28,6 @@ struct PhysicsComponent : public Component
 		{
 			acc.y += g;
 		}
-	}
-
-	void update()
-	{
-
 	}
 
 };

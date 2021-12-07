@@ -24,39 +24,42 @@
     <ClCompile Include="src\Game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Vector2D.cpp">
+    <ClCompile Include="src\ECS\Components\Vector2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\VelocityComponent.cpp">
+    <ClCompile Include="src\ECS\Systems\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\TransformComponent.cpp">
+    <ClCompile Include="src\ECS\Components\KeyboardController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\TextureManager.cpp">
+    <ClCompile Include="src\ECS\Components\ColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\KeyboardController.cpp">
+    <ClCompile Include="src\ECS\Systems\MapSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\ColliderComponent.cpp">
+    <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Map.cpp">
+    <ClCompile Include="src\ECS\Components\TileComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Collision.cpp">
+    <ClCompile Include="src\ECS\Systems\PhysicsEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\TileComponent.cpp">
+    <ClCompile Include="src\ECS\Systems\InputManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Components\SpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\ECS\entt.hpp">
+    <ClInclude Include="inc\ECS\Entity\entt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\TextureManager.h">
+    <ClInclude Include="inc\ECS\Systems\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\Labyrinth.h">
@@ -65,52 +68,64 @@
     <ClInclude Include="inc\Game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\GameComponents.h">
+    <ClInclude Include="inc\ECS\Components\GameComponents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Vector2D.h">
+    <ClInclude Include="inc\ECS\Components\Vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\TransformComponent.h">
+    <ClInclude Include="inc\ECS\Components\TransformComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\VelocityComponent.h">
+    <ClInclude Include="inc\ECS\Components\VelocityComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\PhysicsComponent.h">
+    <ClInclude Include="inc\ECS\Components\PhysicsComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\SpriteComponent.h">
+    <ClInclude Include="inc\ECS\Components\SpriteComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Component.h">
+    <ClInclude Include="inc\ECS\Components\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Entity.h">
+    <ClInclude Include="inc\ECS\Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\TagComponent.h">
+    <ClInclude Include="inc\ECS\Components\TagComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\KeyboardController.h">
+    <ClInclude Include="inc\ECS\Components\KeyboardController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\ColliderComponent.h">
+    <ClInclude Include="inc\ECS\Components\ColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Map.h">
+    <ClInclude Include="inc\ECS\Systems\MapSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Collision.h">
+    <ClInclude Include="inc\ECS\Systems\CollisionSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\TileComponent.h">
+    <ClInclude Include="inc\ECS\Components\TileComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Animation.h">
+    <ClInclude Include="inc\ECS\Components\Animation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Systems\System.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Systems\InputManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Components\PlayerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

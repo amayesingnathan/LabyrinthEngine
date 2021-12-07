@@ -5,13 +5,14 @@
 #include <SDL_image.h>
 
 //ECS Components
-#include "ECS/GameComponents.h"
-
-//Map
-#include "Map.h"
+#include "ECS/Components/GameComponents.h"
 
 //Systems
-#include "Collision.h"
+#include "ECS/Systems/PhysicsEngine.h"
+#include "ECS/Systems/InputManager.h"
+#include "ECS/Systems/TextureManager.h"
+#include "ECS/Systems/MapSystem.h"
+#include "ECS/Systems/CollisionSystem.h"
 
 //Standard Library Includes
 #include <iostream>
@@ -34,8 +35,8 @@ public:
 	void render();
 	void clean();
 
-
-	Entity CreateEntity(const std::string tag, int x = 0, int y = 0, int w = 32, int h = 32, int sc = 1);
+	Entity CreateEntity(const std::string tag);
+	Entity CreateEntity(const std::string tag, const SDL_Rect& rect, int sc = 1);
 
 	static bool running() { return isRunning; };
 
@@ -46,12 +47,17 @@ public:
 	static const Uint8* prevKeyboard;
 	static const Uint8* keyboard;
 
-	static Map map;
+
+	static PhysicsEngine sysPhysics;
+	static InputManager sysInput;
+	static TextureManager sysTex;
+	static Map sysMap;
+	static Collision sysCollisions;
 
 	static bool isRunning;
 
 protected:
-	entt::registry m_Registry;
+	static entt::registry m_Registry;
 	SDL_Window* window;
 	Entity player;
 	Entity testWall;

@@ -163,40 +163,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Collision.cpp" />
-    <ClCompile Include="src\ECS\TileComponent.cpp" />
-    <ClCompile Include="src\Map.cpp" />
-    <ClCompile Include="src\ECS\ColliderComponent.cpp" />
-    <ClCompile Include="src\ECS\KeyboardController.cpp" />
-    <ClCompile Include="src\ECS\TransformComponent.cpp" />
-    <ClCompile Include="src\ECS\VelocityComponent.cpp" />
+    <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp" />
+    <ClCompile Include="src\ECS\Components\SpriteComponent.cpp" />
+    <ClCompile Include="src\ECS\Components\TileComponent.cpp" />
+    <ClCompile Include="src\ECS\Systems\InputManager.cpp" />
+    <ClCompile Include="src\ECS\Systems\PhysicsEngine.cpp" />
+    <ClCompile Include="src\ECS\Systems\MapSystem.cpp" />
+    <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\TextureManager.cpp" />
-    <ClCompile Include="src\ECS\Vector2D.cpp" />
+    <ClCompile Include="src\ECS\Systems\TextureManager.cpp" />
+    <ClCompile Include="src\ECS\Components\Vector2D.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\Collision.h" />
-    <ClInclude Include="inc\ECS\Animation.h" />
-    <ClInclude Include="inc\ECS\ColliderComponent.h" />
-    <ClInclude Include="inc\ECS\Component.h" />
-    <ClInclude Include="inc\ECS\Entity.h" />
-    <ClInclude Include="inc\ECS\KeyboardController.h" />
-    <ClInclude Include="inc\ECS\SpriteComponent.h" />
-    <ClInclude Include="inc\ECS\entt.hpp" />
-    <ClInclude Include="inc\ECS\TagComponent.h" />
-    <ClInclude Include="inc\ECS\TileComponent.h" />
+    <ClInclude Include="inc\ECS\Systems\CollisionSystem.h" />
+    <ClInclude Include="inc\ECS\Components\Animation.h" />
+    <ClInclude Include="inc\ECS\Components\ColliderComponent.h" />
+    <ClInclude Include="inc\ECS\Components\Component.h" />
+    <ClInclude Include="inc\ECS\Components\PlayerComponent.h" />
+    <ClInclude Include="inc\ECS\Entity\Entity.h" />
+    <ClInclude Include="inc\ECS\Components\KeyboardController.h" />
+    <ClInclude Include="inc\ECS\Components\SpriteComponent.h" />
+    <ClInclude Include="inc\ECS\Entity\entt.hpp" />
+    <ClInclude Include="inc\ECS\Components\TagComponent.h" />
+    <ClInclude Include="inc\ECS\Components\TileComponent.h" />
+    <ClInclude Include="inc\ECS\Systems\InputManager.h" />
+    <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h" />
+    <ClInclude Include="inc\ECS\Systems\System.h" />
     <ClInclude Include="inc\Game.h" />
-    <ClInclude Include="inc\ECS\GameComponents.h" />
+    <ClInclude Include="inc\ECS\Components\GameComponents.h" />
     <ClInclude Include="inc\config.h" />
-    <ClInclude Include="inc\ECS\TransformComponent.h" />
-    <ClInclude Include="inc\ECS\PhysicsComponent.h" />
-    <ClInclude Include="inc\ECS\Vector2D.h" />
-    <ClInclude Include="inc\TextureManager.h" />
+    <ClInclude Include="inc\ECS\Components\TransformComponent.h" />
+    <ClInclude Include="inc\ECS\Components\PhysicsComponent.h" />
+    <ClInclude Include="inc\ECS\Components\Vector2D.h" />
+    <ClInclude Include="inc\ECS\Systems\TextureManager.h" />
     <ClInclude Include="inc\Labyrinth.h" />
-    <ClInclude Include="inc\ECS\VelocityComponent.h" />
-    <ClInclude Include="inc\Map.h" />
+    <ClInclude Include="inc\ECS\Components\VelocityComponent.h" />
+    <ClInclude Include="inc\ECS\Systems\MapSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SDL2.lib" />

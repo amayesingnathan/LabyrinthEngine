@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ECS/entt.hpp"
+#include "ECS/Entity/entt.hpp"
 
 class Entity
 {
