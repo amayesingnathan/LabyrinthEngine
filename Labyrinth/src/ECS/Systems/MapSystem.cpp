@@ -29,16 +29,6 @@ void Map::init(entt::registry& reg)
 	dest.w = dest.h = 16;
 
 	tileTextures = Scene::sysTex.loadTexture("assets/textures/worldtextures.png");
-
-	for (int row = 0; row < 40; row++)
-	{
-		for (int col = 0; col < 50; col++)
-		{
-			dest.x = col * 16;
-			dest.y = row * 16;
-			TileComponent::TileID type = static_cast<TileComponent::TileID>(map[row][col]);
-		}
-	}
 }
 
 void Map::loadLevel(int lvl)

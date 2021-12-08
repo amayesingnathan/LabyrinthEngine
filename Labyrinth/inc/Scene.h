@@ -12,7 +12,7 @@
 class Scene
 {
 public:
-	void init(Entity& player, int lvl);
+	void init(int lvl);
 
 	void update();
 
@@ -28,6 +28,7 @@ public:
 	static Collision sysCollisions;
 
 private:
-	static entt::registry m_Registry;
+	Entity player;
+	entt::registry m_Registry;
 };
 

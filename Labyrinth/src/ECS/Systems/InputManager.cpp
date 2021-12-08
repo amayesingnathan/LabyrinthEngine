@@ -47,6 +47,13 @@ void InputManager::update()
 	}
 }
 
+/*
+
+	NEEDS FIXING!! RESETS CHANGES FROM ACCELERATION IN PHYSICS SYSTEM - NEEDS TO ADD TO THEM
+	BUT THEN HAVE MAX SPEED (MAYBE ADD TO VELOCITY COMPONENT)
+
+*/
+
 void InputManager::updateVelocity(VelocityComponent& vel)
 {
 	vel.vel = 0.0f;

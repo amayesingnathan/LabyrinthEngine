@@ -1,9 +1,10 @@
 #include "Scene.h"
 
+#include "SDL_rect.h"
+
 #include "ECS/Components/TagComponent.h"
 #include "ECS/Components/PlayerComponent.h"
-
-entt::registry Scene::m_Registry;
+#include "ECS/Components/ColliderComponent.h"
 
 PhysicsEngine Scene::sysPhysics;
 InputManager Scene::sysInput;
@@ -11,7 +12,7 @@ TextureManager Scene::sysTex;
 Map Scene::sysMap;
 Collision Scene::sysCollisions;
 
-void Scene::init(Entity& player, int lvl)
+void Scene::init(int lvl)
 {
 	//The Player entity. This should be initialised by your game.
 	player = CreateEntity("Player");
@@ -20,13 +21,14 @@ void Scene::init(Entity& player, int lvl)
 	sysInput.init(m_Registry);
 	sysPhysics.init(m_Registry);
 	sysTex.init(m_Registry);
-	sysCollisions.init(m_Registry, player);
+	sysCollisions.init(m_Registry, player, {800, 640});
 	sysMap.init(m_Registry);
 
 	//Load map for this scene
 	sysMap.loadLevel(lvl);
 
 	player.addComponent<PlayerComponent>(player, SDL_Rect{ 0, 0, 16, 22 }, 3);
+
 }
 
 void Scene::update()
@@ -46,6 +48,7 @@ void Scene::update()
 
 void Scene::render()
 {
+	sysTex.render();
 }
 
 Entity Scene::CreateEntity(const std::string tag)

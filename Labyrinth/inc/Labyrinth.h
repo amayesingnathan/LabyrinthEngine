@@ -9,6 +9,7 @@
 
 //Standard Library Includes
 #include <iostream>
+#include <memory>
 
 class Entity;
 class Scene;
@@ -43,9 +44,8 @@ public:
 
 protected:
 	SDL_Window* window;
-	Entity player;
 	Entity testWall;
-	Scene* currScene;
+	std::unique_ptr<Scene> currScene;
 
 };
 

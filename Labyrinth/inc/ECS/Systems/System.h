@@ -5,7 +5,7 @@ class System
 {
 public:
 	void init(entt::registry& reg) { registry = &reg; };
-	virtual void update() = 0;
+	virtual void update() {};
 
 protected:
 	entt::registry* registry;
