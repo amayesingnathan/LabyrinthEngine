@@ -6,8 +6,6 @@
 ColliderComponent::ColliderComponent(Entity& entt) :
 	Component(entt), collider()
 {
-	tag = &entity.getComponent<TagComponent>();
-
 	if (entity.hasComponent<TransformComponent>())
 	{
 		auto& transform = entity.getComponent<TransformComponent>();

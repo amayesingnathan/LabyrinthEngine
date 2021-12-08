@@ -16,12 +16,15 @@ public: //Methods
 
 	void loadLevel(int lvl);
 
+	SDL_Texture* getBG() { return bgTexture; };
+
 private:
 	void CreateTileEntity(TileComponent::TileID typeID, bool collider);
 
 private: //Members
 	SDL_Rect src, dest;
-	SDL_Texture* textures;
+	SDL_Texture* tileTextures;
+	SDL_Texture* bgTexture = nullptr;
 
 	int map[40][50];
 

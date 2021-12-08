@@ -1,9 +1,9 @@
-#include "Game.h"
+#include "Labyrinth.h"
 
 //Config Struct
 #include "config.h"
 
-Game* game = nullptr;
+Labyrinth* game = nullptr;
 
 int main(int argc, char* args[])
 {
@@ -11,7 +11,7 @@ int main(int argc, char* args[])
 	Uint32 frameStart;
 	int frameTime;
 
-	game = new Game();
+	game = new Labyrinth();
 
 	game->init("Labyrinth Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false);
 

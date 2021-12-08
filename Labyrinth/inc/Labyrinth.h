@@ -7,17 +7,11 @@
 //ECS Components
 #include "ECS/Components/GameComponents.h"
 
-//Systems
-#include "ECS/Systems/PhysicsEngine.h"
-#include "ECS/Systems/InputManager.h"
-#include "ECS/Systems/TextureManager.h"
-#include "ECS/Systems/MapSystem.h"
-#include "ECS/Systems/CollisionSystem.h"
-
 //Standard Library Includes
 #include <iostream>
 
 class Entity;
+class Scene;
 
 class Labyrinth
 {
@@ -35,8 +29,6 @@ public:
 	void render();
 	void clean();
 
-	Entity CreateEntity(const std::string tag);
-	Entity CreateEntity(const std::string tag, const SDL_Rect& rect, int sc = 1);
 
 	static bool running() { return isRunning; };
 
@@ -47,20 +39,13 @@ public:
 	static const Uint8* prevKeyboard;
 	static const Uint8* keyboard;
 
-
-	static PhysicsEngine sysPhysics;
-	static InputManager sysInput;
-	static TextureManager sysTex;
-	static Map sysMap;
-	static Collision sysCollisions;
-
 	static bool isRunning;
 
 protected:
-	static entt::registry m_Registry;
 	SDL_Window* window;
 	Entity player;
 	Entity testWall;
+	Scene* currScene;
 
 };
 

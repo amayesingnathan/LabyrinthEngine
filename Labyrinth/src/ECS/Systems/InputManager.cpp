@@ -53,24 +53,30 @@ void InputManager::updateVelocity(VelocityComponent& vel)
 	//If up is pressed
 	if (Labyrinth::keyboard[SDL_SCANCODE_W])
 	{
-		vel.vel.y -= 3.0f;
+		vel.vel.y -= 1.0f;
 	}
 
 	//If down is pressed
 	if (Labyrinth::keyboard[SDL_SCANCODE_S])
 	{
-		vel.vel.y += 3.0f;
+		vel.vel.y += 1.0f;
 	}
 
 	//If left is pressed
 	if (Labyrinth::keyboard[SDL_SCANCODE_A])
 	{
-		vel.vel.x -= 3.0f;
+		vel.vel.x -= 1.0f;
 	}
 
 	//If right is pressed
 	if (Labyrinth::keyboard[SDL_SCANCODE_D])
 	{
-		vel.vel.x += 3.0f;
+		vel.vel.x += 1.0f;
 	}
+
+	//Normalise the vector so can't travel faster diagonally
+	vel.vel.normalise();
+
+	//Scale to player speed
+	vel.vel *= moveSpeed;
 }

@@ -10,9 +10,6 @@ struct ColliderComponent : public Component
 {
 	SDL_Rect collider;
 
-	TagComponent* tag;
-
-	ColliderComponent() : collider(), tag(nullptr) {}
 	ColliderComponent(const ColliderComponent&) = default;
 	ColliderComponent(Entity& entt);
 };

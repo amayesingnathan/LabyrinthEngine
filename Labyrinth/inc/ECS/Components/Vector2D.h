@@ -34,4 +34,6 @@ struct Vector2D
 
 	bool isNull();
 	static float lerp(float minVal, float maxVal, float interpolation);
+
+	void normalise();
 };

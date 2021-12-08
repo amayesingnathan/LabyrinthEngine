@@ -13,7 +13,7 @@ public:
 	void destroyTexture(SDL_Texture* tex);
 
 	void render();
-	void draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip);
+	void draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* dest, SDL_RendererFlip flip);
 
 	void update();
 

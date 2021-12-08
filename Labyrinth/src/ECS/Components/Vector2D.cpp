@@ -1,5 +1,7 @@
 #include "ECS\Components\Vector2D.h"
 
+#include <cmath>
+
 Vector2D& Vector2D::Add(const Vector2D& vec)
 {
 	x += vec.x;
@@ -98,4 +100,12 @@ float Vector2D::lerp(float a, float b, float t)
 	}
 
 	return 0.0f;
+}
+
+void Vector2D::normalise()
+{
+	if (isNull()) return;
+
+	float norm = 1 / sqrt((x * x) + (y * y));
+	*this *= norm;
 }

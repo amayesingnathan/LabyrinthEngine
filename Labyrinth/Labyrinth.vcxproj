@@ -163,6 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\ECS\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\ECS\Components\TileComponent.cpp" />
@@ -171,11 +172,11 @@
     <ClCompile Include="src\ECS\Systems\MapSystem.cpp" />
     <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
-    <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\ECS\Components\Vector2D.cpp" />
+    <ClCompile Include="src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\ECS\Systems\CollisionSystem.h" />
@@ -192,7 +193,6 @@
     <ClInclude Include="inc\ECS\Systems\InputManager.h" />
     <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h" />
     <ClInclude Include="inc\ECS\Systems\System.h" />
-    <ClInclude Include="inc\Game.h" />
     <ClInclude Include="inc\ECS\Components\GameComponents.h" />
     <ClInclude Include="inc\config.h" />
     <ClInclude Include="inc\ECS\Components\TransformComponent.h" />
@@ -202,6 +202,7 @@
     <ClInclude Include="inc\Labyrinth.h" />
     <ClInclude Include="inc\ECS\Components\VelocityComponent.h" />
     <ClInclude Include="inc\ECS\Systems\MapSystem.h" />
+    <ClInclude Include="inc\Scene.h" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SDL2.lib" />

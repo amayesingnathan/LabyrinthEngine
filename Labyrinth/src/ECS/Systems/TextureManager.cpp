@@ -1,5 +1,7 @@
 #include "ECS/Systems/TextureManager.h"
+
 #include "Labyrinth.h"
+#include "Scene.h"
 
 #include "ECS/Components/GameComponents.h"
 
@@ -68,12 +70,15 @@ void TextureManager::update()
 
 void TextureManager::render()
 {
-	//Get entities with textures
+	//Draw map background first
+	draw(Scene::sysMap.getBG(), NULL, NULL, SDL_FLIP_NONE);
+
+	//Get tile map components to draw next
 	auto tiles = registry->view<TileComponent>();
 	for (auto entity : tiles)
 	{
 		auto& tile = registry->get<SpriteComponent>(entity);
-		draw(tile.texture, tile.srcRect, tile.destRect, tile.spriteFlip);
+		//draw(tile.texture, &tile.srcRect, &tile.destRect, tile.spriteFlip);
 	}
 
 	//Get entities with textures
@@ -84,14 +89,15 @@ void TextureManager::render()
 		if (!registry->all_of<TileComponent>(entity))
 		{
 			auto& sprite = registry->get<SpriteComponent>(entity);
-			draw(sprite.texture, sprite.srcRect, sprite.destRect, sprite.spriteFlip);
+			draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
 		}
 	}
 }
 
-void TextureManager::draw(SDL_Texture* tex, SDL_Rect src, SDL_Rect dest, SDL_RendererFlip flip)
+void TextureManager::draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* dest, SDL_RendererFlip flip)
 {
-	SDL_RenderCopyEx(Labyrinth::renderer, tex, &src, &dest, NULL, NULL, flip);
+	if (tex == NULL) return;
+	SDL_RenderCopyEx(Labyrinth::renderer, tex, src, dest, NULL, NULL, flip);
 }
 
 void TextureManager::play(SpriteComponent& sprite, const SpriteComponent::suppAnimations& anim)

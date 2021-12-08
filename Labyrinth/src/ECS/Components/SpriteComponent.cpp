@@ -1,16 +1,17 @@
 #include "ECS/Components/SpriteComponent.h"
 
 #include "Labyrinth.h"
+#include "Scene.h"
 
 SpriteComponent::SpriteComponent(Entity& entt, const char* path, const SDL_Rect& src, bool mAnimated) :
 	Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(2, 200));
-	animations.emplace(suppAnimations::Moving, Animation(12, 100));
+	animations.emplace(suppAnimations::Idle, Animation(4, 150));
+	animations.emplace(suppAnimations::Moving, Animation(4, 100));
 
-	texture = Labyrinth::sysTex.loadTexture(path);
+	texture = Scene::sysTex.loadTexture(path);
 	srcRect = src;
 
 	auto& transform = entity.getComponent<TransformComponent>();
@@ -40,15 +41,15 @@ SpriteComponent::SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect&
 
 SpriteComponent::~SpriteComponent()
 {
-	Labyrinth::sysTex.destroyTexture(texture);
+	Scene::sysTex.destroyTexture(texture);
 }
 
 void SpriteComponent::setTex(const char* path)
 {
-	texture = Labyrinth::sysTex.loadTexture(path);
+	texture = Scene::sysTex.loadTexture(path);
 }
 
 void SpriteComponent::setSubTex(int x, int y, int w, int h)
 {
-	srcRect = Labyrinth::sysTex.setSubTex(x, y, w, h);
+	srcRect = Scene::sysTex.setSubTex(x, y, w, h);
 }
