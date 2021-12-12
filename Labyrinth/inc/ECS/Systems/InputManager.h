@@ -12,4 +12,5 @@ public:
 private:
 	float moveSpeed = 3.5f;
 	void updateVelocity(VelocityComponent& vel);
+	void updatePhysics(PhysicsComponent& phys);
 };

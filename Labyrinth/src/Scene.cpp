@@ -11,6 +11,7 @@ InputManager Scene::sysInput;
 TextureManager Scene::sysTex;
 Map Scene::sysMap;
 Collision Scene::sysCollisions;
+RenderSystem Scene::sysRender;
 
 void Scene::init(int lvl)
 {
@@ -23,11 +24,12 @@ void Scene::init(int lvl)
 	sysTex.init(m_Registry);
 	sysCollisions.init(m_Registry, player, {800, 640});
 	sysMap.init(m_Registry);
+	sysRender.init(m_Registry);
 
 	//Load map for this scene
 	sysMap.loadLevel(lvl);
 
-	player.addComponent<PlayerComponent>(player, SDL_Rect{ 0, 0, 16, 22 }, 3);
+	player.addComponent<PlayerComponent>(player, SDL_Rect{ 400, 400 , 16, 22 }, 3);
 
 }
 
@@ -39,8 +41,11 @@ void Scene::update()
 	//Physics Engine call to handle all physics related components
 	sysPhysics.update();
 
-	//Texture Manager call to handle drawing all textures and sprites
+	//Texture Manager call to handle all animations and textures
 	sysTex.update();
+
+	//Render System call to handle updating locations of sprites
+	sysRender.update();
 
 	//Collision System call to handle collisions with the player
 	sysCollisions.update();
@@ -48,7 +53,7 @@ void Scene::update()
 
 void Scene::render()
 {
-	sysTex.render();
+	sysRender.render();
 }
 
 Entity Scene::CreateEntity(const std::string tag)

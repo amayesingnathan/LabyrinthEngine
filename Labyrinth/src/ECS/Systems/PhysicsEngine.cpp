@@ -5,19 +5,26 @@
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/ColliderComponent.h"
 
+static int jumpDur = 10;
+
 void PhysicsEngine::update()
 {
 	//Get entities that have required components to update transform
-	auto entities = registry->view<PhysicsComponent, TransformComponent, VelocityComponent>();
+	auto entities = registry->view<PhysicsComponent, VelocityComponent, TransformComponent>();
 
 	for (auto entity : entities)
 	{
 		//Get components for physics from entity
 		auto& phys = entities.get<PhysicsComponent>(entity);
-		auto& trans = entities.get<TransformComponent>(entity);
 		auto& velocity = entities.get<VelocityComponent>(entity);
+		auto& trans = entities.get<TransformComponent>(entity);
 
-		//Add physics updates here
+		//Set gravity if enabled
+		if (phys.grav) phys.acc.y = 9.81f;
+		if (SDL_GetTicks() - phys.jumpStart < jumpDur)
+		{
+			velocity.vel.y = -5.0f;
+		}
 
 		//velocity = acceleration * time delta
 		velocity.vel.x += (phys.acc.x * configuration::frameDelay);

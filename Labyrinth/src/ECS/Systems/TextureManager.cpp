@@ -34,14 +34,21 @@ void TextureManager::destroyTexture(SDL_Texture* tex)
 
 void TextureManager::update()
 {
-	auto sprites = registry->view<SpriteComponent, TransformComponent>();
+	auto sprites = registry->view<SpriteComponent>();
 
 	for (auto sprite : sprites)
 	{
 		//Get components for physics from entity
 		auto& draw = sprites.get<SpriteComponent>(sprite);
 
-		//Update sprite
+		//If the velocity is less than zero then sprite should be flipped.
+		if (registry->all_of<VelocityComponent>(sprite))
+		{
+			auto& velocity = registry->get<VelocityComponent>(sprite);
+			draw.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+		}
+
+		//Update sprite animation if necessary
 		if (draw.animated)
 		{
 			if (registry->all_of<VelocityComponent>(sprite))
@@ -59,45 +66,7 @@ void TextureManager::update()
 				draw.srcRect.y = draw.srcRect.h * static_cast<int>(draw.currAnimation);
 			}
 		}
-
-		auto& transform = sprites.get<TransformComponent>(sprite);
-		draw.destRect.x = static_cast<int>(transform.pos.x);
-		draw.destRect.y = static_cast<int>(transform.pos.y);
-		draw.destRect.w = transform.width * transform.scale;
-		draw.destRect.h = transform.height * transform.scale;
 	}
-}
-
-void TextureManager::render()
-{
-	//Draw map background first
-	draw(Scene::sysMap.getBG(), NULL, NULL, SDL_FLIP_NONE);
-
-	//Get tile map components to draw next
-	auto tiles = registry->view<TileComponent>();
-	for (auto entity : tiles)
-	{
-		auto& tile = registry->get<SpriteComponent>(entity);
-		//draw(tile.texture, &tile.srcRect, &tile.destRect, tile.spriteFlip);
-	}
-
-	//Get entities with textures
-	auto sprites = registry->view<SpriteComponent>();
-	for (auto entity : sprites)
-	{
-		//Only draw sprites for entities that dont have a tile component because this was drawn already
-		if (!registry->all_of<TileComponent>(entity))
-		{
-			auto& sprite = registry->get<SpriteComponent>(entity);
-			draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
-		}
-	}
-}
-
-void TextureManager::draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* dest, SDL_RendererFlip flip)
-{
-	if (tex == NULL) return;
-	SDL_RenderCopyEx(Labyrinth::renderer, tex, src, dest, NULL, NULL, flip);
 }
 
 void TextureManager::play(SpriteComponent& sprite, const SpriteComponent::suppAnimations& anim)

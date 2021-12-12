@@ -172,6 +172,7 @@
     <ClCompile Include="src\ECS\Systems\MapSystem.cpp" />
     <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
+    <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ECS\Systems\TextureManager.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="inc\ECS\Components\TileComponent.h" />
     <ClInclude Include="inc\ECS\Systems\InputManager.h" />
     <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h" />
+    <ClInclude Include="inc\ECS\Systems\RenderSystem.h" />
     <ClInclude Include="inc\ECS\Systems\System.h" />
     <ClInclude Include="inc\ECS\Components\GameComponents.h" />
     <ClInclude Include="inc\config.h" />

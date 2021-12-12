@@ -4,30 +4,16 @@
 
 struct PhysicsComponent : public Component
 {
-
 	Vector2D acc;
 	bool grav;
+	bool grounded;
+	int jumpStart;
 
-	PhysicsComponent() : acc(0.0f), grav(false), Component() {}
+	PhysicsComponent() : Component(), acc(0.0f), grav(false), grounded(false), jumpStart(0) {}
 	PhysicsComponent(const PhysicsComponent&) = default;
-	PhysicsComponent(Entity& entt, Vector2D acceleration, bool gravity) : Component(entt), grav(gravity)
-	{
-		const float g = 9.8f;
-
-		acc = acceleration;
-		if (gravity)
-		{
-			acc.y += g;
-		}
-	}
-	PhysicsComponent(Entity& entt, float acc_x, float acc_y, bool gravity) : Component(entt), grav(gravity), acc(Vector2D(acc_x, acc_y))
-	{
-		const float g = 9.8f;
-
-		if (gravity)
-		{
-			acc.y += g;
-		}
-	}
+	PhysicsComponent(Entity& entt, Vector2D acceleration, bool gravity) : Component(entt), acc(acceleration), grav(gravity), grounded(false), jumpStart(0)
+	{}
+	PhysicsComponent(Entity& entt, float acc_x, float acc_y, bool gravity) : Component(entt), acc(Vector2D(acc_x, acc_y)), grav(gravity), grounded(false), jumpStart(0)
+	{}
 
 };

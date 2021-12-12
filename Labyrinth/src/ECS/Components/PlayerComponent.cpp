@@ -4,7 +4,7 @@
 
 PlayerComponent::PlayerComponent(Entity& entt, const SDL_Rect& rect, int sc) : Component(entt)
 {
-	entity.addComponent<PhysicsComponent>(entity, 0.0f, false);
+	entity.addComponent<PhysicsComponent>(entity, 0.0f, true);
 	entity.addComponent<VelocityComponent>(entity, 0.0f);
 	entity.addComponent<TransformComponent>(entity, rect, sc);
 	entity.addComponent<KeyboardController>(entity);

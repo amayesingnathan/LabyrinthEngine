@@ -22,10 +22,31 @@ void Collision::update()
 	bool safePos = true;
 
 	//Check that player has not moved out of bounds
-	if (trans.pos.x < 0) trans.pos.x = 0;
-	if (trans.pos.x + (trans.width * trans.scale) > bounds.x) trans.pos.x = bounds.x - (trans.width * trans.scale);
-	if (trans.pos.y < 0) trans.pos.y = 0;
-	if (trans.pos.y + (trans.height * trans.scale) > bounds.y) trans.pos.y = bounds.y - (trans.height * trans.scale);
+	if (trans.pos.x < 0) {
+		trans.pos.x = 0;
+	}
+	if (trans.pos.x + (trans.width * trans.scale) > bounds.x) {
+		trans.pos.x = bounds.x - (trans.width * trans.scale);
+	}
+	if (trans.pos.y < 0) {
+		trans.pos.y = 0; 
+	}
+	if (trans.pos.y + (trans.height * trans.scale) > bounds.y) {
+		trans.pos.y = bounds.y - (trans.height * trans.scale);
+
+		if (hasVel)
+		{
+			auto& vel = player.getComponent<VelocityComponent>();
+			vel.vel.y = 0;
+		}
+
+		if (player.hasComponent<PhysicsComponent>())
+		{
+			auto& phys = player.getComponent<PhysicsComponent>();
+			phys.grounded = true;
+			phys.jumpStart = 0;
+		}
+	}
 
 	//Get entities that have required components to update transform
 	auto entities = registry->view<ColliderComponent>();

@@ -12,9 +12,6 @@ public:
 	SDL_Texture* loadTexture(const char* fileName);
 	void destroyTexture(SDL_Texture* tex);
 
-	void render();
-	void draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* dest, SDL_RendererFlip flip);
-
 	void update();
 
 	SDL_Rect setSubTex(int x = 0, int y = 0, int w = 32, int h = 32)
