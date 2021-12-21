@@ -73,7 +73,7 @@ void Map::loadLevel(int lvl)
 			std::istringstream mapStream(mapLine);
 			for (int col = 0; col < MAP_WIDTH; col++)
 			{
-				std::getline(mapStream, mapElement, ',');
+				std::getline(mapStream, mapElement, ',');\
 				mapType = std::stoi(mapElement);
 				tilesetRow = mapType / tilesetWidth;
 				tilesetCol = mapType % tilesetWidth;
