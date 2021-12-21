@@ -2,7 +2,8 @@
 
 #include "ECS/Systems/System.h"
 
-#include "ECS/Components/VelocityComponent.h"
+struct VelocityComponent;
+struct PhysicsComponent;
 
 class InputManager : public System
 {

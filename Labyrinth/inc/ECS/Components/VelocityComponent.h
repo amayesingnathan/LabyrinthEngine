@@ -1,6 +1,4 @@
 #pragma once
-
-#include "ECS/Components/PhysicsComponent.h"
 #include "ECS/Components/Component.h"
 #include "Vector2D.h"
 

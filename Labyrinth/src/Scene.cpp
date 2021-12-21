@@ -2,9 +2,7 @@
 
 #include "SDL_rect.h"
 
-#include "ECS/Components/TagComponent.h"
-#include "ECS/Components/PlayerComponent.h"
-#include "ECS/Components/ColliderComponent.h"
+#include "ECS/Components/GameComponents.h"
 
 PhysicsEngine Scene::sysPhysics;
 InputManager Scene::sysInput;
@@ -15,8 +13,8 @@ RenderSystem Scene::sysRender;
 
 void Scene::init(int lvl)
 {
-	//The Player entity. This should be initialised by your game.
-	player = CreateEntity("Player");
+
+	addPlayer();
 
 	//Initialise systems to this scene registry
 	sysInput.init(m_Registry);
@@ -28,9 +26,6 @@ void Scene::init(int lvl)
 
 	//Load map for this scene
 	sysMap.loadLevel(lvl);
-
-	player.addComponent<PlayerComponent>(player, SDL_Rect{ 400, 400 , 16, 22 }, 3);
-
 }
 
 void Scene::update()
@@ -61,4 +56,20 @@ Entity Scene::CreateEntity(const std::string tag)
 	Entity newEnt = { m_Registry.create(), &m_Registry };
 	newEnt.addComponent<TagComponent>(newEnt, tag);
 	return newEnt;
+}
+
+void Scene::addPlayer()
+{
+	player = CreateEntity("player");
+
+	SDL_Rect rect{ 400, 400, 16, 22 };
+	int scale = 3;
+
+	player.addComponent<PhysicsComponent>(player, 0.0f, true);
+	player.addComponent<VelocityComponent>(player, 0.0f);
+	player.addComponent<TransformComponent>(player, rect, scale);
+	player.addComponent<KeyboardController>(player);
+	player.addComponent<ColliderComponent>(player);
+	std::string playerSpritePath = "assets/PlayerSprite.png";
+	player.addComponent<SpriteComponent>(player, playerSpritePath.c_str(), rect, true);
 }

@@ -6,6 +6,8 @@
 
 #include "ECS/Components/KeyboardController.h"
 #include "ECS/Components/SpriteComponent.h"
+#include "ECS/Components/VelocityComponent.h"
+#include "ECS/Components/PhysicsComponent.h"
 
 void InputManager::update()
 {

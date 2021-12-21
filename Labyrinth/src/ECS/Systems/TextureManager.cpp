@@ -53,14 +53,12 @@ void TextureManager::update()
 		{
 			if (registry->all_of<VelocityComponent>(sprite))
 			{
+				play(draw, SpriteComponent::suppAnimations::Idle);
+
 				auto& velocity = registry->get<VelocityComponent>(sprite);
-				if (velocity.vel.isNull())
+				if (velocity.vel.x != 0)
 				{
-					play(draw, SpriteComponent::suppAnimations::Idle);
-				}
-				else
-				{
-					play(draw, SpriteComponent::suppAnimations::Moving);
+					play(draw, SpriteComponent::suppAnimations::Running);
 				}
 				draw.srcRect.x = draw.srcRect.w * static_cast<int>((SDL_GetTicks() / draw.speed) % draw.frames);
 				draw.srcRect.y = draw.srcRect.h * static_cast<int>(draw.currAnimation);

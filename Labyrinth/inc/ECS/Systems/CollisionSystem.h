@@ -22,7 +22,6 @@ public:
 
 private:
 	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB, SDL_Rect* result);
-
 	bool AABB(const ColliderComponent& colA, const ColliderComponent& colB, SDL_Rect* result);
 
 private:

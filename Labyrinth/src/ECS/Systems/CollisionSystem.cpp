@@ -1,8 +1,10 @@
 #include "ECS/Systems/CollisionSystem.h"
 
+#include "ECS/Components/Vector2D.h"
 #include "ECS/Components/ColliderComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/VelocityComponent.h"
+#include "ECS/Components/PhysicsComponent.h"
 
 #include "ECS/Entity/Entity.h"
 

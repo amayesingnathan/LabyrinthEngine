@@ -180,6 +180,8 @@
     <ClCompile Include="src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="inc\ECS\Components\Colliders\CircleColliderComponent.h" />
+    <ClInclude Include="inc\ECS\Components\Colliders\RectColliderComponent.h" />
     <ClInclude Include="inc\ECS\Systems\CollisionSystem.h" />
     <ClInclude Include="inc\ECS\Components\Animation.h" />
     <ClInclude Include="inc\ECS\Components\ColliderComponent.h" />

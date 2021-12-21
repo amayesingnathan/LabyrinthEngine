@@ -7,7 +7,7 @@
 
 struct SpriteComponent : public Component
 {
-	enum class suppAnimations { None = -1, Idle = 0, Moving = 1 };
+	enum class suppAnimations { None = -1, Idle = 0, Running = 1, Falling = 2 };
 
 	SDL_Texture* texture;
 	SDL_Rect srcRect, destRect;

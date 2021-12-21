@@ -20,6 +20,7 @@ public:
 	void render();
 
 	Entity CreateEntity(const std::string tag);
+	void addPlayer();
 
 public:
 	//Systems

@@ -9,7 +9,8 @@ SpriteComponent::SpriteComponent(Entity& entt, const char* path, const SDL_Rect&
 	animated = mAnimated;
 
 	animations.emplace(suppAnimations::Idle, Animation(4, 150));
-	animations.emplace(suppAnimations::Moving, Animation(4, 100));
+	animations.emplace(suppAnimations::Running, Animation(4, 100));
+	animations.emplace(suppAnimations::Falling, Animation(4, 100));
 
 	texture = Scene::sysTex.loadTexture(path);
 	srcRect = src;
@@ -26,8 +27,9 @@ SpriteComponent::SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect&
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(2, 200));
-	animations.emplace(suppAnimations::Moving, Animation(12, 100));
+	animations.emplace(suppAnimations::Idle, Animation(4, 150));
+	animations.emplace(suppAnimations::Running, Animation(4, 100));
+	animations.emplace(suppAnimations::Falling, Animation(4, 100));
 
 	texture = &tex;
 	srcRect = src;
