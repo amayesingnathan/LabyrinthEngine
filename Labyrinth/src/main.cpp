@@ -5,10 +5,8 @@
 //Initialise game pointer to null
 Labyrinth* game = nullptr;
 
-//Test comment
 int main(int argc, char* args[])
 {
-	//Comment 2
 	Uint32 frameStart;
 	int frameTime;
 
