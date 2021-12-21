@@ -3,6 +3,7 @@
 //Core Engine Includes
 #include "Labyrinth.h"
 #include "Scene.h"
+#include "config.h"
 
 //ECS Includes
 #include "ECS/Entity/Entity.h"
@@ -11,7 +12,11 @@
 //Standard Library
 #include <fstream>
 #include <iostream>
+#include <sstream>
 #include <string>
+
+constexpr int configuration::SCREEN_WIDTH;
+constexpr int configuration::SCREEN_HEIGHT;
 
 Map::~Map()
 {
@@ -25,8 +30,8 @@ void Map::init(entt::registry& reg)
 	System::init(reg);
 
 	src.w = src.h = 32;
-
-	dest.w = dest.h = 16;
+	dest.w = configuration::SCREEN_WIDTH / MAP_WIDTH;
+	dest.h = configuration::SCREEN_HEIGHT / MAP_HEIGHT;
 
 	tileTextures = Scene::sysTex.loadTexture("assets/textures/worldtextures.png");
 }
@@ -34,11 +39,11 @@ void Map::init(entt::registry& reg)
 void Map::loadLevel(int lvl)
 {
 	std::string lvlPath = "levels/level";
-	std::string fileType = ".lvl";
+	std::string fileType = ".csv";
 
 	lvlPath = lvlPath + std::to_string(lvl) + fileType;
 
-	//Clear previous tile entities
+	//Clear any previous tile entities
 	auto view = registry->view<TileComponent>();
 
 	for (auto entity : view)
@@ -49,22 +54,40 @@ void Map::loadLevel(int lvl)
 	std::ifstream tiles(lvlPath);
 	if (tiles)
 	{
-		std::string bgPath = "";
-		tiles >> bgPath;
-		bgTexture = Scene::sysTex.loadTexture(bgPath.c_str());
+		std::string strWidth;
+		std::getline(tiles, strWidth);
+		int tilesetWidth = std::stoi(strWidth);
+		//bgTexture = Scene::sysTex.loadTexture(bgPath.c_str());
 
-		for (int row = 0; row < 40; row++)
+		std::string mapLine;
+		std::string mapElement;
+		int mapType = -1;
+		int tilesetRow = 0;
+		int tilesetCol = 0;
+
+		SDL_Rect src{ 0, 0, 32, 32 };
+
+		for (int row = 0; row < MAP_HEIGHT; row++)
 		{
-			for (int col = 0; col < 50; col++)
+			std::getline(tiles, mapLine);
+			std::istringstream mapStream(mapLine);
+			for (int col = 0; col < MAP_WIDTH; col++)
 			{
-				dest.x = col * 16;
-				dest.y = row * 16;
+				std::getline(mapStream, mapElement, ',');
+				mapType = std::stoi(mapElement);
+				tilesetRow = mapType / tilesetWidth;
+				tilesetCol = mapType % tilesetWidth;
 
-				int fileType;
-				tiles >> fileType;
+				src.x = tilesetCol * 32;
+				src.y = tilesetRow * 32;
 
-				TileComponent::TileID type = static_cast<TileComponent::TileID>(fileType);
-				CreateTileEntity(type, false);
+				dest.x = col * 32;
+				dest.y = row * 32;
+
+
+				bool collider = false;
+
+				AddTile(src, collider);
 			}
 		}
 	}
@@ -74,11 +97,13 @@ void Map::loadLevel(int lvl)
 	}
 }
 
-void Map::CreateTileEntity(TileComponent::TileID typeID, bool collider)
+void Map::AddTile(SDL_Rect src, bool collider)
 {
 	if (registry == nullptr) return;
 
 	Entity newEnt = { registry->create(), registry };
 	newEnt.addComponent<TagComponent>(newEnt, "Tile");
-	newEnt.addComponent<TileComponent>(newEnt, dest, *tileTextures, typeID);
+	newEnt.addComponent<TileComponent>(newEnt, src, dest, *tileTextures);
+	if (collider) newEnt.addComponent<ColliderComponent>(newEnt);
+
 }

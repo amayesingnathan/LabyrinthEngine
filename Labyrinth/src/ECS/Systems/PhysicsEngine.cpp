@@ -4,44 +4,32 @@
 #include "ECS/Components/VelocityComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/ColliderComponent.h"
-
-static int jumpDur = 10;
+#include "ECS/Components/SpriteComponent.h"
 
 void PhysicsEngine::update()
 {
 	//Get entities that have required components to update transform
-	auto entities = registry->view<PhysicsComponent, VelocityComponent, TransformComponent>();
+	auto entities = registry->view<VelocityComponent, TransformComponent>();
 
 	for (auto entity : entities)
 	{
 		//Get components for physics from entity
-		auto& phys = entities.get<PhysicsComponent>(entity);
-		auto& velocity = entities.get<VelocityComponent>(entity);
 		auto& trans = entities.get<TransformComponent>(entity);
-
-		//Set gravity if enabled
-		if (phys.grav) phys.acc.y = 9.81f;
-		if (SDL_GetTicks() - phys.jumpStart < jumpDur)
-		{
-			velocity.vel.y = -5.0f;
-		}
-
-		//velocity = acceleration * time delta
-		velocity.vel.x += (phys.acc.x * configuration::frameDelay);
-		velocity.vel.y += (phys.acc.y * configuration::frameDelay);
+		const auto& velocity = entities.get<VelocityComponent>(entity);
 
 		//position += scaling factor * velocity * time delta
 		trans.pos.x += configuration::FPS * velocity.vel.x * configuration::frameDelay;
 		trans.pos.y += configuration::FPS * velocity.vel.y * configuration::frameDelay;
 	}
 
-	auto colliders = registry->view<TransformComponent, ColliderComponent>();
+	//Use updated transform to update collider position
+	auto colliders = registry->view<ColliderComponent, TransformComponent>();
 
 	for (auto collider : colliders)
 	{
 		//Get collider component from entity
 		auto& box = colliders.get<ColliderComponent>(collider);
-		auto& transform = colliders.get<TransformComponent>(collider);
+		const auto& transform = colliders.get<TransformComponent>(collider);
 
 		//Update collider
 		box.collider.x = static_cast<int>(transform.pos.x);
@@ -50,4 +38,17 @@ void PhysicsEngine::update()
 		box.collider.h = transform.height * transform.scale;
 	}
 
+	//Use updated transform to update sprite position
+	auto sprites = registry->view<SpriteComponent, TransformComponent>();
+
+	for (auto sprite : sprites)
+	{
+		//Get components for sprite from entity
+		auto& draw = sprites.get<SpriteComponent>(sprite);
+		const auto& transform = sprites.get<TransformComponent>(sprite);
+		draw.destRect.x = static_cast<int>(transform.pos.x);
+		draw.destRect.y = static_cast<int>(transform.pos.y);
+		draw.destRect.w = transform.width * transform.scale;
+		draw.destRect.h = transform.height * transform.scale;
+	}
 }

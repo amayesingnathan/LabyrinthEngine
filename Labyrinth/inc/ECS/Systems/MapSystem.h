@@ -8,7 +8,6 @@
 class Map : public System
 {
 public: //Methods
-
 	~Map();
 
 	void init(entt::registry& reg);
@@ -19,14 +18,17 @@ public: //Methods
 	SDL_Texture* getBG() { return bgTexture; };
 
 private:
-	void CreateTileEntity(TileComponent::TileID typeID, bool collider);
+	void AddTile(SDL_Rect src, bool collider);
 
 private: //Members
+	static constexpr int MAP_WIDTH = 25;
+	static constexpr int MAP_HEIGHT = 20;
+
 	SDL_Rect src, dest;
 	SDL_Texture* tileTextures;
 	SDL_Texture* bgTexture = nullptr;
 
-	int map[40][50];
+	int map[MAP_HEIGHT][MAP_WIDTH];
 
 };
 

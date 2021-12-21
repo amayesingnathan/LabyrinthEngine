@@ -13,7 +13,6 @@ RenderSystem Scene::sysRender;
 
 void Scene::init(int lvl)
 {
-
 	addPlayer();
 
 	//Initialise systems to this scene registry
@@ -40,7 +39,7 @@ void Scene::update()
 	sysTex.update();
 
 	//Render System call to handle updating locations of sprites
-	sysRender.update();
+	//sysRender.update();
 
 	//Collision System call to handle collisions with the player
 	sysCollisions.update();
@@ -62,10 +61,10 @@ void Scene::addPlayer()
 {
 	player = CreateEntity("player");
 
-	SDL_Rect rect{ 400, 400, 16, 22 };
-	int scale = 3;
+	SDL_Rect rect{ 100, 500, 16, 22 };
+	int scale = 2;
 
-	player.addComponent<PhysicsComponent>(player, 0.0f, true);
+	//player.addComponent<PhysicsComponent>(player, 0.0f, true);
 	player.addComponent<VelocityComponent>(player, 0.0f);
 	player.addComponent<TransformComponent>(player, rect, scale);
 	player.addComponent<KeyboardController>(player);

@@ -56,7 +56,7 @@ void TextureManager::update()
 				play(draw, SpriteComponent::suppAnimations::Idle);
 
 				auto& velocity = registry->get<VelocityComponent>(sprite);
-				if (velocity.vel.x != 0)
+				if (!velocity.vel.isNull())
 				{
 					play(draw, SpriteComponent::suppAnimations::Running);
 				}

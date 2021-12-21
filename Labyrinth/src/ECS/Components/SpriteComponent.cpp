@@ -8,7 +8,7 @@ SpriteComponent::SpriteComponent(Entity& entt, const char* path, const SDL_Rect&
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(4, 150));
+	animations.emplace(suppAnimations::Idle, Animation(4, 100));
 	animations.emplace(suppAnimations::Running, Animation(4, 100));
 	animations.emplace(suppAnimations::Falling, Animation(4, 100));
 
@@ -27,7 +27,7 @@ SpriteComponent::SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect&
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(4, 150));
+	animations.emplace(suppAnimations::Idle, Animation(4, 100));
 	animations.emplace(suppAnimations::Running, Animation(4, 100));
 	animations.emplace(suppAnimations::Falling, Animation(4, 100));
 

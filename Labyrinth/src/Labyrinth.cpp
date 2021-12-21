@@ -12,9 +12,9 @@ const Uint8* Labyrinth::keyboard;
 
 bool Labyrinth::isRunning;
 
-int configuration::FPS;
-float configuration::frameDelay;
-int configuration::mFrameDelay;
+constexpr int configuration::FPS;
+constexpr float configuration::frameDelay;
+constexpr int configuration::mFrameDelay;
 
 Labyrinth::Labyrinth() :
 	window(nullptr),
@@ -30,11 +30,6 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 {
 	keyboard = SDL_GetKeyboardState(NULL);
 	prevKeyboard = SDL_GetKeyboardState(NULL);
-
-	//Define refresh rate
-	configuration::FPS = 60;
-	configuration::frameDelay = static_cast<float>(1) / static_cast<float>(configuration::FPS);
-	configuration::mFrameDelay = 1000 / configuration::FPS;
 
 	int flags = 0;
 	if (fullscreen)

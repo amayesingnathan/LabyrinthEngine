@@ -8,14 +8,11 @@ struct SpriteComponent;
 
 struct TileComponent : public Component
 {
-	enum class TileID {Invalid = -1, Grass = 0, Dirt, Stone};
-
 	SDL_Rect tileRect;
-	TileID tileID;
 
 	TileComponent() = default;
 
-	TileComponent(Entity& entt, const SDL_Rect& dest, SDL_Texture& tex, TileID id);
+	TileComponent(Entity& entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
 
 	void remove();
 

@@ -2,6 +2,9 @@
 
 #include "config.h"
 
+constexpr int configuration::SCREEN_WIDTH;
+constexpr int configuration::SCREEN_HEIGHT;
+
 //Initialise game pointer to null
 Labyrinth* game = nullptr;
 
@@ -12,7 +15,7 @@ int main(int argc, char* args[])
 
 	game = new Labyrinth();
 
-	game->init("Labyrinth Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 800, 640, false);
+	game->init("Labyrinth Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, configuration::SCREEN_WIDTH, configuration::SCREEN_HEIGHT, false);
 
 	while (game->running())
 	{

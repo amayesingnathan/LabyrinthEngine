@@ -13,7 +13,7 @@ void InputManager::update()
 {
 
 	//Get entities that have Keyboard control and handle their key events
-	auto players = registry->view<KeyboardController, VelocityComponent, PhysicsComponent>();
+	auto players = registry->view<KeyboardController, VelocityComponent>();
 
 	for (auto control : players)
 	{
@@ -25,23 +25,27 @@ void InputManager::update()
 
 		auto& keyControl = players.get<KeyboardController>(control);
 		auto& velocity = players.get<VelocityComponent>(control);
-		auto& phys = players.get<PhysicsComponent>(control);
 
 		updateVelocity(velocity);
-		updatePhysics(phys);
 	}
 }
 
-/*
-
-	NEEDS FIXING!! RESETS CHANGES FROM ACCELERATION IN PHYSICS SYSTEM - NEEDS TO ADD TO THEM
-	BUT THEN HAVE MAX SPEED (MAYBE ADD TO VELOCITY COMPONENT)
-
-*/
 
 void InputManager::updateVelocity(VelocityComponent& vel)
 {
-	vel.vel.x = 0.0f;
+	vel.vel = 0.0f;
+
+	//If up is pressed
+	if (Labyrinth::keyboard[SDL_SCANCODE_W])
+	{
+		vel.vel.y -= 1.0f;
+	}
+
+	//If down is pressed
+	if (Labyrinth::keyboard[SDL_SCANCODE_S])
+	{
+		vel.vel.y += 1.0f;
+	}
 
 	//If left is pressed
 	if (Labyrinth::keyboard[SDL_SCANCODE_A])
@@ -55,8 +59,9 @@ void InputManager::updateVelocity(VelocityComponent& vel)
 		vel.vel.x += 1.0f;
 	}
 
-	//Scale to player speed
-	vel.vel.x *= moveSpeed;
+	//Normalise and scale to player speed
+	vel.vel.normalise();
+	vel.vel *= moveSpeed;
 }
 
 void InputManager::updatePhysics(PhysicsComponent& phys)
