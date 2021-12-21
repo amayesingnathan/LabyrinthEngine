@@ -1,6 +1,5 @@
 #include "Labyrinth.h"
 
-//Test commit
 #include "config.h"
 
 Labyrinth* game = nullptr;
