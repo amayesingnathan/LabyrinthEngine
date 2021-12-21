@@ -1,6 +1,5 @@
 #include "Labyrinth.h"
 
-//Config Struct
 #include "config.h"
 
 Labyrinth* game = nullptr;
