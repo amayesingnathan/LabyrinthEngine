@@ -2,6 +2,7 @@
 
 #include "config.h"
 
+//Initialise game pointer to null
 Labyrinth* game = nullptr;
 
 int main(int argc, char* args[])
