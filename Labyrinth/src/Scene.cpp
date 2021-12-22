@@ -25,7 +25,7 @@ void Scene::init(int lvl)
 	sysInput.init(m_Registry);
 	sysPhysics.init(m_Registry);
 	sysTex.init(m_Registry);
-	sysCollisions.init(m_Registry, player, {800, 640});
+	sysCollisions.init(m_Registry, player);
 	sysMap.init(m_Registry, player);
 	sysRender.init(m_Registry);
 

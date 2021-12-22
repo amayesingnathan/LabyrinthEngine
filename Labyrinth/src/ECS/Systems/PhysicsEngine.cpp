@@ -14,8 +14,8 @@ void PhysicsEngine::update()
 	for (auto entity : entities)
 	{
 		//Get components for physics from entity
-		auto& trans = entities.get<TransformComponent>(entity);
-		const auto& velocity = entities.get<VelocityComponent>(entity);
+		auto& trans = registry->get<TransformComponent>(entity);
+		const auto& velocity = registry->get<VelocityComponent>(entity);
 
 		//position += scaling factor * velocity * time delta
 		trans.pos.x += configuration::FPS * velocity.vel.x * configuration::frameDelay;
@@ -28,8 +28,8 @@ void PhysicsEngine::update()
 	for (auto collider : colliders)
 	{
 		//Get collider component from entity
-		auto& box = colliders.get<ColliderComponent>(collider);
-		const auto& transform = colliders.get<TransformComponent>(collider);
+		auto& box = registry->get<ColliderComponent>(collider);
+		const auto& transform = registry->get<TransformComponent>(collider);
 
 		//Update collider
 		box.collider.x = static_cast<int>(transform.pos.x);

@@ -39,7 +39,7 @@ void TextureManager::update()
 	for (auto sprite : sprites)
 	{
 		//Get components for physics from entity
-		auto& draw = sprites.get<SpriteComponent>(sprite);
+		auto& draw = registry->get<SpriteComponent>(sprite);
 
 		//If the velocity is less than zero then sprite should be flipped.
 		if (registry->all_of<VelocityComponent>(sprite))

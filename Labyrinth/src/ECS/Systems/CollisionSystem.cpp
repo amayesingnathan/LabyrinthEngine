@@ -1,14 +1,31 @@
 #include "ECS/Systems/CollisionSystem.h"
 
+#include "ECS/Entity/Entity.h"
+
 #include "ECS/Components/Vector2D.h"
 #include "ECS/Components/ColliderComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/VelocityComponent.h"
 #include "ECS/Components/PhysicsComponent.h"
 
-#include "ECS/Entity/Entity.h"
+#include "ECS/Systems/MapSystem.h"
 
 #include <iostream>
+
+constexpr int Map::MAP_WIDTH;
+constexpr int Map::MAP_HEIGHT;
+constexpr int Map::DISPLAY_WIDTH;
+constexpr int Map::DISPLAY_HEIGHT;
+
+void Collision::init(entt::registry& reg, const Entity& entt)
+{
+	int widthRatio = Map::MAP_WIDTH / Map::DISPLAY_WIDTH;
+	int heightRatio = Map::MAP_HEIGHT / Map::DISPLAY_HEIGHT;
+
+	System::init(reg);
+	player = entt;
+	bounds = { configuration::SCREEN_WIDTH * widthRatio, configuration::SCREEN_HEIGHT * heightRatio };
+}
 
 void Collision::update()
 {
@@ -24,24 +41,24 @@ void Collision::update()
 	bool safePos = true;
 
 	//Check that player has not moved out of bounds
-	//if (trans.pos.x < 0) {
-	//	trans.pos.x = 0;
-	//}
-	//if (trans.pos.x + (trans.width * trans.scale) > bounds.x) {
-	//	trans.pos.x = bounds.x - (trans.width * trans.scale);
-	//}
-	//if (trans.pos.y < 0) {
-	//	trans.pos.y = 0; 
-	//}
-	//if (trans.pos.y + (trans.height * trans.scale) > bounds.y) {
-	//	trans.pos.y = bounds.y - (trans.height * trans.scale);
+	if (trans.pos.x < 0) {
+		trans.pos.x = 0;
+	}
+	if (trans.pos.x + (trans.width * trans.scale) > bounds.x) {
+		trans.pos.x = bounds.x - (trans.width * trans.scale);
+	}
+	if (trans.pos.y < 0) {
+		trans.pos.y = 0; 
+	}
+	if (trans.pos.y + (trans.height * trans.scale) > bounds.y) {
+		trans.pos.y = bounds.y - (trans.height * trans.scale);
 
-	//	if (hasVel)
-	//	{
-	//		auto& vel = player.getComponent<VelocityComponent>();
-	//		vel.vel.y = 0;
-	//	}
-	//}
+		if (hasVel)
+		{
+			auto& vel = player.getComponent<VelocityComponent>();
+			vel.vel.y = 0;
+		}
+	}
 
 	//Get entities that have required components to update transform
 	auto entities = registry->view<ColliderComponent>();

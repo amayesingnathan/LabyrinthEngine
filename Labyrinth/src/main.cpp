@@ -27,15 +27,16 @@ int main(int argc, char* args[])
 
 		frameTime = SDL_GetTicks() - frameStart;
 
+		//std::cout << "Frame duration: " << frameTime << "ms.\n";
+
 		if (frameTime < configuration::mFrameDelay)
 		{
 			SDL_Delay(configuration::mFrameDelay - frameTime);
 		}
 		else
 		{
-			if (configuration::mFrameDelay - frameTime > 0) {
-				std::cout << "Running behind by " << (configuration::mFrameDelay - frameTime) << "ms." << std::endl;
-			}
+			std::cout << "Running behind by " << (frameTime - configuration::mFrameDelay) << "ms." << std::endl;
+			
 		}
 	}
 

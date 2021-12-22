@@ -9,15 +9,15 @@ void RenderSystem::update()
 	//Use updated transform to update sprite position
 	auto sprites = registry->view<SpriteComponent, TransformComponent>();
 
-	for (auto sprite : sprites)
+	for (auto entity : sprites)
 	{
 		//Get components for sprite from entity
-		auto& draw = sprites.get<SpriteComponent>(sprite);
-		const auto& transform = sprites.get<TransformComponent>(sprite);
-		draw.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
-		draw.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
-		draw.destRect.w = transform.width * transform.scale;
-		draw.destRect.h = transform.height * transform.scale;
+		auto& sprite = registry->get<SpriteComponent>(entity);
+		const auto& transform = registry->get<TransformComponent>(entity);
+		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
+		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
+		sprite.destRect.w = transform.width * transform.scale;
+		sprite.destRect.h = transform.height * transform.scale;
 	}
 }
 

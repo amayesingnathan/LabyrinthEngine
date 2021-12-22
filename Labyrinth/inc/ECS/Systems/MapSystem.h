@@ -26,7 +26,7 @@ public: //Methods
 private:
 	void AddTile(int tileID);
 
-private: //Members
+public: //Members
 	static constexpr int MAP_WIDTH = 100;
 	static constexpr int MAP_HEIGHT = 80;
 	static constexpr int DISPLAY_WIDTH = 25;
@@ -37,6 +37,8 @@ private: //Members
 		Take the ratio of map size to display size and subtract one (to account for half a screen width each side)
 		and then multiply the result by the screen resolution.
 	*/
+
+private:
 	static constexpr int CAMERA_WIDTH = ((MAP_WIDTH / DISPLAY_WIDTH) - 1) * configuration::SCREEN_WIDTH;
 	static constexpr int CAMERA_HEIGHT = ((MAP_HEIGHT / DISPLAY_HEIGHT) - 1) * configuration::SCREEN_HEIGHT;
 
