@@ -4,7 +4,7 @@
 
 using namespace rapidxml;
 
-std::map<int, ColliderList> XMLParser::getTileColliders(std::string tileset)
+std::map<int, ColliderList> XMLParser::getTileData(std::string tileset, int& width)
 {
     std::map<int, ColliderList> tilesetColliders;
 
@@ -16,6 +16,8 @@ std::map<int, ColliderList> XMLParser::getTileColliders(std::string tileset)
 
     //Get initial node
     xml_node<>* parent = doc->first_node();
+
+    width = std::atoi(parent->first_attribute("columns")->value());
 
     //Build list of colliders for each tileID
     for (xml_node<>* tile = getChild(parent, "tile"); tile; tile = tile->next_sibling())

@@ -34,7 +34,7 @@ void Map::init(entt::registry& reg, const Entity& entt)
 	Scene::camera.h = CAMERA_HEIGHT;
 
 	tileTextures = Scene::sysTex.loadTexture("assets/textures/worldtextures.png");
-	tileColliders = XMLParser::getTileColliders("worldtextures");
+	tileColliders = XMLParser::getTileData("worldtextures", tilesetWidth);
 }
 
 void Map::update()
@@ -78,11 +78,6 @@ void Map::loadLevel(int lvl)
 	std::ifstream tiles(lvlPath);
 	if (tiles)
 	{
-		std::string strWidth;
-		std::getline(tiles, strWidth);
-		int tilesetWidth = std::stoi(strWidth);
-		//bgTexture = Scene::sysTex.loadTexture(bgPath.c_str());
-
 		std::string mapLine;
 		std::string mapElement;
 		int mapType = -1;
@@ -91,11 +86,12 @@ void Map::loadLevel(int lvl)
 
 		for (int row = 0; row < MAP_HEIGHT; row++)
 		{
-			std::getline(tiles, mapLine);
+			if(!std::getline(tiles, mapLine)) return;
+
 			std::istringstream mapStream(mapLine);
 			for (int col = 0; col < MAP_WIDTH; col++)
 			{
-				std::getline(mapStream, mapElement, ',');\
+				if (!std::getline(mapStream, mapElement, ',')) return;
 				mapType = std::stoi(mapElement);
 				tilesetRow = mapType / tilesetWidth;
 				tilesetCol = mapType % tilesetWidth;

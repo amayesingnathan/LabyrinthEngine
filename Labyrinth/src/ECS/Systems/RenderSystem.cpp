@@ -32,14 +32,14 @@ void RenderSystem::render()
 	{
 		auto& tile = registry->get<TileComponent>(entity);
 		auto& sprite = registry->get<SpriteComponent>(entity);
-		//if ((tile.tileRect.x + tile.tileRect.w > Scene::camera.x) &&
-		//	(tile.tileRect.y + tile.tileRect.h > Scene::camera.y) &&
-		//	(tile.tileRect.x < Scene::camera.x + Scene::camera.w) &&
-		//	(tile.tileRect.y < Scene::camera.y + Scene::camera.h)
-		//	)
-		//{
-		draw(sprite.texture, &sprite.srcRect, &tile.destRect, sprite.spriteFlip);
-		//}
+		if ((tile.destRect.x + tile.destRect.w > 0) &&
+			(tile.destRect.y + tile.destRect.h > 0) &&
+			(tile.destRect.x - tile.destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
+			(tile.destRect.y - tile.destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
+			)
+		{
+			draw(sprite.texture, &sprite.srcRect, &tile.destRect, sprite.spriteFlip);
+		}
 	}
 
 	//Get entities with sprites

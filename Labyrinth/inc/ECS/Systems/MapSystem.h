@@ -49,5 +49,6 @@ private: //Members
 	int map[MAP_HEIGHT][MAP_WIDTH];
 
 	std::map<int, ColliderList> tileColliders;
+	int tilesetWidth;
 };
 

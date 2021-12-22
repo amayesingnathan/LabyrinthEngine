@@ -12,7 +12,7 @@ using ColliderList = std::vector<SDL_Rect>;
 class XMLParser
 {
 public:
-	static std::map<int, ColliderList> getTileColliders(std::string tileset);
+	static std::map<int, ColliderList> getTileData(std::string tileset, int& width);
 
 private:
 	static rapidxml::xml_node<>* getChild(rapidxml::xml_node<>* inputNode, std::string sNodeFilter);
