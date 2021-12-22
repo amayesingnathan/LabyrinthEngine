@@ -11,7 +11,7 @@ public:
 	void update() override;
 
 private:
-	float moveSpeed = 3.5f;
+	float moveSpeed = 10.0f;
 	void updateVelocity(VelocityComponent& vel);
 	void updatePhysics(PhysicsComponent& phys);
 };

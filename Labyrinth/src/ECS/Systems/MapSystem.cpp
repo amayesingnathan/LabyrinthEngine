@@ -3,7 +3,6 @@
 //Core Engine Includes
 #include "Labyrinth.h"
 #include "Scene.h"
-#include "config.h"
 
 //ECS Includes
 #include "ECS/Entity/Entity.h"
@@ -15,25 +14,50 @@
 #include <sstream>
 #include <string>
 
-constexpr int configuration::SCREEN_WIDTH;
-constexpr int configuration::SCREEN_HEIGHT;
-
 Map::~Map()
 {
 	Scene::sysTex.destroyTexture(bgTexture);
 	Scene::sysTex.destroyTexture(tileTextures);
 }
 
-void Map::init(entt::registry& reg)
+void Map::init(entt::registry& reg, const Entity& entt)
 {
 
 	System::init(reg);
+	player = entt;
 
 	src.w = src.h = 32;
-	dest.w = configuration::SCREEN_WIDTH / MAP_WIDTH;
-	dest.h = configuration::SCREEN_HEIGHT / MAP_HEIGHT;
+	dest.w = configuration::SCREEN_WIDTH / DISPLAY_WIDTH;
+	dest.h = configuration::SCREEN_HEIGHT / DISPLAY_HEIGHT;
+
+	Scene::camera.w = CAMERA_WIDTH;
+	Scene::camera.h = CAMERA_HEIGHT;
 
 	tileTextures = Scene::sysTex.loadTexture("assets/textures/worldtextures.png");
+	tileColliders = XMLParser::getTileColliders("worldtextures");
+}
+
+void Map::update()
+{
+	const auto& transform = player.getComponent<TransformComponent>();
+
+	Scene::camera.x = transform.pos.x - (configuration::SCREEN_WIDTH / 2);
+	Scene::camera.y = transform.pos.y - (configuration::SCREEN_HEIGHT / 2);
+
+	if (Scene::camera.x < 0) Scene::camera.x = 0;
+	if (Scene::camera.y < 0) Scene::camera.y = 0;
+	if (Scene::camera.x > Scene::camera.w) Scene::camera.x = Scene::camera.w;
+	if (Scene::camera.y > Scene::camera.h) Scene::camera.y = Scene::camera.h;
+
+	auto view = registry->view<TileComponent>();
+
+	for (auto tiles : view)
+	{
+		auto& tile = registry->get<TileComponent>(tiles);
+		tile.destRect.x = tile.position.x - Scene::camera.x;
+		tile.destRect.y = tile.position.y - Scene::camera.y;
+	}
+
 }
 
 void Map::loadLevel(int lvl)
@@ -65,8 +89,6 @@ void Map::loadLevel(int lvl)
 		int tilesetRow = 0;
 		int tilesetCol = 0;
 
-		SDL_Rect src{ 0, 0, 32, 32 };
-
 		for (int row = 0; row < MAP_HEIGHT; row++)
 		{
 			std::getline(tiles, mapLine);
@@ -84,10 +106,7 @@ void Map::loadLevel(int lvl)
 				dest.x = col * 32;
 				dest.y = row * 32;
 
-
-				bool collider = false;
-
-				AddTile(src, collider);
+				AddTile(mapType);
 			}
 		}
 	}
@@ -97,13 +116,21 @@ void Map::loadLevel(int lvl)
 	}
 }
 
-void Map::AddTile(SDL_Rect src, bool collider)
+void Map::AddTile(int tileID)
 {
 	if (registry == nullptr) return;
 
 	Entity newEnt = { registry->create(), registry };
 	newEnt.addComponent<TagComponent>(newEnt, "Tile");
 	newEnt.addComponent<TileComponent>(newEnt, src, dest, *tileTextures);
-	if (collider) newEnt.addComponent<ColliderComponent>(newEnt);
 
+	if (tileColliders.count(tileID))
+	{
+		for (auto collider : tileColliders[tileID])
+		{
+			Entity newCollider = { registry->create(), registry };
+			SDL_Rect colliderRect{ dest.x + collider.x, dest.y + collider.y, collider.w, collider.h };
+			newCollider.addComponent<ColliderComponent>(newEnt, colliderRect);
+		}
+	}
 }

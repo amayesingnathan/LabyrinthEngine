@@ -31,6 +31,8 @@ public:
 	static Collision sysCollisions;
 	static RenderSystem sysRender;
 
+	static SDL_Rect camera;
+
 private:
 	Entity player;
 	entt::registry m_Registry;

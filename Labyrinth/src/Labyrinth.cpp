@@ -16,6 +16,9 @@ constexpr int configuration::FPS;
 constexpr float configuration::frameDelay;
 constexpr int configuration::mFrameDelay;
 
+constexpr int configuration::SCREEN_WIDTH;
+constexpr int configuration::SCREEN_HEIGHT;
+
 Labyrinth::Labyrinth() :
 	window(nullptr),
 	currScene(std::make_unique<Scene>())

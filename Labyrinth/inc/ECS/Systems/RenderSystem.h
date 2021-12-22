@@ -7,6 +7,7 @@
 class RenderSystem : public System
 {
 public:
+	void update();
 	void render();
 
 private:

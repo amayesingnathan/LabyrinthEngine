@@ -1,14 +1,17 @@
 #pragma once
 
-#include "SDL.h"
 #include "ECS/Components/Component.h"
+#include "ECS/Components/Vector2D.h"
+
+#include "SDL.h"
 
 struct TransformComponent;
 struct SpriteComponent;
 
 struct TileComponent : public Component
 {
-	SDL_Rect tileRect;
+	SDL_Rect destRect;
+	Vector2D position;
 
 	TileComponent() = default;
 

@@ -4,7 +4,7 @@
 #include "ECS/Components/SpriteComponent.h"
 
 TileComponent::TileComponent(Entity& entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex) :
-	Component(entt), tileRect(dest)
+	Component(entt), destRect(dest), position{dest.x, dest.y}
 {
 	entity.addComponent<TransformComponent>(entity, dest, 1);
 	entity.addComponent<SpriteComponent>(entity, tex, src);
