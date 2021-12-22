@@ -1,5 +1,0 @@
-#Ignore binaries
-bin/*
-
-#Ignore VS temp files
-.vs/*

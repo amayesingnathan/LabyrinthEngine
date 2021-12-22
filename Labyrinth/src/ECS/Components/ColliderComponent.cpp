@@ -14,4 +14,5 @@ ColliderComponent::ColliderComponent(Entity& entt) :
 		collider.w = transform.width * transform.scale;
 		collider.h = transform.height * transform.scale;
 	}
+	else { collider = { 0 }; }
 }	

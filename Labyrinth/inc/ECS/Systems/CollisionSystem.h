@@ -1,8 +1,9 @@
 #pragma once
-#include "SDL.h"
 #include "ECS/Systems/System.h"
 
 #include "ECS/Components/Vector2D.h"
+
+#include "SDL.h"
 
 class Entity;
 
@@ -11,12 +12,7 @@ struct ColliderComponent;
 class Collision : public System
 {
 public:
-	void init(entt::registry& reg, const Entity& entt, const Vector2D& screen)
-	{
-		System::init(reg);
-		player = entt;
-		bounds = screen;
-	}
+	void init(entt::registry& reg, const Entity& entt);
 
 	void update() override;
 

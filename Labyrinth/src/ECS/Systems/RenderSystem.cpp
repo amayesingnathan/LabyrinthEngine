@@ -2,6 +2,24 @@
 
 #include "Labyrinth.h"
 #include "Scene.h"
+#include "config.h"
+
+void RenderSystem::update()
+{
+	//Use updated transform to update sprite position
+	auto sprites = registry->view<SpriteComponent, TransformComponent>();
+
+	for (auto entity : sprites)
+	{
+		//Get components for sprite from entity
+		auto& sprite = registry->get<SpriteComponent>(entity);
+		const auto& transform = registry->get<TransformComponent>(entity);
+		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
+		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
+		sprite.destRect.w = transform.width * transform.scale;
+		sprite.destRect.h = transform.height * transform.scale;
+	}
+}
 
 void RenderSystem::render()
 {
@@ -12,36 +30,28 @@ void RenderSystem::render()
 	auto tiles = registry->view<TileComponent>();
 	for (auto entity : tiles)
 	{
-		auto& tile = registry->get<SpriteComponent>(entity);
-		//draw(tile.texture, &tile.srcRect, &tile.destRect, tile.spriteFlip);
+		auto& tile = registry->get<TileComponent>(entity);
+		auto& sprite = registry->get<SpriteComponent>(entity);
+		if ((tile.destRect.x + tile.destRect.w > 0) &&
+			(tile.destRect.y + tile.destRect.h > 0) &&
+			(tile.destRect.x - tile.destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
+			(tile.destRect.y - tile.destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
+			)
+		{
+			draw(sprite.texture, &sprite.srcRect, &tile.destRect, sprite.spriteFlip);
+		}
 	}
 
-	//Get entities with textures
+	//Get entities with sprites
 	auto sprites = registry->view<SpriteComponent>();
 	for (auto entity : sprites)
 	{
-		//Only draw sprites for entities that dont have a tile component because this was drawn already
+		//Only draw sprites for entities that dont have a tile component because these were drawn already
 		if (!registry->all_of<TileComponent>(entity))
 		{
 			auto& sprite = registry->get<SpriteComponent>(entity);
-			draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
+			if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
 		}
-	}
-}
-
-void RenderSystem::update()
-{
-	auto sprites = registry->view<SpriteComponent, TransformComponent>();
-
-	for (auto sprite : sprites)
-	{
-		//Get components for sprite from entity
-		auto& draw = sprites.get<SpriteComponent>(sprite);
-		auto& transform = sprites.get<TransformComponent>(sprite);
-		draw.destRect.x = static_cast<int>(transform.pos.x);
-		draw.destRect.y = static_cast<int>(transform.pos.y);
-		draw.destRect.w = transform.width * transform.scale;
-		draw.destRect.h = transform.height * transform.scale;
 	}
 }
 

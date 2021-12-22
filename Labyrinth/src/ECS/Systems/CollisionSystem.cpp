@@ -1,14 +1,31 @@
 #include "ECS/Systems/CollisionSystem.h"
 
+#include "ECS/Entity/Entity.h"
+
 #include "ECS/Components/Vector2D.h"
 #include "ECS/Components/ColliderComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/VelocityComponent.h"
 #include "ECS/Components/PhysicsComponent.h"
 
-#include "ECS/Entity/Entity.h"
+#include "ECS/Systems/MapSystem.h"
 
 #include <iostream>
+
+constexpr int Map::MAP_WIDTH;
+constexpr int Map::MAP_HEIGHT;
+constexpr int Map::DISPLAY_WIDTH;
+constexpr int Map::DISPLAY_HEIGHT;
+
+void Collision::init(entt::registry& reg, const Entity& entt)
+{
+	int widthRatio = Map::MAP_WIDTH / Map::DISPLAY_WIDTH;
+	int heightRatio = Map::MAP_HEIGHT / Map::DISPLAY_HEIGHT;
+
+	System::init(reg);
+	player = entt;
+	bounds = { configuration::SCREEN_WIDTH * widthRatio, configuration::SCREEN_HEIGHT * heightRatio };
+}
 
 void Collision::update()
 {
@@ -40,13 +57,6 @@ void Collision::update()
 		{
 			auto& vel = player.getComponent<VelocityComponent>();
 			vel.vel.y = 0;
-		}
-
-		if (player.hasComponent<PhysicsComponent>())
-		{
-			auto& phys = player.getComponent<PhysicsComponent>();
-			phys.grounded = true;
-			phys.jumpStart = 0;
 		}
 	}
 

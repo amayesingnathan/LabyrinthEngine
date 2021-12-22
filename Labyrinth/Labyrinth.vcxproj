@@ -100,7 +100,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -118,7 +118,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +133,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
@@ -152,7 +152,7 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -160,6 +160,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\lib\x64;$(SolutionDir)dependencies\SDL2-2.0.16\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -173,6 +174,7 @@
     <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
     <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ECS\Systems\TextureManager.cpp" />
@@ -203,6 +205,7 @@
     <ClInclude Include="inc\ECS\Components\PhysicsComponent.h" />
     <ClInclude Include="inc\ECS\Components\Vector2D.h" />
     <ClInclude Include="inc\ECS\Systems\TextureManager.h" />
+    <ClInclude Include="inc\ECS\Systems\XMLParser.h" />
     <ClInclude Include="inc\Labyrinth.h" />
     <ClInclude Include="inc\ECS\Components\VelocityComponent.h" />
     <ClInclude Include="inc\ECS\Systems\MapSystem.h" />
