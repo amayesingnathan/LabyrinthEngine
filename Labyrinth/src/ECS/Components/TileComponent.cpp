@@ -7,7 +7,7 @@ TileComponent::TileComponent(Entity& entt, const SDL_Rect& src, const SDL_Rect& 
 	Component(entt), destRect(dest), position{dest.x, dest.y}
 {
 	entity.addComponent<TransformComponent>(entity, dest, 1);
-	entity.addComponent<SpriteComponent>(entity, tex, src);
+	sprite = &entity.addComponent<SpriteComponent>(entity, tex, src);
 
 }
 

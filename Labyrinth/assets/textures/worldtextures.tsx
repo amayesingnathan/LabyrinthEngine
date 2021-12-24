@@ -60,4 +60,9 @@
    <object id="3" x="2.55183" y="0.0850611" width="5.61404" height="7.82562"/>
   </objectgroup>
  </tile>
+ <tile id="892">
+  <objectgroup draworder="index" id="2">
+   <object id="1" x="8.90909" y="5.09091" width="19.6364" height="26.7273"/>
+  </objectgroup>
+ </tile>
 </tileset>

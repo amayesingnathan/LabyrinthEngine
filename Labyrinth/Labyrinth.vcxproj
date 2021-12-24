@@ -164,7 +164,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\ECS\Components\PlayerComponent.cpp" />
     <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\ECS\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\ECS\Components\TileComponent.cpp" />
@@ -188,7 +187,6 @@
     <ClInclude Include="inc\ECS\Components\Animation.h" />
     <ClInclude Include="inc\ECS\Components\ColliderComponent.h" />
     <ClInclude Include="inc\ECS\Components\Component.h" />
-    <ClInclude Include="inc\ECS\Components\PlayerComponent.h" />
     <ClInclude Include="inc\ECS\Entity\Entity.h" />
     <ClInclude Include="inc\ECS\Components\KeyboardController.h" />
     <ClInclude Include="inc\ECS\Components\SpriteComponent.h" />

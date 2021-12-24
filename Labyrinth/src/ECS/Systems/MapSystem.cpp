@@ -16,25 +16,22 @@
 
 Map::~Map()
 {
-	Scene::sysTex.destroyTexture(bgTexture);
-	Scene::sysTex.destroyTexture(tileTextures);
+	for (auto tex : tilesets)
+	{
+		Scene::sysTex.destroyTexture(tex.second.tilesetTex);
+	}
 }
 
 void Map::init(entt::registry& reg, const Entity& entt)
 {
-
 	System::init(reg);
 	player = entt;
 
-	src.w = src.h = 32;
 	dest.w = configuration::SCREEN_WIDTH / DISPLAY_WIDTH;
 	dest.h = configuration::SCREEN_HEIGHT / DISPLAY_HEIGHT;
 
-	Scene::camera.w = CAMERA_WIDTH;
-	Scene::camera.h = CAMERA_HEIGHT;
-
-	tileTextures = Scene::sysTex.loadTexture("assets/textures/worldtextures.png");
-	tileColliders = XMLParser::getTileData("worldtextures", tilesetWidth);
+	Scene::camera.w = static_cast<int>(round(CAMERA_WIDTH));
+	Scene::camera.h = static_cast<int>(round(CAMERA_HEIGHT));
 }
 
 void Map::update()
@@ -62,8 +59,8 @@ void Map::update()
 
 void Map::loadLevel(int lvl)
 {
-	std::string lvlPath = "levels/level";
-	std::string fileType = ".csv";
+	std::string lvlPath = "levels/level" + std::to_string(lvl) + "/level";
+	std::string fileType = ".tmx";
 
 	lvlPath = lvlPath + std::to_string(lvl) + fileType;
 
@@ -75,50 +72,63 @@ void Map::loadLevel(int lvl)
 		registry->destroy(entity);
 	}
 
-	std::ifstream tiles(lvlPath);
-	if (tiles)
-	{
-		std::string mapLine;
-		std::string mapElement;
-		int mapType = -1;
-		int tilesetRow = 0;
-		int tilesetCol = 0;
+	XMLParser::openLevel(lvl, mapLayers, tilesets, tileColliders);
 
-		for (int row = 0; row < MAP_HEIGHT; row++)
+	renderLayers.reserve(mapLayers.capacity());
+
+	for (auto layer : mapLayers)
+	{
+		RenderLayer currLayer;
+		int layerTileCount = layer.capacity() * layer.begin()->capacity();
+		currLayer.reserve(layerTileCount);
+
+		int colCount = 0;
+		for (auto col : layer)
 		{
-			if(!std::getline(tiles, mapLine)) return;
-
-			std::istringstream mapStream(mapLine);
-			for (int col = 0; col < MAP_WIDTH; col++)
+			int rowCount = 0;
+			for (auto tile : col)
 			{
-				if (!std::getline(mapStream, mapElement, ',')) return;
-				mapType = std::stoi(mapElement);
-				tilesetRow = mapType / tilesetWidth;
-				tilesetCol = mapType % tilesetWidth;
-
-				src.x = tilesetCol * 32;
-				src.y = tilesetRow * 32;
-
-				dest.x = col * 32;
-				dest.y = row * 32;
-
-				AddTile(mapType);
+				//Finds the last tileset with a first ID value that is less than or equal to the current tile ID
+				auto it = std::find_if(tilesets.rbegin(), tilesets.rend(),
+					[tile](const auto& set) {
+						return set.first <= tile;
+					});
+				if (it != tilesets.rend())
+				{
+					currLayer.emplace_back(AddTile(tile, *it, { rowCount, colCount }));
+				}
+				else
+				{
+					currLayer.emplace_back(AddTile(tile, *tilesets.begin(), { rowCount, colCount }));
+				}
+				rowCount++;
 			}
+			colCount++;
 		}
-	}
-	else
-	{
-		std::cout << "Could not open level file." << std::endl;
+		renderLayers.emplace_back(currLayer);
+		currLayer.clear();
 	}
 }
 
-void Map::AddTile(int tileID)
+TileComponent* Map::AddTile(int tileID, const std::pair<int, tilesetData>& tileset, const Vector2D& pos)
 {
-	if (registry == nullptr) return;
+	if (registry == nullptr) return nullptr;
+	if (tileset.second.tilesetTex == NULL) return nullptr;
+
+	int tilesetRow = (tileID - tileset.first) / tileset.second.tilesetWidth;
+	int tilesetCol = (tileID - tileset.first) % tileset.second.tilesetWidth;
+
+	src.w = tileset.second.tileWidth;
+	src.h = tileset.second.tileHeight;
+	src.x = tilesetCol * src.w;
+	src.y = tilesetRow * src.h;
+
+	dest.x = pos.x * dest.w;
+	dest.y = pos.y * dest.h;
 
 	Entity newEnt = { registry->create(), registry };
 	newEnt.addComponent<TagComponent>(newEnt, "Tile");
-	newEnt.addComponent<TileComponent>(newEnt, src, dest, *tileTextures);
+	auto tile = &newEnt.addComponent<TileComponent>(newEnt, src, dest, *tileset.second.tilesetTex);
 
 	if (tileColliders.count(tileID))
 	{
@@ -129,4 +139,5 @@ void Map::AddTile(int tileID)
 			newCollider.addComponent<ColliderComponent>(newEnt, colliderRect);
 		}
 	}
+	return tile;
 }

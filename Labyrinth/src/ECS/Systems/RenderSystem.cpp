@@ -23,35 +23,29 @@ void RenderSystem::update()
 
 void RenderSystem::render()
 {
-	//Draw map background first
-	draw(Scene::sysMap.getBG(), NULL, NULL, SDL_FLIP_NONE);
-
-	//Get tile map components to draw next
-	auto tiles = registry->view<TileComponent>();
-	for (auto entity : tiles)
+	//Get render layer to draw next
+	for (auto& renderLayer : Scene::sysMap.renderLayers)
 	{
-		auto& tile = registry->get<TileComponent>(entity);
-		auto& sprite = registry->get<SpriteComponent>(entity);
-		if ((tile.destRect.x + tile.destRect.w > 0) &&
-			(tile.destRect.y + tile.destRect.h > 0) &&
-			(tile.destRect.x - tile.destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
-			(tile.destRect.y - tile.destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
-			)
+		for (auto tile : renderLayer)
 		{
-			draw(sprite.texture, &sprite.srcRect, &tile.destRect, sprite.spriteFlip);
+			//Only draw tiles that are on screen.
+			if ((tile->destRect.x + tile->destRect.w > 0) &&
+				(tile->destRect.y + tile->destRect.h > 0) &&
+				(tile->destRect.x - tile->destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
+				(tile->destRect.y - tile->destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
+				)
+			{
+				draw(tile->sprite->texture, &tile->sprite->srcRect, &tile->destRect, tile->sprite->spriteFlip);
+			}
 		}
 	}
 
-	//Get entities with sprites
-	auto sprites = registry->view<SpriteComponent>();
+	//Get entities with sprites but not tiles
+	auto sprites = registry->view<SpriteComponent>(entt::exclude<TileComponent>);
 	for (auto entity : sprites)
 	{
-		//Only draw sprites for entities that dont have a tile component because these were drawn already
-		if (!registry->all_of<TileComponent>(entity))
-		{
-			auto& sprite = registry->get<SpriteComponent>(entity);
-			if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
-		}
+		auto& sprite = registry->get<SpriteComponent>(entity);
+		if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
 	}
 }
 

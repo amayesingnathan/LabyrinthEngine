@@ -5,13 +5,13 @@
 
 #include "SDL.h"
 
-struct TransformComponent;
 struct SpriteComponent;
 
 struct TileComponent : public Component
 {
 	SDL_Rect destRect;
 	Vector2D position;
+	SpriteComponent* sprite;
 
 	TileComponent() = default;
 

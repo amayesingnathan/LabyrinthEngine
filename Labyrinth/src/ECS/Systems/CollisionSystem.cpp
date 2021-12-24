@@ -19,8 +19,8 @@ constexpr int Map::DISPLAY_HEIGHT;
 
 void Collision::init(entt::registry& reg, const Entity& entt)
 {
-	int widthRatio = Map::MAP_WIDTH / Map::DISPLAY_WIDTH;
-	int heightRatio = Map::MAP_HEIGHT / Map::DISPLAY_HEIGHT;
+	float widthRatio = static_cast<float>(Map::MAP_WIDTH) / static_cast<float>(Map::DISPLAY_WIDTH);
+	float heightRatio = static_cast<float>(Map::MAP_HEIGHT) / static_cast<float>(Map::DISPLAY_HEIGHT);
 
 	System::init(reg);
 	player = entt;
