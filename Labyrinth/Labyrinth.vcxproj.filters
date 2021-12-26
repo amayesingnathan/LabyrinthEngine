@@ -69,9 +69,6 @@
     <ClCompile Include="src\ECS\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\VelocityComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ECS\Components\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

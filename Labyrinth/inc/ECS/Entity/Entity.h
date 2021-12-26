@@ -19,6 +19,13 @@ public:
 		return mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
 	}
 
+	//template<typename T>
+	//T& addComponent(const T& component)
+	//{
+	//	assert(!hasComponent<T>());
+	//	return mScene->mRegistry.emplace_or_replace<T>(mEntID, component);
+	//}
+
 	template<typename T>
 	void removeComponent()
 	{

@@ -3,5 +3,5 @@
 #include "ECS/Entity/Entity.h"
 
 KeyboardController::KeyboardController(Entity* entt) :
-	Component(entt){}
+	Component(entt, Types::Controller){}
 

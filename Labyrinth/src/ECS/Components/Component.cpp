@@ -2,5 +2,5 @@
 
 #include "ECS/Entity/Entity.h"
 
-Component::Component(Entity* entt) : entity{ entt }
+Component::Component(Entity* entt, Types type) : entity{ entt }, derived(type)
 {}

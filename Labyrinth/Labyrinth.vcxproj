@@ -166,7 +166,6 @@
   <ItemGroup>
     <ClCompile Include="src\ECS\Components\Component.cpp" />
     <ClCompile Include="src\ECS\Components\TransformComponent.cpp" />
-    <ClCompile Include="src\ECS\Components\VelocityComponent.cpp" />
     <ClCompile Include="src\ECS\Systems\AssetManager.cpp" />
     <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\ECS\Components\SpriteComponent.cpp" />

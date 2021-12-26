@@ -74,15 +74,17 @@ void Collision::update()
 		{
 			if (AABB(collPlayer, collOther, &intersection))
 			{
-				trans.pos = trans.lastSafePos;
-
-				if (hasVel)
+				switch (collOther.type)
 				{
-					auto& vel = player->getComponent<VelocityComponent>();
-					vel.vel = 0;
+				case ColliderComponent::Type::Solid:
+					safePos = resolveCollision(trans, hasVel);
+					break;
+
+				case ColliderComponent::Type::Trigger:
+					if (collOther.triggerFunc)
+						collOther.triggerFunc();
 				}
 
-				safePos = false;
 			}
 		}		
 	}
@@ -102,4 +104,17 @@ bool Collision::AABB(const SDL_Rect& recA, const SDL_Rect& recB, SDL_Rect* resul
 bool Collision::AABB(const ColliderComponent& colA, const ColliderComponent& colB, SDL_Rect* result)
 {
 	return AABB(colA.collider, colB.collider, result);
+}
+
+bool Collision::resolveCollision(TransformComponent& trans, bool hasVel)
+{
+	trans.pos = trans.lastSafePos;
+
+	if (hasVel)
+	{
+		auto& vel = player->getComponent<VelocityComponent>();
+		vel.vel = 0;
+	}
+
+	return false;
 }

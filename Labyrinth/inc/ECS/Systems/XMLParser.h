@@ -9,8 +9,14 @@
 #include "SDL.h"
 #include "rapidxml.hpp"
 
-using ColliderList = std::vector<SDL_Rect>;
-using Layer = std::vector<std::vector<int>>;
+struct Collider
+{
+	//THIS MUST MIRROR ENUM "Type" IN ColliderComponent.h
+	enum class Type { Solid = 0, Trigger };
+
+	SDL_Rect rect;
+	Type type;
+};
 
 struct tilesetData
 {
@@ -19,6 +25,9 @@ struct tilesetData
 	int tileHeight;
 	int tilesetWidth;
 };
+
+using ColliderList = std::vector<Collider>;
+using Layer = std::vector<std::vector<int>>;
 
 class XMLParser
 {

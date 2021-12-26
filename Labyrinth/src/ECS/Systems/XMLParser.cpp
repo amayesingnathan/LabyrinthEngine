@@ -157,7 +157,7 @@ ColliderList XMLParser::getColliders(rapidxml::xml_node<>* inputNode)
     // cycles every collider in group
     for (xml_node<>* collider = getChild(inputNode, "object"); collider; collider = collider->next_sibling())
     {
-        SDL_Rect currCollider;
+        Collider currCollider;
         std::string attrName;
 
         // Cycles every attribute of the collider
@@ -168,14 +168,21 @@ ColliderList XMLParser::getColliders(rapidxml::xml_node<>* inputNode)
             int attr = static_cast<int>(round(fAttr));
 
             if (attrName == "x")
-                currCollider.x = attr;
+                currCollider.rect.x = attr;
             if (attrName == "y")
-                currCollider.y = attr;
+                currCollider.rect.y = attr;
             if (attrName == "width")
-                currCollider.w = attr;
+                currCollider.rect.w = attr;
             if (attrName == "height")
-                currCollider.h = attr;
+                currCollider.rect.h = attr;
         }
+
+        if (getChild(collider, "ellipse"))
+        {
+            currCollider.type = Collider::Type::Trigger;
+        }
+        else { currCollider.type = Collider::Type::Solid; }
+
         returnColliders.push_back(currCollider);
     }
     return returnColliders;

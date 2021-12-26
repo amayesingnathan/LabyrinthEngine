@@ -24,6 +24,12 @@ Map::~Map()
 
 void Map::init(Scene* scene, Entity* entt)
 {
+	//Clear any existing tiles
+	for (auto tex : tilesets)
+	{
+		Scene::sysTex.destroyTexture(tex.second.tilesetTex);
+	}
+
 	System::init(scene);
 	player = entt;
 
@@ -134,8 +140,8 @@ TileComponent* Map::AddTile(int tileID, const std::pair<int, tilesetData>& tiles
 		for (auto collider : tileColliders[tileID])
 		{
 			Entity* newCollider = Scene::sysAssets.createEntity("TileCollider");
-			SDL_Rect colliderRect{ dest.x + collider.x, dest.y + collider.y, collider.w, collider.h };
-			newCollider->addComponent<ColliderComponent>(newEnt, colliderRect);
+			SDL_Rect colliderRect{ dest.x + collider.rect.x, dest.y + collider.rect.y, collider.rect.w, collider.rect.h };
+			newCollider->addComponent<ColliderComponent>(newEnt, colliderRect, static_cast<ColliderComponent::Type>(collider.type));
 		}
 	}
 	return tile;

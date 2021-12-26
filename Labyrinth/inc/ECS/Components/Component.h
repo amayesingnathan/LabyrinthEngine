@@ -4,8 +4,11 @@
 
 struct Component
 {
-	class Entity* entity;
+	enum class Types {Tag = 0, Velocity, Transform, Sprite, Controller, Collider, Tile};
 
-	Component(class Entity* entt);
+	class Entity* entity;
+	Types derived;
+
+	Component(class Entity* entt, Types type);
 	virtual ~Component() {}
 };

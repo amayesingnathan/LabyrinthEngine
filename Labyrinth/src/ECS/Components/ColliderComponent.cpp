@@ -3,8 +3,8 @@
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/TransformComponent.h"
 
-ColliderComponent::ColliderComponent(Entity* entt) :
-	Component(entt), collider()
+ColliderComponent::ColliderComponent(Entity* entt, ColliderComponent::Type t, void (*fcnPtr)()) :
+	Component(entt, Types::Collider), collider(), type(t)
 {
 	if (entity->hasComponent<TransformComponent>())
 	{
@@ -15,5 +15,38 @@ ColliderComponent::ColliderComponent(Entity* entt) :
 		collider.h = transform.height * transform.scale;
 	}
 	else { collider = { 0 }; }
+
+	switch (type)
+	{
+	case Type::Solid:
+		triggerFunc = nullptr;
+		break;
+
+	case Type::Trigger:
+		triggerFunc = fcnPtr;
+		break;
+
+	default:
+		triggerFunc = nullptr;
+		break;
+	}
 }
-ColliderComponent::ColliderComponent(Entity* entt, const SDL_Rect& rect) : Component(entt), collider(rect) {}
+
+ColliderComponent::ColliderComponent(Entity* entt, const SDL_Rect& rect, ColliderComponent::Type t, void(*fcnPtr)()) : 
+	Component(entt, Types::Collider), collider(rect), type(t)
+{
+	switch (type)
+	{
+	case Type::Solid:
+		triggerFunc = nullptr;
+		break;
+
+	case Type::Trigger:
+		triggerFunc = fcnPtr;
+		break;
+
+	default:
+		triggerFunc = nullptr;
+		break;
+	}
+}

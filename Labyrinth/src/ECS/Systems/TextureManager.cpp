@@ -7,6 +7,17 @@
 
 #include <iostream>
 
+TextureManager::~TextureManager()
+{
+	auto sprites = mScene->mRegistry.view<SpriteComponent>();
+
+	for (auto entity : sprites)
+	{
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
+		destroyTexture(sprite.texture);
+	}
+}
+
 SDL_Texture* TextureManager::loadTexture(const char* fileName)
 {
 	SDL_Texture* tex = nullptr;
@@ -36,32 +47,32 @@ void TextureManager::update()
 {
 	auto sprites = mScene->mRegistry.view<SpriteComponent>();
 
-	for (auto sprite : sprites)
+	for (auto entity : sprites)
 	{
 		//Get components for physics from entity
-		auto& draw = mScene->mRegistry.get<SpriteComponent>(sprite);
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
 
 		//If the velocity is less than zero then sprite should be flipped.
-		if (mScene->mRegistry.all_of<VelocityComponent>(sprite))
+		if (mScene->mRegistry.all_of<VelocityComponent>(entity))
 		{
-			auto& velocity = mScene->mRegistry.get<VelocityComponent>(sprite);
-			draw.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
+			auto& velocity = mScene->mRegistry.get<VelocityComponent>(entity);
+			sprite.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 		}
 
 		//Update sprite animation if necessary
-		if (draw.animated)
+		if (sprite.animated)
 		{
-			if (mScene->mRegistry.all_of<VelocityComponent>(sprite))
+			if (mScene->mRegistry.all_of<VelocityComponent>(entity))
 			{
-				play(draw, SpriteComponent::suppAnimations::Idle);
+				play(sprite, SpriteComponent::suppAnimations::Idle);
 
-				auto& velocity = mScene->mRegistry.get<VelocityComponent>(sprite);
+				auto& velocity = mScene->mRegistry.get<VelocityComponent>(entity);
 				if (!velocity.vel.isNull())
 				{
-					play(draw, SpriteComponent::suppAnimations::Running);
+					play(sprite, SpriteComponent::suppAnimations::Running);
 				}
-				draw.srcRect.x = draw.srcRect.w * static_cast<int>((SDL_GetTicks() / draw.speed) % draw.frames);
-				draw.srcRect.y = draw.srcRect.h * static_cast<int>(draw.currAnimation);
+				sprite.srcRect.x = sprite.srcRect.w * static_cast<int>((SDL_GetTicks() / sprite.speed) % sprite.frames);
+				sprite.srcRect.y = sprite.srcRect.h * static_cast<int>(sprite.currAnimation);
 			}
 		}
 	}

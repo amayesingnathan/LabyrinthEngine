@@ -7,6 +7,8 @@
 class TextureManager : public System
 {
 public:
+	~TextureManager();
+
 	SDL_Texture* loadTexture(const char* fileName);
 	void destroyTexture(SDL_Texture* tex);
 

@@ -24,10 +24,7 @@ struct SpriteComponent : public Component
 	SDL_RendererFlip spriteFlip;
 
 	SpriteComponent(class Entity* entt, const char* path, const SDL_Rect& src, bool mAnimated = false);
-
 	SpriteComponent(class Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated = false);
-
-	~SpriteComponent() override;
 
 	SpriteComponent& operator=(const SpriteComponent&) = default;
 

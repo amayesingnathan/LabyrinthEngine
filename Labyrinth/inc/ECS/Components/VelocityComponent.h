@@ -12,6 +12,6 @@ struct VelocityComponent : public Component
 
 	template<typename T>
 	VelocityComponent(class Entity* entt, T velocity) :
-		Component(entt), vel(velocity) {}
+		Component(entt, Types::Velocity), vel(velocity) {}
 };
 
