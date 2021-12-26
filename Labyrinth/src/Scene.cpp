@@ -1,5 +1,6 @@
 #include "Scene.h"
 
+#include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
 
 #include "config.h"
@@ -12,25 +13,32 @@ TextureManager Scene::sysTex;
 Map Scene::sysMap;
 Collision Scene::sysCollisions;
 RenderSystem Scene::sysRender;
+AssetManager Scene::sysAssets;
 
 SDL_Rect Scene::camera;
 
 void Scene::init(int lvl)
 {
-	addPlayer();
-
 	camera = {};
 
-	//Initialise systems to this scene registry
-	sysInput.init(m_Registry);
-	sysPhysics.init(m_Registry);
-	sysTex.init(m_Registry);
-	sysCollisions.init(m_Registry, player);
-	sysMap.init(m_Registry, player);
-	sysRender.init(m_Registry);
+	//Initialise asset manager to create player entity. Required to pass to other systems.
+	sysAssets.init(this);
+
+	//Add player entity to the scene
+	player = sysAssets.addPlayer();
+
+	//Initialise systems to this scene
+	sysInput.init(this);
+	sysPhysics.init(this);
+	sysTex.init(this);
+	sysCollisions.init(this, player);
+	sysMap.init(this, player);
+	sysRender.init(this);
 
 	//Load map for this scene
 	sysMap.loadLevel(lvl);
+
+
 }
 
 void Scene::update()
@@ -57,26 +65,4 @@ void Scene::update()
 void Scene::render()
 {
 	sysRender.render();
-}
-
-Entity Scene::CreateEntity(const std::string tag)
-{
-	Entity newEnt = { m_Registry.create(), &m_Registry };
-	newEnt.addComponent<TagComponent>(newEnt, tag);
-	return newEnt;
-}
-
-void Scene::addPlayer()
-{
-	player = CreateEntity("player");
-
-	SDL_Rect rect{ configuration::SCREEN_WIDTH / 2, configuration::SCREEN_HEIGHT / 2, 16, 22 };
-	int scale = 2;
-
-	player.addComponent<VelocityComponent>(player, 0.0f);
-	player.addComponent<TransformComponent>(player, rect, scale);
-	player.addComponent<KeyboardController>(player);
-	player.addComponent<ColliderComponent>(player);
-	std::string playerSpritePath = "assets/PlayerSprite.png";
-	player.addComponent<SpriteComponent>(player, playerSpritePath.c_str(), rect, true);
 }

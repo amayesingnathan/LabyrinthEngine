@@ -1,9 +1,9 @@
 #pragma once
 
-#include "SDL.h"
-
 #include "ECS/Components/VelocityComponent.h"
 #include "ECS/Components/Component.h"
+
+#include "SDL.h"
 
 struct TransformComponent : public Component
 {
@@ -14,8 +14,8 @@ struct TransformComponent : public Component
 	int height;
 	int scale;
 
-	TransformComponent(const TransformComponent&) = default;
-	TransformComponent(Entity& entt, const SDL_Rect& rect, int sc = 1) :
-		Component(entt), pos{ rect.x, rect.y }, lastSafePos{ rect.x, rect.y }, width(rect.w), height(rect.h), scale(sc) {}
+	TransformComponent& operator=(const TransformComponent&) = default;
+
+	TransformComponent(class Entity* entt, const SDL_Rect& rect, int sc = 1);
 
 };

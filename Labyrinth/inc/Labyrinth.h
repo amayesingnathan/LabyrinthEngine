@@ -44,7 +44,6 @@ public:
 
 protected:
 	SDL_Window* window;
-	Entity testWall;
 	std::unique_ptr<Scene> currScene;
 
 };

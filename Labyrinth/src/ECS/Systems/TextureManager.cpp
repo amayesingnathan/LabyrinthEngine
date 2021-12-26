@@ -34,28 +34,28 @@ void TextureManager::destroyTexture(SDL_Texture* tex)
 
 void TextureManager::update()
 {
-	auto sprites = registry->view<SpriteComponent>();
+	auto sprites = mScene->mRegistry.view<SpriteComponent>();
 
 	for (auto sprite : sprites)
 	{
 		//Get components for physics from entity
-		auto& draw = registry->get<SpriteComponent>(sprite);
+		auto& draw = mScene->mRegistry.get<SpriteComponent>(sprite);
 
 		//If the velocity is less than zero then sprite should be flipped.
-		if (registry->all_of<VelocityComponent>(sprite))
+		if (mScene->mRegistry.all_of<VelocityComponent>(sprite))
 		{
-			auto& velocity = registry->get<VelocityComponent>(sprite);
+			auto& velocity = mScene->mRegistry.get<VelocityComponent>(sprite);
 			draw.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 		}
 
 		//Update sprite animation if necessary
 		if (draw.animated)
 		{
-			if (registry->all_of<VelocityComponent>(sprite))
+			if (mScene->mRegistry.all_of<VelocityComponent>(sprite))
 			{
 				play(draw, SpriteComponent::suppAnimations::Idle);
 
-				auto& velocity = registry->get<VelocityComponent>(sprite);
+				auto& velocity = mScene->mRegistry.get<VelocityComponent>(sprite);
 				if (!velocity.vel.isNull())
 				{
 					play(draw, SpriteComponent::suppAnimations::Running);

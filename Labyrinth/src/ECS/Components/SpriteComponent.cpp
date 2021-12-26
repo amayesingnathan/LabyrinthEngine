@@ -3,7 +3,9 @@
 #include "Labyrinth.h"
 #include "Scene.h"
 
-SpriteComponent::SpriteComponent(Entity& entt, const char* path, const SDL_Rect& src, bool mAnimated) :
+#include "ECS/Entity/Entity.h"
+
+SpriteComponent::SpriteComponent(Entity* entt, const char* path, const SDL_Rect& src, bool mAnimated) :
 	Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
 {
 	animated = mAnimated;
@@ -15,14 +17,14 @@ SpriteComponent::SpriteComponent(Entity& entt, const char* path, const SDL_Rect&
 	texture = Scene::sysTex.loadTexture(path);
 	srcRect = src;
 
-	auto& transform = entity.getComponent<TransformComponent>();
+	auto& transform = entity->getComponent<TransformComponent>();
 	destRect.x = static_cast<int>(transform.pos.x);
 	destRect.y = static_cast<int>(transform.pos.y);
 	destRect.w = transform.width * transform.scale;
 	destRect.h = transform.height * transform.scale;
 }
 
-SpriteComponent::SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated) :
+SpriteComponent::SpriteComponent(Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated) :
 	Component(entt), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
 {
 	animated = mAnimated;
@@ -34,7 +36,7 @@ SpriteComponent::SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect&
 	texture = &tex;
 	srcRect = src;
 
-	auto& transform = entity.getComponent<TransformComponent>();
+	auto& transform = entity->getComponent<TransformComponent>();
 	destRect.x = static_cast<int>(transform.pos.x);
 	destRect.y = static_cast<int>(transform.pos.y);
 	destRect.w = transform.width * transform.scale;

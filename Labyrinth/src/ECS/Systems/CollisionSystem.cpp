@@ -1,12 +1,13 @@
 #include "ECS/Systems/CollisionSystem.h"
 
+#include "Scene.h"
+
 #include "ECS/Entity/Entity.h"
 
 #include "ECS/Components/Vector2D.h"
 #include "ECS/Components/ColliderComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/VelocityComponent.h"
-#include "ECS/Components/PhysicsComponent.h"
 
 #include "ECS/Systems/MapSystem.h"
 
@@ -17,12 +18,12 @@ constexpr int Map::MAP_HEIGHT;
 constexpr int Map::DISPLAY_WIDTH;
 constexpr int Map::DISPLAY_HEIGHT;
 
-void Collision::init(entt::registry& reg, const Entity& entt)
+void Collision::init(Scene* scene, Entity* entt)
 {
 	float widthRatio = static_cast<float>(Map::MAP_WIDTH) / static_cast<float>(Map::DISPLAY_WIDTH);
 	float heightRatio = static_cast<float>(Map::MAP_HEIGHT) / static_cast<float>(Map::DISPLAY_HEIGHT);
 
-	System::init(reg);
+	System::init(scene);
 	player = entt;
 	bounds = { configuration::SCREEN_WIDTH * widthRatio, configuration::SCREEN_HEIGHT * heightRatio };
 }
@@ -30,13 +31,13 @@ void Collision::init(entt::registry& reg, const Entity& entt)
 void Collision::update()
 {
 	//Can only check collisions against player so exit if it doesn't have collider.
-	if (!player.hasComponent<ColliderComponent>()) return;
-	auto& collPlayer = player.getComponent<ColliderComponent>();
+	if (!player->hasComponent<ColliderComponent>()) return;
+	auto& collPlayer = player->getComponent<ColliderComponent>();
 
-	if (!player.hasComponent<TransformComponent>()) return;
-	auto& trans = player.getComponent<TransformComponent>();
+	if (!player->hasComponent<TransformComponent>()) return;
+	auto& trans = player->getComponent<TransformComponent>();
 
-	bool hasVel = player.hasComponent< VelocityComponent>();
+	bool hasVel = player->hasComponent< VelocityComponent>();
 
 	bool safePos = true;
 
@@ -55,13 +56,13 @@ void Collision::update()
 
 		if (hasVel)
 		{
-			auto& vel = player.getComponent<VelocityComponent>();
+			auto& vel = player->getComponent<VelocityComponent>();
 			vel.vel.y = 0;
 		}
 	}
 
 	//Get entities that have required components to update transform
-	auto entities = registry->view<ColliderComponent>();
+	auto entities = mScene->mRegistry.view<ColliderComponent>();
 
 	SDL_Rect intersection;
 
@@ -69,16 +70,15 @@ void Collision::update()
 	{
 		//Get components for physics from entity
 		auto& collOther = entities.get<ColliderComponent>(entity);
-		if (player.getID() != entity)
+		if (player->getID() != entity)
 		{
 			if (AABB(collPlayer, collOther, &intersection))
 			{
-				std::cout << "Player hit something!" << std::endl;
 				trans.pos = trans.lastSafePos;
 
 				if (hasVel)
 				{
-					auto& vel = player.getComponent<VelocityComponent>();
+					auto& vel = player->getComponent<VelocityComponent>();
 					vel.vel = 0;
 				}
 

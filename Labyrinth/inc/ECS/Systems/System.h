@@ -1,12 +1,11 @@
 #pragma once
-#include "ECS/Entity/Entity.h"
 
 class System
 {
 public:
-	void init(entt::registry& reg) { registry = &reg; };
+	void init(class Scene* scene);
 	virtual void update() {};
 
 protected:
-	entt::registry* registry;
+	class Scene* mScene;
 };	

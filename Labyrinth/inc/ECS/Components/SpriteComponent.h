@@ -5,6 +5,8 @@
 #include "ECS/Components/Component.h"
 #include "ECS/Components/Animation.h"
 
+#include <map>
+
 struct SpriteComponent : public Component
 {
 	enum class suppAnimations { None = -1, Idle = 0, Running = 1, Falling = 2 };
@@ -21,12 +23,13 @@ struct SpriteComponent : public Component
 
 	SDL_RendererFlip spriteFlip;
 
-	SpriteComponent(Entity& entt, const char* path, const SDL_Rect& src, bool mAnimated = false);
-	//SpriteComponent(Entity& entt, const char* path, const SDL_Rect& src, bool mAnimated = false);
+	SpriteComponent(class Entity* entt, const char* path, const SDL_Rect& src, bool mAnimated = false);
 
-	SpriteComponent(Entity& entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated = false);
+	SpriteComponent(class Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated = false);
 
 	~SpriteComponent() override;
+
+	SpriteComponent& operator=(const SpriteComponent&) = default;
 
 	void setTex(const char* path);
 

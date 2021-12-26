@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ECS/Entity/Entity.h"
-
 //Systems
 #include "ECS/Systems/PhysicsEngine.h"
 #include "ECS/Systems/InputManager.h"
@@ -9,6 +7,9 @@
 #include "ECS/Systems/MapSystem.h"
 #include "ECS/Systems/CollisionSystem.h"
 #include "ECS/Systems/RenderSystem.h"
+#include "ECS/Systems/AssetManager.h"
+
+#include "ECS/Entity/entt.hpp"
 
 class Scene
 {
@@ -19,9 +20,6 @@ public:
 
 	void render();
 
-	Entity CreateEntity(const std::string tag);
-	void addPlayer();
-
 public:
 	//Systems
 	static PhysicsEngine sysPhysics;
@@ -30,11 +28,13 @@ public:
 	static Map sysMap;
 	static Collision sysCollisions;
 	static RenderSystem sysRender;
+	static AssetManager sysAssets;
 
 	static SDL_Rect camera;
 
+	entt::registry mRegistry;
+
 private:
-	Entity player;
-	entt::registry m_Registry;
+	class Entity* player;
 };
 

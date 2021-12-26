@@ -3,17 +3,17 @@
 #include "SDL.h"
 
 #include "Labyrinth.h"
+#include "Scene.h"
 
 #include "ECS/Components/KeyboardController.h"
 #include "ECS/Components/SpriteComponent.h"
 #include "ECS/Components/VelocityComponent.h"
-#include "ECS/Components/PhysicsComponent.h"
 
 void InputManager::update()
 {
 
 	//Get entities that have Keyboard control and handle their key events
-	auto players = registry->view<KeyboardController, VelocityComponent>();
+	auto players = mScene->mRegistry.view<KeyboardController, VelocityComponent>();
 
 	for (auto control : players)
 	{
@@ -62,16 +62,4 @@ void InputManager::updateVelocity(VelocityComponent& vel)
 	vel.vel /= moveSpeed;
 	vel.vel.normalise();
 	vel.vel *= moveSpeed;
-}
-
-void InputManager::updatePhysics(PhysicsComponent& phys)
-{
-	//If up is pressed
-	if (Labyrinth::keyboard[SDL_SCANCODE_W])
-	{
-		if (!phys.grounded) return;
-		phys.jumpStart = SDL_GetTicks();
-		phys.grounded = false;
-	}
-
 }

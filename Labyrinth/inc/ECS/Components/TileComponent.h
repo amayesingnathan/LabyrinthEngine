@@ -15,7 +15,7 @@ struct TileComponent : public Component
 
 	TileComponent() = default;
 
-	TileComponent(Entity& entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
+	TileComponent(class Entity* entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
 
 	void remove();
 

@@ -5,14 +5,12 @@
 
 #include "SDL.h"
 
-class Entity;
-
 struct ColliderComponent;
 
 class Collision : public System
 {
 public:
-	void init(entt::registry& reg, const Entity& entt);
+	void init(class Scene* scene, class Entity* entt);
 
 	void update() override;
 
@@ -21,6 +19,6 @@ private:
 	bool AABB(const ColliderComponent& colA, const ColliderComponent& colB, SDL_Rect* result);
 
 private:
-	Entity player;
+	class Entity* player;
 	Vector2D bounds;
 };

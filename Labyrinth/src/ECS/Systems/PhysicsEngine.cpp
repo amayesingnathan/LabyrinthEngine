@@ -1,6 +1,7 @@
 #include "ECS/Systems/PhysicsEngine.h"
 
-#include "ECS/Components/PhysicsComponent.h"
+#include "Scene.h"
+
 #include "ECS/Components/VelocityComponent.h"
 #include "ECS/Components/TransformComponent.h"
 #include "ECS/Components/ColliderComponent.h"
@@ -9,13 +10,13 @@
 void PhysicsEngine::update()
 {
 	//Get entities that have required components to update transform
-	auto entities = registry->view<VelocityComponent, TransformComponent>();
+	auto entities = mScene->mRegistry.view<VelocityComponent, TransformComponent>();
 
 	for (auto entity : entities)
 	{
 		//Get components for physics from entity
-		auto& trans = registry->get<TransformComponent>(entity);
-		const auto& velocity = registry->get<VelocityComponent>(entity);
+		auto& trans = mScene->mRegistry.get<TransformComponent>(entity);
+		const auto& velocity = mScene->mRegistry.get<VelocityComponent>(entity);
 
 		//position += scaling factor * velocity * time delta
 		trans.pos.x += configuration::FPS * velocity.vel.x * configuration::frameDelay;
@@ -23,13 +24,13 @@ void PhysicsEngine::update()
 	}
 
 	//Use updated transform to update collider position
-	auto colliders = registry->view<ColliderComponent, TransformComponent>();
+	auto colliders = mScene->mRegistry.view<ColliderComponent, TransformComponent>();
 
 	for (auto collider : colliders)
 	{
 		//Get collider component from entity
-		auto& box = registry->get<ColliderComponent>(collider);
-		const auto& transform = registry->get<TransformComponent>(collider);
+		auto& box = mScene->mRegistry.get<ColliderComponent>(collider);
+		const auto& transform = mScene->mRegistry.get<TransformComponent>(collider);
 
 		//Update collider
 		box.collider.x = static_cast<int>(transform.pos.x);

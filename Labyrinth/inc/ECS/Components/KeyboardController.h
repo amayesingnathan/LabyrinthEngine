@@ -8,8 +8,5 @@ struct SpriteComponent;
 
 struct KeyboardController : public Component
 {
-	Vector2D lerpTime;
-
-	KeyboardController();
-	KeyboardController(Entity entt);
+	KeyboardController(class Entity* entt);
 };

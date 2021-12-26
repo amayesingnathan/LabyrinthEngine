@@ -164,6 +164,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\ECS\Components\Component.cpp" />
+    <ClCompile Include="src\ECS\Components\TransformComponent.cpp" />
+    <ClCompile Include="src\ECS\Components\VelocityComponent.cpp" />
+    <ClCompile Include="src\ECS\Systems\AssetManager.cpp" />
     <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp" />
     <ClCompile Include="src\ECS\Components\SpriteComponent.cpp" />
     <ClCompile Include="src\ECS\Components\TileComponent.cpp" />
@@ -173,6 +177,7 @@
     <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
     <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\ECS\Systems\System.cpp" />
     <ClCompile Include="src\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
     <ClCompile Include="src\main.cpp" />
@@ -183,6 +188,7 @@
   <ItemGroup>
     <ClInclude Include="inc\ECS\Components\Colliders\CircleColliderComponent.h" />
     <ClInclude Include="inc\ECS\Components\Colliders\RectColliderComponent.h" />
+    <ClInclude Include="inc\ECS\Systems\AssetManager.h" />
     <ClInclude Include="inc\ECS\Systems\CollisionSystem.h" />
     <ClInclude Include="inc\ECS\Components\Animation.h" />
     <ClInclude Include="inc\ECS\Components\ColliderComponent.h" />
@@ -200,13 +206,13 @@
     <ClInclude Include="inc\ECS\Components\GameComponents.h" />
     <ClInclude Include="inc\config.h" />
     <ClInclude Include="inc\ECS\Components\TransformComponent.h" />
-    <ClInclude Include="inc\ECS\Components\PhysicsComponent.h" />
     <ClInclude Include="inc\ECS\Components\Vector2D.h" />
     <ClInclude Include="inc\ECS\Systems\TextureManager.h" />
     <ClInclude Include="inc\ECS\Systems\XMLParser.h" />
     <ClInclude Include="inc\Labyrinth.h" />
     <ClInclude Include="inc\ECS\Components\VelocityComponent.h" />
     <ClInclude Include="inc\ECS\Systems\MapSystem.h" />
+    <ClInclude Include="inc\Lpch.h" />
     <ClInclude Include="inc\Scene.h" />
   </ItemGroup>
   <ItemGroup>

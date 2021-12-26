@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ECS/Entity/Entity.h"
 #include "ECS/Systems/System.h"
 
 #include "config.h"
@@ -10,22 +9,20 @@
 
 #include "SDL.h"
 
-struct TileComponent;
-
-using RenderLayer = std::vector<TileComponent*>;
+using RenderLayer = std::vector<struct TileComponent*>;
 
 class Map : public System
 {
 public: //Methods
 	~Map();
 
-	void init(entt::registry& reg, const Entity& entt);
+	void init(class Scene* scene, class Entity* entt);
 	void update() override;
 
 	void loadLevel(int lvl);
 
 private:
-	TileComponent* AddTile(int tileID, const std::pair<int, tilesetData>& set, const Vector2D& pos);
+	struct TileComponent* AddTile(int tileID, const std::pair<int, tilesetData>& set, const Vector2D& pos);
 
 public: //Members
 	static constexpr int MAP_WIDTH = 60;
@@ -44,7 +41,7 @@ private:
 	static constexpr float CAMERA_WIDTH = ((static_cast<float>(MAP_WIDTH) / static_cast<float>(DISPLAY_WIDTH)) - 1) * configuration::SCREEN_WIDTH;
 	static constexpr float CAMERA_HEIGHT = ((static_cast<float>(MAP_HEIGHT) / static_cast<float>(DISPLAY_HEIGHT)) - 1) * configuration::SCREEN_HEIGHT;
 
-	Entity player;
+	class Entity* player;
 
 	SDL_Rect src, dest;
 

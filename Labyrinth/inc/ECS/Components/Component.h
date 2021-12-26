@@ -1,14 +1,11 @@
 #pragma once
 
-#include "ECS/Entity/Entity.h"
 #include "config.h"
-
 
 struct Component
 {
-	Entity entity;
+	class Entity* entity;
 
-	Component() : entity() {}
-	Component(Entity& entt) : entity(entt){}
+	Component(class Entity* entt);
 	virtual ~Component() {}
 };

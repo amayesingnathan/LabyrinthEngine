@@ -1,7 +1,5 @@
 #pragma once		
 
-#include "SDL.h"
-
 #include "ECS/Systems/System.h"
 
 #include "ECS/Components/SpriteComponent.h"

@@ -7,13 +7,13 @@
 void RenderSystem::update()
 {
 	//Use updated transform to update sprite position
-	auto sprites = registry->view<SpriteComponent, TransformComponent>();
+	auto sprites = mScene->mRegistry.view<SpriteComponent, TransformComponent>();
 
 	for (auto entity : sprites)
 	{
 		//Get components for sprite from entity
-		auto& sprite = registry->get<SpriteComponent>(entity);
-		const auto& transform = registry->get<TransformComponent>(entity);
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
+		const auto& transform = mScene->mRegistry.get<TransformComponent>(entity);
 		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
 		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
 		sprite.destRect.w = transform.width * transform.scale;
@@ -41,10 +41,10 @@ void RenderSystem::render()
 	}
 
 	//Get entities with sprites but not tiles
-	auto sprites = registry->view<SpriteComponent>(entt::exclude<TileComponent>);
+	auto sprites = mScene->mRegistry.view<SpriteComponent>(entt::exclude<TileComponent>);
 	for (auto entity : sprites)
 	{
-		auto& sprite = registry->get<SpriteComponent>(entity);
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
 		if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
 	}
 }

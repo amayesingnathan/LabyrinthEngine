@@ -1,12 +1,14 @@
 #pragma once
 
+#include "Scene.h"
+
 #include "ECS/Entity/entt.hpp"
 
 class Entity
 {
 public:
-	Entity() : m_EntID(entt::null), m_Registry(nullptr) {}
-	Entity(entt::entity entID, entt::registry* reg) : m_EntID(entID), m_Registry(reg) {}
+	Entity() : mEntID(entt::null), mScene(nullptr) {}
+	Entity(entt::entity entID, Scene* scene) : mEntID(entID), mScene(scene) {}
 	Entity(const Entity& other) = default;
 
 
@@ -14,27 +16,27 @@ public:
 	T& addComponent(Args&&... args)
 	{
 		assert(!hasComponent<T>());
-		return m_Registry->emplace<T>(m_EntID, std::forward<Args>(args)...);
+		return mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
 	}
 
 	template<typename T>
 	void removeComponent()
 	{
 		assert(hasComponent<T>());
-		m_Registry->erase<T>(m_EntID);
+		mScene->mRegistry.erase<T>(mEntID);
 	}
 
 	template<typename T>
 	T& getComponent()
 	{
 		assert(hasComponent<T>());
-		return m_Registry->get<T>(m_EntID);
+		return mScene->mRegistry.get<T>(mEntID);
 	}
 
 	template<typename T>
 	bool hasComponent()
 	{
-		return m_Registry->all_of<T>(m_EntID);
+		return mScene->mRegistry.all_of<T>(mEntID);
 	}
 
 	////Template to connect destruction of one component to the destruction of another.
@@ -45,10 +47,10 @@ public:
 	//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
 	//}
 
-	entt::entity getID() { return m_EntID; };
+	entt::entity getID() { return mEntID; };
 
 private:
-	entt::entity m_EntID;
-	entt::registry* m_Registry;
+	entt::entity mEntID;
+	Scene* mScene;
 
 };

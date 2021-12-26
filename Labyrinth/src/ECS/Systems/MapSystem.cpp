@@ -22,9 +22,9 @@ Map::~Map()
 	}
 }
 
-void Map::init(entt::registry& reg, const Entity& entt)
+void Map::init(Scene* scene, Entity* entt)
 {
-	System::init(reg);
+	System::init(scene);
 	player = entt;
 
 	dest.w = configuration::SCREEN_WIDTH / DISPLAY_WIDTH;
@@ -36,23 +36,23 @@ void Map::init(entt::registry& reg, const Entity& entt)
 
 void Map::update()
 {
-	const auto& transform = player.getComponent<TransformComponent>();
+	const auto& transform = player->getComponent<TransformComponent>();
 
-	Scene::camera.x = transform.pos.x - (configuration::SCREEN_WIDTH / 2);
-	Scene::camera.y = transform.pos.y - (configuration::SCREEN_HEIGHT / 2);
+	Scene::camera.x = static_cast<int>(round(transform.pos.x - (configuration::SCREEN_WIDTH / 2)));
+	Scene::camera.y = static_cast<int>(round(transform.pos.y - (configuration::SCREEN_HEIGHT / 2)));
 
 	if (Scene::camera.x < 0) Scene::camera.x = 0;
 	if (Scene::camera.y < 0) Scene::camera.y = 0;
 	if (Scene::camera.x > Scene::camera.w) Scene::camera.x = Scene::camera.w;
 	if (Scene::camera.y > Scene::camera.h) Scene::camera.y = Scene::camera.h;
 
-	auto view = registry->view<TileComponent>();
+	auto view = mScene->mRegistry.view<TileComponent>();
 
 	for (auto tiles : view)
 	{
-		auto& tile = registry->get<TileComponent>(tiles);
-		tile.destRect.x = tile.position.x - Scene::camera.x;
-		tile.destRect.y = tile.position.y - Scene::camera.y;
+		auto& tile = mScene->mRegistry.get<TileComponent>(tiles);
+		tile.destRect.x = static_cast<int>(round(tile.position.x - Scene::camera.x));
+		tile.destRect.y = static_cast<int>(round(tile.position.y - Scene::camera.y));
 	}
 
 }
@@ -65,11 +65,11 @@ void Map::loadLevel(int lvl)
 	lvlPath = lvlPath + std::to_string(lvl) + fileType;
 
 	//Clear any previous tile entities
-	auto view = registry->view<TileComponent>();
+	auto view = mScene->mRegistry.view<TileComponent>();
 
 	for (auto entity : view)
 	{
-		registry->destroy(entity);
+		mScene->mRegistry.destroy(entity);
 	}
 
 	XMLParser::openLevel(lvl, mapLayers, tilesets, tileColliders);
@@ -112,7 +112,7 @@ void Map::loadLevel(int lvl)
 
 TileComponent* Map::AddTile(int tileID, const std::pair<int, tilesetData>& tileset, const Vector2D& pos)
 {
-	if (registry == nullptr) return nullptr;
+	if (mScene == nullptr) return nullptr;
 	if (tileset.second.tilesetTex == NULL) return nullptr;
 
 	int tilesetRow = (tileID - tileset.first) / tileset.second.tilesetWidth;
@@ -123,20 +123,19 @@ TileComponent* Map::AddTile(int tileID, const std::pair<int, tilesetData>& tiles
 	src.x = tilesetCol * src.w;
 	src.y = tilesetRow * src.h;
 
-	dest.x = pos.x * dest.w;
-	dest.y = pos.y * dest.h;
+	dest.x = static_cast<int>(round(pos.x * dest.w));
+	dest.y = static_cast<int>(round(pos.y * dest.h));
 
-	Entity newEnt = { registry->create(), registry };
-	newEnt.addComponent<TagComponent>(newEnt, "Tile");
-	auto tile = &newEnt.addComponent<TileComponent>(newEnt, src, dest, *tileset.second.tilesetTex);
+	Entity* newEnt = Scene::sysAssets.createEntity("Tile");
+	auto tile = &newEnt->addComponent<TileComponent>(newEnt, src, dest, *tileset.second.tilesetTex);
 
 	if (tileColliders.count(tileID))
 	{
 		for (auto collider : tileColliders[tileID])
 		{
-			Entity newCollider = { registry->create(), registry };
+			Entity* newCollider = Scene::sysAssets.createEntity("TileCollider");
 			SDL_Rect colliderRect{ dest.x + collider.x, dest.y + collider.y, collider.w, collider.h };
-			newCollider.addComponent<ColliderComponent>(newEnt, colliderRect);
+			newCollider->addComponent<ColliderComponent>(newEnt, colliderRect);
 		}
 	}
 	return tile;
