@@ -2,6 +2,8 @@
 
 #include "ECS/Systems/System.h"
 
+#include "ECS/Entity/entt.hpp"
+
 class InputManager : public System
 {
 public:
@@ -9,5 +11,5 @@ public:
 
 private:
 	float moveSpeed = 5.0f;
-	void updateVelocity(struct VelocityComponent& vel);
+	void updateVelocity(entt::entity entity);
 };

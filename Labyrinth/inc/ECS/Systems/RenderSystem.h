@@ -4,6 +4,8 @@
 
 #include "SDL.h"
 
+#include "ECS/Entity/entt.hpp"
+
 class RenderSystem : public System
 {
 public:

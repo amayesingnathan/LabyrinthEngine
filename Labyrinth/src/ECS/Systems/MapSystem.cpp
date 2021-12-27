@@ -13,6 +13,9 @@
 #include <iostream>
 #include <sstream>
 #include <string>
+#include <thread>
+#include <ctime>
+#include <execution>
 
 Map::~Map()
 {
@@ -52,14 +55,24 @@ void Map::update()
 	if (Scene::camera.x > Scene::camera.w) Scene::camera.x = Scene::camera.w;
 	if (Scene::camera.y > Scene::camera.h) Scene::camera.y = Scene::camera.h;
 
-	auto view = mScene->mRegistry.view<TileComponent>();
+	auto tiles = mScene->mRegistry.view<TileComponent>();
 
-	for (auto tiles : view)
-	{
-		auto& tile = mScene->mRegistry.get<TileComponent>(tiles);
+	/* Non parallel processing  */
+
+	//for (auto entity : tiles)
+	//{
+	//	auto& tile = mScene->mRegistry.get<TileComponent>(entity);
+	//	tile.destRect.x = static_cast<int>(round(tile.position.x - Scene::camera.x));
+	//	tile.destRect.y = static_cast<int>(round(tile.position.y - Scene::camera.y));
+	//}
+
+	/* Parallel processing  */
+	std::for_each(std::execution::par, tiles.begin(), tiles.end(), [&tiles](const auto entity) {
+		auto& tile = tiles.get<TileComponent>(entity);
 		tile.destRect.x = static_cast<int>(round(tile.position.x - Scene::camera.x));
 		tile.destRect.y = static_cast<int>(round(tile.position.y - Scene::camera.y));
-	}
+	});
+
 
 }
 
