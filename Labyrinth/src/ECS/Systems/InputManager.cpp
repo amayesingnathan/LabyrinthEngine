@@ -15,7 +15,7 @@ void InputManager::update()
 	//Get entities that have Keyboard control and handle their key events
 	auto players = mScene->mRegistry.view<KeyboardController, VelocityComponent>();
 
-	for (auto control : players)
+	for (auto entity : players)
 	{
 		if (Labyrinth::keyboard[SDL_SCANCODE_ESCAPE])
 		{
@@ -23,16 +23,14 @@ void InputManager::update()
 			return;
 		}
 
-		auto& keyControl = players.get<KeyboardController>(control);
-		auto& velocity = players.get<VelocityComponent>(control);
-
-		updateVelocity(velocity);
+		updateVelocity(entity);
 	}
 }
 
 
-void InputManager::updateVelocity(VelocityComponent& vel)
+void InputManager::updateVelocity(entt::entity entity)
 {
+	auto& vel = mScene->mRegistry.get<VelocityComponent>(entity);
 	vel.vel = 0.0f;
 
 	//If up is pressed

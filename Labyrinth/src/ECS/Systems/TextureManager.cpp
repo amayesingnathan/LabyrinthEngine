@@ -6,6 +6,7 @@
 #include "ECS/Components/GameComponents.h"
 
 #include <iostream>
+#include <execution>
 
 TextureManager::~TextureManager()
 {
@@ -45,40 +46,31 @@ void TextureManager::destroyTexture(SDL_Texture* tex)
 
 void TextureManager::update()
 {
-	auto sprites = mScene->mRegistry.view<SpriteComponent>();
+	auto sprites = mScene->mRegistry.view<SpriteComponent, VelocityComponent>();
 
-	for (auto entity : sprites)
-	{
+	std::for_each(std::execution::par, sprites.begin(), sprites.end(), [&sprites](const auto entity) {
 		//Get components for physics from entity
-		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
+		auto& sprite = sprites.get<SpriteComponent>(entity);
+		const auto& velocity = sprites.get<VelocityComponent>(entity);
 
-		//If the velocity is less than zero then sprite should be flipped.
-		if (mScene->mRegistry.all_of<VelocityComponent>(entity))
-		{
-			auto& velocity = mScene->mRegistry.get<VelocityComponent>(entity);
-			sprite.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
-		}
+		sprite.spriteFlip = (velocity.vel.x >= 0) ? SDL_FLIP_NONE : SDL_FLIP_HORIZONTAL;
 
 		//Update sprite animation if necessary
 		if (sprite.animated)
 		{
-			if (mScene->mRegistry.all_of<VelocityComponent>(entity))
-			{
-				play(sprite, SpriteComponent::suppAnimations::Idle);
+			play(sprite, SpriteComponent::suppAnimations::Idle);
 
-				auto& velocity = mScene->mRegistry.get<VelocityComponent>(entity);
-				if (!velocity.vel.isNull())
-				{
-					play(sprite, SpriteComponent::suppAnimations::Running);
-				}
-				sprite.srcRect.x = sprite.srcRect.w * static_cast<int>((SDL_GetTicks() / sprite.speed) % sprite.frames);
-				sprite.srcRect.y = sprite.srcRect.h * static_cast<int>(sprite.currAnimation);
+			if (!velocity.vel.isNull())
+			{
+				play(sprite, SpriteComponent::suppAnimations::Running);
 			}
+			sprite.srcRect.x = sprite.srcRect.w * static_cast<int>((SDL_GetTicks() / sprite.speed) % sprite.frames);
+			sprite.srcRect.y = sprite.srcRect.h * static_cast<int>(sprite.currAnimation);
 		}
-	}
+		});
 }
 
-void TextureManager::play(SpriteComponent& sprite, const SpriteComponent::suppAnimations& anim)
+void TextureManager::play(SpriteComponent& sprite, SpriteComponent::suppAnimations anim)
 {
 	if (!sprite.animations.count(anim)) return; //Return if animation has not been added
 

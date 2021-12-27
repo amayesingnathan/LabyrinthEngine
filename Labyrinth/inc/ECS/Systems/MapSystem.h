@@ -8,6 +8,7 @@
 #include "ECS/Systems/XMLParser.h"
 
 #include "SDL.h"
+#include "ECS/Entity/entt.hpp"
 
 using RenderLayer = std::vector<struct TileComponent*>;
 

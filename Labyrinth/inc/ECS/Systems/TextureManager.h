@@ -4,6 +4,8 @@
 
 #include "ECS/Components/SpriteComponent.h"
 
+#include "ECS/Entity/entt.hpp"
+
 class TextureManager : public System
 {
 public:
@@ -19,6 +21,6 @@ public:
 		return { x, y, w, h };
 	}
 
-	void play(SpriteComponent& sprite, const SpriteComponent::suppAnimations& anim);
+	static void play(SpriteComponent& sprite, SpriteComponent::suppAnimations anim);
 };
 

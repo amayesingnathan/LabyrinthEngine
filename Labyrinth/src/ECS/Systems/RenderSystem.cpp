@@ -4,21 +4,23 @@
 #include "Scene.h"
 #include "config.h"
 
+#include <execution>
+
 void RenderSystem::update()
 {
 	//Use updated transform to update sprite position
 	auto sprites = mScene->mRegistry.view<SpriteComponent, TransformComponent>();
 
-	for (auto entity : sprites)
-	{
+	std::for_each(std::execution::par, sprites.begin(), sprites.end(), [&sprites](const auto entity) {
 		//Get components for sprite from entity
-		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
-		const auto& transform = mScene->mRegistry.get<TransformComponent>(entity);
+		auto& sprite = sprites.get<SpriteComponent>(entity);
+		const auto& transform = sprites.get<TransformComponent>(entity);
+
 		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
 		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
 		sprite.destRect.w = transform.width * transform.scale;
 		sprite.destRect.h = transform.height * transform.scale;
-	}
+	});
 }
 
 void RenderSystem::render()

@@ -4,6 +4,8 @@
 #include "ECS/Components/Vector2D.h"
 #include "config.h"
 
+#include "ECS/Entity/entt.hpp"
+
 constexpr int configuration::SCREEN_WIDTH;
 constexpr int configuration::SCREEN_HEIGHT;
 
