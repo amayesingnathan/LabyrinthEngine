@@ -11,8 +11,9 @@ class Collision : public System
 {
 public:
 	void init(class Scene* scene, class Entity* entt);
-
 	void update() override;
+
+	void addTrigger(class Entity& entity, void(*func)());
 
 private:
 	bool AABB(const SDL_Rect& recA, const SDL_Rect& recB, SDL_Rect* result);

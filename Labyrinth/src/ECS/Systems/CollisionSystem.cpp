@@ -84,7 +84,6 @@ void Collision::update()
 					if (collOther.triggerFunc)
 						collOther.triggerFunc();
 				}
-
 			}
 		}		
 	}
@@ -93,6 +92,20 @@ void Collision::update()
 	{
 		trans.lastSafePos = trans.pos;
 	}
+}
+
+void Collision::addTrigger(Entity& entity, void(*func)())
+{
+	if (!entity.hasComponent<ColliderComponent>()) {
+		entity.addComponent<ColliderComponent>(&entity, SDL_Rect{ 0 }, ColliderComponent::Type::Trigger);
+	}
+
+	auto& collider = entity.getComponent<ColliderComponent>();
+	if (collider.type == ColliderComponent::Type::Trigger)
+	{
+		collider.triggerFunc = func;
+	}
+	else { collider.triggerFunc = nullptr; }
 }
 
 bool Collision::AABB(const SDL_Rect& recA, const SDL_Rect& recB, SDL_Rect* result)
