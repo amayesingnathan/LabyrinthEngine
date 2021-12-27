@@ -1,11 +1,9 @@
+#include "Lpch.h"
+
 #include "Scene.h"
 
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
-
-#include "config.h"
-
-#include "SDL_rect.h"
 
 PhysicsEngine Scene::sysPhysics;
 InputManager Scene::sysInput;

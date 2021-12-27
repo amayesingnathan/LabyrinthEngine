@@ -1,6 +1,6 @@
-#include "Labyrinth.h"
+#include "Lpch.h"
 
-#include "config.h"
+#include "Labyrinth.h"
 
 constexpr int configuration::SCREEN_WIDTH;
 constexpr int configuration::SCREEN_HEIGHT;

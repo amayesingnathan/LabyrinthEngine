@@ -100,8 +100,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\EnTT;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -118,7 +120,9 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\EnTT;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,8 +137,10 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\EnTT;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -152,7 +158,9 @@
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\EnTT;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -176,40 +184,45 @@
     <ClCompile Include="src\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
     <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\ECS\Systems\ScriptEngine.cpp" />
     <ClCompile Include="src\ECS\Systems\System.cpp" />
     <ClCompile Include="src\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />
+    <ClCompile Include="src\Lpch.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\ECS\Components\Vector2D.cpp" />
     <ClCompile Include="src\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\RapidXML\rapidxml.hpp" />
+    <ClInclude Include="dependencies\RapidXML\rapidxml_iterators.hpp" />
+    <ClInclude Include="dependencies\RapidXML\rapidxml_print.hpp" />
+    <ClInclude Include="dependencies\RapidXML\rapidxml_utils.hpp" />
     <ClInclude Include="inc\ECS\Components\Colliders\CircleColliderComponent.h" />
     <ClInclude Include="inc\ECS\Components\Colliders\RectColliderComponent.h" />
+    <ClInclude Include="inc\ECS\Entity\ScriptableEntity.h" />
     <ClInclude Include="inc\ECS\Systems\AssetManager.h" />
     <ClInclude Include="inc\ECS\Systems\CollisionSystem.h" />
     <ClInclude Include="inc\ECS\Components\Animation.h" />
-    <ClInclude Include="inc\ECS\Components\ColliderComponent.h" />
-    <ClInclude Include="inc\ECS\Components\Component.h" />
     <ClInclude Include="inc\ECS\Entity\Entity.h" />
-    <ClInclude Include="inc\ECS\Components\KeyboardController.h" />
-    <ClInclude Include="inc\ECS\Components\SpriteComponent.h" />
-    <ClInclude Include="inc\ECS\Entity\entt.hpp" />
-    <ClInclude Include="inc\ECS\Components\TagComponent.h" />
-    <ClInclude Include="inc\ECS\Components\TileComponent.h" />
+    <ClInclude Include="dependencies\EnTT\entt.hpp" />
     <ClInclude Include="inc\ECS\Systems\InputManager.h" />
     <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h" />
     <ClInclude Include="inc\ECS\Systems\RenderSystem.h" />
+    <ClInclude Include="inc\ECS\Systems\ScriptEngine.h" />
     <ClInclude Include="inc\ECS\Systems\System.h" />
     <ClInclude Include="inc\ECS\Components\GameComponents.h" />
     <ClInclude Include="inc\config.h" />
-    <ClInclude Include="inc\ECS\Components\TransformComponent.h" />
     <ClInclude Include="inc\ECS\Components\Vector2D.h" />
     <ClInclude Include="inc\ECS\Systems\TextureManager.h" />
     <ClInclude Include="inc\ECS\Systems\XMLParser.h" />
     <ClInclude Include="inc\Labyrinth.h" />
-    <ClInclude Include="inc\ECS\Components\VelocityComponent.h" />
     <ClInclude Include="inc\ECS\Systems\MapSystem.h" />
     <ClInclude Include="inc\Lpch.h" />
     <ClInclude Include="inc\Scene.h" />

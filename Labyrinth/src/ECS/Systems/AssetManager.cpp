@@ -1,7 +1,8 @@
+#include "Lpch.h"
+
 #include "ECS\Systems\AssetManager.h"
 
 #include "Scene.h"
-#include "config.h"
 
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
@@ -25,6 +26,11 @@ Entity* AssetManager::createEntity(const std::string& tag)
 	addComponent(*newEnt, &Tag);
 
 	return newEnt;
+}
+
+void AssetManager::destroyEntity(Entity& entity)
+{
+	mScene->mRegistry.destroy(entity);
 }
 
 Entity* AssetManager::addPlayer()
@@ -106,6 +112,12 @@ void AssetManager::addComponent(Entity& entity, Component* comp)
 		entity.addComponent<TileComponent>(*tile);
 		break;
 	}
+	case Component::Types::Script:
+	{
+		auto script = dynamic_cast<ScriptComponent*>(comp);
+		entity.addComponent<ScriptComponent>(*script);
+		break;
+	}
 	default:
 		break;
 	}
@@ -163,4 +175,30 @@ void AssetManager::addComponents(Entity& entity, std::vector<struct Component*> 
 			break;
 		}
 	}
+}
+
+template<typename T>
+void AssetManager::OnComponentAdded(Entity entity, T& component)
+{
+	static_assert(false);
+}
+
+template<>
+void AssetManager::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+{
+}
+
+template<>
+void AssetManager::OnComponentAdded<SpriteComponent>(Entity entity, SpriteComponent& component)
+{
+}
+
+template<>
+void AssetManager::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+{
+}
+
+template<>
+void AssetManager::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+{
 }

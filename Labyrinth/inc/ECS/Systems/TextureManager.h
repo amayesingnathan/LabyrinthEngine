@@ -1,10 +1,6 @@
 #pragma once		
 
-#include "ECS/Systems/System.h"
-
-#include "ECS/Components/SpriteComponent.h"
-
-#include "ECS/Entity/entt.hpp"
+#include "System.h"
 
 class TextureManager : public System
 {
@@ -21,6 +17,6 @@ public:
 		return { x, y, w, h };
 	}
 
-	static void play(SpriteComponent& sprite, SpriteComponent::suppAnimations anim);
+	static void play(struct SpriteComponent& sprite, const std::string& anim);
 };
 

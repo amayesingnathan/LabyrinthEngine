@@ -1,14 +1,9 @@
 #pragma once
 
-#include "ECS/Systems/System.h"
-
-#include "config.h"
+#include "System.h"
 
 //XML Parsing Functions
 #include "ECS/Systems/XMLParser.h"
-
-#include "SDL.h"
-#include "ECS/Entity/entt.hpp"
 
 using RenderLayer = std::vector<struct TileComponent*>;
 

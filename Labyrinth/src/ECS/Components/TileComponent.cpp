@@ -1,8 +1,8 @@
-#include "ECS/Components/TileComponent.h"
+#include "Lpch.h"
+
+#include "ECS/Components/GameComponents.h"
 
 #include "ECS/Entity/Entity.h"
-#include "ECS/Components/TransformComponent.h"
-#include "ECS/Components/SpriteComponent.h"
 
 TileComponent::TileComponent(Entity* entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex) :
 	Component(entt, Types::Tile), destRect(dest), position{dest.x, dest.y}

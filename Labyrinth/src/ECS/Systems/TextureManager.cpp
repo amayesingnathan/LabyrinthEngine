@@ -1,12 +1,9 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/TextureManager.h"
 
 #include "Labyrinth.h"
 #include "Scene.h"
-
-#include "ECS/Components/GameComponents.h"
-
-#include <iostream>
-#include <execution>
 
 TextureManager::~TextureManager()
 {
@@ -58,23 +55,23 @@ void TextureManager::update()
 		//Update sprite animation if necessary
 		if (sprite.animated)
 		{
-			play(sprite, SpriteComponent::suppAnimations::Idle);
+			play(sprite, "Idle");
 
 			if (!velocity.vel.isNull())
 			{
-				play(sprite, SpriteComponent::suppAnimations::Running);
+				play(sprite, "Running");
 			}
 			sprite.srcRect.x = sprite.srcRect.w * static_cast<int>((SDL_GetTicks() / sprite.speed) % sprite.frames);
-			sprite.srcRect.y = sprite.srcRect.h * static_cast<int>(sprite.currAnimation);
+			sprite.srcRect.y = sprite.srcRect.h * sprite.currAnimation.index;
 		}
 		});
 }
 
-void TextureManager::play(SpriteComponent& sprite, SpriteComponent::suppAnimations anim)
+void TextureManager::play(SpriteComponent& sprite, const std::string& anim)
 {
 	if (!sprite.animations.count(anim)) return; //Return if animation has not been added
 
-	sprite.currAnimation = anim;
+	sprite.currAnimation = sprite.animations[anim];
 	sprite.frames = sprite.animations[anim].frames;
 	sprite.speed = sprite.animations[anim].speed;
 }

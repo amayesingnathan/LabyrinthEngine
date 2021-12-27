@@ -1,3 +1,5 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/MapSystem.h"
 
 //Core Engine Includes
@@ -7,15 +9,6 @@
 //ECS Includes
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
-
-//Standard Library
-#include <fstream>
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <thread>
-#include <ctime>
-#include <execution>
 
 Map::~Map()
 {

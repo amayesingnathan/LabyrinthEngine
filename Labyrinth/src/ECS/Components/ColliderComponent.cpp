@@ -1,7 +1,7 @@
-#include "ECS/Components/ColliderComponent.h"
+#include "Lpch.h"
+#include "ECS/Components/GameComponents.h"
 
 #include "ECS/Entity/Entity.h"
-#include "ECS/Components/TransformComponent.h"
 
 ColliderComponent::ColliderComponent(Entity* entt, ColliderComponent::Type t, void (*fcnPtr)()) :
 	Component(entt, Types::Collider), collider(), type(t)

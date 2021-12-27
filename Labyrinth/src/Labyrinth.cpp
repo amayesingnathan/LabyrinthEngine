@@ -1,5 +1,6 @@
-#include "Labyrinth.h"
+#include "Lpch.h"
 
+#include "Labyrinth.h"
 #include "Scene.h"
 
 #include "ECS/Entity/Entity.h"

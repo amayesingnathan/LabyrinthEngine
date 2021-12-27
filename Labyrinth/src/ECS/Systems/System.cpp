@@ -1,3 +1,5 @@
+#include "Lpch.h"
+
 #include "ECS\Systems\System.h"
 
 #include "Scene.h"

@@ -1,10 +1,6 @@
 #pragma once
 
-#include "ECS/Systems/System.h"
-
-#include "SDL.h"
-
-#include "ECS/Entity/entt.hpp"
+#include "System.h"
 
 class RenderSystem : public System
 {

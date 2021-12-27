@@ -2,13 +2,6 @@
 
 #include "ECS/Components/Vector2D.h"
 
-#include <string>
-#include <vector>
-#include <map>
-
-#include "SDL.h"
-#include "rapidxml.hpp"
-
 struct Collider
 {
 	//THIS MUST MIRROR ENUM "Type" IN ColliderComponent.h

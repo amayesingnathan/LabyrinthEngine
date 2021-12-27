@@ -2,11 +2,11 @@
 
 struct Animation
 {
-
+	int index;
 	int frames;
 	int speed;
 
-	Animation() : frames(1), speed(0) {}
+	Animation() : index(0), frames(1), speed(0) {}
 
-	Animation(int f, int s) : frames(f), speed(s) {}
+	Animation(int i, int f, int s) : index(i), frames(f), speed(s) {}
 };

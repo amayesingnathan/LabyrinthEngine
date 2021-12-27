@@ -1,4 +1,6 @@
-#include "ECS/Components/SpriteComponent.h"
+#include "Lpch.h"
+
+#include "ECS/Components/GameComponents.h"
 
 #include "Labyrinth.h"
 #include "Scene.h"
@@ -6,13 +8,13 @@
 #include "ECS/Entity/Entity.h"
 
 SpriteComponent::SpriteComponent(Entity* entt, const char* path, const SDL_Rect& src, bool mAnimated) :
-	Component(entt, Types::Sprite), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
+	Component(entt, Types::Sprite), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation()
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(4, 100));
-	animations.emplace(suppAnimations::Running, Animation(4, 100));
-	animations.emplace(suppAnimations::Falling, Animation(4, 100));
+	animations.emplace("Idle", Animation(0, 4, 100));
+	animations.emplace("Running", Animation(1, 4, 100));
+	animations.emplace("Falling", Animation(2, 4, 100));
 
 	texture = Scene::sysTex.loadTexture(path);
 	srcRect = src;
@@ -25,13 +27,13 @@ SpriteComponent::SpriteComponent(Entity* entt, const char* path, const SDL_Rect&
 }
 
 SpriteComponent::SpriteComponent(Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated) :
-	Component(entt, Types::Sprite), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation(suppAnimations::None)
+	Component(entt, Types::Sprite), srcRect(), destRect(), frames(0), speed(0), spriteFlip(SDL_FLIP_NONE), currAnimation()
 {
 	animated = mAnimated;
 
-	animations.emplace(suppAnimations::Idle, Animation(4, 100));
-	animations.emplace(suppAnimations::Running, Animation(4, 100));
-	animations.emplace(suppAnimations::Falling, Animation(4, 100));
+	animations.emplace("Idle", Animation(0, 4, 100));
+	animations.emplace("Running", Animation(1, 4, 100));
+	animations.emplace("Falling", Animation(2, 4, 100));
 
 	texture = &tex;
 	srcRect = src;

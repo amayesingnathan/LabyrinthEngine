@@ -1,10 +1,9 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/RenderSystem.h"
 
 #include "Labyrinth.h"
 #include "Scene.h"
-#include "config.h"
-
-#include <execution>
 
 void RenderSystem::update()
 {

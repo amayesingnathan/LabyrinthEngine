@@ -1,13 +1,11 @@
-#include "ECS\Systems\InputManager.h"
+#include "Lpch.h"
 
-#include "SDL.h"
+#include "ECS/Systems/InputManager.h"
 
 #include "Labyrinth.h"
 #include "Scene.h"
 
-#include "ECS/Components/KeyboardController.h"
-#include "ECS/Components/SpriteComponent.h"
-#include "ECS/Components/VelocityComponent.h"
+#include "ECS/Components/GameComponents.h"
 
 void InputManager::update()
 {

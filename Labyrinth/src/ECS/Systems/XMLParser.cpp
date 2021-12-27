@@ -1,10 +1,8 @@
+#include "Lpch.h"
+
 #include "ECS\Systems\XMLParser.h"
 
 #include "Scene.h"
-
-#include <sstream>
-
-#include "rapidxml_utils.hpp"
 
 using namespace rapidxml;
 

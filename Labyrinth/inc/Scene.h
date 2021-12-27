@@ -9,8 +9,6 @@
 #include "ECS/Systems/RenderSystem.h"
 #include "ECS/Systems/AssetManager.h"
 
-#include "ECS/Entity/entt.hpp"
-
 class Scene
 {
 public:

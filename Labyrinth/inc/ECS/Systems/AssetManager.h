@@ -1,8 +1,5 @@
 #pragma once
-#include "ECS/Systems/System.h"
-
-#include <vector>
-#include <string>
+#include "System.h"
 
 class AssetManager : public System
 {
@@ -10,6 +7,8 @@ public:
 	~AssetManager();
 
 	class Entity* createEntity(const std::string& tag);
+	void destroyEntity(Entity& entity);
+
 	class Entity* addPlayer();
 
 	/*
@@ -20,6 +19,10 @@ public:
 	*/
 	void addComponent(class Entity& entity, struct Component* comp);
 	void addComponents(class Entity& entity, std::vector<struct Component*> comps);
+
+private:
+	template<typename T>
+	void OnComponentAdded(Entity entity, T& component);
 
 private:
 	std::vector<class Entity*> mEntities;

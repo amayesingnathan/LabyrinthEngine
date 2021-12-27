@@ -2,12 +2,10 @@
 
 #include "Scene.h"
 
-#include "ECS/Entity/entt.hpp"
-
 class Entity
 {
 public:
-	Entity() : mEntID(entt::null), mScene(nullptr) {}
+	Entity() = default;
 	Entity(entt::entity entID, Scene* scene) : mEntID(entID), mScene(scene) {}
 	Entity(const Entity& other) = default;
 
@@ -55,6 +53,9 @@ public:
 	//}
 
 	entt::entity getID() { return mEntID; };
+
+	operator entt::entity() const { return mEntID; }
+	operator uint32_t() const { return static_cast<uint32_t>(mEntID); }
 
 private:
 	entt::entity mEntID;

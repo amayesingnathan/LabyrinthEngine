@@ -1,8 +1,6 @@
 #pragma once
 
-#include "ECS/Systems/System.h"
-
-#include "ECS/Entity/entt.hpp"
+#include "System.h"
 
 class InputManager : public System
 {

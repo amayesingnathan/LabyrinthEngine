@@ -1,13 +1,10 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/PhysicsEngine.h"
 
 #include "Scene.h"
 
-#include "ECS/Components/VelocityComponent.h"
-#include "ECS/Components/TransformComponent.h"
-#include "ECS/Components/ColliderComponent.h"
-#include "ECS/Components/SpriteComponent.h"
-
-#include <execution>
+#include "ECS/Components/GameComponents.h"
 
 void PhysicsEngine::update()
 {

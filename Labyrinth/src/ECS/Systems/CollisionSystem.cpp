@@ -1,3 +1,5 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/CollisionSystem.h"
 
 #include "Scene.h"
@@ -5,13 +7,10 @@
 #include "ECS/Entity/Entity.h"
 
 #include "ECS/Components/Vector2D.h"
-#include "ECS/Components/ColliderComponent.h"
-#include "ECS/Components/TransformComponent.h"
-#include "ECS/Components/VelocityComponent.h"
+
+#include "ECS/Components/GameComponents.h"
 
 #include "ECS/Systems/MapSystem.h"
-
-#include <iostream>
 
 constexpr int Map::MAP_WIDTH;
 constexpr int Map::MAP_HEIGHT;

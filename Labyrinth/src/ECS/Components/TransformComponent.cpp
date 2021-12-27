@@ -1,4 +1,6 @@
-#include "ECS\Components\TransformComponent.h"
+#include "Lpch.h"
+
+#include "ECS/Components/GameComponents.h"
 
 #include "ECS/Entity/Entity.h"
 
