@@ -7,7 +7,7 @@
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
 
-AssetManager::~AssetManager()
+void AssetManager::clean()
 {
 	for (auto entity : mEntities)
 	{
@@ -15,6 +15,7 @@ AssetManager::~AssetManager()
 		delete entity;
 		entity = nullptr;
 	}
+	std::cout << "Asset Manager cleaned\n";
 }
 
 Entity* AssetManager::createEntity(const std::string& tag)
@@ -24,6 +25,16 @@ Entity* AssetManager::createEntity(const std::string& tag)
 
 	TagComponent Tag(newEnt, tag);
 	addComponent(*newEnt, &Tag);
+
+	TransformComponent trans(newEnt, { 0 }, 1);
+	if (tag == "Player")
+	{
+		trans.pos = { configuration::SCREEN_WIDTH / 2, configuration::SCREEN_HEIGHT / 2 };
+		trans.width = 16;
+		trans.height = 22;
+		trans.scale = 2;
+	}
+	addComponent(*newEnt, &trans);
 
 	return newEnt;
 }
@@ -40,10 +51,6 @@ Entity* AssetManager::addPlayer()
 	SDL_Rect rect{ configuration::SCREEN_WIDTH / 2, configuration::SCREEN_HEIGHT / 2, 16, 22 };
 	int scale = 2;
 	std::string playerSpritePath = "assets/PlayerSprite.png";
-
-	//Must add transform component first as sprite component cannot be created without one.
-	TransformComponent trans(player, rect, scale);
-	addComponent(*player, &trans);
 
 	std::vector<Component*> compList;
 	compList.reserve(4);

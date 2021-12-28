@@ -4,5 +4,6 @@
 class ScriptEngine : public System
 {
 public:
-	void update();
+	void update() override;
+	void clean() override;
 };

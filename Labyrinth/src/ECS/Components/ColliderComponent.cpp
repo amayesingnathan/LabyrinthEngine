@@ -11,8 +11,8 @@ ColliderComponent::ColliderComponent(Entity* entt, ColliderComponent::Type t, vo
 		auto& transform = entity->getComponent<TransformComponent>();
 		collider.x = static_cast<int>(transform.pos.x);
 		collider.y = static_cast<int>(transform.pos.y);
-		collider.w = transform.width * transform.scale;
-		collider.h = transform.height * transform.scale;
+		collider.w = static_cast<int>(round(transform.width * transform.scale.x));
+		collider.h = static_cast<int>(round(transform.height * transform.scale.y));
 	}
 	else { collider = { 0 }; }
 

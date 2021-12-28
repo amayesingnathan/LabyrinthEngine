@@ -4,7 +4,7 @@
 class AssetManager : public System
 {
 public:
-	~AssetManager();
+	void clean() override;
 
 	class Entity* createEntity(const std::string& tag);
 	void destroyEntity(Entity& entity);

@@ -32,7 +32,7 @@ void PhysicsEngine::update()
 		//Update collider
 		box.collider.x = static_cast<int>(transform.pos.x);
 		box.collider.y = static_cast<int>(transform.pos.y);
-		box.collider.w = transform.width * transform.scale;
-		box.collider.h = transform.height * transform.scale;
+		box.collider.w = static_cast<int>(round(transform.width * transform.scale.x));
+		box.collider.h = static_cast<int>(round(transform.height * transform.scale.y));
 	});
 }

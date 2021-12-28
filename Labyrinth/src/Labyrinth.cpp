@@ -98,6 +98,7 @@ void Labyrinth::render()
 
 void Labyrinth::clean()
 {
+	currScene->clean();
 	SDL_DestroyWindow(window);
 	SDL_DestroyRenderer(Labyrinth::renderer);
 	SDL_Quit();

@@ -5,17 +5,6 @@
 #include "Labyrinth.h"
 #include "Scene.h"
 
-TextureManager::~TextureManager()
-{
-	auto sprites = mScene->mRegistry.view<SpriteComponent>();
-
-	for (auto entity : sprites)
-	{
-		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
-		destroyTexture(sprite.texture);
-	}
-}
-
 SDL_Texture* TextureManager::loadTexture(const char* fileName)
 {
 	SDL_Texture* tex = nullptr;
@@ -65,6 +54,18 @@ void TextureManager::update()
 			sprite.srcRect.y = sprite.srcRect.h * sprite.currAnimation.index;
 		}
 		});
+}
+
+void TextureManager::clean()
+{
+	auto sprites = mScene->mRegistry.view<SpriteComponent>();
+
+	for (auto entity : sprites)
+	{
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
+		destroyTexture(sprite.texture);
+	}
+	std::cout << "Texture Manager cleaned\n";
 }
 
 void TextureManager::play(SpriteComponent& sprite, const std::string& anim)

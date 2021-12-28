@@ -17,8 +17,8 @@ void RenderSystem::update()
 
 		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
 		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
-		sprite.destRect.w = transform.width * transform.scale;
-		sprite.destRect.h = transform.height * transform.scale;
+		sprite.destRect.w = static_cast<int>(round(transform.width * transform.scale.x));
+		sprite.destRect.h = static_cast<int>(round(transform.height * transform.scale.y));
 	});
 }
 

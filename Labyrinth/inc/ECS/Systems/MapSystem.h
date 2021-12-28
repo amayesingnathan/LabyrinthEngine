@@ -10,10 +10,9 @@ using RenderLayer = std::vector<struct TileComponent*>;
 class Map : public System
 {
 public: //Methods
-	~Map();
-
 	void init(class Scene* scene, class Entity* entt);
 	void update() override;
+	void clean() override;
 
 	void loadLevel(int lvl);
 

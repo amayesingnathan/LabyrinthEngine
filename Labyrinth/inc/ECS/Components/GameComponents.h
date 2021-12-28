@@ -7,11 +7,12 @@
 
 struct Component
 {
-	enum class Types { Tag = 0, Velocity, Transform, Sprite, Controller, Collider, Tile, Script };
+	enum class Types { Null = -1, Tag = 0, Velocity, Transform, Sprite, Controller, Collider, Tile, Script };
 
-	class Entity* entity;
-	Types derived;
+	class Entity* entity = nullptr;
+	Types derived = Types::Null;
 
+	Component() = default;
 	Component(class Entity* entt, Types type);
 	virtual ~Component() {}
 };
@@ -44,24 +45,25 @@ struct ScriptComponent : public Component
 {
 	ScriptableEntity* instance = nullptr;
 
-	std::function<void()> InstantiateFunc;
-	std::function<void()> DestroyInstanceFunc;
+	ScriptableEntity* (*InstantiateScript)() = nullptr;
+	void (*DestroyScript)(ScriptComponent*) = nullptr;
 
-	std::function<void(ScriptableEntity*)> OnCreateFunc;
-	std::function<void(ScriptableEntity*)> OnDestroyFunc;
-	std::function<void(ScriptableEntity*)> OnUpdateFunc;
+	void (*OnCreateFunc)(ScriptableEntity*) = nullptr;
+	void (*OnDestroyFunc)(ScriptableEntity*) = nullptr;
+	void (*OnUpdateFunc)(ScriptableEntity*) = nullptr;
 
-	ScriptComponent() : Component(nullptr, Component::Types::Script) {}
+	ScriptComponent() = default;
+	ScriptComponent& operator=(const ScriptComponent&) = default;
 
 	template<typename T>
 	void bind()
 	{
-		InstantiateFunc = [&]() { instance = new T(); };
-		DestroyInstanceFunc = [&]() { delete dynamic_cast<T*>(instance); instance = nullptr; };
+		InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+		DestroyScript = [](ScriptComponent* sc) { delete sc->instance; sc->instance = nullptr; };
 
-		OnCreateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnCreate; };
-		OnDestroyFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnDestroy; };
-		OnUpdateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnUpdate; };
+		OnCreateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnCreate(); };
+		OnDestroyFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnDestroy(); };
+		OnUpdateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnUpdate(); };
 	}
 };
 
@@ -127,13 +129,14 @@ struct TransformComponent : public Component
 	Vector2D pos;
 	Vector2D lastSafePos;
 
+	Vector2D scale;
+
 	int width;
 	int height;
-	int scale;
 
 	TransformComponent& operator=(const TransformComponent&) = default;
 
-	TransformComponent(class Entity* entt, const SDL_Rect& rect, int sc = 1);
+	TransformComponent(class Entity* entt, const SDL_Rect& rect, Vector2D sc = 1);
 };
 
 

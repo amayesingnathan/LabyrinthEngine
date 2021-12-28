@@ -22,8 +22,8 @@ SpriteComponent::SpriteComponent(Entity* entt, const char* path, const SDL_Rect&
 	auto& transform = entity->getComponent<TransformComponent>();
 	destRect.x = static_cast<int>(transform.pos.x);
 	destRect.y = static_cast<int>(transform.pos.y);
-	destRect.w = transform.width * transform.scale;
-	destRect.h = transform.height * transform.scale;
+	destRect.w = static_cast<int>(round(transform.width * transform.scale.x));
+	destRect.h = static_cast<int>(round(transform.height * transform.scale.y));
 }
 
 SpriteComponent::SpriteComponent(Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated) :
@@ -41,8 +41,8 @@ SpriteComponent::SpriteComponent(Entity* entt, SDL_Texture& tex, const SDL_Rect&
 	auto& transform = entity->getComponent<TransformComponent>();
 	destRect.x = static_cast<int>(transform.pos.x);
 	destRect.y = static_cast<int>(transform.pos.y);
-	destRect.w = transform.width * transform.scale;
-	destRect.h = transform.height * transform.scale;
+	destRect.w = static_cast<int>(round(transform.width * transform.scale.x));
+	destRect.h = static_cast<int>(round(transform.height * transform.scale.y));
 }
 
 void SpriteComponent::setTex(const char* path)

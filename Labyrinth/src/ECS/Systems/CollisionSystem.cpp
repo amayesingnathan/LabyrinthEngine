@@ -44,14 +44,14 @@ void Collision::update()
 	if (trans.pos.x < 0) {
 		trans.pos.x = 0;
 	}
-	if (trans.pos.x + (trans.width * trans.scale) > bounds.x) {
-		trans.pos.x = bounds.x - (trans.width * trans.scale);
+	if (trans.pos.x + (trans.width * trans.scale.x) > bounds.x) {
+		trans.pos.x = bounds.x - (trans.width * trans.scale.x);
 	}
 	if (trans.pos.y < 0) {
 		trans.pos.y = 0; 
 	}
-	if (trans.pos.y + (trans.height * trans.scale) > bounds.y) {
-		trans.pos.y = bounds.y - (trans.height * trans.scale);
+	if (trans.pos.y + (trans.height * trans.scale.y) > bounds.y) {
+		trans.pos.y = bounds.y - (trans.height * trans.scale.y);
 
 		if (hasVel)
 		{

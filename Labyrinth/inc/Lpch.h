@@ -12,6 +12,7 @@
 #include <sstream>
 #include <execution>
 #include <memory>
+#include <functional>
 
 #include "SDL.h"
 #include "SDL_image.h"

@@ -8,15 +8,15 @@
 #include "ECS/Systems/CollisionSystem.h"
 #include "ECS/Systems/RenderSystem.h"
 #include "ECS/Systems/AssetManager.h"
+#include "ECS/Systems/ScriptEngine.h"
 
 class Scene
 {
 public:
 	void init(int lvl);
-
 	void update();
-
 	void render();
+	void clean();
 
 public:
 	//Systems
@@ -27,6 +27,7 @@ public:
 	static Collision sysCollisions;
 	static RenderSystem sysRender;
 	static AssetManager sysAssets;
+	static ScriptEngine sysScripting;
 
 	static SDL_Rect camera;
 

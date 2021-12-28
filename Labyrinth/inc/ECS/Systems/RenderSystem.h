@@ -5,7 +5,7 @@
 class RenderSystem : public System
 {
 public:
-	void update();
+	void update() override;
 	void render();
 
 private:

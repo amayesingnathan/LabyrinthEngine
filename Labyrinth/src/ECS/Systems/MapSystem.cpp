@@ -10,14 +10,6 @@
 #include "ECS/Entity/Entity.h"
 #include "ECS/Components/GameComponents.h"
 
-Map::~Map()
-{
-	for (auto tex : tilesets)
-	{
-		Scene::sysTex.destroyTexture(tex.second.tilesetTex);
-	}
-}
-
 void Map::init(Scene* scene, Entity* entt)
 {
 	//Clear any existing tiles
@@ -65,8 +57,15 @@ void Map::update()
 		tile.destRect.x = static_cast<int>(round(tile.position.x - Scene::camera.x));
 		tile.destRect.y = static_cast<int>(round(tile.position.y - Scene::camera.y));
 	});
+}
 
-
+void Map::clean()
+{
+	for (auto tex : tilesets)
+	{
+		Scene::sysTex.destroyTexture(tex.second.tilesetTex);
+	}
+	std::cout << "Map System cleaned\n";
 }
 
 void Map::loadLevel(int lvl)
