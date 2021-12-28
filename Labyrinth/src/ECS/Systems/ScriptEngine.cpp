@@ -37,5 +37,5 @@ void ScriptEngine::clean()
 			script.DestroyScript(&script);
 		}
 	}
-	std::cout << "Script Engine cleaned\n";
+	std::cout << "Script Engine cleaned.\n";
 }

@@ -15,7 +15,7 @@ void AssetManager::clean()
 		delete entity;
 		entity = nullptr;
 	}
-	std::cout << "Asset Manager cleaned\n";
+	std::cout << "Asset Manager cleaned.\n";
 }
 
 Entity* AssetManager::createEntity(const std::string& tag)

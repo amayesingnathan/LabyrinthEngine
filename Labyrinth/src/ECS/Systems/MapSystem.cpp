@@ -65,7 +65,7 @@ void Map::clean()
 	{
 		Scene::sysTex.destroyTexture(tex.second.tilesetTex);
 	}
-	std::cout << "Map System cleaned\n";
+	std::cout << "Map System cleaned.\n";
 }
 
 void Map::loadLevel(int lvl)
