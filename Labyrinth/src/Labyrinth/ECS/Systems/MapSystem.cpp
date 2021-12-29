@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./MapSystem.h"
 
 //Core Engine Includes
@@ -154,3 +156,5 @@ TileComponent* Map::AddTile(int tileID, const std::pair<int, tilesetData>& tiles
 	}
 	return tile;
 }
+
+#endif

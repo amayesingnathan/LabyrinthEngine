@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "System.h"
 #include "ECS/Components/Vector2D.h"
 
@@ -11,3 +13,5 @@ class PhysicsEngine : public System
 public:
 	void update() override;
 };
+
+#endif

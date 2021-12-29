@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "System.h"
 
 class InputManager : public System
@@ -11,3 +13,5 @@ private:
 	float moveSpeed = 5.0f;
 	void updateVelocity(entt::entity entity);
 };
+
+#endif

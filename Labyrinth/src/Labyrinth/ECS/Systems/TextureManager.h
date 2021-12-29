@@ -1,5 +1,7 @@
 #pragma once		
 
+#if 0 
+
 #include "System.h"
 
 class TextureManager : public System
@@ -19,3 +21,4 @@ public:
 	static void play(struct SpriteComponent& sprite, const std::string& anim);
 };
 
+#endif

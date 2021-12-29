@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./CollisionSystem.h"
 
 #include "Scene.h"
@@ -125,3 +127,5 @@ bool Collision::resolveCollision(TransformComponent& trans, bool hasVel)
 
 	return false;
 }
+
+#endif

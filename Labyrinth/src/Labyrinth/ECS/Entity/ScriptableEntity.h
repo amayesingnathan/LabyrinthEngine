@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "Entity.h"
 
 class ScriptableEntity 
@@ -23,3 +25,5 @@ private:
 	friend class ScriptEngine;
 
 };
+
+#endif

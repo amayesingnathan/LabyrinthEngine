@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "Scene.h"
 
 #include "ECS/Entity/ScriptableEntity.h"
@@ -78,3 +80,5 @@ void Scene::clean()
 	sysRender.clean();
 	sysScripting.clean();
 }
+
+#endif

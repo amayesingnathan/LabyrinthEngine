@@ -1,9 +1,11 @@
 #include "Lpch.h"
 
-#include "Labyrinth.h"
-#include "Scene.h"
+//#include "Labyrinth.h"
+//#include "Scene.h"
 
-#include "ECS/Entity/Entity.h"
+//#include "ECS/Entity/Entity.h"
+
+#if 0
 
 SDL_Renderer* Labyrinth::renderer = nullptr;
 SDL_Event Labyrinth::event;
@@ -35,11 +37,12 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 	keyboard = SDL_GetKeyboardState(NULL);
 	prevKeyboard = SDL_GetKeyboardState(NULL);
 
-	int flags = 0;
+	Uint32 flags = SDL_WINDOW_RESIZABLE;
 	if (fullscreen)
 	{
 		flags = SDL_WINDOW_FULLSCREEN;
 	}
+	flags = flags | SDL_WINDOW_OPENGL;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0)
 	{
@@ -104,3 +107,5 @@ void Labyrinth::clean()
 	SDL_Quit();
 	std::cout << "Game Cleaned." << std::endl;
 }
+
+#endif

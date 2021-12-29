@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./PhysicsEngine.h"
 
 #include "Scene.h"
@@ -36,3 +38,5 @@ void PhysicsEngine::update()
 		box.collider.h = static_cast<int>(round(transform.height * transform.scale.y));
 	});
 }
+
+#endif

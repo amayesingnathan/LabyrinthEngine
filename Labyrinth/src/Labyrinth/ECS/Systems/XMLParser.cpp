@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./XMLParser.h"
 
 #include "Scene.h"
@@ -202,3 +204,5 @@ void XMLParser::openLevel(int lvl, std::vector<Layer>& layerList, std::map<int, 
 
     delete doc;
 }
+
+#endif

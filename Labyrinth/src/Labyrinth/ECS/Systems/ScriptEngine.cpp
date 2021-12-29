@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./ScriptEngine.h"
 
 #include "Scene.h"
@@ -56,3 +58,5 @@ void ScriptEngine::addScript(Entity* entity)
 
 //Must keep explicit declarations up to date with all available scripts
 template void ScriptEngine::addScript<TestScript>(Entity* entity);
+
+#endif

@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./GameComponents.h"
 
 #include "Labyrinth.h"
@@ -54,3 +56,5 @@ void SpriteComponent::setSubTex(int x, int y, int w, int h)
 {
 	srcRect = Scene::sysTex.setSubTex(x, y, w, h);
 }
+
+#endif

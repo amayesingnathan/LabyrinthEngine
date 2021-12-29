@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 class System
 {
 public:
@@ -10,3 +12,5 @@ public:
 protected:
 	class Scene* mScene;
 };	
+
+#endif

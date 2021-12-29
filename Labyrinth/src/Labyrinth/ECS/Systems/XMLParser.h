@@ -1,6 +1,12 @@
 #pragma once
 
+#if 0
+
 #include "ECS/Components/Vector2D.h"
+
+//XML Parsing Includes
+#include "rapidxml.hpp"
+#include "rapidxml_utils.hpp"
 
 struct Collider
 {
@@ -36,3 +42,5 @@ private:
 	static rapidxml::xml_node<>* getChild(rapidxml::xml_node<>* inputNode, std::string sNodeFilter);
 	static ColliderList getColliders(rapidxml::xml_node<>* inputNode);
 };
+
+#endif

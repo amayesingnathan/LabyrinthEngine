@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0 
+
 #include "./TextureManager.h"
 
 #include "Labyrinth.h"
@@ -76,3 +78,5 @@ void TextureManager::play(SpriteComponent& sprite, const std::string& anim)
 	sprite.frames = sprite.animations[anim].frames;
 	sprite.speed = sprite.animations[anim].speed;
 }
+
+#endif

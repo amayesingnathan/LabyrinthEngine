@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 //Systems
 #include "ECS/Systems/PhysicsEngine.h"
 #include "ECS/Systems/InputManager.h"
@@ -37,3 +39,4 @@ private:
 	class Entity* player;
 };
 
+#endif

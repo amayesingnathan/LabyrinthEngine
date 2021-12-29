@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "System.h"
 
 //XML Parsing Functions
@@ -46,3 +48,5 @@ private:
 	std::map<int, ColliderList> tileColliders;
 };
 
+
+#endif

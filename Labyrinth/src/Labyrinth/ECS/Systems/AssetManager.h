@@ -1,6 +1,8 @@
 #pragma once
 #include "System.h"
 
+#if 0
+
 class Entity;
 
 class AssetManager : public System
@@ -30,3 +32,4 @@ private:
 	std::vector<Entity*> mEntities;
 };
 
+#endif

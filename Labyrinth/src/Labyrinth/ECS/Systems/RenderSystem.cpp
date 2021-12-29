@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./RenderSystem.h"
 
 #include "Labyrinth.h"
@@ -55,3 +57,5 @@ void RenderSystem::draw(SDL_Texture* tex, const SDL_Rect* src, const SDL_Rect* d
 	if (tex == NULL) return;
 	SDL_RenderCopyEx(Labyrinth::renderer, tex, src, dest, NULL, NULL, flip);
 }
+
+#endif

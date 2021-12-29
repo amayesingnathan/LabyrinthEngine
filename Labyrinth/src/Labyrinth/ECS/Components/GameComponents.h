@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "Animation.h"
 #include "Vector2D.h"
 
@@ -150,3 +152,5 @@ struct VelocityComponent : public Component
 	VelocityComponent(class Entity* entt, T velocity) :
 		Component(entt, Types::Velocity), vel(velocity) {}
 };
+
+#endif

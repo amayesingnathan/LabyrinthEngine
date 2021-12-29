@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -9,11 +9,15 @@
       <Configuration>Release</Configuration>
       <Platform>x64</Platform>
     </ProjectConfiguration>
+    <ProjectConfiguration Include="Dist|x64">
+      <Configuration>Dist</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <VCProjectVersion>16.0</VCProjectVersion>
+    <ProjectGuid>{B29655A6-1E01-0A1D-673F-BBC2D3E8E771}</ProjectGuid>
+    <IgnoreWarnCompileDuplicatedFilename>true</IgnoreWarnCompileDuplicatedFilename>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{3210cb76-a7fe-4f52-b551-5bc46230edaf}</ProjectGuid>
     <RootNamespace>Labyrinth</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -21,20 +25,23 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
-  </ImportGroup>
-  <ImportGroup Label="Shared">
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
@@ -42,127 +49,167 @@
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
+    <OutDir>..\bin\Debug-windows-x86_64\Labyrinth\</OutDir>
+    <IntDir>..\bin\int\Debug-windows-x86_64\Labyrinth\</IntDir>
+    <TargetName>Labyrinth</TargetName>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(ProjectDir)bin\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(ProjectDir)bin\intermediates\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>..\bin\Release-windows-x86_64\Labyrinth\</OutDir>
+    <IntDir>..\bin\int\Release-windows-x86_64\Labyrinth\</IntDir>
+    <TargetName>Labyrinth</TargetName>
+    <TargetExt>.dll</TargetExt>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <LinkIncremental>false</LinkIncremental>
+    <OutDir>..\bin\Dist-windows-x86_64\Labyrinth\</OutDir>
+    <IntDir>..\bin\int\Dist-windows-x86_64\Labyrinth\</IntDir>
+    <TargetName>Labyrinth</TargetName>
+    <TargetExt>.dll</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\rapidxml;$(ProjectDir)dependencies\SDL2_image-2.0.5\include;$(ProjectDir)dependencies\entt\single_include;$(SolutionDir)Labyrinth\dependencies\spdlog\include;$(ProjectDir)dependencies\SDL2-2.0.16\include;$(ProjectDir)src\Labyrinth</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)dependencies\SDL2_image-2.0.5\lib;$(ProjectDir)dependencies\SDL2-2.0.16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\rapidxml;$(ProjectDir)dependencies\SDL2_image-2.0.5\include;$(ProjectDir)dependencies\entt\single_include;$(SolutionDir)Labyrinth\dependencies\spdlog\include;$(ProjectDir)dependencies\SDL2-2.0.16\include;$(ProjectDir)src\Labyrinth</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\SDL2_image-2.0.5\lib;$(SolutionDir)dependencies\SDL2-2.0.16\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
     </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <Optimization>Full</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <StringPooling>true</StringPooling>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <ImportLibrary>..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
+    </Link>
+    <PostBuildEvent>
+      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="src\Labyrinth\Log.cpp" />
-    <ClCompile Include="src\Labyrinth\Application.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\Component.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\TransformComponent.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\AssetManager.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\CollisionSystem.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\SpriteComponent.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\TileComponent.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\InputManager.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\PhysicsEngine.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\MapSystem.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\ColliderComponent.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\KeyboardController.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\RenderSystem.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\ScriptEngine.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\Scripts.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\System.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
-    <ClCompile Include="src\Labyrinth\Labyrinth.cpp" />
-    <ClCompile Include="src\Labyrinth\Lpch.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="src\Labyrinth\main.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
-    <ClCompile Include="src\Labyrinth\ECS\Components\Vector2D.cpp" />
-    <ClCompile Include="src\Labyrinth\Scene.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Labyrinth\Log.h" />
     <ClInclude Include="src\Labyrinth.h" />
-    <ClInclude Include="src\Labyrinth\Application.h" />
-    <ClInclude Include="dependencies\RapidXML\rapidxml.hpp" />
-    <ClInclude Include="dependencies\RapidXML\rapidxml_iterators.hpp" />
-    <ClInclude Include="dependencies\RapidXML\rapidxml_print.hpp" />
-    <ClInclude Include="dependencies\RapidXML\rapidxml_utils.hpp" />
-    <ClInclude Include="inc\ECS\Components\Colliders\CircleColliderComponent.h" />
-    <ClInclude Include="inc\ECS\Components\Colliders\RectColliderComponent.h" />
-    <ClInclude Include="src\Labyrinth\Core.h" />
+    <ClInclude Include="src\Labyrinth\Core\Application.h" />
+    <ClInclude Include="src\Labyrinth\Core\Base.h" />
+    <ClInclude Include="src\Labyrinth\Core\EntryPoint.h" />
+    <ClInclude Include="src\Labyrinth\Core\Log.h" />
+    <ClInclude Include="src\Labyrinth\Core\MouseCodes.h" />
+    <ClInclude Include="src\Labyrinth\Core\Platforms.h" />
+    <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h" />
+    <ClInclude Include="src\Labyrinth\ECS\Components\GameComponents.h" />
+    <ClInclude Include="src\Labyrinth\ECS\Components\Vector2D.h" />
+    <ClInclude Include="src\Labyrinth\ECS\Entity\Entity.h" />
     <ClInclude Include="src\Labyrinth\ECS\Entity\ScriptableEntity.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\AssetManager.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\CollisionSystem.h" />
-    <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h" />
-    <ClInclude Include="src\Labyrinth\ECS\Entity\Entity.h" />
-    <ClInclude Include="dependencies\EnTT\entt.hpp" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\InputManager.h" />
+    <ClInclude Include="src\Labyrinth\ECS\Systems\MapSystem.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\PhysicsEngine.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\RenderSystem.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\ScriptEngine.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\System.h" />
-    <ClInclude Include="src\Labyrinth\ECS\Components\GameComponents.h" />
-    <ClInclude Include="src\Labyrinth\config.h" />
-    <ClInclude Include="src\Labyrinth\ECS\Components\Vector2D.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\TextureManager.h" />
     <ClInclude Include="src\Labyrinth\ECS\Systems\XMLParser.h" />
-    <ClInclude Include="src\Labyrinth\EntryPoint.h" />
+    <ClInclude Include="src\Labyrinth\Events\ApplicationEvent.h" />
+    <ClInclude Include="src\Labyrinth\Events\Event.h" />
+    <ClInclude Include="src\Labyrinth\Events\KeyEvent.h" />
+    <ClInclude Include="src\Labyrinth\Events\MouseEvent.h" />
     <ClInclude Include="src\Labyrinth\Labyrinth.h" />
-    <ClInclude Include="src\Labyrinth\ECS\Systems\MapSystem.h" />
-    <ClInclude Include="src\Labyrinth\Lpch.h" />
     <ClInclude Include="src\Labyrinth\Scene.h" />
+    <ClInclude Include="src\Labyrinth\config.h" />
+    <ClInclude Include="src\Lpch.h" />
   </ItemGroup>
   <ItemGroup>
-    <Library Include="SDL2.lib" />
-    <Library Include="SDL2main.lib" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="SDL2_image.dll" />
+    <ClCompile Include="src\Labyrinth\Core\Application.cpp" />
+    <ClCompile Include="src\Labyrinth\Core\Log.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\ColliderComponent.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\Component.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\KeyboardController.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\SpriteComponent.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\TileComponent.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\TransformComponent.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Components\Vector2D.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\AssetManager.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\CollisionSystem.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\InputManager.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\MapSystem.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\PhysicsEngine.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\RenderSystem.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\ScriptEngine.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\Scripts.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\System.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
+    <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
+    <ClCompile Include="src\Labyrinth\Labyrinth.cpp" />
+    <ClCompile Include="src\Labyrinth\Scene.cpp" />
+    <ClCompile Include="src\Labyrinth\main.cpp" />
+    <ClCompile Include="src\Lpch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

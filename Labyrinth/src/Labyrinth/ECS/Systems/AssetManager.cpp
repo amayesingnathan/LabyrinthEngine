@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./AssetManager.h"
 
 #include "Scene.h"
@@ -209,3 +211,5 @@ template<>
 void AssetManager::OnComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 {
 }
+
+#endif

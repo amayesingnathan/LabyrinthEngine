@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./GameComponents.h"
 
 #include "ECS/Entity/Entity.h"
@@ -20,3 +22,5 @@ void TileComponent::remove()
 	entity->removeComponent<TransformComponent>();
 	entity->removeComponent<SpriteComponent>();
 }
+
+#endif

@@ -1,5 +1,7 @@
 #include "Lpch.h"
 
+#if 0
+
 #include "./InputManager.h"
 
 #include "Labyrinth.h"
@@ -59,3 +61,5 @@ void InputManager::updateVelocity(entt::entity entity)
 	vel.vel.normalise();
 	vel.vel *= moveSpeed;
 }
+
+#endif

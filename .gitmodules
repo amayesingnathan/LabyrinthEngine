@@ -4,6 +4,3 @@
 [submodule "Labyrinth/dependencies/rapidxml"]
 	path = Labyrinth/dependencies/rapidxml
 	url = https://github.com/discord/rapidxml
-[submodule "Labyrinth/dependencies/entt"]
-	path = Labyrinth/dependencies/entt
-	url = https://github.com/skypjack/entt

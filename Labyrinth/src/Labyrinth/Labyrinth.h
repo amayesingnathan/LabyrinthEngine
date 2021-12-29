@@ -1,8 +1,9 @@
 #pragma once
 
 //ECS Components
-#include "ECS/Components/GameComponents.h"
+//#include "ECS/Components/GameComponents.h"
 
+#if 0
 class Labyrinth
 {
 public:
@@ -34,3 +35,4 @@ protected:
 
 };
 
+#endif

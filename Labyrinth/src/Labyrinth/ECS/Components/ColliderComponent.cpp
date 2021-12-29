@@ -1,4 +1,7 @@
 #include "Lpch.h"
+
+#if 0
+
 #include "./GameComponents.h"
 
 #include "ECS/Entity/Entity.h"
@@ -50,3 +53,5 @@ ColliderComponent::ColliderComponent(Entity* entt, const SDL_Rect& rect, Collide
 		break;
 	}
 }
+
+#endif

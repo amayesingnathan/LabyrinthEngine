@@ -1,5 +1,7 @@
 #pragma once
 
+#if 0
+
 #include "Scene.h"
 
 class Entity
@@ -62,3 +64,5 @@ private:
 	Scene* mScene;
 
 };
+
+#endif

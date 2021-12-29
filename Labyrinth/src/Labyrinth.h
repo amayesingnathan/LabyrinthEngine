@@ -2,9 +2,9 @@
 
 //For use by Labyrinth applications
 
-#include "Labyrinth/Application.h"
-#include "Labyrinth/Log.h"
+#include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Core/Log.h"
 
 // ---Entry Point------------------
-#include "Labyrinth/EntryPoint.h"
+#include "Labyrinth/Core/EntryPoint.h"
 // --------------------------------

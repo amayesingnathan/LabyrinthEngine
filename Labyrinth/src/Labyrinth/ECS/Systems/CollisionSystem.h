@@ -1,4 +1,7 @@
 #pragma once
+
+#if 0
+
 #include "System.h"
 
 #include "ECS/Components/Vector2D.h"
@@ -21,3 +24,5 @@ private:
 	class Entity* player;
 	Vector2D bounds;
 };
+
+#endif
