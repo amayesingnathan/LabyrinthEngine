@@ -1,6 +1,5 @@
 #Ignore binaries
-Labyrinth/bin
-Sandbox/bin
+bin
 
 #Ignore VS temp files
 .vs
