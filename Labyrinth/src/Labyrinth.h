@@ -2,8 +2,8 @@
 
 //For use by Labyrinth applications
 
-#include <stdio.h>
 #include "Labyrinth/Application.h"
+#include "Labyrinth/Log.h"
 
 // ---Entry Point------------------
 #include "Labyrinth/EntryPoint.h"

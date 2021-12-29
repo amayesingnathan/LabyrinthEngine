@@ -96,6 +96,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Labyrinth\Log.cpp" />
     <ClCompile Include="src\Labyrinth\Application.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Components\Component.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Components\TransformComponent.cpp" />
@@ -124,6 +125,7 @@
     <ClCompile Include="src\Labyrinth\Scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Labyrinth\Log.h" />
     <ClInclude Include="src\Labyrinth.h" />
     <ClInclude Include="src\Labyrinth\Application.h" />
     <ClInclude Include="dependencies\RapidXML\rapidxml.hpp" />

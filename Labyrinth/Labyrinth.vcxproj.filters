@@ -84,6 +84,9 @@
     <ClCompile Include="src\Labyrinth\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\Log.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\EnTT\entt.hpp">
@@ -174,6 +177,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\Labyrinth\EntryPoint.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Log.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
