@@ -15,70 +15,73 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\main.cpp">
+    <ClCompile Include="src\Labyrinth\main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Labyrinth.cpp">
+    <ClCompile Include="src\Labyrinth\Labyrinth.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\Vector2D.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\Vector2D.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\TextureManager.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\KeyboardController.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\KeyboardController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\ColliderComponent.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\ColliderComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\MapSystem.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\MapSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\CollisionSystem.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\CollisionSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\TileComponent.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\TileComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\PhysicsEngine.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\PhysicsEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\InputManager.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\SpriteComponent.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\SpriteComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Scene.cpp">
+    <ClCompile Include="src\Labyrinth\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\RenderSystem.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\RenderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\XMLParser.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\AssetManager.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\AssetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\System.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\System.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\Component.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\Component.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\TransformComponent.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Components\TransformComponent.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\Lpch.cpp">
+    <ClCompile Include="src\Labyrinth\Lpch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Systems\ScriptEngine.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\ScriptEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="inc\ECS\Systems\Scripts.cpp">
+    <ClCompile Include="src\Labyrinth\ECS\Systems\Scripts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Labyrinth\Application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -86,46 +89,46 @@
     <ClInclude Include="dependencies\EnTT\entt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\TextureManager.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\TextureManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Labyrinth.h">
+    <ClInclude Include="src\Labyrinth\Labyrinth.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Components\GameComponents.h">
+    <ClInclude Include="src\Labyrinth\ECS\Components\GameComponents.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\config.h">
+    <ClInclude Include="src\Labyrinth\config.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Components\Vector2D.h">
+    <ClInclude Include="src\Labyrinth\ECS\Components\Vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Entity\Entity.h">
+    <ClInclude Include="src\Labyrinth\ECS\Entity\Entity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\MapSystem.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\MapSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\CollisionSystem.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\CollisionSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Components\Animation.h">
+    <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\PhysicsEngine.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\PhysicsEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\System.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\InputManager.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Scene.h">
+    <ClInclude Include="src\Labyrinth\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\RenderSystem.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\RenderSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Components\Colliders\RectColliderComponent.h">
@@ -134,16 +137,16 @@
     <ClInclude Include="inc\ECS\Components\Colliders\CircleColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\XMLParser.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\XMLParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\AssetManager.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\AssetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\Lpch.h">
+    <ClInclude Include="src\Labyrinth\Lpch.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Entity\ScriptableEntity.h">
+    <ClInclude Include="src\Labyrinth\ECS\Entity\ScriptableEntity.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\RapidXML\rapidxml.hpp">
@@ -158,7 +161,19 @@
     <ClInclude Include="dependencies\RapidXML\rapidxml_utils.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Systems\ScriptEngine.h">
+    <ClInclude Include="src\Labyrinth\ECS\Systems\ScriptEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Application.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Core.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\EntryPoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
