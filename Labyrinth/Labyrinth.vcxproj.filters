@@ -54,18 +54,36 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\ECS\Components\PlayerComponent.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ECS\Systems\RenderSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ECS\Systems\XMLParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\ECS\Systems\AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Systems\System.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Components\Component.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Components\TransformComponent.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Lpch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ECS\Systems\ScriptEngine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="inc\ECS\Systems\Scripts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="inc\ECS\Entity\entt.hpp">
+    <ClInclude Include="dependencies\EnTT\entt.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Systems\TextureManager.h">
@@ -83,40 +101,13 @@
     <ClInclude Include="inc\ECS\Components\Vector2D.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="inc\ECS\Components\TransformComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\VelocityComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\PhysicsComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\SpriteComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="inc\ECS\Entity\Entity.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\TagComponent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\KeyboardController.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\ColliderComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Systems\MapSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Systems\CollisionSystem.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\TileComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Components\Animation.h">
@@ -129,9 +120,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Systems\InputManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="inc\ECS\Components\PlayerComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\Scene.h">
@@ -147,6 +135,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="inc\ECS\Systems\XMLParser.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Systems\AssetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\Lpch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Entity\ScriptableEntity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\RapidXML\rapidxml.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\RapidXML\rapidxml_iterators.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\RapidXML\rapidxml_print.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\RapidXML\rapidxml_utils.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="inc\ECS\Systems\ScriptEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

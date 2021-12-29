@@ -1,8 +1,7 @@
 #pragma once
 
-#include "ECS/Systems/System.h"
+#include "System.h"
 #include "ECS/Components/Vector2D.h"
-#include "config.h"
 
 constexpr int configuration::SCREEN_WIDTH;
 constexpr int configuration::SCREEN_HEIGHT;

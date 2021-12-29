@@ -1,6 +1,6 @@
-#include "ECS\Components\Vector2D.h"
+#include "Lpch.h"
 
-#include <cmath>
+#include "ECS\Components\Vector2D.h"
 
 Vector2D& Vector2D::Add(const Vector2D& vec)
 {
@@ -86,7 +86,7 @@ bool operator!=(const Vector2D& a, const Vector2D& b)
 	return false;
 }
 
-bool Vector2D::isNull()
+bool Vector2D::isNull() const
 {
 	if ((x == 0) && (y == 0)) return true;
 	return false;

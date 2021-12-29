@@ -1,56 +1,48 @@
 #pragma once
 
-#include "ECS/Entity/Entity.h"
-#include "ECS/Components/TileComponent.h"
-#include "ECS/Systems/System.h"
-
-#include "config.h"
+#include "System.h"
 
 //XML Parsing Functions
 #include "ECS/Systems/XMLParser.h"
 
-#include "SDL.h"
+using RenderLayer = std::vector<struct TileComponent*>;
 
 class Map : public System
 {
 public: //Methods
-	~Map();
-
-	void init(entt::registry& reg, const Entity& entt);
+	void init(class Scene* scene, class Entity* entt);
 	void update() override;
+	void clean() override;
 
-	void loadLevel(int lvl);
-
-	SDL_Texture* getBG() { return bgTexture; };
+	void loadLevel(int lvl, Vector2D spawn);
 
 private:
-	void AddTile(int tileID);
+	struct TileComponent* AddTile(int tileID, const std::pair<int, tilesetData>& set, const Vector2D& pos);
 
 public: //Members
-	static constexpr int MAP_WIDTH = 100;
-	static constexpr int MAP_HEIGHT = 80;
-	static constexpr int DISPLAY_WIDTH = 25;
-	static constexpr int DISPLAY_HEIGHT = 20;
+	static constexpr int MAP_WIDTH = 60;
+	static constexpr int MAP_HEIGHT = 60;
+	static constexpr int DISPLAY_WIDTH = configuration::SCREEN_WIDTH / 32;
+	static constexpr int DISPLAY_HEIGHT = configuration::SCREEN_HEIGHT / 32;
 
-	/*
-		Camera width and height is determined by the size of the map. 
-		Take the ratio of map size to display size and subtract one (to account for half a screen width each side)
-		and then multiply the result by the screen resolution.
-	*/
+	std::vector<RenderLayer> renderLayers;
 
 private:
-	static constexpr int CAMERA_WIDTH = ((MAP_WIDTH / DISPLAY_WIDTH) - 1) * configuration::SCREEN_WIDTH;
-	static constexpr int CAMERA_HEIGHT = ((MAP_HEIGHT / DISPLAY_HEIGHT) - 1) * configuration::SCREEN_HEIGHT;
+	/*
+		Camera width and height is determined by the size of the map.
+		Take the ratio of map size to display size and subtract one (to account for half a screen on each border)
+		and then multiply the result by the screen resolution.
+	*/
+	static constexpr float CAMERA_WIDTH = ((static_cast<float>(MAP_WIDTH) / static_cast<float>(DISPLAY_WIDTH)) - 1) * configuration::SCREEN_WIDTH;
+	static constexpr float CAMERA_HEIGHT = ((static_cast<float>(MAP_HEIGHT) / static_cast<float>(DISPLAY_HEIGHT)) - 1) * configuration::SCREEN_HEIGHT;
 
-	Entity player;
+	class Entity* player;
 
 	SDL_Rect src, dest;
-	SDL_Texture* tileTextures;
-	SDL_Texture* bgTexture = nullptr;
+	Vector2D spawn;
 
-	int map[MAP_HEIGHT][MAP_WIDTH];
-
+	std::vector<Layer> mapLayers;
+	std::map<int, tilesetData> tilesets;
 	std::map<int, ColliderList> tileColliders;
-	int tilesetWidth;
 };
 

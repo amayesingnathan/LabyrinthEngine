@@ -4,6 +4,5 @@
 
 #include "ECS/Entity/Entity.h"
 
-KeyboardController::KeyboardController(Entity* entt) :
-	Component(entt, Types::Controller){}
-
+Component::Component(Entity* entt, Types type) : entity{ entt }, derived(type)
+{}

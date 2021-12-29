@@ -1,18 +1,7 @@
 #pragma once
 
-//SDL Includes
-#include <SDL.h>
-#include <SDL_image.h>
-
 //ECS Components
 #include "ECS/Components/GameComponents.h"
-
-//Standard Library Includes
-#include <iostream>
-#include <memory>
-
-class Entity;
-class Scene;
 
 class Labyrinth
 {
@@ -44,8 +33,7 @@ public:
 
 protected:
 	SDL_Window* window;
-	Entity testWall;
-	std::unique_ptr<Scene> currScene;
+	std::unique_ptr<class Scene> currScene;
 
 };
 

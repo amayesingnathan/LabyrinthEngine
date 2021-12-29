@@ -1,13 +1,11 @@
 #pragma once
 
-#include "ECS/Systems/System.h"
-
-#include "SDL.h"
+#include "System.h"
 
 class RenderSystem : public System
 {
 public:
-	void update();
+	void update() override;
 	void render();
 
 private:

@@ -1,57 +1,52 @@
+#include "Lpch.h"
+
 #include "ECS/Systems/RenderSystem.h"
 
 #include "Labyrinth.h"
 #include "Scene.h"
-#include "config.h"
 
 void RenderSystem::update()
 {
 	//Use updated transform to update sprite position
-	auto sprites = registry->view<SpriteComponent, TransformComponent>();
+	auto sprites = mScene->mRegistry.view<SpriteComponent, TransformComponent>();
 
-	for (auto entity : sprites)
-	{
+	std::for_each(std::execution::par, sprites.begin(), sprites.end(), [&sprites](const auto entity) {
 		//Get components for sprite from entity
-		auto& sprite = registry->get<SpriteComponent>(entity);
-		const auto& transform = registry->get<TransformComponent>(entity);
+		auto& sprite = sprites.get<SpriteComponent>(entity);
+		const auto& transform = sprites.get<TransformComponent>(entity);
+
 		sprite.destRect.x = static_cast<int>(transform.pos.x) - Scene::camera.x;
 		sprite.destRect.y = static_cast<int>(transform.pos.y) - Scene::camera.y;
-		sprite.destRect.w = transform.width * transform.scale;
-		sprite.destRect.h = transform.height * transform.scale;
-	}
+		sprite.destRect.w = static_cast<int>(round(transform.width * transform.scale.x));
+		sprite.destRect.h = static_cast<int>(round(transform.height * transform.scale.y));
+	});
 }
 
 void RenderSystem::render()
 {
-	//Draw map background first
-	draw(Scene::sysMap.getBG(), NULL, NULL, SDL_FLIP_NONE);
-
-	//Get tile map components to draw next
-	auto tiles = registry->view<TileComponent>();
-	for (auto entity : tiles)
+	//Get render layer to draw next
+	for (auto& renderLayer : Scene::sysMap.renderLayers)
 	{
-		auto& tile = registry->get<TileComponent>(entity);
-		auto& sprite = registry->get<SpriteComponent>(entity);
-		if ((tile.destRect.x + tile.destRect.w > 0) &&
-			(tile.destRect.y + tile.destRect.h > 0) &&
-			(tile.destRect.x - tile.destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
-			(tile.destRect.y - tile.destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
-			)
+		for (auto tile : renderLayer)
 		{
-			draw(sprite.texture, &sprite.srcRect, &tile.destRect, sprite.spriteFlip);
+			//Only draw tiles that are on screen.
+			if ((tile->destRect.x + tile->destRect.w > 0) &&
+				(tile->destRect.y + tile->destRect.h > 0) &&
+				(tile->destRect.x - tile->destRect.w < Scene::camera.x + configuration::SCREEN_WIDTH) &&
+				(tile->destRect.y - tile->destRect.h < Scene::camera.y + configuration::SCREEN_HEIGHT)
+				)
+			{
+				draw(tile->sprite->texture, &tile->sprite->srcRect, &tile->destRect, tile->sprite->spriteFlip);
+			}
 		}
 	}
 
-	//Get entities with sprites
-	auto sprites = registry->view<SpriteComponent>();
+	//Get entities with sprites but not tiles
+	auto sprites = mScene->mRegistry.view<SpriteComponent>(entt::exclude<TileComponent>);
 	for (auto entity : sprites)
 	{
-		//Only draw sprites for entities that dont have a tile component because these were drawn already
-		if (!registry->all_of<TileComponent>(entity))
-		{
-			auto& sprite = registry->get<SpriteComponent>(entity);
-			if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
-		}
+		auto& sprite = mScene->mRegistry.get<SpriteComponent>(entity);
+		if (sprite.texture) draw(sprite.texture, &sprite.srcRect, &sprite.destRect, sprite.spriteFlip);
 	}
 }
 
