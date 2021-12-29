@@ -78,6 +78,9 @@
     <ClCompile Include="src\ECS\Systems\ScriptEngine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="inc\ECS\Systems\Scripts.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="dependencies\EnTT\entt.hpp">

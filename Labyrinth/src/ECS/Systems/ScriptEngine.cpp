@@ -2,7 +2,15 @@
 
 #include "ECS/Systems/ScriptEngine.h"
 
+#include "Scene.h"
+
 #include "ECS/Components/GameComponents.h"
+
+/*
+	Contains all scripts for the engine. All scripts defined here must have explicit template declaration
+	for ScriptEngine::addScript at the bottom of this translation unit to be added to an entity.
+*/
+#include "ECS/Systems/Scripts.cpp"
 
 void ScriptEngine::update()
 {
@@ -39,3 +47,12 @@ void ScriptEngine::clean()
 	}
 	std::cout << "Script Engine cleaned.\n";
 }
+
+template<typename T>
+void ScriptEngine::addScript(Entity* entity)
+{
+	entity->addComponent<ScriptComponent>().bind<T>();
+}
+
+//Must keep explicit declarations up to date with all available scripts
+template void ScriptEngine::addScript<TestScript>(Entity* entity);

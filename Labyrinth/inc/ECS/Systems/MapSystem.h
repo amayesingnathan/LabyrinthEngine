@@ -14,7 +14,7 @@ public: //Methods
 	void update() override;
 	void clean() override;
 
-	void loadLevel(int lvl);
+	void loadLevel(int lvl, Vector2D spawn);
 
 private:
 	struct TileComponent* AddTile(int tileID, const std::pair<int, tilesetData>& set, const Vector2D& pos);
@@ -22,8 +22,8 @@ private:
 public: //Members
 	static constexpr int MAP_WIDTH = 60;
 	static constexpr int MAP_HEIGHT = 60;
-	static constexpr int DISPLAY_WIDTH = 25;
-	static constexpr int DISPLAY_HEIGHT = 20;
+	static constexpr int DISPLAY_WIDTH = configuration::SCREEN_WIDTH / 32;
+	static constexpr int DISPLAY_HEIGHT = configuration::SCREEN_HEIGHT / 32;
 
 	std::vector<RenderLayer> renderLayers;
 
@@ -39,6 +39,7 @@ private:
 	class Entity* player;
 
 	SDL_Rect src, dest;
+	Vector2D spawn;
 
 	std::vector<Layer> mapLayers;
 	std::map<int, tilesetData> tilesets;

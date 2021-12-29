@@ -16,7 +16,7 @@ ScriptEngine Scene::sysScripting;
 
 SDL_Rect Scene::camera;
 
-void Scene::init(int lvl)
+void Scene::init()
 {
 	camera = {};
 
@@ -34,28 +34,9 @@ void Scene::init(int lvl)
 	sysRender.init(this);
 	sysScripting.init(this);
 
-	sysMap.loadLevel(lvl);
+	sysMap.loadLevel(1, { 390, 325 });
 
-	class TestScript : public ScriptableEntity
-	{
-	public:
-		virtual void OnCreate() override
-		{
-			std::cout << "TestScript::OnCreate" << std::endl;
-		}
-
-		virtual void OnDestroy() override
-		{
-			std::cout << "TestScript::OnDestroy" << std::endl;
-		}
-
-		virtual void OnUpdate() override
-		{
-			std::cout << "TestScript::OnUpdate" << std::endl;
-		}
-	};
-
-	player->addComponent<ScriptComponent>().bind<TestScript>();
+	//player->addComponent<ScriptComponent>().bind<TestScript>();
 }
 
 void Scene::update()

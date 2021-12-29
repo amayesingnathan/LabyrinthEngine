@@ -13,7 +13,7 @@
 class Scene
 {
 public:
-	void init(int lvl);
+	void init();
 	void update();
 	void render();
 	void clean();

@@ -185,6 +185,7 @@
     <ClCompile Include="src\ECS\Components\KeyboardController.cpp" />
     <ClCompile Include="src\ECS\Systems\RenderSystem.cpp" />
     <ClCompile Include="src\ECS\Systems\ScriptEngine.cpp" />
+    <ClCompile Include="inc\ECS\Systems\Scripts.cpp" />
     <ClCompile Include="src\ECS\Systems\System.cpp" />
     <ClCompile Include="src\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth.cpp" />

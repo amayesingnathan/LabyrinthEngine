@@ -4,7 +4,7 @@
 
 #include "Scene.h"
 
-#include "ECS/Entity/Entity.h"
+#include "ECS/Entity/ScriptableEntity.h"
 #include "ECS/Components/GameComponents.h"
 
 void AssetManager::clean()

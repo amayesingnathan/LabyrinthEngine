@@ -57,7 +57,7 @@ void Labyrinth::init(const char* title, int xpos, int ypos, int width, int heigh
 			std::cout << "Renderer created..." << std::endl;
 		}
 
-		currScene->init(1);
+		currScene->init();
 		isRunning = true;
 	}
 	else {

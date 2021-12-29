@@ -68,7 +68,7 @@ void Map::clean()
 	std::cout << "Map System cleaned.\n";
 }
 
-void Map::loadLevel(int lvl)
+void Map::loadLevel(int lvl, Vector2D spawn)
 {
 	std::string lvlPath = "levels/level" + std::to_string(lvl) + "/level";
 	std::string fileType = ".tmx";
@@ -118,6 +118,9 @@ void Map::loadLevel(int lvl)
 		}
 		renderLayers.emplace_back(currLayer);
 		currLayer.clear();
+
+		auto& trans = player->getComponent<TransformComponent>();
+		trans.pos = spawn;
 	}
 }
 
