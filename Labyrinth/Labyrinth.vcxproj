@@ -61,7 +61,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\RapidXML;$(ProjectDir)dependencies\SDL2_image-2.0.5\include;$(ProjectDir)dependencies\EnTT;$(ProjectDir)dependencies\SDL2-2.0.16\include;$(ProjectDir)src\Labyrinth</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\rapidxml;$(ProjectDir)dependencies\SDL2_image-2.0.5\include;$(ProjectDir)dependencies\entt\single_include;$(SolutionDir)Labyrinth\dependencies\spdlog\include;$(ProjectDir)dependencies\SDL2-2.0.16\include;$(ProjectDir)src\Labyrinth</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
@@ -82,7 +82,7 @@
       <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;_WINDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\RapidXML;$(SolutionDir)dependencies\SDL2_image-2.0.5\include;$(SolutionDir)dependencies\EnTT;$(SolutionDir)dependencies\SDL2-2.0.16\include;$(SolutionDir)inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)dependencies\rapidxml;$(ProjectDir)dependencies\SDL2_image-2.0.5\include;$(ProjectDir)dependencies\entt\single_include;$(SolutionDir)Labyrinth\dependencies\spdlog\include;$(ProjectDir)dependencies\SDL2-2.0.16\include;$(ProjectDir)src\Labyrinth</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
     </ClCompile>

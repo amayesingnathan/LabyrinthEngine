@@ -1,0 +1,9 @@
+[submodule "Labyrinth/dependencies/spdlog"]
+	path = Labyrinth/dependencies/spdlog
+	url = https://github.com/gabime/spdlog
+[submodule "Labyrinth/dependencies/rapidxml"]
+	path = Labyrinth/dependencies/rapidxml
+	url = https://github.com/discord/rapidxml
+[submodule "Labyrinth/dependencies/entt"]
+	path = Labyrinth/dependencies/entt
+	url = https://github.com/skypjack/entt

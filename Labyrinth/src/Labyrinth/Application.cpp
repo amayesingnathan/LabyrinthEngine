@@ -18,7 +18,7 @@ namespace Labyrinth {
 		init("Labyrinth Engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, configuration::SCREEN_WIDTH, configuration::SCREEN_HEIGHT, false);
 		while (true)
 		{
-			printf("Infinite loop...\n");
+
 		}
 	}
 

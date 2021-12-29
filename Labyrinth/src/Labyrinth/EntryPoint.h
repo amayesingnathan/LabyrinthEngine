@@ -5,7 +5,7 @@
 extern Labyrinth::Application* Labyrinth::CreateApplication();
 
 int main(int argc, char** argv)
-{
+{	
 	auto app = Labyrinth::CreateApplication();
 	app->run();
 	delete app;
