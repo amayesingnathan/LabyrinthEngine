@@ -79,8 +79,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -89,8 +89,8 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -102,8 +102,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -116,8 +116,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -129,8 +129,8 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_PLATFORM_WINDOWS;LAB_BUILD_DLL;LAB_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>src;dependencies\SDL2-2.0.16\include;dependencies\SDL2_image-2.0.5\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
@@ -143,8 +143,8 @@
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>SDL2.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>dependencies\SDL2-2.0.16\lib;dependencies\SDL2_image-2.0.5\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <ImportLibrary>..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
@@ -154,11 +154,13 @@
   <ItemGroup>
     <ClInclude Include="src\Labyrinth.h" />
     <ClInclude Include="src\Labyrinth\Core\Application.h" />
+    <ClInclude Include="src\Labyrinth\Core\Assert.h" />
     <ClInclude Include="src\Labyrinth\Core\Base.h" />
     <ClInclude Include="src\Labyrinth\Core\EntryPoint.h" />
     <ClInclude Include="src\Labyrinth\Core\Log.h" />
     <ClInclude Include="src\Labyrinth\Core\MouseCodes.h" />
     <ClInclude Include="src\Labyrinth\Core\Platforms.h" />
+    <ClInclude Include="src\Labyrinth\Core\Window.h" />
     <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h" />
     <ClInclude Include="src\Labyrinth\ECS\Components\GameComponents.h" />
     <ClInclude Include="src\Labyrinth\ECS\Components\Vector2D.h" />
@@ -179,6 +181,7 @@
     <ClInclude Include="src\Labyrinth\Events\KeyEvent.h" />
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h" />
     <ClInclude Include="src\Labyrinth\Labyrinth.h" />
+    <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Labyrinth\Scene.h" />
     <ClInclude Include="src\Labyrinth\config.h" />
     <ClInclude Include="src\Lpch.h" />
@@ -205,6 +208,7 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth\Labyrinth.cpp" />
+    <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Labyrinth\Scene.cpp" />
     <ClCompile Include="src\Labyrinth\main.cpp" />
     <ClCompile Include="src\Lpch.cpp">

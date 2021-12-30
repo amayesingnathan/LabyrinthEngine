@@ -11,15 +11,15 @@ workspace "Labyrinth"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
-IncludeDir["SDL2"] = "Labyrinth/dependencies/SDL2-2.0.16/include"
-IncludeDir["SDL2image"] = "Labyrinth/dependencies/SDL2_image-2.0.5/include"
+IncludeDir["SDL2"] = "Labyrinth/dependencies/SDL2/include"
+IncludeDir["glew"] = "Labyrinth/dependencies/glew/include"
 IncludeDir["entt"] = "Labyrinth/dependencies/entt/include"
 IncludeDir["spdlog"] = "Labyrinth/dependencies/spdlog/include"
 IncludeDir["rapidxml"] = "Labyrinth/dependencies/rapidxml"
 
 LibDir = {}
-LibDir["SDL2"] = "Labyrinth/dependencies/SDL2-2.0.16/lib"
-LibDir["SDL2image"] = "Labyrinth/dependencies/SDL2_image-2.0.5/lib"
+LibDir["SDL2"] = "Labyrinth/dependencies/SDL2/lib"
+LibDir["glew"] = "Labyrinth/dependencies/glew/lib"
 
 project "Labyrinth"
     location "Labyrinth"
@@ -41,7 +41,7 @@ project "Labyrinth"
     {
         "%{prj.name}/src",
         "%{IncludeDir.SDL2}",
-        "%{IncludeDir.SDL2image}",
+        "%{IncludeDir.glew}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}"
@@ -50,15 +50,16 @@ project "Labyrinth"
 	libdirs
 	{
 		"%{LibDir.SDL2}",
-		"%{LibDir.SDL2image}"
-	}
-	
-	links
-	{
-		"SDL2",
-		"SDL2_image"
+		"%{LibDir.glew}"
 	}
 
+	links
+	{
+		"SDL2.lib",
+		"glew32s",
+		"opengl32.lib"
+	}
+	
     filter "system:windows"
         cppdialect "C++17"
         staticruntime "On"
@@ -66,9 +67,14 @@ project "Labyrinth"
 
         defines
         {
-            "LAB_PLATFORM_WINDOWS",
             "LAB_BUILD_DLL",
+			"GLEW_STATIC"
         }
+
+		links
+		{
+			"SDL2main"
+		}
 
         postbuildcommands
         {
@@ -106,18 +112,10 @@ project "Sandbox"
         "Labyrinth/dependencies/spdlog/include",
         "Labyrinth/src"
     }
-
-	libdirs
-	{
-		"%{LibDir.SDL2}",
-		"%{LibDir.SDL2image}"
-	}
 	
     links
     {
-        "Labyrinth",
-		"SDL2",
-		"SDL2_image"
+        "Labyrinth"
     }
 
     filter "system:windows"

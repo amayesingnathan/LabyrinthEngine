@@ -2,6 +2,8 @@
 
 //Labyrinth Core Includes
 #include "Labyrinth/Core/Base.h"
+#include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Core/Assert.h"
 
 //STL Containers
 #include <map>
@@ -16,10 +18,3 @@
 #include <execution>
 #include <memory>
 #include <functional>
-
-//SDL Includes
-#include "SDL.h"
-#include "SDL_image.h"
-
-//ECS Includes
-#include "entt.hpp"

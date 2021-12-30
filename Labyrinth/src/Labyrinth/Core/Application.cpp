@@ -2,23 +2,44 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/Log.h"
-#include "Labyrinth/Events/ApplicationEvent.h"
+
+#include "SDL.h"
+#include "GL/glew.h"
+#include "SDL_opengl.h"
 
 namespace Labyrinth {
 
+#define BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)
+
 	void Application::run()
 	{
-		WindowResizeEvent e(1200, 800);
-		LAB_TRACE(e);
+		init();
+		mRunning = true;
 
 		while (mRunning)
 		{
-
+			glClearColor(1, 0, 1, 1);
+			glClear(GL_COLOR_BUFFER_BIT);
+			mWindow->onUpdate();
 		}
 	}
 
-	void Application::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen)
+	void Application::onEvent(Event& e)
 	{
+		LAB_CORE_TRACE("{0}", e);
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
+	}
 
+	void Application::init()
+	{
+		mWindow = Window::Create();
+		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		SDL_DestroyWindow();
+		SDL_Quit();
 	}
 }

@@ -2,6 +2,8 @@
 
 #include "Event.h"
 
+#include "SDL.h"
+
 namespace Labyrinth {
 
 	class LABYRINTH_API KeyEvent : public Event
@@ -20,7 +22,8 @@ namespace Labyrinth {
 
 	class LABYRINTH_API KeyPressedEvent : public KeyEvent
 	{
-		KeyPressedEvent(int keycode, int repeatCount)
+	public:
+		KeyPressedEvent(Uint8 keycode, int repeatCount)
 			: KeyEvent(keycode), mRepeatCount(repeatCount) {}
 
 		inline int GetRepeatCount() const { return mRepeatCount; }
@@ -28,7 +31,7 @@ namespace Labyrinth {
 		std::string ToString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << mKeyCode << " (" << mRepeatCount << "repeats)";
+			ss << "KeyPressedEvent: " << mKeyCode << " (" << mRepeatCount << " repeat(s))";
 			return ss.str();
 		}
 
@@ -39,7 +42,8 @@ namespace Labyrinth {
 
 	class LABYRINTH_API KeyReleasedEvent : public KeyEvent
 	{
-		KeyReleasedEvent(int keycode)
+	public:
+		KeyReleasedEvent(Uint8 keycode)
 			: KeyEvent(keycode) {}
 
 		std::string ToString() const override

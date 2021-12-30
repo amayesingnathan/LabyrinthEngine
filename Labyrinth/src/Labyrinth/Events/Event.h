@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Lpch.h"
+
 #include "Labyrinth/Core/Base.h"
 
 namespace Labyrinth {
@@ -59,7 +61,7 @@ namespace Labyrinth {
 			: mEvent(event) {}
 
 		template<typename T>
-		bool Dispatch(EventFunc<T> func)
+		bool dispatch(EventFunc<T> func)
 		{
 			if (mEvent.GetEventType() == T::GetStaticType())
 			{

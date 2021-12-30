@@ -4,3 +4,6 @@
 [submodule "Labyrinth/dependencies/rapidxml"]
 	path = Labyrinth/dependencies/rapidxml
 	url = https://github.com/discord/rapidxml
+[submodule "Labyrinth/dependencies/SDL2"]
+	path = Labyrinth/dependencies/SDL2
+	url = https://github.com/amayesingnathan/SDL2
