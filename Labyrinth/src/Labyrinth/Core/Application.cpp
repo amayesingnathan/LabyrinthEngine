@@ -30,6 +30,7 @@ namespace Labyrinth {
 		LAB_CORE_TRACE("{0}", e);
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Application::OnKeyPress));
 	}
 
 	void Application::init()
@@ -41,6 +42,20 @@ namespace Labyrinth {
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
 		mRunning = false;
+		return true;
+	}
+
+	bool Application::OnKeyPress(KeyPressedEvent& e)
+	{
+		switch (e.GetKeyCode())
+		{
+		case SDL_SCANCODE_ESCAPE:
+			mRunning = false;
+			break;
+
+		default:
+			break;
+		}
 		return true;
 	}
 }

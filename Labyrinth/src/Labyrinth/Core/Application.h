@@ -2,6 +2,8 @@
 
 #include "Base.h"
 #include <Labyrinth/Events/ApplicationEvent.h>
+#include <Labyrinth/Events/KeyEvent.h>
+#include <Labyrinth/Events/MouseEvent.h>
 #include "Window.h"
 
 namespace Labyrinth { 
@@ -18,6 +20,7 @@ namespace Labyrinth {
 		void init();
 
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnKeyPress(KeyPressedEvent& e);
 
 	//Members
 	public:
