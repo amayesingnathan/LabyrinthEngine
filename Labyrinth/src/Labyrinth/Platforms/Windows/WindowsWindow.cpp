@@ -73,7 +73,7 @@ namespace Labyrinth {
 	{
 		SDL_DestroyWindow(mWindow);
 		SDL_Quit();
-		LAB_TRACE("Shutdown complete");
+		LAB_CORE_TRACE("Shutdown complete");
 	}
 
 
