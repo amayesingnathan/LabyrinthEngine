@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Platforms/Windows/WindowsWindow.h"
 
 #include "SDL.h"
 #include "GL/glew.h"
@@ -39,7 +40,7 @@ namespace Labyrinth {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		SDL_DestroyWindow();
-		SDL_Quit();
+		mRunning = false;
+		return true;
 	}
 }

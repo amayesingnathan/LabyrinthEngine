@@ -72,6 +72,8 @@ namespace Labyrinth {
 	void WindowsWindow::shutdown()
 	{
 		SDL_DestroyWindow(mWindow);
+		SDL_Quit();
+		LAB_TRACE("Shutdown complete");
 	}
 
 
