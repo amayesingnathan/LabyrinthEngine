@@ -15,7 +15,7 @@ namespace Labyrinth {
 		WindowProps(const std::string& t = "Labyrinth Engine",
 			unsigned int w = 1280,
 			unsigned int h = 720,
-			//SDL not defined here so use hex values that correspond to SDL_WINDOW_RESIZABLE and SDL_WINDOW_OPENGL
+			//SDL not included here so use hex values that correspond to SDL_WINDOW_RESIZABLE and SDL_WINDOW_OPENGL
 			int f = 0x00000020 | 0x00000002)
 			: title(t), width(w), height(h), flags(f) {}
 	};
