@@ -21,16 +21,38 @@ namespace Labyrinth {
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			for (Layer* layer : mLayerStack)
+			{
+				layer->onUpdate();
+			}
+
 			mWindow->onUpdate();
 		}
 	}
 
 	void Application::onEvent(Event& e)
 	{
-		LAB_CORE_TRACE("{0}", e);
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
 		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Application::OnKeyPress));
+
+		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
+		{
+			if (e.handled)
+				break;
+			(*it)->onEvent(e);
+		}
+	}
+
+	void Application::pushLayer(Layer* layer)
+	{
+		mLayerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* overlay)
+	{
+		mLayerStack.pushOverlay(overlay);
 	}
 
 	void Application::init()

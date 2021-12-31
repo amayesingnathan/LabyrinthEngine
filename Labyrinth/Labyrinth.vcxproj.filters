@@ -43,10 +43,13 @@
     <ClInclude Include="src\Labyrinth\Core\EntryPoint.h">
       <Filter>Labyrinth\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Labyrinth\Core\Log.h">
+    <ClInclude Include="src\Labyrinth\Core\Layer.h">
       <Filter>Labyrinth\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Labyrinth\Core\MouseCodes.h">
+    <ClInclude Include="src\Labyrinth\Core\LayerStack.h">
+      <Filter>Labyrinth\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Core\Log.h">
       <Filter>Labyrinth\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Labyrinth\Core\Platforms.h">
@@ -112,7 +115,7 @@
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h">
       <Filter>Labyrinth\Events</Filter>
     </ClInclude>
-    <ClInclude Include="src\Labyrinth\Labyrinth.h">
+    <ClInclude Include="src\Labyrinth\LabyrinthOld.h">
       <Filter>Labyrinth</Filter>
     </ClInclude>
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h">
@@ -128,6 +131,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp">
+      <Filter>Labyrinth\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Labyrinth\Core\Layer.cpp">
+      <Filter>Labyrinth\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Labyrinth\Core\LayerStack.cpp">
       <Filter>Labyrinth\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinth\Core\Log.cpp">
@@ -187,7 +196,7 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp">
       <Filter>Labyrinth\ECS\Systems</Filter>
     </ClCompile>
-    <ClCompile Include="src\Labyrinth\Labyrinth.cpp">
+    <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp">
       <Filter>Labyrinth</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp">

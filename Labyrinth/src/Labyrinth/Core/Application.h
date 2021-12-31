@@ -1,20 +1,26 @@
 	#pragma once
 
 #include "Base.h"
+
+#include "Window.h"
+#include "LayerStack.h"
+#include <Labyrinth/Events/Event.h>
 #include <Labyrinth/Events/ApplicationEvent.h>
 #include <Labyrinth/Events/KeyEvent.h>
 #include <Labyrinth/Events/MouseEvent.h>
-#include "Window.h"
 
 namespace Labyrinth { 
 		
-	class LABYRINTH_API Application
+	class Application
 	{
 	//Methods
 	public:
 		void run();
 
 		void onEvent(Event& e);
+
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* overlay);
 
 	private:
 		void init();
@@ -28,6 +34,7 @@ namespace Labyrinth {
 	private:
 		Single<Window> mWindow;
 		bool mRunning = false;
+		LayerStack mLayerStack;
 	};
 
 	//To be defined in CLIENT

@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LABYRINTH_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 		inline int GetKeyCode() const { return mKeyCode; }
@@ -18,7 +18,7 @@ namespace Labyrinth {
 		int mKeyCode;
 	};	
 
-	class LABYRINTH_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(int keycode, int repeatCount)
@@ -38,7 +38,7 @@ namespace Labyrinth {
 		int mRepeatCount;
 	};
 
-	class LABYRINTH_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(int keycode)

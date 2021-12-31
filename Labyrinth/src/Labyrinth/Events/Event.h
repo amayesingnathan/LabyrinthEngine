@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Lpch.h"
-
 #include "Labyrinth/Core/Base.h"
 
 namespace Labyrinth {
@@ -31,7 +29,7 @@ namespace Labyrinth {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int GetCategoryFlags() const override { return category; }
 
-	class LABYRINTH_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 
@@ -45,8 +43,9 @@ namespace Labyrinth {
 		{
 			return GetCategoryFlags() & category;
 		}
-	protected:
-		bool mHandled = false;
+
+	public:
+		bool handled = false;
 
 	private:
 	};
@@ -65,7 +64,7 @@ namespace Labyrinth {
 		{
 			if (mEvent.GetEventType() == T::GetStaticType())
 			{
-				mEvent.mHandled = func(*(T*)&mEvent);
+				mEvent.handled = func(*(T*)&mEvent);
 				return true;
 			}
 			return false;
