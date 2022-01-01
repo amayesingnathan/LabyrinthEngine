@@ -5,7 +5,7 @@
 #include "Labyrinth/Platforms/Windows/WindowsWindow.h"
 
 #include "SDL.h"
-#include "GL/glew.h"
+#include "Glad/glad.h"
 #include "SDL_opengl.h"
 
 namespace Labyrinth {

@@ -17,14 +17,17 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["SDL2"] = "Labyrinth/dependencies/SDL2/include"
-IncludeDir["glew"] = "Labyrinth/dependencies/glew/include"
+IncludeDir["glad"] = "Labyrinth/dependencies/glad/include"
+IncludeDir["imgui"] = "Labyrinth/dependencies/imgui"
 IncludeDir["entt"] = "Labyrinth/dependencies/entt/include"
 IncludeDir["spdlog"] = "Labyrinth/dependencies/spdlog/include"
 IncludeDir["rapidxml"] = "Labyrinth/dependencies/rapidxml"
 
 LibDir = {}
 LibDir["SDL2"] = "Labyrinth/dependencies/SDL2/lib"
-LibDir["glew"] = "Labyrinth/dependencies/glew/lib"
+
+include "Labyrinth/dependencies/glad"
+include "Labyrinth/dependencies/imgui"
 
 project "Labyrinth"
     location "Labyrinth"
@@ -52,7 +55,8 @@ project "Labyrinth"
     {
         "%{prj.name}/src",
         "%{IncludeDir.SDL2}",
-        "%{IncludeDir.glew}",
+        "%{IncludeDir.glad}",
+        "%{IncludeDir.imgui}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}"
@@ -60,15 +64,15 @@ project "Labyrinth"
 	
 	libdirs
 	{
-		"%{LibDir.SDL2}",
-		"%{LibDir.glew}"
+		"%{LibDir.SDL2}"
 	}
 
 	links
 	{
 		"SDL2.lib",
-		"glew32s",
-		"opengl32.lib"
+		"glad",
+		"opengl32.lib",
+		"ImGui"
 	}
 	
     filter "system:windows"
