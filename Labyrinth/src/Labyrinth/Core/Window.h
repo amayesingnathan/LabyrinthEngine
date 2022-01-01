@@ -20,7 +20,7 @@ namespace Labyrinth {
 			: title(t), width(w), height(h), flags(f) {}
 	};
 
-	class LABYRINTH_API Window
+	class Window
 	{
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;

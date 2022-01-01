@@ -1,12 +1,17 @@
 	#pragma once
 
 #include "Base.h"
-#include <Labyrinth/Events/ApplicationEvent.h>
+
 #include "Window.h"
+#include "LayerStack.h"
+#include <Labyrinth/Events/Event.h>
+#include <Labyrinth/Events/ApplicationEvent.h>
+#include <Labyrinth/Events/KeyEvent.h>
+#include <Labyrinth/Events/MouseEvent.h>
 
 namespace Labyrinth { 
 		
-	class LABYRINTH_API Application
+	class Application
 	{
 	//Methods
 	public:
@@ -14,10 +19,14 @@ namespace Labyrinth {
 
 		void onEvent(Event& e);
 
+		void pushLayer(Layer* layer);
+		void pushOverlay(Layer* overlay);
+
 	private:
 		void init();
 
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnKeyPress(KeyPressedEvent& e);
 
 	//Members
 	public:
@@ -25,6 +34,7 @@ namespace Labyrinth {
 	private:
 		Single<Window> mWindow;
 		bool mRunning = false;
+		LayerStack mLayerStack;
 	};
 
 	//To be defined in CLIENT

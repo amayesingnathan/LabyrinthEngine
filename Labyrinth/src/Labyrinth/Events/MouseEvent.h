@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Event.h"
-#include "Labyrinth/Core/MouseCodes.h"
 
 namespace Labyrinth {
 

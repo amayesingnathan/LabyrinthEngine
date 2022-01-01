@@ -23,19 +23,19 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
     <PlatformToolset>v142</PlatformToolset>
@@ -54,55 +54,53 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <LinkIncremental>true</LinkIncremental>
     <OutDir>..\bin\Debug-windows-x86_64\Labyrinth\</OutDir>
     <IntDir>..\bin\int\Debug-windows-x86_64\Labyrinth\</IntDir>
     <TargetName>Labyrinth</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Release-windows-x86_64\Labyrinth\</OutDir>
     <IntDir>..\bin\int\Release-windows-x86_64\Labyrinth\</IntDir>
     <TargetName>Labyrinth</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
-    <LinkIncremental>false</LinkIncremental>
     <OutDir>..\bin\Dist-windows-x86_64\Labyrinth\</OutDir>
     <IntDir>..\bin\int\Dist-windows-x86_64\Labyrinth\</IntDir>
     <TargetName>Labyrinth</TargetName>
-    <TargetExt>.dll</TargetExt>
+    <TargetExt>.lib</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;GLEW_STATIC;LAB_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <Optimization>Disabled</Optimization>
+      <MinimalRebuild>false</MinimalRebuild>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/MTd %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Lib>
       <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
-    </Link>
-    <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Debug-windows-x86_64\Sandbox &gt; nul)</Command>
-    </PostBuildEvent>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;GLEW_STATIC;LAB_RELEASE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -110,26 +108,26 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
       <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
-    </Link>
-    <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Release-windows-x86_64\Sandbox &gt; nul)</Command>
-    </PostBuildEvent>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
     <ClCompile>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>Lpch.h</PrecompiledHeaderFile>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>LAB_BUILD_DLL;GLEW_STATIC;LAB_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;GLFW_INCLUDE_NONE;GLEW_STATIC;LAB_DIST;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>src;dependencies\SDL2\include;dependencies\glew\include;dependencies\entt\include;dependencies\spdlog\include;dependencies\rapidxml;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Full</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -137,19 +135,19 @@
       <MinimalRebuild>false</MinimalRebuild>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalOptions>/MT %(AdditionalOptions)</AdditionalOptions>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+    <Lib>
       <AdditionalDependencies>SDL2.lib;glew32s.lib;opengl32.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>dependencies\SDL2\lib;dependencies\glew\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <ImportLibrary>..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.lib</ImportLibrary>
-    </Link>
-    <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-x86_64\Labyrinth\Labyrinth.dll ..\bin\Dist-windows-x86_64\Sandbox &gt; nul)</Command>
-    </PostBuildEvent>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Labyrinth.h" />
@@ -157,8 +155,9 @@
     <ClInclude Include="src\Labyrinth\Core\Assert.h" />
     <ClInclude Include="src\Labyrinth\Core\Base.h" />
     <ClInclude Include="src\Labyrinth\Core\EntryPoint.h" />
+    <ClInclude Include="src\Labyrinth\Core\Layer.h" />
+    <ClInclude Include="src\Labyrinth\Core\LayerStack.h" />
     <ClInclude Include="src\Labyrinth\Core\Log.h" />
-    <ClInclude Include="src\Labyrinth\Core\MouseCodes.h" />
     <ClInclude Include="src\Labyrinth\Core\Platforms.h" />
     <ClInclude Include="src\Labyrinth\Core\Window.h" />
     <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h" />
@@ -180,7 +179,7 @@
     <ClInclude Include="src\Labyrinth\Events\Event.h" />
     <ClInclude Include="src\Labyrinth\Events\KeyEvent.h" />
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h" />
-    <ClInclude Include="src\Labyrinth\Labyrinth.h" />
+    <ClInclude Include="src\Labyrinth\LabyrinthOld.h" />
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Labyrinth\Scene.h" />
     <ClInclude Include="src\Labyrinth\config.h" />
@@ -188,6 +187,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp" />
+    <ClCompile Include="src\Labyrinth\Core\Layer.cpp" />
+    <ClCompile Include="src\Labyrinth\Core\LayerStack.cpp" />
     <ClCompile Include="src\Labyrinth\Core\Log.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Components\ColliderComponent.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Components\Component.cpp" />
@@ -207,7 +208,7 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\System.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
-    <ClCompile Include="src\Labyrinth\Labyrinth.cpp" />
+    <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Labyrinth\Scene.cpp" />
     <ClCompile Include="src\Labyrinth\main.cpp" />

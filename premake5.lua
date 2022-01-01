@@ -7,6 +7,11 @@ workspace "Labyrinth"
         "Release",
         "Dist"
     }
+	
+	flags
+	{
+		"MultiProcessorCompile"
+	}
 
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
@@ -23,7 +28,7 @@ LibDir["glew"] = "Labyrinth/dependencies/glew/lib"
 
 project "Labyrinth"
     location "Labyrinth"
-    kind "SharedLib"
+    kind "StaticLib"
     language "C++"
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
@@ -36,6 +41,12 @@ project "Labyrinth"
         "%{prj.name}/src/**.h", 
         "%{prj.name}/src/**.cpp"
     }
+	
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS",
+		"GLFW_INCLUDE_NONE"
+	}
 
     includedirs
     {
@@ -67,7 +78,6 @@ project "Labyrinth"
 
         defines
         {
-            "LAB_BUILD_DLL",
 			"GLEW_STATIC"
         }
 
@@ -76,21 +86,24 @@ project "Labyrinth"
 			"SDL2main"
 		}
 
-        postbuildcommands
-        {
-            ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-        }
+        --postbuildcommands
+        --{
+        --    ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
+        --}
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
+        buildoptions "/MTd"
         symbols "On"
 
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
+        buildoptions "/MT"
         optimize "On"
 
     filter "configurations:Dist"
         defines { "LAB_DIST" }
+        buildoptions "/MT"
         optimize "On"
 
         
@@ -125,12 +138,15 @@ project "Sandbox"
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
+        buildoptions "/MTd"
         symbols "On"
 
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
+        buildoptions "/MT"
         optimize "On"
 
     filter "configurations:Dist"
         defines { "LAB_DIST" }
+        buildoptions "/MT"
         optimize "On"

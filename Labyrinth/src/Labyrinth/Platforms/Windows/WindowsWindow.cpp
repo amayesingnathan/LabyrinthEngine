@@ -64,14 +64,13 @@ namespace Labyrinth {
 		SDL_SetWindowData(mWindow, "WindowData", &mData);
 		setVSync(true);
 
-		//Set SDL callbacks
-		//SDL_AddEventWatch(WindowEventWatcher, mWindow);
-		//SDL_AddEventWatch(KeyEventWatcher, nullptr);
 	}
 
 	void WindowsWindow::shutdown()
 	{
 		SDL_DestroyWindow(mWindow);
+		SDL_Quit();
+		LAB_CORE_TRACE("Shutdown complete");
 	}
 
 
@@ -158,7 +157,7 @@ namespace Labyrinth {
 		SDL_Window* win = SDL_GetWindowFromID(mEvent.key.windowID);
 		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
 
-		int keycode = mEvent.key.keysym.scancode;
+		SDL_Scancode keycode = mEvent.key.keysym.scancode;
 		switch (mEvent.type)
 		{
 		case SDL_KEYUP:

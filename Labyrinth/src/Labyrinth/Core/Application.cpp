@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Platforms/Windows/WindowsWindow.h"
 
 #include "SDL.h"
 #include "GL/glew.h"
@@ -20,15 +21,38 @@ namespace Labyrinth {
 		{
 			glClearColor(1, 0, 1, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
+
+			for (Layer* layer : mLayerStack)
+			{
+				layer->onUpdate();
+			}
+
 			mWindow->onUpdate();
 		}
 	}
 
 	void Application::onEvent(Event& e)
 	{
-		LAB_CORE_TRACE("{0}", e);
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
+		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Application::OnKeyPress));
+
+		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
+		{
+			if (e.handled)
+				break;
+			(*it)->onEvent(e);
+		}
+	}
+
+	void Application::pushLayer(Layer* layer)
+	{
+		mLayerStack.pushLayer(layer);
+	}
+
+	void Application::pushOverlay(Layer* overlay)
+	{
+		mLayerStack.pushOverlay(overlay);
 	}
 
 	void Application::init()
@@ -39,7 +63,21 @@ namespace Labyrinth {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		SDL_DestroyWindow();
-		SDL_Quit();
+		mRunning = false;
+		return true;
+	}
+
+	bool Application::OnKeyPress(KeyPressedEvent& e)
+	{
+		switch (e.GetKeyCode())
+		{
+		case SDL_SCANCODE_ESCAPE:
+			mRunning = false;
+			break;
+
+		default:
+			break;
+		}
+		return true;
 	}
 }

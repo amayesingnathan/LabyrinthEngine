@@ -10,13 +10,13 @@
 
 namespace Labyrinth {
 
-	class LABYRINTH_API Log
+	class Log
 	{
 	public:
 		static void Init();
 
-		inline static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return sCoreLogger; }
-		inline static std::shared_ptr<spdlog::logger>& GetClientLogger() { return sClientLogger; }
+		static std::shared_ptr<spdlog::logger>& GetCoreLogger() { return sCoreLogger; }
+		static std::shared_ptr<spdlog::logger>& GetClientLogger() { return sClientLogger; }
 
 
 	private:
