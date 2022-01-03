@@ -113,6 +113,7 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchEvent()
 	{
+		bool handled = ImGui_ImplSDL2_ProcessEvent(&mEvent);
 		switch (mEvent.type)
 		{
 		case SDL_WINDOWEVENT:
