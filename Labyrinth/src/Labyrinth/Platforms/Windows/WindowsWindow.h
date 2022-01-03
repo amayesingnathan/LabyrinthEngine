@@ -6,9 +6,6 @@
 
 #include "SDL.h"
 
-#include "GL/glew.h"
-#include <SDL_opengl.h>
-
 namespace Labyrinth {
 
 
@@ -34,6 +31,7 @@ namespace Labyrinth {
 		void DispatchEvent();
 		void DispatchWindowEvent();
 		void DispatchKeyEvent();
+		void DispatchTextEvent();
 		void DispatchMouseEvent();
 
 	private:

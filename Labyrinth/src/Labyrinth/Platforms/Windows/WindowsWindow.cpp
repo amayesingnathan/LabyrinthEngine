@@ -5,10 +5,17 @@
 #include "Labyrinth/Events/MouseEvent.h"
 #include "Labyrinth/Events/KeyEvent.h"
 
+#include "imgui.h"
+#include "Labyrinth/Platforms/OpenGL/imgui_impl_opengl3.h"
+#include "Labyrinth/Platforms/SDL/imgui_impl_sdl.h"
+
+#include <Glad/glad.h>
+#include <SDL_opengl.h>
+
 namespace Labyrinth {
 
 	static bool sSDLInitialised = false;
-	static bool sGLEWInitialised = false;
+	static bool sGladInitialised = false;
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
@@ -36,31 +43,39 @@ namespace Labyrinth {
 		if (!sSDLInitialised)
 		{
 			int success = SDL_Init(SDL_INIT_EVERYTHING);
-			LAB_ASSERT(!success, "Could not initialise SDL!");
+			LAB_CORE_ASSERT(!success, "Could not initialise SDL!");
 
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-			SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
 			sSDLInitialised = true;	
 		}
 
-		if (!sGLEWInitialised)
-		{
-			glewExperimental = GL_TRUE;
-			GLenum err = glewInit();
-			LAB_ASSERT(err, "Could not initialise glew!");
-
-			sGLEWInitialised = true;
-		}
+		SDL_GL_LoadLibrary(NULL);
+		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 		mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
-		LAB_ASSERT(mWindow, "Could not create SDL window!")
+		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!")
 
 		mContext = SDL_GL_CreateContext(mWindow);
-		LAB_ASSERT(mContext, "Could not create OpenGL context!");
+		LAB_CORE_ASSERT(mContext, "Could not create OpenGL context!");
 
 		SDL_GL_MakeCurrent(mWindow, mContext);
+
+		if (!sGladInitialised)
+		{
+			int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+			LAB_CORE_ASSERT(status, "Could not initialise Glad!");
+
+			sGladInitialised = true;
+		}
+
 		SDL_SetWindowData(mWindow, "WindowData", &mData);
 		setVSync(true);
 
@@ -110,6 +125,10 @@ namespace Labyrinth {
 
 		case SDL_KEYDOWN:
 			DispatchKeyEvent();
+			break;
+
+		case SDL_TEXTINPUT:
+			DispatchTextEvent();
 			break;
 
 		case SDL_MOUSEMOTION:
@@ -176,6 +195,16 @@ namespace Labyrinth {
 		}
 	
 	}
+
+	void WindowsWindow::DispatchTextEvent()
+	{
+		SDL_Window* win = SDL_GetWindowFromID(mEvent.text.windowID);
+		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+
+		KeyTypedEvent event(mEvent.text.text);
+		winData.eventCallback(event);
+	}
+
 	void WindowsWindow::DispatchMouseEvent()
 	{
 

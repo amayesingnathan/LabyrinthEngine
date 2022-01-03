@@ -24,6 +24,7 @@ public:
 	Sandbox() 
 	{
 		pushLayer(new ExampleLayer());
+		pushOverlay(new Labyrinth::ImGuiLayer());
 	}
 
 	~Sandbox() 

@@ -14,7 +14,7 @@ namespace Labyrinth {
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
 		void popLayer(Layer* layer);
-		void popOverlay(Layer* layer);
+		void popOverlay(Layer* overlay);
 
 		std::vector<Layer*>::iterator begin() { return mLayers.begin(); }
 		std::vector<Layer*>::iterator end() { return mLayers.end(); }
