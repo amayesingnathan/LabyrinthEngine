@@ -133,6 +133,12 @@
     <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.h">
       <Filter>Labyrinth\Platforms\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3_loader.h">
+      <Filter>Labyrinth\Platforms\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.h">
+      <Filter>Labyrinth\Platforms\SDL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h">
       <Filter>Labyrinth\Platforms\Windows</Filter>
     </ClInclude>
@@ -143,8 +149,6 @@
       <Filter>Labyrinth</Filter>
     </ClInclude>
     <ClInclude Include="src\Lpch.h" />
-    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp">
@@ -222,6 +226,9 @@
     <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp">
       <Filter>Labyrinth\Platforms\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp">
+      <Filter>Labyrinth\Platforms\SDL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp">
       <Filter>Labyrinth\Platforms\Windows</Filter>
     </ClCompile>
@@ -232,6 +239,5 @@
       <Filter>Labyrinth</Filter>
     </ClCompile>
     <ClCompile Include="src\Lpch.cpp" />
-    <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp" />
   </ItemGroup>
 </Project>
