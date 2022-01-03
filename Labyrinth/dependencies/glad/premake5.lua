@@ -21,4 +21,4 @@ project "glad"
         systemversion "latest"
       
     filter {"system:windows", "configurations:Release"}
-        buildoptions "/MTd"
+        buildoptions "/MT"

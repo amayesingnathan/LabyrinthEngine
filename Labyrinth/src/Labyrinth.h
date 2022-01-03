@@ -9,6 +9,9 @@
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
 
+
+#include "Labyrinth/ImGui/ImGuiLayer.h"
+
 // ---Entry Point------------------
 #include "Labyrinth/Core/EntryPoint.h"
 // --------------------------------

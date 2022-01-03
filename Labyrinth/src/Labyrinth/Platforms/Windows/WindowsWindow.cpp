@@ -5,6 +5,10 @@
 #include "Labyrinth/Events/MouseEvent.h"
 #include "Labyrinth/Events/KeyEvent.h"
 
+#include "imgui.h"
+#include "Labyrinth/Platforms/OpenGL/imgui_impl_opengl3.h"
+#include "Labyrinth/Platforms/SDL/imgui_impl_sdl.h"
+
 #include <Glad/glad.h>
 #include <SDL_opengl.h>
 
@@ -50,8 +54,9 @@ namespace Labyrinth {
 
 		SDL_GL_LoadLibrary(NULL);
 		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
@@ -65,7 +70,7 @@ namespace Labyrinth {
 
 		if (!sGladInitialised)
 		{
-			int status = gladLoadGLLoader(SDL_GL_GetProcAddress);
+			int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 			LAB_CORE_ASSERT(status, "Could not initialise Glad!");
 
 			sGladInitialised = true;
@@ -73,6 +78,7 @@ namespace Labyrinth {
 
 		SDL_SetWindowData(mWindow, "WindowData", &mData);
 		setVSync(true);
+
 	}
 
 	void WindowsWindow::shutdown()
@@ -119,6 +125,10 @@ namespace Labyrinth {
 
 		case SDL_KEYDOWN:
 			DispatchKeyEvent();
+			break;
+
+		case SDL_TEXTINPUT:
+			DispatchTextEvent();
 			break;
 
 		case SDL_MOUSEMOTION:
@@ -185,6 +195,16 @@ namespace Labyrinth {
 		}
 	
 	}
+
+	void WindowsWindow::DispatchTextEvent()
+	{
+		SDL_Window* win = SDL_GetWindowFromID(mEvent.text.windowID);
+		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+
+		KeyTypedEvent event(mEvent.text.text);
+		winData.eventCallback(event);
+	}
+
 	void WindowsWindow::DispatchMouseEvent()
 	{
 

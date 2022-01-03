@@ -12,9 +12,19 @@ namespace Labyrinth {
 
 #define BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)
 
+	Application* Application::sInstance = nullptr;
+
+	Application::Application()
+	{
+		LAB_CORE_ASSERT(!sInstance, "Application already exists");
+		sInstance = this;
+
+		mWindow = Window::Create();
+		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
+	}
+
 	void Application::run()
 	{
-		init();
 		mRunning = true;
 
 		while (mRunning)
@@ -53,12 +63,6 @@ namespace Labyrinth {
 	void Application::pushOverlay(Layer* overlay)
 	{
 		mLayerStack.pushOverlay(overlay);
-	}
-
-	void Application::init()
-	{
-		mWindow = Window::Create();
-		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

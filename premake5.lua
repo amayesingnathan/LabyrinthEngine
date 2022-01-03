@@ -18,7 +18,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 IncludeDir = {}
 IncludeDir["SDL2"] = "Labyrinth/dependencies/SDL2/include"
 IncludeDir["glad"] = "Labyrinth/dependencies/glad/include"
-IncludeDir["imgui"] = "Labyrinth/dependencies/imgui"
+IncludeDir["ImGui"] = "Labyrinth/dependencies/imgui"
 IncludeDir["entt"] = "Labyrinth/dependencies/entt/include"
 IncludeDir["spdlog"] = "Labyrinth/dependencies/spdlog/include"
 IncludeDir["rapidxml"] = "Labyrinth/dependencies/rapidxml"
@@ -56,7 +56,7 @@ project "Labyrinth"
         "%{prj.name}/src",
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.glad}",
-        "%{IncludeDir.imgui}",
+        "%{IncludeDir.ImGui}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}"
@@ -71,8 +71,8 @@ project "Labyrinth"
 	{
 		"SDL2.lib",
 		"glad",
-		"opengl32.lib",
-		"ImGui"
+		"ImGui",
+		"opengl32.lib"
 	}
 	
     filter "system:windows"

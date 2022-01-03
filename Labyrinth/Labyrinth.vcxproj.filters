@@ -22,8 +22,17 @@
     <Filter Include="Labyrinth\Events">
       <UniqueIdentifier>{5686AC38-427F-CB8A-6BB1-B00F5709AB96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Labyrinth\ImGui">
+      <UniqueIdentifier>{5CC9B4EA-C854-22AF-D165-A5A33D707EAF}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Labyrinth\Platforms">
       <UniqueIdentifier>{79E4B472-E545-9280-6EB3-D832DA13C93F}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Labyrinth\Platforms\OpenGL">
+      <UniqueIdentifier>{8DAB460F-79BB-F2DF-E274-57FECEA3E178}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Labyrinth\Platforms\SDL">
+      <UniqueIdentifier>{EBA82FD3-57E0-776A-60EA-DB8DCCA09E63}</UniqueIdentifier>
     </Filter>
     <Filter Include="Labyrinth\Platforms\Windows">
       <UniqueIdentifier>{B3F73750-1F05-6636-A8EB-612114F831ED}</UniqueIdentifier>
@@ -115,8 +124,14 @@
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h">
       <Filter>Labyrinth\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Labyrinth\ImGui\ImGuiLayer.h">
+      <Filter>Labyrinth\ImGui</Filter>
+    </ClInclude>
     <ClInclude Include="src\Labyrinth\LabyrinthOld.h">
       <Filter>Labyrinth</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.h">
+      <Filter>Labyrinth\Platforms\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h">
       <Filter>Labyrinth\Platforms\Windows</Filter>
@@ -128,6 +143,8 @@
       <Filter>Labyrinth</Filter>
     </ClInclude>
     <ClInclude Include="src\Lpch.h" />
+    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3_loader.h" />
+    <ClInclude Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp">
@@ -196,8 +213,14 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp">
       <Filter>Labyrinth\ECS\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\ImGui\ImGuiLayer.cpp">
+      <Filter>Labyrinth\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp">
       <Filter>Labyrinth</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp">
+      <Filter>Labyrinth\Platforms\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp">
       <Filter>Labyrinth\Platforms\Windows</Filter>
@@ -209,5 +232,6 @@
       <Filter>Labyrinth</Filter>
     </ClCompile>
     <ClCompile Include="src\Lpch.cpp" />
+    <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp" />
   </ItemGroup>
 </Project>

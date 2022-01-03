@@ -15,6 +15,9 @@ namespace Labyrinth {
 	{
 	//Methods
 	public:
+		Application();
+		~Application() {};
+
 		void run();
 
 		void onEvent(Event& e);
@@ -22,9 +25,11 @@ namespace Labyrinth {
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
 
-	private:
-		void init();
+		inline Window& getWindow() { return *mWindow; }
 
+		static inline Application& Get() { return *sInstance; }
+
+	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnKeyPress(KeyPressedEvent& e);
 
@@ -32,6 +37,8 @@ namespace Labyrinth {
 	public:
 
 	private:
+		static Application* sInstance;
+
 		Single<Window> mWindow;
 		bool mRunning = false;
 		LayerStack mLayerStack;

@@ -31,6 +31,7 @@ namespace Labyrinth {
 		void DispatchEvent();
 		void DispatchWindowEvent();
 		void DispatchKeyEvent();
+		void DispatchTextEvent();
 		void DispatchMouseEvent();
 
 	private:

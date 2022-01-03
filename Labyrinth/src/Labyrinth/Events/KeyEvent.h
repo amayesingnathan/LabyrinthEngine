@@ -53,4 +53,27 @@ namespace Labyrinth {
 
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
+
+	class KeyTypedEvent : public Event
+	{
+	public:
+		KeyTypedEvent(const std::string& text)
+			: mText(text){}
+
+		inline std::string GetText() const { return mText; }
+
+		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
+		EVENT_CLASS_TYPE(KeyTyped)
+
+		std::string ToString() const override
+		{
+			std::stringstream ss;
+			ss << "KeyTypedEvent: " << mText;
+			return ss.str();
+		}
+
+	private:
+		std::string mText;
+
+	};
 }

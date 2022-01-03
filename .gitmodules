@@ -4,6 +4,3 @@
 [submodule "Labyrinth/dependencies/rapidxml"]
 	path = Labyrinth/dependencies/rapidxml
 	url = https://github.com/discord/rapidxml
-[submodule "Labyrinth/dependencies/imgui"]
-	path = Labyrinth/dependencies/imgui
-	url = https://github.com/amayesingnathan/imgui
