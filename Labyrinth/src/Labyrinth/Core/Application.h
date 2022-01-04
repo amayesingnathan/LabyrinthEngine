@@ -9,6 +9,8 @@
 #include <Labyrinth/Events/KeyEvent.h>
 #include <Labyrinth/Events/MouseEvent.h>
 
+#include <Labyrinth/ImGui/ImGuiLayer.h>
+
 namespace Labyrinth { 
 		
 	class Application
@@ -40,6 +42,7 @@ namespace Labyrinth {
 		static Application* sInstance;
 
 		Single<Window> mWindow;
+		ImGuiLayer* mImGuiLayer;
 		bool mRunning = false;
 		LayerStack mLayerStack;
 	};

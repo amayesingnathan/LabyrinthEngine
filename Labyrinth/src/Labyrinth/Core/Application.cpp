@@ -23,6 +23,9 @@ namespace Labyrinth {
 
 		mWindow = Window::Create();
 		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
+
+		mImGuiLayer = new ImGuiLayer();
+		pushOverlay(mImGuiLayer);
 	}
 
 	void Application::run()
@@ -35,9 +38,12 @@ namespace Labyrinth {
 			glClear(GL_COLOR_BUFFER_BIT);
 
 			for (Layer* layer : mLayerStack)
-			{
 				layer->onUpdate();
-			}
+
+			mImGuiLayer->begin();
+			for (Layer* layer : mLayerStack)
+				layer->onImGuiRender();
+			mImGuiLayer->end();
 
 			mWindow->onUpdate();
 		}

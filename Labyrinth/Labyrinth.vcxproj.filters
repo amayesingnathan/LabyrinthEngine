@@ -52,12 +52,6 @@
     <Filter Include="src\Labyrinth\Platforms">
       <UniqueIdentifier>{10BF7844-7CF6-C0DB-8500-25FFF1B6E7D4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="src\Labyrinth\Platforms\OpenGL">
-      <UniqueIdentifier>{44D6C551-30FC-8FB8-1942-15840507B584}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Labyrinth\Platforms\SDL">
-      <UniqueIdentifier>{02F7FC41-6E04-2B28-F7EA-261363F7F6DE}</UniqueIdentifier>
-    </Filter>
     <Filter Include="src\Labyrinth\Platforms\Windows">
       <UniqueIdentifier>{4A799CE2-B65C-AB22-BF5F-D95E2BC27173}</UniqueIdentifier>
     </Filter>
@@ -993,15 +987,6 @@
     <ClInclude Include="src\Labyrinth\LabyrinthOld.h">
       <Filter>src\Labyrinth</Filter>
     </ClInclude>
-    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.h">
-      <Filter>src\Labyrinth\Platforms\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3_loader.h">
-      <Filter>src\Labyrinth\Platforms\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.h">
-      <Filter>src\Labyrinth\Platforms\SDL</Filter>
-    </ClInclude>
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsInput.h">
       <Filter>src\Labyrinth\Platforms\Windows</Filter>
     </ClInclude>
@@ -1088,20 +1073,14 @@
     <ClCompile Include="src\Labyrinth\Events\KeyEvent.cpp">
       <Filter>src\Labyrinth\Events</Filter>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\ImGui\ImGuiBuild.cpp">
+      <Filter>src\Labyrinth\ImGui</Filter>
+    </ClCompile>
     <ClCompile Include="src\Labyrinth\ImGui\ImGuiLayer.cpp">
       <Filter>src\Labyrinth\ImGui</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp">
       <Filter>src\Labyrinth</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp">
-      <Filter>src\Labyrinth\Platforms\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Labyrinth\Platforms\SDL\SDL_OpenGL_ImGui_Example.cpp">
-      <Filter>src\Labyrinth\Platforms\SDL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp">
-      <Filter>src\Labyrinth\Platforms\SDL</Filter>
     </ClCompile>
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsInput.cpp">
       <Filter>src\Labyrinth\Platforms\Windows</Filter>

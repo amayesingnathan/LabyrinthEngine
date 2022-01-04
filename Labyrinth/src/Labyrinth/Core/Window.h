@@ -38,6 +38,7 @@ namespace Labyrinth {
 		virtual bool isVSync() const = 0;
 
 		virtual void* getNativeWindow() const = 0;
+		virtual void* getNativeContext() const = 0;
 
 		static Single<Window> Create(const WindowProps& props = WindowProps());
 	};

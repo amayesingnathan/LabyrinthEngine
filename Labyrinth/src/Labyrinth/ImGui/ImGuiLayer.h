@@ -14,12 +14,13 @@ namespace Labyrinth {
 		ImGuiLayer();
 		~ImGuiLayer();
 
-		void onAttach() override;
-		void onDetach() override;
-		void onUpdate() override;
-		void onEvent(Event& e) override;
+		virtual void onAttach() override;
+		virtual void onDetach() override;
+		virtual void onEvent(Event& event) override;
+		virtual void onImGuiRender() override;
 
-		void BlockEvents(bool block) { mBlockEvents = block; }
+		void begin();
+		void end();
 
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);

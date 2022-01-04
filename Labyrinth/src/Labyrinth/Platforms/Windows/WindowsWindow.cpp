@@ -6,8 +6,6 @@
 #include "Labyrinth/Events/KeyEvent.h"
 
 #include "imgui.h"
-#include "Labyrinth/Platforms/OpenGL/imgui_impl_opengl3.h"
-#include "Labyrinth/Platforms/SDL/imgui_impl_sdl.h"
 
 #include <Glad/glad.h>
 #include <SDL_opengl.h>
@@ -113,7 +111,6 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchEvent()
 	{
-		bool handled = ImGui_ImplSDL2_ProcessEvent(&mEvent);
 		switch (mEvent.type)
 		{
 		case SDL_WINDOWEVENT:

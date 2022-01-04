@@ -1,11 +1,20 @@
 #include <Labyrinth.h>
 
+#include "imgui/imgui.h"
+
 class ExampleLayer : public Labyrinth::Layer
 {
 public:
 	ExampleLayer()
 		: Layer("Example")
 	{
+	}
+
+	virtual void onImGuiRender() override
+	{
+		ImGui::Begin("Test");
+		ImGui::Text("Hello World");
+		ImGui::End();
 	}
 
 	void onUpdate() override
@@ -31,7 +40,6 @@ public:
 	Sandbox() 
 	{
 		pushLayer(new ExampleLayer());
-		pushOverlay(new Labyrinth::ImGuiLayer());
 	}
 
 	~Sandbox() 

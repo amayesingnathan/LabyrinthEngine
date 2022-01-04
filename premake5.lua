@@ -130,6 +130,7 @@ project "Sandbox"
     includedirs
     {
         "Labyrinth/src",
+		"Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}"
     }

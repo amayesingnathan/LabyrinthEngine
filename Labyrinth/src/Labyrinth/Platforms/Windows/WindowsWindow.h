@@ -25,6 +25,7 @@ namespace Labyrinth {
 		bool isVSync() const override;
 
 		inline virtual void* getNativeWindow() const { return mWindow; }
+		inline virtual void* getNativeContext() const { return mContext; }
 
 	private:
 		virtual void init(const WindowProps& props);

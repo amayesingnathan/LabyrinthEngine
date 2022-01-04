@@ -460,9 +460,6 @@
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h" />
     <ClInclude Include="src\Labyrinth\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Labyrinth\LabyrinthOld.h" />
-    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.h" />
-    <ClInclude Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3_loader.h" />
-    <ClInclude Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.h" />
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsInput.h" />
     <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Labyrinth\Scene.h" />
@@ -493,11 +490,9 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
     <ClCompile Include="src\Labyrinth\Events\KeyEvent.cpp" />
+    <ClCompile Include="src\Labyrinth\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Labyrinth\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp" />
-    <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
-    <ClCompile Include="src\Labyrinth\Platforms\SDL\SDL_OpenGL_ImGui_Example.cpp" />
-    <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Labyrinth\Scene.cpp" />

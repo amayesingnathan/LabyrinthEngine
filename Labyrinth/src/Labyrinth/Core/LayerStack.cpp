@@ -5,7 +5,6 @@ namespace Labyrinth {
 
 	LayerStack::LayerStack()
 	{
-		mLayerInsert = mLayers.begin();
 	}
 
 	LayerStack::~LayerStack()
@@ -18,13 +17,14 @@ namespace Labyrinth {
 
 	void LayerStack::pushLayer(Layer* layer)
 	{
-		mLayerInsert = mLayers.emplace(mLayerInsert, layer);
+		mLayers.emplace(mLayers.begin() + mLayerInsertIndex, layer);
+		mLayerInsertIndex++;
 		layer->onAttach();
 	}
 
 	void LayerStack::pushOverlay(Layer* overlay)
 	{
-		mLayers.emplace_back(overlay);
+		mLayers.emplace_back(overlay);	
 		overlay->onAttach();
 	}
 
@@ -35,7 +35,7 @@ namespace Labyrinth {
 		{
 			layer->onDetach();
 			mLayers.erase(it);
-			mLayerInsert--;
+			mLayerInsertIndex--;
 		}
 	}
 
