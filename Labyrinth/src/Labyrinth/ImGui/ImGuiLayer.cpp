@@ -106,11 +106,11 @@ namespace Labyrinth {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui_ImplSDL2_Data* bd = ImGui_ImplSDL2_GetBackendData();
 
-		io.MouseDown[e.GetMouseButton()] = true;
+		io.MouseDown[e.getMouseButton()] = true;
 		
-		if (e.GetMouseButton() == SDL_BUTTON_LEFT) { bd->MousePressed[0] = true; }
-		if (e.GetMouseButton() == SDL_BUTTON_RIGHT) { bd->MousePressed[1] = true; }
-		if (e.GetMouseButton() == SDL_BUTTON_MIDDLE) { bd->MousePressed[2] = true; }
+		if (e.getMouseButton() == SDL_BUTTON_LEFT) { bd->MousePressed[0] = true; }
+		if (e.getMouseButton() == SDL_BUTTON_RIGHT) { bd->MousePressed[1] = true; }
+		if (e.getMouseButton() == SDL_BUTTON_MIDDLE) { bd->MousePressed[2] = true; }
 
 
 		return false;
@@ -121,18 +121,18 @@ namespace Labyrinth {
 		ImGuiIO& io = ImGui::GetIO();
 		ImGui_ImplSDL2_Data* bd = ImGui_ImplSDL2_GetBackendData();
 
-		io.MouseDown[e.GetMouseButton()] = false;
+		io.MouseDown[e.getMouseButton()] = false;
 
-		if (e.GetMouseButton() == SDL_BUTTON_LEFT) { bd->MousePressed[0] = false; }
-		if (e.GetMouseButton() == SDL_BUTTON_RIGHT) { bd->MousePressed[1] = false; }
-		if (e.GetMouseButton() == SDL_BUTTON_MIDDLE) { bd->MousePressed[2] = false; }
+		if (e.getMouseButton() == SDL_BUTTON_LEFT) { bd->MousePressed[0] = false; }
+		if (e.getMouseButton() == SDL_BUTTON_RIGHT) { bd->MousePressed[1] = false; }
+		if (e.getMouseButton() == SDL_BUTTON_MIDDLE) { bd->MousePressed[2] = false; }
 		return false;
 	}
 
 	bool ImGuiLayer::OnMouseMovedEvent(MouseMovedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.MousePos = ImVec2(e.GetX(), e.GetY());
+		io.MousePos = ImVec2(e.getX(), e.getY());
 
 		return false;
 	}
@@ -140,8 +140,8 @@ namespace Labyrinth {
 	bool ImGuiLayer::OnMouseScrolledEvent(MouseScrolledEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.MouseWheel += e.GetYOffset();
-		io.MouseWheelH += e.GetXOffset();
+		io.MouseWheel += e.getYOffset();
+		io.MouseWheelH += e.getXOffset();
 
 		return false;
 	}
@@ -149,7 +149,7 @@ namespace Labyrinth {
 	bool ImGuiLayer::OnKeyPressedEvent(KeyPressedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.KeysDown[e.GetKeyCode()] = true;
+		io.KeysDown[e.getKeyCode()] = true;
 		io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
 		io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
 		io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
@@ -165,7 +165,7 @@ namespace Labyrinth {
 	bool ImGuiLayer::OnKeyReleasedEvent(KeyReleasedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.KeysDown[e.GetKeyCode()] = false;
+		io.KeysDown[e.getKeyCode()] = false;
 		io.KeyShift = ((SDL_GetModState() & KMOD_SHIFT) != 0);
 		io.KeyCtrl = ((SDL_GetModState() & KMOD_CTRL) != 0);
 		io.KeyAlt = ((SDL_GetModState() & KMOD_ALT) != 0);
@@ -180,7 +180,7 @@ namespace Labyrinth {
 	bool ImGuiLayer::OnKeyTypedEvent(KeyTypedEvent& e)
 	{
 		ImGuiIO& io = ImGui::GetIO();
-		io.AddInputCharactersUTF8(e.GetText().c_str());
+		io.AddInputCharactersUTF8(e.getText().c_str());
 		return false;
 	}
 

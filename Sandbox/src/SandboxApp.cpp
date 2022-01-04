@@ -14,7 +14,14 @@ public:
 
 	void onEvent(Labyrinth::Event& event) override
 	{
-		LAB_TRACE("{0}", event);
+		if (event.getEventType() == Labyrinth::EventType::KeyPressed)
+		{
+			Labyrinth::KeyPressedEvent& e = (Labyrinth::KeyPressedEvent&)event;
+			if (e.getKeyCode() == LAB_KEY_TAB)
+				LAB_TRACE("Tab key is pressed (event)!");
+
+			LAB_TRACE("{0}", e.getKeyName());
+		}
 	}
 };
 

@@ -4,6 +4,8 @@
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Platforms/Windows/WindowsWindow.h"
 
+#include "Input.h"
+
 #include "SDL.h"
 #include "Glad/glad.h"
 #include "SDL_opengl.h"
@@ -73,15 +75,12 @@ namespace Labyrinth {
 
 	bool Application::OnKeyPress(KeyPressedEvent& e)
 	{
-		switch (e.GetKeyCode())
+		switch (e.getKeyCode())
 		{
 		case SDL_SCANCODE_ESCAPE:
 			mRunning = false;
-			break;
-
-		default:
-			break;
+			return true;
 		}
-		return true;
+		return false;
 	}
 }

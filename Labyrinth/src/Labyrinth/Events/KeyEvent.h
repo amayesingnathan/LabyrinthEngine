@@ -7,7 +7,8 @@ namespace Labyrinth {
 	class KeyEvent : public Event
 	{
 	public:
-		inline int GetKeyCode() const { return mKeyCode; }
+		inline int getKeyCode() const { return mKeyCode; }
+		char getKeyName() const;
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
@@ -24,9 +25,9 @@ namespace Labyrinth {
 		KeyPressedEvent(int keycode, int repeatCount)
 			: KeyEvent(keycode), mRepeatCount(repeatCount) {}
 
-		inline int GetRepeatCount() const { return mRepeatCount; }
+		inline int getRepeatCount() const { return mRepeatCount; }
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyPressedEvent: " << mKeyCode << " (" << mRepeatCount << " repeat(s))";
@@ -44,7 +45,7 @@ namespace Labyrinth {
 		KeyReleasedEvent(int keycode)
 			: KeyEvent(keycode) {}
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyReleasedEvent: " << mKeyCode;
@@ -60,12 +61,12 @@ namespace Labyrinth {
 		KeyTypedEvent(const std::string& text)
 			: mText(text){}
 
-		inline std::string GetText() const { return mText; }
+		inline std::string getText() const { return mText; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 		EVENT_CLASS_TYPE(KeyTyped)
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "KeyTypedEvent: " << mText;

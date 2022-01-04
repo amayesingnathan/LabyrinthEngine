@@ -155,9 +155,12 @@
     <ClInclude Include="src\Labyrinth\Core\Assert.h" />
     <ClInclude Include="src\Labyrinth\Core\Base.h" />
     <ClInclude Include="src\Labyrinth\Core\EntryPoint.h" />
+    <ClInclude Include="src\Labyrinth\Core\Input.h" />
+    <ClInclude Include="src\Labyrinth\Core\KeyCodes.h" />
     <ClInclude Include="src\Labyrinth\Core\Layer.h" />
     <ClInclude Include="src\Labyrinth\Core\LayerStack.h" />
     <ClInclude Include="src\Labyrinth\Core\Log.h" />
+    <ClInclude Include="src\Labyrinth\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Labyrinth\Core\Platforms.h" />
     <ClInclude Include="src\Labyrinth\Core\Window.h" />
     <ClInclude Include="src\Labyrinth\ECS\Components\Animation.h" />
@@ -188,6 +191,7 @@
     <ClInclude Include="src\Labyrinth\Scene.h" />
     <ClInclude Include="src\Labyrinth\config.h" />
     <ClInclude Include="src\Lpch.h" />
+    <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsInput.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp" />
@@ -212,9 +216,11 @@
     <ClCompile Include="src\Labyrinth\ECS\Systems\System.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\TextureManager.cpp" />
     <ClCompile Include="src\Labyrinth\ECS\Systems\XMLParser.cpp" />
+    <ClCompile Include="src\Labyrinth\Events\KeyEvent.cpp" />
     <ClCompile Include="src\Labyrinth\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp" />
+    <ClCompile Include="src\Labyrinth\Platforms\SDL\SDL_OpenGL_ImGui_Example.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp" />
     <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Labyrinth\Scene.cpp" />
@@ -222,6 +228,7 @@
     <ClCompile Include="src\Lpch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsInput.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="dependencies\glad\glad.vcxproj">

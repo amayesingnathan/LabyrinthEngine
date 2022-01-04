@@ -149,6 +149,10 @@
       <Filter>Labyrinth</Filter>
     </ClInclude>
     <ClInclude Include="src\Lpch.h" />
+    <ClInclude Include="src\Labyrinth\Core\Input.h" />
+    <ClInclude Include="src\Labyrinth\Platforms\Windows\WindowsInput.h" />
+    <ClInclude Include="src\Labyrinth\Core\KeyCodes.h" />
+    <ClInclude Include="src\Labyrinth\Core\MouseButtonCodes.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp">
@@ -226,6 +230,9 @@
     <ClCompile Include="src\Labyrinth\Platforms\OpenGL\imgui_impl_opengl3.cpp">
       <Filter>Labyrinth\Platforms\OpenGL</Filter>
     </ClCompile>
+    <ClCompile Include="src\Labyrinth\Platforms\SDL\SDL_OpenGL_ImGui_Example.cpp">
+      <Filter>Labyrinth\Platforms\SDL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Labyrinth\Platforms\SDL\imgui_impl_sdl.cpp">
       <Filter>Labyrinth\Platforms\SDL</Filter>
     </ClCompile>
@@ -239,5 +246,7 @@
       <Filter>Labyrinth</Filter>
     </ClCompile>
     <ClCompile Include="src\Lpch.cpp" />
+    <ClCompile Include="src\Labyrinth\Platforms\Windows\WindowsInput.cpp" />
+    <ClCompile Include="src\Labyrinth\Events\KeyEvent.cpp" />
   </ItemGroup>
 </Project>

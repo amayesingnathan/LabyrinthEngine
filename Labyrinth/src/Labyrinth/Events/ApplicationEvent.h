@@ -10,10 +10,10 @@ namespace Labyrinth {
 		WindowResizeEvent(unsigned int width, unsigned int height)
 			: mWidth(width), mHeight(height) {}
 
-		unsigned int GetWidth() const { return mWidth; }
-		unsigned int GetHeight() const { return mHeight; }
+		unsigned int getWidth() const { return mWidth; }
+		unsigned int getHeight() const { return mHeight; }
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "WindowResizeEvent: " << mWidth << ", " << mHeight;

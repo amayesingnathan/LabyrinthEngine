@@ -177,7 +177,7 @@ namespace Labyrinth {
 		SDL_Window* win = SDL_GetWindowFromID(mEvent.key.windowID);
 		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
 
-		SDL_Scancode keycode = mEvent.key.keysym.scancode;
+		int keycode = mEvent.key.keysym.scancode;
 		switch (mEvent.type)
 		{
 		case SDL_KEYUP:

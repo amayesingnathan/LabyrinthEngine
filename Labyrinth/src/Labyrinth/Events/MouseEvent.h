@@ -10,10 +10,10 @@ namespace Labyrinth {
 		MouseMovedEvent(const float x, const float y)
 			: mMouseX(x), mMouseY(y) {}
 
-		inline float GetX() const { return mMouseX; }
-		inline float GetY() const { return mMouseY; }
+		inline float getX() const { return mMouseX; }
+		inline float getY() const { return mMouseY; }
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseMovedEvent: " << mMouseX << ", " << mMouseY;
@@ -32,13 +32,13 @@ namespace Labyrinth {
 		MouseScrolledEvent(const float xOffset, const float yOffset)
 			: mXOffset(xOffset), mYOffset(yOffset) {}
 
-		float GetXOffset() const { return mXOffset; }
-		float GetYOffset() const { return mYOffset; }
+		float getXOffset() const { return mXOffset; }
+		float getYOffset() const { return mYOffset; }
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "MouseScrolledEvent: " << GetXOffset() << ", " << GetYOffset();
+			ss << "MouseScrolledEvent: " << getXOffset() << ", " << getYOffset();
 			return ss.str();
 		}
 
@@ -51,7 +51,7 @@ namespace Labyrinth {
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline int GetMouseButton() const { return mButton; }
+		inline int getMouseButton() const { return mButton; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:
@@ -67,7 +67,7 @@ namespace Labyrinth {
 		MouseButtonPressedEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonPressedEvent: " << mButton;
@@ -83,7 +83,7 @@ namespace Labyrinth {
 		MouseButtonReleasedEvent(int button)
 			: MouseButtonEvent(button) {}
 
-		std::string ToString() const override
+		std::string toString() const override
 		{
 			std::stringstream ss;
 			ss << "MouseButtonReleasedEvent: " << mButton;
