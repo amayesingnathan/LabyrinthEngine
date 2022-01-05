@@ -3,6 +3,7 @@
 #include "Lpch.h"
 
 #include "Labyrinth/Core/Window.h"
+#include "Labyrinth/Renderer/GraphicsContext.h"
 
 #include "SDL.h"
 
@@ -39,7 +40,7 @@ namespace Labyrinth {
 
 	private:
 		SDL_Window* mWindow;
-		SDL_GLContext mContext;
+		GraphicsContext* mContext;
 		SDL_Event mEvent;
 
 		struct WindowData

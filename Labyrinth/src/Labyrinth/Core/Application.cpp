@@ -2,7 +2,7 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/Log.h"
-#include "Labyrinth/Platforms/Windows/WindowsWindow.h"
+#include "Platforms/Windows/WindowsWindow.h"
 
 #include "Input.h"
 

@@ -5,7 +5,7 @@
 #include "Labyrinth/Events/MouseEvent.h"
 #include "Labyrinth/Events/KeyEvent.h"
 
-#include "imgui.h"
+#include "Platforms/OpenGL/OpenGLContext.h"
 
 #include <Glad/glad.h>
 #include <SDL_opengl.h>
@@ -13,7 +13,6 @@
 namespace Labyrinth {
 
 	static bool sSDLInitialised = false;
-	static bool sGladInitialised = false;
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
@@ -59,20 +58,10 @@ namespace Labyrinth {
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 		mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
-		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!")
+		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
 
-		mContext = SDL_GL_CreateContext(mWindow);
-		LAB_CORE_ASSERT(mContext, "Could not create OpenGL context!");
-
-		SDL_GL_MakeCurrent(mWindow, mContext);
-
-		if (!sGladInitialised)
-		{
-			int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
-			LAB_CORE_ASSERT(status, "Could not initialise Glad!");
-
-			sGladInitialised = true;
-		}
+		mContext = new OpenGLContext(mWindow);
+		mContext->init();
 
 		SDL_SetWindowData(mWindow, "WindowData", &mData);
 		setVSync(true);
@@ -91,7 +80,7 @@ namespace Labyrinth {
 	{
 		SDL_PollEvent(&mEvent);
 		DispatchEvent();
-		SDL_GL_SwapWindow(mWindow);
+		mContext->swapBuffers();
 	}
 
 	void WindowsWindow::setVSync(bool enabled)
