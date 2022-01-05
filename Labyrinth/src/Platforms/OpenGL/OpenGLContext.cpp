@@ -17,6 +17,11 @@ namespace Labyrinth {
 		SDL_GL_MakeCurrent(mWindowHandle, mContextHandle);
 		int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 		LAB_CORE_ASSERT(status, "Failed to initialize Glad!");
+
+		LAB_CORE_INFO("OpenGL Info:");
+		LAB_CORE_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
+		LAB_CORE_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
+		LAB_CORE_INFO("  Version: {0}", glGetString(GL_VERSION));
 	}
 
 	void OpenGLContext::swapBuffers()

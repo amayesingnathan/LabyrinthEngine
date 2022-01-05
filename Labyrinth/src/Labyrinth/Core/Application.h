@@ -11,6 +11,8 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
+#include "Labyrinth/Renderer/Shader.h"
+
 namespace Labyrinth { 
 		
 	class Application
@@ -45,6 +47,9 @@ namespace Labyrinth {
 		ImGuiLayer* mImGuiLayer;
 		bool mRunning = false;
 		LayerStack mLayerStack;
+
+		unsigned int mVertexArray, mVertexBuffer, mIndexBuffer;
+		std::unique_ptr<Shader> mShader;
 	};
 
 	//To be defined in CLIENT

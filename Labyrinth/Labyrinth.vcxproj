@@ -457,6 +457,7 @@
     <ClInclude Include="src\Labyrinth\Events\MouseEvent.h" />
     <ClInclude Include="src\Labyrinth\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Labyrinth\LabyrinthOld.h" />
+    <ClInclude Include="src\Labyrinth\Renderer\Shader.h" />
     <ClInclude Include="src\Platforms\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platforms\Windows\WindowsWindow.h" />
@@ -492,6 +493,7 @@
     <ClCompile Include="src\Labyrinth\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Labyrinth\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Labyrinth\LabyrinthOld.cpp" />
+    <ClCompile Include="src\Labyrinth\Renderer\Shader.cpp" />
     <ClCompile Include="src\Platforms\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platforms\Windows\WindowsWindow.cpp" />

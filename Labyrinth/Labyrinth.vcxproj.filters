@@ -1004,6 +1004,7 @@
     </ClInclude>
     <ClInclude Include="src\Labyrinth\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Platforms\OpenGL\OpenGLContext.h" />
+    <ClInclude Include="src\Labyrinth\Renderer\Shader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Labyrinth\Core\Application.cpp">
@@ -1100,5 +1101,6 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\Platforms\OpenGL\OpenGLContext.cpp" />
+    <ClCompile Include="src\Labyrinth\Renderer\Shader.cpp" />
   </ItemGroup>
 </Project>
