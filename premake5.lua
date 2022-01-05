@@ -27,8 +27,11 @@ IncludeDir["rapidxml"] = "Labyrinth/dependencies/rapidxml"
 LibDir = {}
 LibDir["SDL2"] = "Labyrinth/dependencies/SDL2/lib"
 
-include "Labyrinth/dependencies/glad"
-include "Labyrinth/dependencies/imgui"
+group "Dependencies"
+	include "Labyrinth/dependencies/glad"
+	include "Labyrinth/dependencies/imgui"
+
+group ""
 
 project "Labyrinth"
     location "Labyrinth"
