@@ -1,5 +1,9 @@
 #Ignore binaries
-bin
+**/bin
 
-#Ignore VS temp files
-.vs
+#Ignore VS files
+**/.vs
+**/*.sln
+**/*.vcxproj
+**/*.vcxproj.filters
+**/*.vcxproj.user
