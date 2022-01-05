@@ -104,7 +104,7 @@ namespace Labyrinth {
 		ImGuiIO& io = ImGui::GetIO();
 
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
+		io.DisplaySize = ImVec2(static_cast<float>(app.getWindow().getWidth()), static_cast<float>(app.getWindow().getHeight()));
 
 		// Rendering
 		ImGui::Render();
@@ -203,7 +203,7 @@ namespace Labyrinth {
 	{
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
+		io.DisplaySize = ImVec2(static_cast<float>(app.getWindow().getWidth()), static_cast<float>(app.getWindow().getHeight()));
 
 		return false;
 	}

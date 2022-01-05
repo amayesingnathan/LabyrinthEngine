@@ -34,6 +34,9 @@ project "Labyrinth"
     location "Labyrinth"
     kind "StaticLib"
     language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+		
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 	
@@ -49,8 +52,7 @@ project "Labyrinth"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS",
-		"GLFW_INCLUDE_NONE"
+		"_CRT_SECURE_NO_WARNINGS"
 	}
 
     includedirs
@@ -79,45 +81,36 @@ project "Labyrinth"
 	}
 	
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
-
-        defines
-        {
-			"GLEW_STATIC"
-        }
 
 		links
 		{
 			"SDL2main"
 		}
-
-        --postbuildcommands
-        --{
-        --    ("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "/Sandbox")
-        --}
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
-        buildoptions "/MTd"
-        symbols "On"
+		runtime "Debug"
+        symbols "on"
 
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
-        buildoptions "/MT"
-        optimize "On"
+		runtime "Release"
+        optimize "on"
 
     filter "configurations:Dist"
         defines { "LAB_DIST" }
-        buildoptions "/MT"
-        optimize "On"
+		runtime "Release"
+        optimize "on"
 
         
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"
     language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+	
     targetdir ("bin/" .. outputdir .. "/%{prj.name}")
     objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
 	
@@ -141,21 +134,17 @@ project "Sandbox"
     }
 
     filter "system:windows"
-        cppdialect "C++17"
-        staticruntime "On"
         systemversion "latest"
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
-        buildoptions "/MTd"
-        symbols "On"
+        symbols "on"
 
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
-        buildoptions "/MT"
-        optimize "On"
+        optimize "on"
 
     filter "configurations:Dist"
         defines { "LAB_DIST" }
-        buildoptions "/MT"
-        optimize "On"
+		runtime "Release"
+        optimize "on"

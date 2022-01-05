@@ -213,8 +213,8 @@ namespace Labyrinth {
 			SDL_Window* win = SDL_GetWindowFromID(mEvent.motion.windowID);
 			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
 
-			int x = mEvent.motion.x;
-			int y = mEvent.motion.y;
+			float x = static_cast<float>(mEvent.motion.x);
+			float y = static_cast<float>(mEvent.motion.y);
 
 			MouseMovedEvent event(x, y);
 			winData.eventCallback(event);
@@ -247,8 +247,8 @@ namespace Labyrinth {
 			SDL_Window* win = SDL_GetWindowFromID(mEvent.wheel.windowID);
 			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
 
-			int x = mEvent.wheel.x;
-			int y = mEvent.wheel.y;
+			float x = static_cast<float>(mEvent.wheel.x);
+			float y = static_cast<float>(mEvent.wheel.y);
 
 			MouseScrolledEvent event(x, y);
 			winData.eventCallback(event);
