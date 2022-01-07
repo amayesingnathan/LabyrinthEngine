@@ -205,6 +205,24 @@ namespace Labyrinth {
 		case LAB_KEY_ESCAPE:
 			mRunning = false;
 			return true;
+		case LAB_KEY_W:
+			mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.0f, -0.04f, 0.0f });
+			return true;
+		case LAB_KEY_A:
+			mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.04f, 0.0f, 0.0f });
+			return true;
+		case LAB_KEY_S:
+			mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.0f, 0.04f, 0.0f });
+			return true;
+		case LAB_KEY_D:
+			mCamera.setPosition(mCamera.getPosition() + glm::vec3{ -0.04f, 0.0f, 0.0f });
+			return true;
+		case LAB_KEY_Q:
+			mCamera.setRotation(mCamera.getRotation() - 3.0f);
+			return true;
+		case LAB_KEY_E:
+			mCamera.setRotation(mCamera.getRotation() + 3.0f);
+			return true;
 		}
 		return false;
 	}
