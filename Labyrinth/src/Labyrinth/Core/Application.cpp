@@ -6,9 +6,7 @@
 
 #include "Input.h"
 
-#include "SDL.h"
-#include "Glad/glad.h"
-#include "SDL_opengl.h"
+#include "Labyrinth/Renderer/Renderer.h"
 
 namespace Labyrinth {
 
@@ -139,16 +137,18 @@ namespace Labyrinth {
 
 		while (mRunning)
 		{
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::Clear();
+
+			Renderer::BeginState();
 
 			mBlueShader->bind();
-			mSquareVA->bind();
-			glDrawElements(GL_TRIANGLES, mSquareVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Send(mSquareVA);
 
 			mShader->bind();
-			mVertexArray->bind();
-			glDrawElements(GL_TRIANGLES, mVertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+			Renderer::Send(mVertexArray);
+
+			Renderer::EndState();
 
 			for (Layer* layer : mLayerStack)
 				layer->onUpdate();
@@ -196,7 +196,7 @@ namespace Labyrinth {
 	{
 		switch (e.getKeyCode())
 		{
-		case SDL_SCANCODE_ESCAPE:
+		case LAB_KEY_ESCAPE:
 			mRunning = false;
 			return true;
 		}

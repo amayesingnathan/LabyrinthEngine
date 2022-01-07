@@ -1,21 +1,18 @@
 #pragma once
 
-namespace Labyrinth {
+#include "RenderCommand.h"
 
-	enum class RendererAPI
-	{
-		None	= 0,
-		OpenGL	= 1
-	};
+namespace Labyrinth {
 
 	class Renderer
 	{
 	public:
-		inline static RendererAPI GetAPI() { return sRendererAPI; }
-		inline static void SetAPI(RendererAPI newAPI) { sRendererAPI = newAPI; }
+		static void BeginState();
+		static void EndState();
 
-	private:
-		static RendererAPI sRendererAPI;
+		static void Send(const Ref<VertexArray>& vertexArray);
+
+		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 
 }

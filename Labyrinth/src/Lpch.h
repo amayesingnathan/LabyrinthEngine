@@ -4,6 +4,8 @@
 #include "Labyrinth/Core/Base.h"
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
+#include "Labyrinth/Core/KeyCodes.h"
+#include "Labyrinth/Core/MouseButtonCodes.h"
 
 //STL Containers/Types
 #include <cstdint>

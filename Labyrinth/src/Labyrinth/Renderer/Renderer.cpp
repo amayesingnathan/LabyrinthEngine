@@ -3,6 +3,18 @@
 
 namespace Labyrinth {
 
-	RendererAPI Renderer::sRendererAPI = RendererAPI::OpenGL;
+	void Renderer::BeginState()
+	{
+	}
+
+	void Renderer::EndState()
+	{
+	}
+
+	void Renderer::Send(const Ref<VertexArray>& vertexArray)
+	{
+		vertexArray->bind();
+		RenderCommand::DrawIndexed(vertexArray);
+	}
 
 }
