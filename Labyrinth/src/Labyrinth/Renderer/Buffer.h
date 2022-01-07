@@ -79,8 +79,8 @@ namespace Labyrinth {
 			CalculateOffsetsAndStride();
 		}
 
-		inline const std::vector<BufferElement>& getElements() const { return mElements; }
-		inline uint32_t getStride() const { return mStride; }
+		const std::vector<BufferElement>& getElements() const { return mElements; }
+		uint32_t getStride() const { return mStride; }
 
 		std::vector<BufferElement>::iterator begin() { return mElements.begin(); }
 		std::vector<BufferElement>::iterator end() { return mElements.end(); }

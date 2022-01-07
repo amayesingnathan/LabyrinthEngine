@@ -18,7 +18,7 @@ namespace Labyrinth {
 		virtual void onEvent(Event& event) {}
 
 #ifdef LAB_DEBUG
-		inline const std::string& ogetName() const { return mDebugName; }
+		const std::string& ogetName() const { return mDebugName; }
 
 	protected:
 		std::string mDebugName;

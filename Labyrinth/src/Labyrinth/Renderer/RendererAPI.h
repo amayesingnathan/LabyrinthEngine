@@ -21,7 +21,7 @@ namespace Labyrinth {
 
 		virtual void drawIndexed(const Ref<VertexArray>& vertexArray) = 0;
 
-		inline static API GetAPI() { return sAPI; }
+		static API GetAPI() { return sAPI; }
 
 	private:
 		static API sAPI;

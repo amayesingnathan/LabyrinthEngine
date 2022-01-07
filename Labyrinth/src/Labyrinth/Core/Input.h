@@ -5,12 +5,12 @@ namespace Labyrinth {
 	class Input
 	{
 	public:
-		inline static bool IsKeyPressed(int keycode) { return sInstance->isKeyPressedImpl(keycode); }
+		static bool IsKeyPressed(int keycode) { return sInstance->isKeyPressedImpl(keycode); }
 
-		inline static bool IsMouseButtonPressed(int button) { return sInstance->isMouseButtonPressedImpl(button); }
-		inline static std::pair<float, float> GetMousePosition() { return sInstance->getMousePositionImpl(); }
-		inline static float getMouseX() { return sInstance->getMouseXImpl(); }
-		inline static float getMouseY() { return sInstance->getMouseYImpl(); }
+		static bool IsMouseButtonPressed(int button) { return sInstance->isMouseButtonPressedImpl(button); }
+		static std::pair<float, float> GetMousePosition() { return sInstance->getMousePositionImpl(); }
+		static float getMouseX() { return sInstance->getMouseXImpl(); }
+		static float getMouseY() { return sInstance->getMouseYImpl(); }
 
 	protected:
 		virtual bool isKeyPressedImpl(int keycode) = 0;

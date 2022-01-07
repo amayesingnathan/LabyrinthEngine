@@ -30,9 +30,9 @@ namespace Labyrinth {
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
 
-		inline Window& getWindow() { return *mWindow; }
+		Window& getWindow() { return *mWindow; }
 
-		static inline Application& Get() { return *sInstance; }
+		static Application& Get() { return *sInstance; }
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);

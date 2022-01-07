@@ -10,8 +10,8 @@ namespace Labyrinth {
 		MouseMovedEvent(const float x, const float y)
 			: mMouseX(x), mMouseY(y) {}
 
-		inline float getX() const { return mMouseX; }
-		inline float getY() const { return mMouseY; }
+		float getX() const { return mMouseX; }
+		float getY() const { return mMouseY; }
 
 		std::string toString() const override
 		{
@@ -51,7 +51,7 @@ namespace Labyrinth {
 	class MouseButtonEvent : public Event
 	{
 	public:
-		inline int getMouseButton() const { return mButton; }
+		int getMouseButton() const { return mButton; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:

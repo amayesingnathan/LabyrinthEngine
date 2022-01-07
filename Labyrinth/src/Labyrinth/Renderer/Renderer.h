@@ -12,7 +12,7 @@ namespace Labyrinth {
 
 		static void Send(const Ref<VertexArray>& vertexArray);
 
-		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+		static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 	};
 
 }

@@ -39,7 +39,7 @@ namespace Labyrinth {
 		virtual int getCategoryFlags() const = 0;
 		virtual std::string toString() const { return getName(); }
 
-		inline bool isInCategory(EventCategory category)
+		bool isInCategory(EventCategory category)
 		{
 			return getCategoryFlags() & category;
 		}
@@ -74,7 +74,7 @@ namespace Labyrinth {
 		Event& mEvent;
 	};
 
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
+	std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
 		return os << e.toString();
 	}
