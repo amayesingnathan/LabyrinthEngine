@@ -1,10 +1,10 @@
-	#pragma once
+#pragma once
 
 #include "Base.h"
 
 #include "Window.h"
 #include "LayerStack.h"
-#include <Labyrinth/Events/Event.h>
+
 #include <Labyrinth/Events/ApplicationEvent.h>
 #include <Labyrinth/Events/KeyEvent.h>
 #include <Labyrinth/Events/MouseEvent.h>
@@ -12,7 +12,9 @@
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
 #include "Labyrinth/Renderer/Shader.h"
+#include "Labyrinth/Renderer/Buffer.h"
 #include "Labyrinth/Renderer/VertexArray.h"
+#include "Labyrinth/Renderer/Camera.h"
 
 namespace Labyrinth { 
 		
@@ -54,6 +56,8 @@ namespace Labyrinth {
 
 		Ref<Shader> mBlueShader;
 		Ref<VertexArray> mSquareVA;
+
+		OrthographicCamera mCamera;
 	};
 
 	//To be defined in CLIENT

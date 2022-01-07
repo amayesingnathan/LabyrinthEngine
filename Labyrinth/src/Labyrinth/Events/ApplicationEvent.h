@@ -4,11 +4,24 @@
 
 namespace Labyrinth {
 
-	class WindowResizeEvent : public Event
+	class WindowEvent : public Event
 	{
 	public:
-		WindowResizeEvent(unsigned int width, unsigned int height)
-			: mWidth(width), mHeight(height) {}
+		unsigned int getID() const { return mWindowID; }
+
+	protected:
+		WindowEvent(unsigned int id)
+			: mWindowID(id) {}
+
+	private:
+		unsigned int mWindowID;
+	};
+
+	class WindowResizeEvent : public WindowEvent
+	{
+	public:
+		WindowResizeEvent(unsigned int id, unsigned int width, unsigned int height)
+			: WindowEvent(id), mWidth(width), mHeight(height) {}
 
 		unsigned int getWidth() const { return mWidth; }
 		unsigned int getHeight() const { return mHeight; }
@@ -26,37 +39,42 @@ namespace Labyrinth {
 		unsigned int mWidth, mHeight;
 	};
 
-	class WindowCloseEvent : public Event
+	class WindowCloseEvent : public WindowEvent
 	{
 	public:
-		WindowCloseEvent() = default;
+		WindowCloseEvent(unsigned int id) 
+			: WindowEvent(id) {}
 
 		EVENT_CLASS_TYPE(WindowClose)
-			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
+
 	};
 
-	class AppTickEvent : public Event
+	class AppTickEvent : public WindowEvent
 	{
 	public:
-		AppTickEvent() = default;
+		AppTickEvent(unsigned int id)
+			: WindowEvent(id) {}
 
 		EVENT_CLASS_TYPE(AppTick)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppUpdateEvent : public Event
+	class AppUpdateEvent : public WindowEvent
 	{
 	public:
-		AppUpdateEvent() = default;
+		AppUpdateEvent(unsigned int id)
+			: WindowEvent(id) {}
 
 		EVENT_CLASS_TYPE(AppUpdate)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppRenderEvent : public Event
+	class AppRenderEvent : public WindowEvent
 	{
 	public:
-		AppRenderEvent() = default;
+		AppRenderEvent(unsigned int id)
+			: WindowEvent(id) {}
 
 		EVENT_CLASS_TYPE(AppRender)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)

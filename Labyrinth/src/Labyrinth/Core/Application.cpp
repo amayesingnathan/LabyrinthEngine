@@ -4,9 +4,11 @@
 #include "Labyrinth/Core/Log.h"
 #include "Platforms/Windows/WindowsWindow.h"
 
-#include "Input.h"
-
 #include "Labyrinth/Renderer/Renderer.h"
+
+#include "Input.h"
+#include "KeyCodes.h"
+#include "MouseButtonCodes.h"
 
 namespace Labyrinth {
 
@@ -15,6 +17,7 @@ namespace Labyrinth {
 	Application* Application::sInstance = nullptr;
 
 	Application::Application()
+		:mCamera(-2.0f, 2.0f, -2.0f, 2.0f)
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
@@ -77,6 +80,8 @@ namespace Labyrinth {
 			layout(location = 0) in vec3 aPosition;
 			layout(location = 1) in vec4 aColour;
 
+			uniform mat4 uViewProjection;
+
 			out vec3 vPosition;
 			out vec4 vColour;
 
@@ -84,7 +89,7 @@ namespace Labyrinth {
 			{
 				vPosition = aPosition;
 				vColour = aColour;
-				gl_Position = vec4(aPosition, 1.0);	
+				gl_Position = uViewProjection * vec4(aPosition, 1.0);	
 			}
 		)";
 
@@ -109,11 +114,15 @@ namespace Labyrinth {
 			#version 330 core
 			
 			layout(location = 0) in vec3 aPosition;
+
 			out vec3 vPosition;
+
+			uniform mat4 uViewProjection;
+
 			void main()
 			{
 				vPosition = aPosition;
-				gl_Position = vec4(aPosition, 1.0);	
+				gl_Position = uViewProjection * vec4(aPosition, 1.0);	
 			}
 		)";
 
@@ -143,9 +152,11 @@ namespace Labyrinth {
 			Renderer::BeginState();
 
 			mBlueShader->bind();
+			mBlueShader->uploadUniformMat4("uViewProjection", mCamera.getViewProjectionMatrix());
 			Renderer::Send(mSquareVA);
 
 			mShader->bind();
+			mShader->uploadUniformMat4("uViewProjection", mCamera.getViewProjectionMatrix());
 			Renderer::Send(mVertexArray);
 
 			Renderer::EndState();

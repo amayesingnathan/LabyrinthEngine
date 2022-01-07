@@ -31,6 +31,7 @@ namespace Labyrinth {
 		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
 		bool OnKeyTypedEvent(KeyTypedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
+		bool OnWindowCloseEvent(WindowCloseEvent& e);
 
 	private:
 		bool mBlockEvents = true;

@@ -23,7 +23,7 @@ namespace Labyrinth {
 		EventCategoryMouseButton	= BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type) static EventType GetStaticType() { return EventType::##type; }\
+#define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::##type; }\
 								virtual EventType getEventType() const override { return GetStaticType(); }\
 								virtual const char* getName() const override { return #type; }
 
@@ -74,7 +74,7 @@ namespace Labyrinth {
 		Event& mEvent;
 	};
 
-	std::ostream& operator<<(std::ostream& os, const Event& e)
+	inline std::ostream& operator<<(std::ostream& os, const Event& e)
 	{
 		return os << e.toString();
 	}

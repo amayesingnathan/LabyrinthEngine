@@ -100,6 +100,12 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchEvent()
 	{
+		/*
+			Currently all events extract window data from the SDL_Window* in the WindowsWindow object,
+			as opposed to using the SDL Window ID that the event happened in to find the SDL_Window* for the event.
+			This is because if an event happens outside the main window (i.e. Dear ImGui viewport) it will have a 
+			different Window ID, and fail to find the relevant window data for the event callback.
+		*/
 		switch (mEvent.type)
 		{
 		case SDL_WINDOWEVENT:
@@ -138,21 +144,20 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchWindowEvent() {
 
-		SDL_Window* win = SDL_GetWindowFromID(mEvent.window.windowID);
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 		if (mEvent.window.event == SDL_WINDOWEVENT_RESIZED) {
 			int w, h;
-			SDL_GetWindowSize(win, &w, &h);
+			SDL_GetWindowSize(mWindow, &w, &h);
 
 			winData.width = w;
 			winData.height = h;
 
-			WindowResizeEvent event(winData.width, winData.height);
+			WindowResizeEvent event(mEvent.window.windowID, winData.width, winData.height);
 			winData.eventCallback(event);
 		}
 
 		if (mEvent.window.event == SDL_WINDOWEVENT_CLOSE) {
-			WindowCloseEvent event;
+			WindowCloseEvent event(mEvent.window.windowID);
 			winData.eventCallback(event);
 		}
 		
@@ -160,8 +165,7 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchKeyEvent()
 	{
-		SDL_Window* win = SDL_GetWindowFromID(mEvent.key.windowID);
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 		int keycode = mEvent.key.keysym.scancode;
 		switch (mEvent.type)
@@ -185,8 +189,7 @@ namespace Labyrinth {
 
 	void WindowsWindow::DispatchTextEvent()
 	{
-		SDL_Window* win = SDL_GetWindowFromID(mEvent.text.windowID);
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 		KeyTypedEvent event(mEvent.text.text);
 		winData.eventCallback(event);
@@ -199,8 +202,7 @@ namespace Labyrinth {
 		{
 		case SDL_MOUSEMOTION:
 		{
-			SDL_Window* win = SDL_GetWindowFromID(mEvent.motion.windowID);
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 			float x = static_cast<float>(mEvent.motion.x);
 			float y = static_cast<float>(mEvent.motion.y);
@@ -211,8 +213,7 @@ namespace Labyrinth {
 		}
 		case SDL_MOUSEBUTTONDOWN:
 		{
-			SDL_Window* win = SDL_GetWindowFromID(mEvent.button.windowID);
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 			int button = mEvent.button.button;
 
@@ -222,8 +223,7 @@ namespace Labyrinth {
 		}
 		case SDL_MOUSEBUTTONUP:
 		{
-			SDL_Window* win = SDL_GetWindowFromID(mEvent.button.windowID);
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 			int button = mEvent.button.button;
 
@@ -233,8 +233,7 @@ namespace Labyrinth {
 		}
 		case SDL_MOUSEWHEEL:
 		{
-			SDL_Window* win = SDL_GetWindowFromID(mEvent.wheel.windowID);
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(win, "WindowData");
+			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
 
 			float x = static_cast<float>(mEvent.wheel.x);
 			float y = static_cast<float>(mEvent.wheel.y);

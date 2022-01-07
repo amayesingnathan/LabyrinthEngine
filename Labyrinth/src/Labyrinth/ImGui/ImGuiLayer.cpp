@@ -28,7 +28,7 @@ namespace Labyrinth {
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;       // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
-		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
+		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;         // Enable Multi-Viewport / Platform Windows
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 		// 
@@ -71,6 +71,8 @@ namespace Labyrinth {
 		dispatcher.dispatch<KeyReleasedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnKeyReleasedEvent));
 		dispatcher.dispatch<KeyTypedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnKeyTypedEvent));
 		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowResizeEvent));
+		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowCloseEvent));
+
 	}
 
 	void ImGuiLayer::begin()
@@ -80,19 +82,6 @@ namespace Labyrinth {
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();	
 
-		//ImGuiIO& io = ImGui::GetIO();
-		//Application& app = Application::Get();
-		//io.DisplaySize = ImVec2(app.getWindow().getWidth(), app.getWindow().getHeight());
-
-		//int time = SDL_GetTicks();
-		//io.DeltaTime = mTime > 0 ? (time - mTime) : (1.f / 60.f);
-		//mTime = time;
-
-		//static bool show = true;
-		//ImGui::ShowDemoWindow(&show);
-
-		//ImGui::Render();
-		//ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 	}
 
 	void ImGuiLayer::end()
@@ -197,10 +186,20 @@ namespace Labyrinth {
 
 	bool ImGuiLayer::OnWindowResizeEvent(WindowResizeEvent& e)
 	{
+		ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)SDL_GetWindowFromID(e.getID()));
+		viewport->PlatformRequestResize = true;
+
 		ImGuiIO& io = ImGui::GetIO();
 		Application& app = Application::Get();
 		io.DisplaySize = ImVec2(static_cast<float>(app.getWindow().getWidth()), static_cast<float>(app.getWindow().getHeight()));
 
+		return false;
+	}
+	bool ImGuiLayer::OnWindowCloseEvent(WindowCloseEvent& e)
+	{
+		ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)SDL_GetWindowFromID(e.getID()));
+		viewport->PlatformRequestClose = true;
+		
 		return false;
 	}
 }
