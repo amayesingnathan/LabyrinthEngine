@@ -27,7 +27,7 @@ namespace Labyrinth {
 		glm::mat4 mViewMatrix;
 		glm::mat4 mViewProjectionMatrix;
 
-		glm::vec3 mPosition;
+		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
 		float mRotation = 0.0f;
 	};
 
