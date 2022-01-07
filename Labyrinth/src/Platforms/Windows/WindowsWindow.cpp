@@ -227,7 +227,7 @@ namespace Labyrinth {
 
 			int button = mEvent.button.button;
 
-			MouseButtonPressedEvent event(button);
+			MouseButtonReleasedEvent event(button);
 			winData.eventCallback(event);
 			break;
 		}

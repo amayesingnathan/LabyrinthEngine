@@ -17,7 +17,7 @@ namespace Labyrinth {
 	Application* Application::sInstance = nullptr;
 
 	Application::Application()
-		:mCamera(-2.0f, 2.0f, -2.0f, 2.0f)
+		:mCamera(-1.6f, 1.6f, -0.9f, 0.9f)
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
@@ -149,15 +149,10 @@ namespace Labyrinth {
 			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 			RenderCommand::Clear();
 
-			Renderer::BeginState();
+			Renderer::BeginState(mCamera);
 
-			mBlueShader->bind();
-			mBlueShader->uploadUniformMat4("uViewProjection", mCamera.getViewProjectionMatrix());
-			Renderer::Send(mSquareVA);
-
-			mShader->bind();
-			mShader->uploadUniformMat4("uViewProjection", mCamera.getViewProjectionMatrix());
-			Renderer::Send(mVertexArray);
+			Renderer::Send(mBlueShader, mSquareVA);
+			Renderer::Send(mShader, mVertexArray);
 
 			Renderer::EndState();
 
