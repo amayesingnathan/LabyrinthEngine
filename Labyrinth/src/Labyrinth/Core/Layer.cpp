@@ -8,7 +8,4 @@ namespace Labyrinth {
 	{
 	}
 
-	Layer::~Layer()
-	{
-	}
 }

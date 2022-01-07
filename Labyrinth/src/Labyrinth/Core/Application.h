@@ -21,7 +21,7 @@ namespace Labyrinth {
 	//Methods
 	public:
 		Application();
-		~Application() {};
+		~Application() = default;
 
 		void run();
 

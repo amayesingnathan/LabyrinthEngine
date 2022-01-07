@@ -42,7 +42,7 @@ namespace Labyrinth {
 		uint32_t size;
 		bool normalised;
 
-		BufferElement() {}
+		BufferElement() = default;
 		BufferElement(ShaderDataType t, const std::string& n, bool norm = false)
 			: type(t), name(n), size(ShaderDataTypeSize(t)), offset(0), normalised(norm)
 		{}
@@ -72,7 +72,7 @@ namespace Labyrinth {
 	class BufferLayout
 	{
 	public:
-		BufferLayout() {}
+		BufferLayout() = default;
 		BufferLayout(const std::initializer_list<BufferElement>& elements)
 			: mElements(elements) 
 		{
@@ -113,7 +113,7 @@ namespace Labyrinth {
 	class VertexBuffer
 	{
 	public:
-		virtual ~VertexBuffer() {}
+		virtual ~VertexBuffer() = default;
 
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
@@ -129,7 +129,7 @@ namespace Labyrinth {
 	class IndexBuffer
 	{
 	public:
-		virtual ~IndexBuffer() {}
+		virtual ~IndexBuffer() = default;
 
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;

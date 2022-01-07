@@ -30,7 +30,7 @@ namespace Labyrinth {
 
 	void LayerStack::popLayer(Layer* layer)
 	{
-		auto it = std::find(mLayers.begin(), mLayers.end(), layer);
+		auto it = std::find(mLayers.begin(), mLayers.begin() + mLayerInsertIndex, layer);
 		if (it != mLayers.end())
 		{
 			layer->onDetach();
@@ -41,7 +41,7 @@ namespace Labyrinth {
 
 	void LayerStack::popOverlay(Layer* overlay)
 	{
-		auto it = std::find(mLayers.begin(), mLayers.end(), overlay);
+		auto it = std::find(mLayers.begin() + mLayerInsertIndex, mLayers.end(), overlay);
 		if (it != mLayers.end())
 		{
 			overlay->onDetach();

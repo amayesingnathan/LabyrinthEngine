@@ -25,7 +25,7 @@ namespace Labyrinth {
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;
 
-		virtual ~Window() {}
+		virtual ~Window() = default;
 
 		virtual void onUpdate() = 0;
 

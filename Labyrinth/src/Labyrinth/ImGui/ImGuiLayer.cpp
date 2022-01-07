@@ -19,10 +19,6 @@ namespace Labyrinth {
 	{
 	}
 
-	ImGuiLayer::~ImGuiLayer()
-	{
-	}
-
 	void ImGuiLayer::onAttach()
 	{
 		// Setup Dear ImGui context
