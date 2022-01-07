@@ -16,6 +16,24 @@ namespace Labyrinth {
 
 	Application* Application::sInstance = nullptr;
 
+	static GLenum ShaderDataTypetoOpenGLType(ShaderDataType type)
+	{
+		switch (type)
+		{
+			case ShaderDataType::Float:		return GL_FLOAT;
+			case ShaderDataType::Float2:	return GL_FLOAT;
+			case ShaderDataType::Float3:	return GL_FLOAT;
+			case ShaderDataType::Float4:	return GL_FLOAT;
+			case ShaderDataType::Mat3:		return GL_FLOAT;
+			case ShaderDataType::Mat4:		return GL_FLOAT;
+			case ShaderDataType::Int:		return GL_INT;
+			case ShaderDataType::Int2:		return GL_INT;
+			case ShaderDataType::Int3:		return GL_INT;
+			case ShaderDataType::Int4:		return GL_INT;
+			case ShaderDataType::Bool:		return GL_BOOL;
+		}
+	}
+
 	Application::Application()
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
@@ -31,17 +49,37 @@ namespace Labyrinth {
 		glCreateVertexArrays(1, &mVertexArray);
 		glBindVertexArray(mVertexArray);
 
-		float vertices[3 * 3] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f,  0.5f, 0.0f
+		float vertices[3 * 7] = {
+			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
+			 0.5f, -0.5f, 0.0f, 0.2f, 0.2f, 0.8f, 1.0f,
+			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
 		mVertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 		mVertexBuffer->bind();
 
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+		{
+			BufferLayout layout = {
+				{ShaderDataType::Float3, "aPosition"},
+				{ShaderDataType::Float4, "aColour"}
+			};
+
+			mVertexBuffer->setLayout(layout);
+		}
+
+		uint32_t index = 0;
+		const auto& layout = mVertexBuffer->getLayout();
+		for (const auto& element : layout)
+		{
+			glEnableVertexAttribArray(index);
+			glVertexAttribPointer(index, 
+				element.getComponentCount(), 
+				ShaderDataTypetoOpenGLType(element.type), 
+				element.normalised ? GL_TRUE : GL_FALSE, 
+				layout.getStride(),
+				(const void*)element.offset);
+			index++;
+		}
 
 		uint32_t indices[3] = { 0, 1, 2 };
 
@@ -51,12 +89,17 @@ namespace Labyrinth {
 		std::string vertexSrc = R"(
 			#version 330 core
 			
-			layout(location = 0) in vec3 a_Position;
-			out vec3 v_Position;
+			layout(location = 0) in vec3 aPosition;
+			layout(location = 1) in vec4 aColour;
+
+			out vec3 vPosition;
+			out vec4 vColour;
+
 			void main()
 			{
-				v_Position = a_Position;
-				gl_Position = vec4(a_Position, 1.0);	
+				vPosition = aPosition;
+				vColour = aColour;
+				gl_Position = vec4(aPosition, 1.0);	
 			}
 		)";
 
@@ -64,10 +107,14 @@ namespace Labyrinth {
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
-			in vec3 v_Position;
+
+			in vec3 vPosition;
+			in vec4 vColour;
+
 			void main()
 			{
-				color = vec4(v_Position * 0.5 + 0.5, 1.0);
+				color = vec4(vPosition * 0.5 + 0.5, 1.0);
+				color = vColour;
 			}
 		)";
 

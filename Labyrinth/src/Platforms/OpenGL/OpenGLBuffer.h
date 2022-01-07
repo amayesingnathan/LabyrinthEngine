@@ -15,8 +15,12 @@ namespace Labyrinth {
 
 		virtual void setData(const void* data, uint32_t size) override;
 
+		virtual const BufferLayout& getLayout() const override { return mLayout; }
+		virtual void setLayout(const BufferLayout& layout) override { mLayout = layout; }
+
 	private:
 		uint32_t mRendererID;
+		BufferLayout mLayout;
 	};
 
 	class OpenGLIndexBuffer : public IndexBuffer

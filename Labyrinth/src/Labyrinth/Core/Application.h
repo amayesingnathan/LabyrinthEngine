@@ -50,9 +50,9 @@ namespace Labyrinth {
 		LayerStack mLayerStack;
 
 		unsigned int mVertexArray;
-		std::unique_ptr<VertexBuffer> mVertexBuffer;
-		std::unique_ptr<IndexBuffer> mIndexBuffer;
-		std::unique_ptr<Shader> mShader;
+		Single<VertexBuffer> mVertexBuffer;
+		Single<IndexBuffer> mIndexBuffer;
+		Single<Shader> mShader;
 	};
 
 	//To be defined in CLIENT
