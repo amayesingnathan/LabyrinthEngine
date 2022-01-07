@@ -11,6 +11,7 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
+#include "Labyrinth/Renderer/Buffer.h"
 #include "Labyrinth/Renderer/Shader.h"
 
 namespace Labyrinth { 
@@ -48,7 +49,9 @@ namespace Labyrinth {
 		bool mRunning = false;
 		LayerStack mLayerStack;
 
-		unsigned int mVertexArray, mVertexBuffer, mIndexBuffer;
+		unsigned int mVertexArray;
+		std::unique_ptr<VertexBuffer> mVertexBuffer;
+		std::unique_ptr<IndexBuffer> mIndexBuffer;
 		std::unique_ptr<Shader> mShader;
 	};
 
