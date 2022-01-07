@@ -16,24 +16,6 @@ namespace Labyrinth {
 
 	Application* Application::sInstance = nullptr;
 
-	static GLenum ShaderDataTypetoOpenGLType(ShaderDataType type)
-	{
-		switch (type)
-		{
-			case ShaderDataType::Float:		return GL_FLOAT;
-			case ShaderDataType::Float2:	return GL_FLOAT;
-			case ShaderDataType::Float3:	return GL_FLOAT;
-			case ShaderDataType::Float4:	return GL_FLOAT;
-			case ShaderDataType::Mat3:		return GL_FLOAT;
-			case ShaderDataType::Mat4:		return GL_FLOAT;
-			case ShaderDataType::Int:		return GL_INT;
-			case ShaderDataType::Int2:		return GL_INT;
-			case ShaderDataType::Int3:		return GL_INT;
-			case ShaderDataType::Int4:		return GL_INT;
-			case ShaderDataType::Bool:		return GL_BOOL;
-		}
-	}
-
 	Application::Application()
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
@@ -45,9 +27,7 @@ namespace Labyrinth {
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
 
-		//glGenVertexArrays(1, &mVertexArray);
-		glCreateVertexArrays(1, &mVertexArray);
-		glBindVertexArray(mVertexArray);
+		mVertexArray.reset(VertexArray::Create());
 
 		float vertices[3 * 7] = {
 			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
@@ -55,36 +35,43 @@ namespace Labyrinth {
 			 0.0f,  0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		mVertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
-		mVertexBuffer->bind();
+		Ref<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::Create(vertices, sizeof(vertices)));
 
-		{
-			BufferLayout layout = {
-				{ShaderDataType::Float3, "aPosition"},
-				{ShaderDataType::Float4, "aColour"}
-			};
+		BufferLayout layout = {
+			{ShaderDataType::Float3, "aPosition"},
+			{ShaderDataType::Float4, "aColour"}
+		};
 
-			mVertexBuffer->setLayout(layout);
-		}
-
-		uint32_t index = 0;
-		const auto& layout = mVertexBuffer->getLayout();
-		for (const auto& element : layout)
-		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index, 
-				element.getComponentCount(), 
-				ShaderDataTypetoOpenGLType(element.type), 
-				element.normalised ? GL_TRUE : GL_FALSE, 
-				layout.getStride(),
-				(const void*)element.offset);
-			index++;
-		}
-
+		vertexBuffer->setLayout(layout);
+		mVertexArray->addVertexBuffer(vertexBuffer);
+		
 		uint32_t indices[3] = { 0, 1, 2 };
 
-		mIndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
-		mIndexBuffer->bind();
+		Ref<IndexBuffer> indexBuffer;
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		mVertexArray->setIndexBuffer(indexBuffer);
+
+		mSquareVA.reset(VertexArray::Create());
+
+		float squareVertices[3 * 4] = {
+			-0.75f, -0.75f, 0.0f,
+			 0.75f, -0.75f, 0.0f,
+			 0.75f,  0.75f, 0.0f,
+			-0.75f,  0.75f, 0.0f
+		};
+
+		Ref<VertexBuffer> squareVB;
+		squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		squareVB->setLayout({
+			{ ShaderDataType::Float3, "a_Position" }
+		});
+		mSquareVA->addVertexBuffer(squareVB);
+
+		uint32_t squareIndices[6] = { 0, 1, 2, 2, 3, 0 };
+		Ref<IndexBuffer> squareIB;
+		squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		mSquareVA->setIndexBuffer(squareIB);
 
 		std::string vertexSrc = R"(
 			#version 330 core
@@ -119,6 +106,31 @@ namespace Labyrinth {
 		)";
 
 		mShader.reset(new Shader(vertexSrc, fragmentSrc));
+
+		std::string blueShaderVertexSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) in vec3 aPosition;
+			out vec3 vPosition;
+			void main()
+			{
+				vPosition = aPosition;
+				gl_Position = vec4(aPosition, 1.0);	
+			}
+		)";
+
+		std::string blueShaderFragmentSrc = R"(
+			#version 330 core
+			
+			layout(location = 0) out vec4 color;
+			in vec3 vPosition;
+			void main()
+			{
+				color = vec4(0.2, 0.3, 0.8, 1.0);
+			}
+		)";
+
+		mBlueShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
 	}
 
 	void Application::run()
@@ -130,9 +142,13 @@ namespace Labyrinth {
 			glClearColor(0.1f, 0.1f, 0.1f, 1);
 			glClear(GL_COLOR_BUFFER_BIT);
 
+			mBlueShader->bind();
+			mSquareVA->bind();
+			glDrawElements(GL_TRIANGLES, mSquareVA->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
+
 			mShader->bind();
-			glBindVertexArray(mVertexArray);
-			glDrawElements(GL_TRIANGLES, mIndexBuffer->getCount(), GL_UNSIGNED_INT, nullptr);
+			mVertexArray->bind();
+			glDrawElements(GL_TRIANGLES, mVertexArray->getIndexBuffer()->getCount(), GL_UNSIGNED_INT, nullptr);
 
 			for (Layer* layer : mLayerStack)
 				layer->onUpdate();

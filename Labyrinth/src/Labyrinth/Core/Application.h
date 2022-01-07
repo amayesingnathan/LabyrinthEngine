@@ -11,8 +11,8 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
-#include "Labyrinth/Renderer/Buffer.h"
 #include "Labyrinth/Renderer/Shader.h"
+#include "Labyrinth/Renderer/VertexArray.h"
 
 namespace Labyrinth { 
 		
@@ -49,10 +49,11 @@ namespace Labyrinth {
 		bool mRunning = false;
 		LayerStack mLayerStack;
 
-		unsigned int mVertexArray;
-		Single<VertexBuffer> mVertexBuffer;
-		Single<IndexBuffer> mIndexBuffer;
-		Single<Shader> mShader;
+		Ref<Shader> mShader;
+		Ref<VertexArray> mVertexArray;
+
+		Ref<Shader> mBlueShader;
+		Ref<VertexArray> mSquareVA;
 	};
 
 	//To be defined in CLIENT
