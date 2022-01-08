@@ -38,7 +38,7 @@ namespace Labyrinth {
 			if (Input::IsKeyPressed(LAB_KEY_ESCAPE))
 				mRunning = false;
 
-			float time = (float)SDL_GetTicks() / 2000.0f;
+			float time = (float)SDL_GetTicks();
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
 

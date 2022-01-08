@@ -28,11 +28,11 @@ namespace Labyrinth {
 		void uploadUniformMat4(const std::string& name, const glm::mat4& value);
 
 	private:
-		GLint getUniformLocation(const std::string& name) const;
+		int getUniformLocation(const std::string& name) const;
 
 	private:
 		uint32_t mRendererID;
-		mutable std::unordered_map<std::string, GLint> mUniformLocCache;
+		mutable std::unordered_map<std::string, int> mUniformLocCache;
 	};
 
 }

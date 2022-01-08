@@ -14,8 +14,8 @@ namespace Labyrinth {
 
 		static bool IsMouseButtonPressed(int button) { return sInstance->isMouseButtonPressedImpl(button); }
 		static std::pair<float, float> GetMousePosition() { return sInstance->getMousePositionImpl(); }
-		static float getMouseX() { return sInstance->getMouseXImpl(); }
-		static float getMouseY() { return sInstance->getMouseYImpl(); }
+		static float GetMouseX() { return sInstance->getMouseXImpl(); }
+		static float GetMouseY() { return sInstance->getMouseYImpl(); }
 
 	protected:
 		virtual bool isKeyPressedImpl(int keycode) = 0;

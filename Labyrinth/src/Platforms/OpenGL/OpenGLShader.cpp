@@ -7,7 +7,6 @@
 
 namespace Labyrinth {
 
-
 	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc)
 	{
 		// Create an empty vertex shader handle
@@ -130,77 +129,56 @@ namespace Labyrinth {
 	void OpenGLShader::uploadUniformInt(const std::string& name, int value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniform1i(location, value);
 	}
 
 	void OpenGLShader::uploadUniformFloat(const std::string& name, float value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniform1f(location, value);
 	}
 
 	void OpenGLShader::uploadUniformFloat2(const std::string& name, const glm::vec2& value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniform2f(location, value.x, value.y);
 	}
 
 	void OpenGLShader::uploadUniformFloat3(const std::string& name, const glm::vec3& value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
 	void OpenGLShader::uploadUniformFloat4(const std::string& name, const glm::vec4& value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniform4f(location, value.x, value.y, value.z, value. w);
 	}
 
 	void OpenGLShader::uploadUniformMat3(const std::string& name, const glm::mat3& value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniformMatrix3fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
 	void OpenGLShader::uploadUniformMat4(const std::string& name, const glm::mat4& value)
 	{
 		GLint location = getUniformLocation(name);
-		if (location == -1)
-		{
-			LAB_CORE_ERROR("Uniform {0} was not cached!", name);
-			return;
-		}
+		if (location == -1) return;
+
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 

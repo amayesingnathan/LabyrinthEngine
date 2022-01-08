@@ -17,6 +17,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["SDL2"] = "Labyrinth/dependencies/SDL2/include"
+IncludeDir["stb_image"] = "Labyrinth/dependencies/stb_image"
 IncludeDir["glad"] = "Labyrinth/dependencies/glad/include"
 IncludeDir["glm"] = "Labyrinth/dependencies/glm"
 IncludeDir["ImGui"] = "Labyrinth/dependencies/imgui"
@@ -50,6 +51,8 @@ project "Labyrinth"
     { 
         "%{prj.name}/src/**.h", 
         "%{prj.name}/src/**.cpp",
+        "%{prj.name}/dependencies/stb_image/**.h",
+        "%{prj.name}/dependencies/stb_image/**.cpp",
         "%{prj.name}/dependencies/glm/glm/**.hpp"
     }
 	
@@ -62,6 +65,7 @@ project "Labyrinth"
     {
         "%{prj.name}/src",
         "%{IncludeDir.SDL2}",
+        "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
@@ -72,7 +76,7 @@ project "Labyrinth"
 	
 	libdirs
 	{
-		"%{LibDir.SDL2}"
+		"%{LibDir.SDL2}",
 	}
 
 	links

@@ -23,6 +23,7 @@
 
 #include "Labyrinth/Renderer/Buffer.h"
 #include "Labyrinth/Renderer/Shader.h"
+#include "Labyrinth/Renderer/Texture.h"
 #include "Labyrinth/Renderer/VertexArray.h"
 
 #include "Labyrinth/Renderer/Camera.h"
