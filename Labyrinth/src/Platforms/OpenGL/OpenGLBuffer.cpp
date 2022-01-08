@@ -48,8 +48,8 @@ namespace Labyrinth {
 		: mCount(count)
 	{
 		glGenBuffers(1, &mRendererID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+		glBindBuffer(GL_ARRAY_BUFFER, mRendererID);
+		glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()

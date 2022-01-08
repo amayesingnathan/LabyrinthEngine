@@ -31,7 +31,7 @@ namespace Labyrinth {
 	void LayerStack::popLayer(Layer* layer)
 	{
 		auto it = std::find(mLayers.begin(), mLayers.begin() + mLayerInsertIndex, layer);
-		if (it != mLayers.end())
+		if (it != mLayers.begin() + mLayerInsertIndex)
 		{
 			layer->onDetach();
 			mLayers.erase(it);

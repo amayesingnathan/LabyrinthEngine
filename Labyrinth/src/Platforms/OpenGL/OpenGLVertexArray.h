@@ -21,6 +21,7 @@ namespace Labyrinth {
 
 	private:
 		uint32_t mRendererID;
+		uint32_t mVertexBufferIndex = 0;
 		std::vector<Ref<VertexBuffer>> mVertexBuffers;
 		Ref<IndexBuffer> mIndexBuffer;
 

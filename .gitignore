@@ -1,10 +1,10 @@
 #Ignore binaries
-bin/
-!dependencies/bin/
+**/bin/
+!dependencies/bin/premake/
 
 #Ignore VS temp files
 .vs/
-**/*.sln
-**/*.vcxproj
-**/*.vcxproj.filters
-**/*.vcxproj.user
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user

@@ -4,7 +4,12 @@ namespace Labyrinth {
 
 	class Input
 	{
+	protected:
+		Input() = default;
 	public:
+		Input(const Input&) = delete;
+		Input& operator=(const Input&) = delete;
+
 		static bool IsKeyPressed(int keycode) { return sInstance->isKeyPressedImpl(keycode); }
 
 		static bool IsMouseButtonPressed(int button) { return sInstance->isMouseButtonPressedImpl(button); }

@@ -23,7 +23,7 @@ namespace Labyrinth {
 		EventCategoryMouseButton	= BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::##type; }\
+#define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::type; }\
 								virtual EventType getEventType() const override { return GetStaticType(); }\
 								virtual const char* getName() const override { return #type; }
 
@@ -52,19 +52,17 @@ namespace Labyrinth {
 
 	class EventDispatcher
 	{
-		template<typename T>
-		using EventFunc = std::function<bool(T&)>;
-
 	public:
 		EventDispatcher(Event& event)
 			: mEvent(event) {}
 
-		template<typename T>
-		bool dispatch(EventFunc<T> func)
+		//F deduced by compiler
+		template<typename T, typename F>
+		bool dispatch(const F& func)
 		{
 			if (mEvent.getEventType() == T::GetStaticType())
 			{
-				mEvent.handled = func(*(T*)&mEvent);
+				mEvent.handled = func(static_cast<T&>(mEvent));
 				return true;
 			}
 			return false;

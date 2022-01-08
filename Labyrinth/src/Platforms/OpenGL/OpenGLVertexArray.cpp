@@ -53,18 +53,17 @@ namespace Labyrinth {
 		glBindVertexArray(mRendererID);
 		vertexBuffer->bind();
 
-		uint32_t index = 0;
 		const auto& layout = vertexBuffer->getLayout();
 		for (const auto& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
+			glEnableVertexAttribArray(mVertexBufferIndex);
+			glVertexAttribPointer(mVertexBufferIndex,
 				element.getComponentCount(),
 				ShaderDataTypetoOpenGLType(element.type),
 				element.normalised ? GL_TRUE : GL_FALSE,
 				layout.getStride(),
 				(const void*)(intptr_t)element.offset);
-			index++;
+			mVertexBufferIndex++;
 		}
 
 		mVertexBuffers.push_back(vertexBuffer);
