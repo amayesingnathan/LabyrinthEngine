@@ -4,7 +4,9 @@
 namespace Labyrinth {
 
 	Layer::Layer(const std::string& name) 
+#ifdef LAB_DEBUG
 		: mDebugName(name)
+#endif
 	{
 	}
 

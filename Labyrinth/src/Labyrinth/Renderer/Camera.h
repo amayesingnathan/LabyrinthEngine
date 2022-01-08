@@ -15,6 +15,8 @@ namespace Labyrinth {
 		float getRotation() const { return mRotation; }
 		void setRotation(float rotation) {  mRotation = rotation; recalculateViewMatrix(); }
 
+		const glm::mat3 getRotationTrans() const { return glm::inverse(mRotationMat); }
+
 		const glm::mat4& getProjectionMatrix() const { return mProjectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
 		const glm::mat4& getViewProjectionMatrix() const { return mViewProjectionMatrix; }
@@ -29,6 +31,7 @@ namespace Labyrinth {
 
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
 		float mRotation = 0.0f;
+		glm::mat3 mRotationMat;
 	};
 
 }
