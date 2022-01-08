@@ -7,6 +7,8 @@ namespace Labyrinth {
 	class OpenGLRendererAPI : public RendererAPI
 	{
 	public:
+		virtual void init();
+
 		virtual void setClearColor(const glm::vec4& colour) override;
 		virtual void clear() override;
 

@@ -14,7 +14,7 @@ namespace Labyrinth {
 	{
 	public:
 		ExampleLayer()
-			: Layer("Example"), mCameraController(1280.0f / 720.0f)
+			: Layer("Example"), mCameraController(1280.0f / 720.0f, true)
 		{
 			mSquareVA.reset(VertexArray::Create());
 
@@ -38,74 +38,9 @@ namespace Labyrinth {
 			squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 			mSquareVA->setIndexBuffer(squareIB);
 
-			std::string flatColorShaderVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 aPosition;
+			mFlatColorShader.reset(Shader::Create("assets/shaders/color.glsl"));
 
-			out vec3 vPosition;
-
-			uniform mat4 uViewProjection;
-			uniform mat4 uTransform;
-
-			void main()	
-			{
-				vPosition = aPosition;
-				gl_Position = uViewProjection * uTransform * vec4(aPosition, 1.0);	
-			}
-		)";
-
-			std::string flatColorShaderFragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			in vec3 vPosition;
-
-			uniform vec3 uColor;
-
-			void main()
-			{
-				color = vec4(uColor, 1.0);
-			}
-		)";
-
-			mFlatColorShader.reset(Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
-
-			std::string texShaderVertexSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) in vec3 aPosition;
-			layout(location = 1) in vec2 aTexCoord;
-
-			out vec2 vTexCoord;
-
-			uniform mat4 uViewProjection;
-			uniform mat4 uTransform;
-
-			void main()	
-			{
-				vTexCoord = aTexCoord;
-				gl_Position = uViewProjection * uTransform * vec4(aPosition, 1.0);	
-			}
-		)";
-
-			std::string texShaderFragmentSrc = R"(
-			#version 330 core
-			
-			layout(location = 0) out vec4 color;
-
-			in vec2 vTexCoord;
-
-			uniform sampler2D uTexture;
-
-			void main()
-			{
-				color = texture(uTexture, vTexCoord);
-			}
-		)";
-
-			mTextureShader.reset(Shader::Create(texShaderVertexSrc, texShaderFragmentSrc));
+			mTextureShader.reset(Shader::Create("assets/shaders/texture.glsl"));
 
 			mTexture = Texture2D::Create("assets/textures/checkerboard.png");
 

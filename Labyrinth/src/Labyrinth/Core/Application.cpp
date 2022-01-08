@@ -24,6 +24,8 @@ namespace Labyrinth {
 		mWindow = Window::Create();
 		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
 
+		Renderer::Init();
+
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
 

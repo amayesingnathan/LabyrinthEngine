@@ -10,6 +10,8 @@ namespace Labyrinth {
 	class Renderer
 	{
 	public:
+		static void Init();
+
 		static void BeginState(OrthographicCamera& camera);
 		static void EndState();
 

@@ -7,6 +7,11 @@ namespace Labyrinth {
 	class RenderCommand
 	{
 	public:
+		static void Init()
+		{
+			sRendererAPI->init();
+		}
+
 		static void SetClearColor(const glm::vec4& colour)
 		{
 			sRendererAPI->setClearColor(colour);

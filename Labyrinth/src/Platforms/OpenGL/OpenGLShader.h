@@ -6,11 +6,14 @@
 
 #include <string>
 
+typedef unsigned int GLenum;
+
 namespace Labyrinth {
 
 	class OpenGLShader : public Shader
 	{
 	public:
+		OpenGLShader(const std::string& filepath);
 		OpenGLShader(const std::string& vertexSrc, const std::string& fragmentSrc);
 		virtual ~OpenGLShader();
 
@@ -28,7 +31,11 @@ namespace Labyrinth {
 		void uploadUniformMat4(const std::string& name, const glm::mat4& value);
 
 	private:
-		int getUniformLocation(const std::string& name) const;
+		int GetUniformLocation(const std::string& name) const;
+
+		std::string ReadFile(const std::string filepath);
+		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
+		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
 
 	private:
 		uint32_t mRendererID;

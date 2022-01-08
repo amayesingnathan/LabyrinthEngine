@@ -7,6 +7,11 @@ namespace Labyrinth {
 
 	Renderer::SceneData* Renderer::sSceneData = new Renderer::SceneData;
 
+	void Renderer::Init()
+	{
+		RenderCommand::Init();
+	}
+
 	void Renderer::BeginState(OrthographicCamera& camera)
 	{
 		sSceneData->ViewProjectionMatrix = camera.getViewProjectionMatrix();

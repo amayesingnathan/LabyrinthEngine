@@ -76,7 +76,7 @@ namespace Labyrinth {
 	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e)
 	{
 		mZoom -= e.getYOffset() * 0.04f;
-		mZoom = std::max(mZoom, 0.25f); 
+		mZoom = std::min(mZoom, 4.0f); 
 		mCamera.setProjection(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom);
 		return false;
 	}
