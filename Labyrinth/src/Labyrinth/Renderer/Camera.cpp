@@ -6,16 +6,20 @@
 namespace Labyrinth {
 
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float zoom)
-		: mProjectionMatrix(glm::ortho(left / zoom, right / zoom, bottom / zoom, top / zoom, -1.0f, 1.0f)), 
-		  mViewMatrix(1.0f), mStartScale({left, right, bottom, top}), mZoom(zoom), mRotationMat(glm::mat4(1.0f))
+		: mProjectionMatrix(glm::ortho(left * zoom, right * zoom, bottom * zoom, top * zoom, -1.0f, 1.0f)),
+		  mViewMatrix(1.0f), mZoom(zoom), mRotationMat(glm::mat4(1.0f))
 	{
+		mViewProjectionMatrix = mProjectionMatrix * mViewMatrix;
+	}
+
+	void OrthographicCamera::setProjection(float left, float right, float bottom, float top)
+	{
+		mProjectionMatrix = glm::ortho((left * mZoom), (right * mZoom), (bottom * mZoom), (top * mZoom), -1.0f, 1.0f);
 		mViewProjectionMatrix = mProjectionMatrix * mViewMatrix;
 	}
 
 	void OrthographicCamera::recalculateViewMatrix()
 	{
-		mProjectionMatrix = glm::ortho((mStartScale.x / mZoom), (mStartScale.y / mZoom), (mStartScale.z / mZoom), (mStartScale.w / mZoom), -1.0f, 1.0f);
-
 		mRotationMat[0][0] =  cos(glm::radians(mRotation));
 		mRotationMat[0][1] =  sin(glm::radians(mRotation));
 		mRotationMat[1][0] = -sin(glm::radians(mRotation));

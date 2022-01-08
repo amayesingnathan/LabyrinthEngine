@@ -14,10 +14,8 @@ namespace Labyrinth {
 	{
 	public:
 		ExampleLayer()
-			: Layer("Example"), mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f), mCameraMatRot(glm::mat3(1.0f)), mTrianglePos(0.0f)
+			: Layer("Example"), mCameraController(1280.0f / 720.0f)
 		{
-			mLastMousePos = glm::vec2(Input::GetMouseX(), Input::GetMouseY());
-
 			mSquareVA.reset(VertexArray::Create());
 
 			float squareVertices[5 * 4] = {
@@ -124,58 +122,12 @@ namespace Labyrinth {
 
 		void onUpdate(Timestep ts) override
 		{
-			glm::vec3 moveVec(0.0f);
-
-			//Calculate how much to move camera from mouse being dragged
-			if (mDragging)
-			{
-				float moveX = mLastMousePos.x - Input::GetMouseX(); 
-				float moveY = Input::GetMouseY() - mLastMousePos.y;
-				moveVec += (mCameraMoveSpeed / (16 * mCameraZoom)) * ts * (mCameraMatRot * glm::vec3(moveX, moveY, 0.0f));
-			}
-
-			if (Input::IsKeyPressed(LAB_KEY_LSHIFT)) mCameraMatRot = glm::mat3(1.0f); //Lock movement to world axis if holding shift
-
-			//Move the camera depending on it's current rotation for more intuitive movement.
-			//Similarly scale camera move speed by zoom factor.
-			if (Input::IsKeyPressed(LAB_KEY_A))
-				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(-1.0f, 0.0f, 0.0f));
-			else if (Input::IsKeyPressed(LAB_KEY_D))
-				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(1.0f, 0.0f, 0.0f));
-
-			if (Input::IsKeyPressed(LAB_KEY_W))
-				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(0.0f, 1.0f, 0.0f));
-			else if (Input::IsKeyPressed(LAB_KEY_S))
-				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(0.0f, -1.0f, 0.0f));
-			mCameraPosition += moveVec; moveVec = glm::vec3(0.0f);
-
-			//Move square
-			if (Input::IsKeyPressed(LAB_KEY_J))
-				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(-1.0f, 0.0f, 0.0f));
-			else if (Input::IsKeyPressed(LAB_KEY_L))
-				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(1.0f, 0.0f, 0.0f));
-
-			if (Input::IsKeyPressed(LAB_KEY_I))
-				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(0.0f, 1.0f, 0.0f));
-			else if (Input::IsKeyPressed(LAB_KEY_K))
-				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (mCameraMatRot * glm::vec3(0.0f, -1.0f, 0.0f));
-			mTrianglePos += moveVec; moveVec = glm::vec3(0.0f);
-
-			if (Input::IsKeyPressed(LAB_KEY_Q))
-				mCameraRotation += mCameraRotationSpeed * ts;
-			if (Input::IsKeyPressed(LAB_KEY_E))
-				mCameraRotation -= mCameraRotationSpeed * ts;
+			mCameraController.onUpdate(ts);
 
 			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 			RenderCommand::Clear();
 
-			mCamera.setPosition(mCameraPosition);
-			mCamera.setRotation(mCameraRotation);
-			mCamera.setZoom(mCameraZoom);
-			mCameraMatRot = mCamera.getRotationMat();
-			mLastMousePos = { Input::GetMouseX(), Input::GetMouseY() };
-
-			Renderer::BeginState(mCamera);
+			Renderer::BeginState(mCameraController.getCamera());
 			glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
 			std::dynamic_pointer_cast<OpenGLShader>(mFlatColorShader)->bind();
@@ -203,37 +155,13 @@ namespace Labyrinth {
 
 		void onEvent(Labyrinth::Event& event) override
 		{
+			mCameraController.onEvent(event);
 			if (event.getEventType() == Labyrinth::EventType::KeyPressed)
 			{
 				Labyrinth::KeyPressedEvent& e = (Labyrinth::KeyPressedEvent&)event;
 				//KEY PRESS EVENTS HANDLING HERE
 
 			}
-			if (event.getEventType() == Labyrinth::EventType::MouseScrolled)
-			{
-				Labyrinth::MouseScrolledEvent& e = (Labyrinth::MouseScrolledEvent&)event;
-				float zoomDelta = e.getYOffset() / 25.0f;
-				mCameraZoom = (mCameraZoom + zoomDelta > 0.1f) ? mCameraZoom + zoomDelta : 0.1f; //Maximum zoom out of 10x
-			}
-			if (event.getEventType() == Labyrinth::EventType::MouseButtonPressed)
-			{
-				Labyrinth::MouseButtonPressedEvent& e = (Labyrinth::MouseButtonPressedEvent&)event;
-				if (e.getMouseButton() == LAB_MOUSE_BUTTON_LEFT)
-					mDragging = true;
-			}
-			if (event.getEventType() == Labyrinth::EventType::MouseButtonReleased)
-			{
-				Labyrinth::MouseButtonReleasedEvent& e = (Labyrinth::MouseButtonReleasedEvent&)event;
-				if (e.getMouseButton() == LAB_MOUSE_BUTTON_LEFT)
-					mDragging = false;
-			}
-
-			//if (event.getEventType() == Labyrinth::EventType::MouseMoved)
-			//{
-			//	Labyrinth::MouseMovedEvent& e = (Labyrinth::MouseMovedEvent&)event;
-			//	mLastMousePos = { e.getX(), e.getY() };
-
-			//}
 		}
 
 	private:
@@ -242,22 +170,9 @@ namespace Labyrinth {
 
 		Ref<Texture2D> mTexture;
 
-		OrthographicCamera mCamera;
-		glm::vec3 mCameraPosition;
-		float mCameraMoveSpeed = 2.5f;
-		float mCameraZoom = 1.0f;
-		glm::mat3 mCameraMatRot;
-		float mCameraRotation = 0.0f;
-		float mCameraRotationSpeed = 90.0f;
-
-		glm::vec3 mTrianglePos;
-		float mTriangleMoveSpeed = 1.0f;
+		OrthographicCameraController mCameraController;
 
 		glm::vec3 mSquareColor = { 0.2f, 0.3f, 0.8f };
-
-		//Event Flags
-		bool mDragging = false;
-		glm::vec2 mLastMousePos = { 0.0f, 0.0f };
 	};
 
 }

@@ -9,6 +9,8 @@ namespace Labyrinth {
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top, float zoom = 1.0f);
 
+		void setProjection(float left, float right, float bottom, float top);
+
 		const glm::vec3& getPosition() const { return mPosition; }
 		void setPosition(const glm::vec3& position) {  mPosition = position; recalculateViewMatrix(); }
 
@@ -32,11 +34,10 @@ namespace Labyrinth {
 		glm::mat4 mViewMatrix;
 		glm::mat4 mViewProjectionMatrix;
 
-		glm::vec4 mStartScale;
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
 		float mRotation = 0.0f;
 		float mZoom = 1.0f;
-		glm::mat3 mRotationMat;
+		glm::mat3 mRotationMat = glm::mat3(1.0f);
 	};
 
 }

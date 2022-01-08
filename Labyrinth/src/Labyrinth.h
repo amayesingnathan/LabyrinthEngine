@@ -10,10 +10,10 @@
 #include "Labyrinth/Core/Assert.h"
 
 #include "Labyrinth/Core/Timestep.h"
-
 #include "Labyrinth/Core/Input.h"
 #include "Labyrinth/Core/KeyCodes.h"
 #include "Labyrinth/Core/MouseButtonCodes.h"
+#include "Labyrinth/Core/CameraController.h"
 
 #include "Labyrinth/ImGui/ImGuiLayer.h"
 
