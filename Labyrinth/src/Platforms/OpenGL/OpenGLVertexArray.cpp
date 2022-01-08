@@ -63,7 +63,7 @@ namespace Labyrinth {
 				ShaderDataTypetoOpenGLType(element.type),
 				element.normalised ? GL_TRUE : GL_FALSE,
 				layout.getStride(),
-				(const void*)element.offset);
+				(const void*)(intptr_t)element.offset);
 			index++;
 		}
 

@@ -3,6 +3,7 @@
 #include "imgui/imgui.h"
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 #define _USE_MATH_DEFINES
 
@@ -42,16 +43,16 @@ namespace Labyrinth {
 			mSquareVA.reset(VertexArray::Create());
 
 			float squareVertices[3 * 4] = {
-				-0.75f, -0.75f, 0.0f,
-				 0.75f, -0.75f, 0.0f,
-				 0.75f,  0.75f, 0.0f,
-				-0.75f,  0.75f, 0.0f
+				-0.5f, -0.5f, 0.0f,
+				 0.5f, -0.5f, 0.0f,
+				 0.5f,  0.5f, 0.0f,
+				-0.5f,  0.5f, 0.0f
 			};
 
 			Ref<VertexBuffer> squareVB;
 			squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 			squareVB->setLayout({
-				{ ShaderDataType::Float3, "a_Position" }
+				{ ShaderDataType::Float3, "aPosition" }
 				});
 			mSquareVA->addVertexBuffer(squareVB);
 
@@ -67,6 +68,7 @@ namespace Labyrinth {
 			layout(location = 1) in vec4 aColour;
 
 			uniform mat4 uViewProjection;
+			uniform mat4 uTransform;
 
 			out vec3 vPosition;
 			out vec4 vColour;
@@ -75,7 +77,7 @@ namespace Labyrinth {
 			{
 				vPosition = aPosition;
 				vColour = aColour;
-				gl_Position = uViewProjection * vec4(aPosition, 1.0);	
+				gl_Position = uViewProjection * uTransform * vec4(aPosition, 1.0);		
 			}
 		)";
 
@@ -104,11 +106,12 @@ namespace Labyrinth {
 			out vec3 vPosition;
 
 			uniform mat4 uViewProjection;
+			uniform mat4 uTransform;
 
-			void main()
+			void main()	
 			{
 				vPosition = aPosition;
-				gl_Position = uViewProjection * vec4(aPosition, 1.0);	
+				gl_Position = uViewProjection * uTransform * vec4(aPosition, 1.0);	
 			}
 		)";
 
@@ -116,7 +119,9 @@ namespace Labyrinth {
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
+
 			in vec3 vPosition;
+
 			void main()
 			{
 				color = vec4(0.2, 0.3, 0.8, 1.0);
@@ -153,13 +158,14 @@ namespace Labyrinth {
 			layout(location = 0) in vec3 aPosition;
 
 			uniform mat4 uViewProjection;
+			uniform mat4 uTransform;
 
 			out vec3 vPosition;
 
 			void main()
 			{
 				vPosition = aPosition;
-				gl_Position = uViewProjection * vec4(aPosition, 1.0);	
+				gl_Position = uViewProjection * uTransform * vec4(aPosition, 1.0);	
 			}
 		)";
 
@@ -186,15 +192,16 @@ namespace Labyrinth {
 		void onUpdate(Timestep ts) override
 		{
 			//Move the camera depending on it's current rotation for more intuitive movement.
+			//Similarly scale camera move speed by zoom factor.
 			if (Input::IsKeyPressed(LAB_KEY_A))
-				mCameraPosition += mCameraMoveSpeed * ts * (mCamera.getRotationTrans() * glm::vec3(-1.0f, 0.0f, 0.0f));
+				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(-1.0f, 0.0f, 0.0f));
 			else if (Input::IsKeyPressed(LAB_KEY_D))
-				mCameraPosition += mCameraMoveSpeed * ts * (mCamera.getRotationTrans() * glm::vec3(1.0f, 0.0f, 0.0f));
+				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(1.0f, 0.0f, 0.0f));
 
 			if (Input::IsKeyPressed(LAB_KEY_W))
-				mCameraPosition += mCameraMoveSpeed * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, 1.0f, 0.0f));
+				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, 1.0f, 0.0f));
 			else if (Input::IsKeyPressed(LAB_KEY_S))
-				mCameraPosition += mCameraMoveSpeed * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, -1.0f, 0.0f));
+				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, -1.0f, 0.0f));
 
 			if (Input::IsKeyPressed(LAB_KEY_Q))
 				mCameraRotation += mCameraRotationSpeed * ts;
@@ -206,10 +213,21 @@ namespace Labyrinth {
 
 			mCamera.setPosition(mCameraPosition);
 			mCamera.setRotation(mCameraRotation);
+			mCamera.setZoom(mCameraZoom);
 
 			Renderer::BeginState(mCamera);
+			glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
-			Renderer::Send(mBlueShader, mSquareVA);
+			for (int y = 0; y < 20; y++)
+			{
+				for (int x = 0; x < 20; x++)
+				{
+					glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+					Renderer::Send(mBlueShader, mSquareVA, transform);
+				}
+			}
+
 			Renderer::Send(mShader, mVertexArray);
 			Renderer::Send(mTriShader, mTriVA);
 
@@ -229,7 +247,8 @@ namespace Labyrinth {
 			if (event.getEventType() == Labyrinth::EventType::MouseScrolled)
 			{
 				Labyrinth::MouseScrolledEvent& e = (Labyrinth::MouseScrolledEvent&)event;
-
+				float zoomDelta = e.getYOffset() / 25.0f;
+				mCameraZoom = (mCameraZoom + zoomDelta > 0.05f) ? mCameraZoom + zoomDelta : 0.05f; //Maximum zoom out of 20x
 			}
 		}
 
@@ -246,7 +265,7 @@ namespace Labyrinth {
 		OrthographicCamera mCamera;
 		glm::vec3 mCameraPosition;
 		float mCameraMoveSpeed = 5.0f;
-
+		float mCameraZoom = 1.0f;
 		glm::mat3 mCameraMatRot;
 		float mCameraRotation = 0.0f;
 		float mCameraRotationSpeed = 180.0f;

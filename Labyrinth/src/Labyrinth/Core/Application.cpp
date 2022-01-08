@@ -38,9 +38,7 @@ namespace Labyrinth {
 			float time = (float)SDL_GetTicks() / 2000.0f;
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
-#ifdef LAB_DEBUG
-			LAB_INFO("Last frame time: {0}ms.", timestep * 1000);
-#endif
+
 			for (Layer* layer : mLayerStack)
 				layer->onUpdate(timestep);
 

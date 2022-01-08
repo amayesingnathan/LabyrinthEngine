@@ -7,7 +7,7 @@ namespace Labyrinth {
 	class OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left, float right, float bottom, float top);
+		OrthographicCamera(float left, float right, float bottom, float top, float zoom = 1.0f);
 
 		const glm::vec3& getPosition() const { return mPosition; }
 		void setPosition(const glm::vec3& position) {  mPosition = position; recalculateViewMatrix(); }
@@ -15,7 +15,10 @@ namespace Labyrinth {
 		float getRotation() const { return mRotation; }
 		void setRotation(float rotation) {  mRotation = rotation; recalculateViewMatrix(); }
 
-		const glm::mat3 getRotationTrans() const { return glm::inverse(mRotationMat); }
+		float getZoom() const { return mZoom; }
+		void setZoom(float zoom) { mZoom = zoom; recalculateViewMatrix(); }
+
+		const glm::mat3 getRotationTrans() const { return mRotationMat; }
 
 		const glm::mat4& getProjectionMatrix() const { return mProjectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
@@ -29,8 +32,10 @@ namespace Labyrinth {
 		glm::mat4 mViewMatrix;
 		glm::mat4 mViewProjectionMatrix;
 
+		glm::vec4 mStartScale;
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
 		float mRotation = 0.0f;
+		float mZoom = 1.0f;
 		glm::mat3 mRotationMat;
 	};
 
