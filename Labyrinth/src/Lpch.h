@@ -8,6 +8,7 @@
 //STL Containers/Types
 #include <cstdint>
 #include <map>
+#include <unordered_map>
 #include <vector>
 #include <string>
 

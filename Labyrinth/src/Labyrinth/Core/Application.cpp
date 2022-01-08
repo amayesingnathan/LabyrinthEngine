@@ -35,6 +35,9 @@ namespace Labyrinth {
 
 		while (mRunning)
 		{
+			if (Input::IsKeyPressed(LAB_KEY_ESCAPE))
+				mRunning = false;
+
 			float time = (float)SDL_GetTicks() / 2000.0f;
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
@@ -55,7 +58,6 @@ namespace Labyrinth {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
-		dispatcher.dispatch<KeyPressedEvent>(BIND_EVENT_FUNC(Application::OnKeyPress));
 
 		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
 		{
@@ -79,34 +81,5 @@ namespace Labyrinth {
 	{
 		mRunning = false;
 		return true;
-	}
-
-	bool Application::OnKeyPress(KeyPressedEvent& e)
-	{
-		switch (e.getKeyCode())
-		{
-		case LAB_KEY_ESCAPE:
-			mRunning = false;
-			return true;
-		//case LAB_KEY_W:
-		//	mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.0f, -0.04f, 0.0f });
-		//	return true;
-		//case LAB_KEY_A:
-		//	mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.04f, 0.0f, 0.0f });
-		//	return true;
-		//case LAB_KEY_S:
-		//	mCamera.setPosition(mCamera.getPosition() + glm::vec3{ 0.0f, 0.04f, 0.0f });
-		//	return true;
-		//case LAB_KEY_D:
-		//	mCamera.setPosition(mCamera.getPosition() + glm::vec3{ -0.04f, 0.0f, 0.0f });
-		//	return true;
-		//case LAB_KEY_Q:
-		//	mCamera.setRotation(mCamera.getRotation() - 3.0f);
-		//	return true;
-		//case LAB_KEY_E:
-		//	mCamera.setRotation(mCamera.getRotation() + 3.0f);
-		//	return true;
-		}
-		return false;
 	}
 }

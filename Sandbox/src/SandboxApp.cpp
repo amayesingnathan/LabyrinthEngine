@@ -1,9 +1,12 @@
 #include <Labyrinth.h>
 
+#include "Platforms/OpenGL/OpenGLShader.h"
+
 #include "imgui/imgui.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #define _USE_MATH_DEFINES
 
@@ -96,9 +99,9 @@ namespace Labyrinth {
 			}
 		)";
 
-			mShader.reset(new Shader(vertexSrc, fragmentSrc));
+			mShader.reset(Shader::Create(vertexSrc, fragmentSrc));
 
-			std::string blueShaderVertexSrc = R"(
+			std::string flatColorShaderVertexSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) in vec3 aPosition;
@@ -115,20 +118,22 @@ namespace Labyrinth {
 			}
 		)";
 
-			std::string blueShaderFragmentSrc = R"(
+			std::string flatColorShaderFragmentSrc = R"(
 			#version 330 core
 			
 			layout(location = 0) out vec4 color;
 
 			in vec3 vPosition;
 
+			uniform vec3 uColor;
+
 			void main()
 			{
-				color = vec4(0.2, 0.3, 0.8, 1.0);
+				color = vec4(uColor, 1.0);
 			}
 		)";
 
-			mBlueShader.reset(new Shader(blueShaderVertexSrc, blueShaderFragmentSrc));
+			mFlatColorShader.reset(Shader::Create(flatColorShaderVertexSrc, flatColorShaderFragmentSrc));
 
 			//Second shapes
 			mTriVA.reset(VertexArray::Create());
@@ -182,11 +187,14 @@ namespace Labyrinth {
 			}
 		)";
 
-			mTriShader.reset(new Shader(triVSrc, triFSrc));
+			mTriShader.reset(Shader::Create(triVSrc, triFSrc));
 		}
 
 		virtual void onImGuiRender() override
 		{
+			ImGui::Begin("Settings");
+			ImGui::ColorEdit3("Square Color", glm::value_ptr(mSquareColor));
+			ImGui::End();
 		}
 
 		void onUpdate(Timestep ts) override
@@ -234,13 +242,16 @@ namespace Labyrinth {
 			Renderer::BeginState(mCamera);
 			glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 
+			std::dynamic_pointer_cast<OpenGLShader>(mFlatColorShader)->bind();
+			std::dynamic_pointer_cast<OpenGLShader>(mFlatColorShader)->uploadUniformFloat3("uColor", mSquareColor);
+
 			for (int y = 0; y < 20; y++)
 			{
 				for (int x = 0; x < 20; x++)
 				{
 					glm::vec3 pos(x * 0.11f, y * 0.11f, 0.0f);
 					glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-					Renderer::Send(mBlueShader, mSquareVA, transform);
+					Renderer::Send(mFlatColorShader, mSquareVA, transform);
 				}
 			}
 
@@ -274,7 +285,7 @@ namespace Labyrinth {
 		Ref<Shader> mShader;
 		Ref<VertexArray> mVertexArray;
 
-		Ref<Shader> mBlueShader;
+		Ref<Shader> mFlatColorShader;
 		Ref<VertexArray> mSquareVA;
 
 		Ref<Shader> mTriShader;
@@ -290,6 +301,8 @@ namespace Labyrinth {
 
 		glm::vec3 mTrianglePos;
 		float mTriangleMoveSpeed = 2.0f;
+
+		glm::vec3 mSquareColor = { 0.2f, 0.3f, 0.8f };
 	};
 
 }

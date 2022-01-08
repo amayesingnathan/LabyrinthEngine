@@ -36,7 +36,6 @@ namespace Labyrinth {
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
-		bool OnKeyPress(KeyPressedEvent& e);
 
 	//Members
 	public:
