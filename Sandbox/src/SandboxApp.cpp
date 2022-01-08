@@ -13,7 +13,7 @@ namespace Labyrinth {
 	{
 	public:
 		ExampleLayer()
-			: Layer("Example"), mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f)
+			: Layer("Example"), mCamera(-1.6f, 1.6f, -0.9f, 0.9f), mCameraPosition(0.0f), mTrianglePos(0.0f)
 		{
 			mVertexArray.reset(VertexArray::Create());
 
@@ -191,17 +191,33 @@ namespace Labyrinth {
 
 		void onUpdate(Timestep ts) override
 		{
+			glm::vec3 moveVec(0.0f);
+			glm::mat3 rotMat = mCamera.getRotationMat();
+			if (Input::IsKeyPressed(LAB_KEY_LSHIFT)) rotMat = glm::mat3(1.0f);
 			//Move the camera depending on it's current rotation for more intuitive movement.
 			//Similarly scale camera move speed by zoom factor.
 			if (Input::IsKeyPressed(LAB_KEY_A))
-				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(-1.0f, 0.0f, 0.0f));
+				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(-1.0f, 0.0f, 0.0f));
 			else if (Input::IsKeyPressed(LAB_KEY_D))
-				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(1.0f, 0.0f, 0.0f));
+				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(1.0f, 0.0f, 0.0f));
 
 			if (Input::IsKeyPressed(LAB_KEY_W))
-				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, 1.0f, 0.0f));
+				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(0.0f, 1.0f, 0.0f));
 			else if (Input::IsKeyPressed(LAB_KEY_S))
-				mCameraPosition += (mCameraMoveSpeed / mCameraZoom) * ts * (mCamera.getRotationTrans() * glm::vec3(0.0f, -1.0f, 0.0f));
+				moveVec += (mCameraMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(0.0f, -1.0f, 0.0f));
+			mCameraPosition += moveVec; moveVec = glm::vec3(0.0f);
+
+			//Move square
+			if (Input::IsKeyPressed(LAB_KEY_J))
+				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(-1.0f, 0.0f, 0.0f));
+			else if (Input::IsKeyPressed(LAB_KEY_L))
+				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(1.0f, 0.0f, 0.0f));
+
+			if (Input::IsKeyPressed(LAB_KEY_I))
+				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(0.0f, 1.0f, 0.0f));
+			else if (Input::IsKeyPressed(LAB_KEY_K))
+				moveVec += (mTriangleMoveSpeed / mCameraZoom) * ts * (rotMat * glm::vec3(0.0f, -1.0f, 0.0f));
+			mTrianglePos += moveVec;
 
 			if (Input::IsKeyPressed(LAB_KEY_Q))
 				mCameraRotation += mCameraRotationSpeed * ts;
@@ -228,7 +244,9 @@ namespace Labyrinth {
 				}
 			}
 
-			Renderer::Send(mShader, mVertexArray);
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), mTrianglePos);
+
+			Renderer::Send(mShader, mVertexArray, transform);
 			Renderer::Send(mTriShader, mTriVA);
 
 			Renderer::EndState();
@@ -248,7 +266,7 @@ namespace Labyrinth {
 			{
 				Labyrinth::MouseScrolledEvent& e = (Labyrinth::MouseScrolledEvent&)event;
 				float zoomDelta = e.getYOffset() / 25.0f;
-				mCameraZoom = (mCameraZoom + zoomDelta > 0.05f) ? mCameraZoom + zoomDelta : 0.05f; //Maximum zoom out of 20x
+				mCameraZoom = (mCameraZoom + zoomDelta > 0.1f) ? mCameraZoom + zoomDelta : 0.1f; //Maximum zoom out of 10x
 			}
 		}
 
@@ -269,6 +287,9 @@ namespace Labyrinth {
 		glm::mat3 mCameraMatRot;
 		float mCameraRotation = 0.0f;
 		float mCameraRotationSpeed = 180.0f;
+
+		glm::vec3 mTrianglePos;
+		float mTriangleMoveSpeed = 2.0f;
 	};
 
 }

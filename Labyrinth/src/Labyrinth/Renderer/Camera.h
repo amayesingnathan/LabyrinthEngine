@@ -18,7 +18,7 @@ namespace Labyrinth {
 		float getZoom() const { return mZoom; }
 		void setZoom(float zoom) { mZoom = zoom; recalculateViewMatrix(); }
 
-		const glm::mat3 getRotationTrans() const { return mRotationMat; }
+		const glm::mat3 getRotationMat() const { return mRotationMat; }
 
 		const glm::mat4& getProjectionMatrix() const { return mProjectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
