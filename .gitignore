@@ -8,3 +8,6 @@
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+#Labyrinth Log files
+*.log

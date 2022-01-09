@@ -264,3 +264,4 @@
 
 
 #define LAB_NUM_KEYS 512
+#define LAB_NUM_KEYS 512

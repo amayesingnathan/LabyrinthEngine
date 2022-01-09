@@ -1,10 +1,11 @@
 #pragma once
 
-#include <string>
-#include <chrono>
 #include <algorithm>
+#include <chrono>
 #include <fstream>
 
+#include <string>
+#include <sstream>
 #include <thread>
 
 namespace Labyrinth {
@@ -13,7 +14,7 @@ namespace Labyrinth {
 	{
 		std::string name;
 		long long start, end;
-		uint32_t threadID;
+		std::thread::id threadID;
 	};
 
 	struct ProfilingSession
@@ -24,56 +25,81 @@ namespace Labyrinth {
 	class Profiler
 	{
 	private:
+		std::mutex mMutex;
 		ProfilingSession* mCurrentSession;
 		std::ofstream mOutputStream;
-		int mProfileCount;
 
 	public:
 		Profiler()
-			: mCurrentSession(nullptr), mProfileCount(0)
+			: mCurrentSession(nullptr)
 		{
 		}
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
+			std::lock_guard lock(mMutex);
+			if (mCurrentSession) {
+				// If there is already a current session, then close it before beginning new one.
+				// Subsequent profiling output meant for the original session will end up in the
+				// newly opened session instead.  That's better than having badly formatted
+				// profiling output.
+				if (Log::GetCoreLogger()) { // Edge case: BeginSession() might be before Log::Init()
+					LAB_CORE_ERROR("Instrumentor::BeginSession('{0}') when session '{1}' already open.", name, mCurrentSession->name);
+				}
+				InternalEndSession();
+			}
+
 			mOutputStream.open(filepath);
-			WriteHeader();
-			mCurrentSession = new ProfilingSession{ name };
+			if (mOutputStream.is_open()) {
+				mCurrentSession = new ProfilingSession({ name });
+				WriteHeader();
+			}
+			else {
+				if (Log::GetCoreLogger()) { // Edge case: BeginSession() might be before Log::Init()
+					LAB_CORE_ERROR("Instrumentor could not open results file '{0}'.", filepath);
+				}
+			}
 		}
 
 		void EndSession()
 		{
-			WriteFooter();
-			mOutputStream.close();
-			delete mCurrentSession;
-			mCurrentSession = nullptr;
-			mProfileCount = 0;
+			std::lock_guard lock(mMutex);
+			InternalEndSession();
 		}
 
 		void WriteProfile(const ProfileResult& result)
 		{
-			if (mProfileCount++ > 0)
-				mOutputStream << ",";
+			std::stringstream json;
 
 			std::string name = result.name;
 			std::replace(name.begin(), name.end(), '"', '\'');
 
-			mOutputStream << "{";
-			mOutputStream << "\"cat\":\"function\",";
-			mOutputStream << "\"dur\":" << (result.end - result.start) << ',';
-			mOutputStream << "\"name\":\"" << name << "\",";
-			mOutputStream << "\"ph\":\"X\",";
-			mOutputStream << "\"pid\":0,";
-			mOutputStream << "\"tid\":" << result.threadID << ",";
-			mOutputStream << "\"ts\":" << result.start;
-			mOutputStream << "}";
+			json << ",{";
+			json << "\"cat\":\"function\",";
+			json << "\"dur\":" << (result.end - result.start) << ',';
+			json << "\"name\":\"" << name << "\",";
+			json << "\"ph\":\"X\",";
+			json << "\"pid\":0,";
+			json << "\"tid\":" << result.threadID << ",";
+			json << "\"ts\":" << result.start;
+			json << "}";
 
-			mOutputStream.flush();
+			std::lock_guard lock(mMutex);
+			if (mCurrentSession) {
+				mOutputStream << json.str();
+				mOutputStream.flush();
+			}
 		}
 
+		static Profiler& Get() {
+			static Profiler instance;
+			return instance;
+		}
+
+	private:
 		void WriteHeader()
 		{
-			mOutputStream << "{\"otherData\": {},\"traceEvents\":[";
+			mOutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
 			mOutputStream.flush();
 		}
 
@@ -83,10 +109,16 @@ namespace Labyrinth {
 			mOutputStream.flush();
 		}
 
-		static Profiler& Get()
+		// Note: you must already own lock on mMutex before
+		// calling InternalEndSession()
+		void InternalEndSession() 
 		{
-			static Profiler instance;
-			return instance;
+			if (mCurrentSession) {
+				WriteFooter();
+				mOutputStream.close();
+				delete mCurrentSession;
+				mCurrentSession = nullptr;
+			}
 		}
 	};
 
@@ -112,8 +144,7 @@ namespace Labyrinth {
 			long long start = std::chrono::time_point_cast<std::chrono::microseconds>(mStartTimepoint).time_since_epoch().count();
 			long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
 
-			uint32_t threadID = std::hash<std::thread::id>{}(std::this_thread::get_id());
-			Profiler::Get().WriteProfile({ mName, start, end, threadID });
+			Profiler::Get().WriteProfile({ mName, start, end, std::this_thread::get_id() });
 
 			mStopped = true;
 		}

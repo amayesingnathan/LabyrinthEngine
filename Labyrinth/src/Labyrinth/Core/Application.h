@@ -13,6 +13,7 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
+int main(int argc, char** argv);
 
 namespace Labyrinth { 
 		
@@ -22,8 +23,6 @@ namespace Labyrinth {
 	public:
 		Application();
 		~Application();
-
-		void run();
 
 		void onEvent(Event& e);
 
@@ -35,6 +34,8 @@ namespace Labyrinth {
 		static Application& Get() { return *sInstance; }
 
 	private:
+		void run();
+
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
@@ -43,6 +44,7 @@ namespace Labyrinth {
 
 	private:
 		static Application* sInstance;
+		friend int ::main(int argc, char** argv);
 
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
