@@ -26,7 +26,7 @@ namespace Labyrinth {
 		virtual float getMouseYImpl() = 0;
 
 	private:
-		static Input* sInstance;
+		static Single<Input> sInstance;
 	};
 
 }

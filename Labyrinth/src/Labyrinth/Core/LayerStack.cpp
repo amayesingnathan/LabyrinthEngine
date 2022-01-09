@@ -11,6 +11,7 @@ namespace Labyrinth {
 	{
 		for (Layer* layer : mLayers)
 		{
+			layer->onDetach();
 			delete layer;
 		}
 	}

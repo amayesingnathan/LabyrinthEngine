@@ -60,7 +60,7 @@ namespace Labyrinth {
 		mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
 		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
 
-		mContext = new OpenGLContext(mWindow);
+		mContext = CreateSingle<OpenGLContext>(mWindow);
 		mContext->init();
 
 		SDL_SetWindowData(mWindow, "WindowData", &mData);

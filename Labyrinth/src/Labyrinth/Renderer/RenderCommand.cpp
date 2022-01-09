@@ -5,6 +5,6 @@
 
 namespace Labyrinth {
 
-	RendererAPI* RenderCommand::sRendererAPI = new OpenGLRendererAPI;
+	Single<RendererAPI> RenderCommand::sRendererAPI = CreateSingle<OpenGLRendererAPI>();
 
 }

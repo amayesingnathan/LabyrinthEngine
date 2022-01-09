@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	Input* Input::sInstance = new WindowsInput();
+	Single<Input> Input::sInstance = CreateSingle<WindowsInput>();
 
 	bool WindowsInput::isKeyPressedImpl(int keycode)
 	{

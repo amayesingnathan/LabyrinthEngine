@@ -33,7 +33,7 @@ namespace Labyrinth {
 		}
 
 	private:
-		static RendererAPI* sRendererAPI;
+		static Single<RendererAPI> sRendererAPI;
 	};
 
 }

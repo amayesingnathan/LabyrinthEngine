@@ -32,28 +32,62 @@ namespace Labyrinth {
 			return;
 		}
 
-		mCameraRotationMat = mCamera.getRotationMat();
-		if (Input::IsKeyPressed(LAB_KEY_LSHIFT)) mCameraRotationMat = glm::mat3(1.0f); //Lock movement to world axis if holding shift
-
-		//Move the camera depending on it's current rotation for more intuitive movement.
-		//Similarly scale camera move speed by zoom factor.
-		if (Input::IsKeyPressed(LAB_KEY_A))
-			mCameraPosition += (mCameraTranslationSpeed * mZoom) * ts * (mCameraRotationMat * glm::vec3(-1.0f, 0.0f, 0.0f));
-		else if (Input::IsKeyPressed(LAB_KEY_D))
-			mCameraPosition += (mCameraTranslationSpeed * mZoom) * ts * (mCameraRotationMat * glm::vec3(1.0f, 0.0f, 0.0f));
-
-		if (Input::IsKeyPressed(LAB_KEY_W))
-			mCameraPosition += (mCameraTranslationSpeed * mZoom) * ts * (mCameraRotationMat * glm::vec3(0.0f, 1.0f, 0.0f));
-		else if (Input::IsKeyPressed(LAB_KEY_S))
-			mCameraPosition += (mCameraTranslationSpeed * mZoom) * ts * (mCameraRotationMat * glm::vec3(0.0f, -1.0f, 0.0f));
-
 		if (mRotation)
 		{
 			if (Input::IsKeyPressed(LAB_KEY_Q))
 				mCameraRotation += mCameraRotationSpeed * ts;
 			if (Input::IsKeyPressed(LAB_KEY_E))
 				mCameraRotation -= mCameraRotationSpeed * ts;
+
+			if (mCameraRotation > 180.0f)
+				mCameraRotation -= 360.0f;
+			else if (mCameraRotation <= -180.0f)
+				mCameraRotation += 360.0f;
+
 			mCamera.setRotation(mCameraRotation);
+		}
+
+		//Lock movement to world axis if holding shift
+		mLockCam = (Input::IsKeyPressed(LAB_KEY_LSHIFT)) ? true : false;
+
+		//Move the camera depending on it's current rotation for more intuitive movement.
+		//Similarly scale camera move speed by zoom factor.
+		if (Input::IsKeyPressed(LAB_KEY_A))
+		{
+			if (!mLockCam)
+			{
+				mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
+				mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts * sin(glm::radians(mCameraRotation));
+			}
+			else mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts;
+		}
+		else if (Input::IsKeyPressed(LAB_KEY_D))
+		{
+			if (!mLockCam)
+			{
+				mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
+				mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts * sin(glm::radians(mCameraRotation));
+			}
+			else mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts;
+		}
+
+		if (Input::IsKeyPressed(LAB_KEY_W))
+		{
+			if (!mLockCam)
+			{
+				mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts * -sin(glm::radians(mCameraRotation));
+				mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
+			}
+			else mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts;
+		}
+		else if (Input::IsKeyPressed(LAB_KEY_S))
+		{
+			if (!mLockCam)
+			{
+				mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts * -sin(glm::radians(mCameraRotation));
+				mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
+			}
+			else mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts;
 		}
 
 		mCamera.setPosition(mCameraPosition);

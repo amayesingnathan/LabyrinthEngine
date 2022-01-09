@@ -35,10 +35,10 @@ namespace Labyrinth {
 
 		bool mRotation;
 		bool mDragging = false;
+		bool mLockCam = false;
 
 		glm::vec3 mCameraPosition = { 0.0f, 0.0f, 0.0f };
 		float mCameraRotation = 0.0f;
-		glm::mat3 mCameraRotationMat = glm::mat3(1.0f);
 		float mCameraTranslationSpeed = 2.5f, mCameraRotationSpeed = 90.0f;
 
 		glm::vec2 mLastMousePos;

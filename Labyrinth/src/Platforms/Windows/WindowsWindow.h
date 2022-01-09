@@ -26,7 +26,7 @@ namespace Labyrinth {
 		bool isVSync() const override;
 
 		inline virtual void* getNativeWindow() const { return mWindow; }
-		inline virtual void* getNativeContext() const { return mContext; }
+		inline virtual void* getNativeContext() const { return mContext.get(); }
 
 	private:
 		virtual void init(const WindowProps& props);
@@ -40,7 +40,7 @@ namespace Labyrinth {
 
 	private:
 		SDL_Window* mWindow;
-		GraphicsContext* mContext;
+		Single<GraphicsContext> mContext;
 		SDL_Event mEvent;
 
 		struct WindowData
