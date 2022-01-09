@@ -43,4 +43,4 @@ namespace Labyrinth {
 		static Single<Window> Create(const WindowProps& props = WindowProps());
 	};
 
-}
+}	

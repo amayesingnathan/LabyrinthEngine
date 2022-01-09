@@ -12,8 +12,6 @@
 
 namespace Labyrinth {
 
-#define BIND_EVENT_FUNC(x) std::bind(&x, this, std::placeholders::_1)
-
 	Application* Application::sInstance = nullptr;
 
 	Application::Application()
@@ -22,13 +20,18 @@ namespace Labyrinth {
 		sInstance = this;
 
 		mWindow = Window::Create();
-		mWindow->setEventCallback(BIND_EVENT_FUNC(Application::onEvent));
+		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
 
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
 
+	}
+
+	Application::~Application()
+	{
+		Renderer::Shutdown();
 	}
 
 	void Application::run()
@@ -62,8 +65,8 @@ namespace Labyrinth {
 	void Application::onEvent(Event& e)
 	{
 		EventDispatcher dispatcher(e);
-		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
+		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(Application::OnWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(Application::OnWindowResize));
 
 		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
 		{

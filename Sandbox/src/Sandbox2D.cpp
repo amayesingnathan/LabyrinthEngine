@@ -27,9 +27,9 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 
 	Labyrinth::Renderer2D::BeginState(mCameraController.getCamera());
 
-	Labyrinth::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
-	Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-	Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 10.0f, 10.0f }, mCheckerboardTexture);
+	Labyrinth::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, mSquareColor);
+	Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, mSquareColor);
+	Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 1.8f, 1.8f }, mCheckerboardTexture);
 
 	Labyrinth::Renderer2D::EndState();
 }

@@ -11,6 +11,8 @@ namespace Labyrinth {
 	{
 	public:
 		static void Init();
+		static void Shutdown();
+
 		static void OnWindowResize(uint32_t w, uint32_t h);
 
 		static void BeginState(OrthographicCamera& camera);

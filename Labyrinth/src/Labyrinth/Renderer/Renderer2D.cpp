@@ -12,8 +12,8 @@ namespace Labyrinth {
 	struct Renderer2DStorage
 	{
 		Ref<VertexArray> quadVertexArray;
-		Ref<Shader> flatColourShader;
 		Ref<Shader> textureShader;
+		Ref<Texture2D> whiteTexture;
 	};
 
 	static Renderer2DStorage* sData;
@@ -43,7 +43,10 @@ namespace Labyrinth {
 		squareIB = IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		sData->quadVertexArray->setIndexBuffer(squareIB);
 
-		sData->flatColourShader = Shader::Create("assets/shaders/flatcolor.glsl");
+		sData->whiteTexture = Texture2D::Create(1, 1);
+		uint32_t whiteTextureData = 0xffffffff;
+		sData->whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
+
 		sData->textureShader = Shader::Create("assets/shaders/texture.glsl");
 		sData->textureShader->bind();
 		sData->textureShader->setInt("uTexture", 0);
@@ -56,9 +59,6 @@ namespace Labyrinth {
 
 	void Renderer2D::BeginState(const OrthographicCamera& camera)
 	{
-		sData->flatColourShader->bind();
-		sData->flatColourShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
-
 		sData->textureShader->bind();
 		sData->textureShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
 	}
@@ -74,11 +74,11 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour)
 	{
-		sData->flatColourShader->bind();
-		sData->flatColourShader->setFloat4("uColor", colour);
+		sData->textureShader->setFloat4("uColor", colour);
+		sData->whiteTexture->bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-		sData->flatColourShader->setMat4("uTransform", transform);
+		sData->textureShader->setMat4("uTransform", transform);
 
 		sData->quadVertexArray->bind();
 		RenderCommand::DrawIndexed(sData->quadVertexArray);
@@ -91,7 +91,8 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
-		sData->textureShader->bind();
+		sData->textureShader->setFloat4("uColor", glm::vec4(1.0f));
+		texture->bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		sData->textureShader->setMat4("uTransform", transform);

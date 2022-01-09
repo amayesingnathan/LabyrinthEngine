@@ -3,10 +3,6 @@
 
 namespace Labyrinth {
 
-	LayerStack::LayerStack()
-	{
-	}
-
 	LayerStack::~LayerStack()
 	{
 		for (Layer* layer : mLayers)
