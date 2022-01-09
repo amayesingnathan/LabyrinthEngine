@@ -28,11 +28,14 @@ namespace Labyrinth {
 		void uploadUniformFloat2(const std::string& name, const glm::vec2& value);
 		void uploadUniformFloat3(const std::string& name, const glm::vec3& value);
 		void uploadUniformFloat4(const std::string& name, const glm::vec4& value);
-		virtual void setFloat4(const std::string& name, const glm::vec4& value) override { uploadUniformFloat4(name, value); }
 
 		void uploadUniformMat3(const std::string& name, const glm::mat3& value);
 		void uploadUniformMat4(const std::string& name, const glm::mat4& value);
+
+		virtual void setInt(const std::string& name, int value) override { uploadUniformInt(name, value); }
 		virtual void setMat4(const std::string& name, const glm::mat4& value) override { uploadUniformMat4(name, value); }
+		virtual void setFloat3(const std::string& name, const glm::vec3& value) override { uploadUniformFloat3 (name, value); }
+		virtual void setFloat4(const std::string& name, const glm::vec4& value) override { uploadUniformFloat4(name, value); }
 
 	private:
 		int GetUniformLocation(const std::string& name) const;

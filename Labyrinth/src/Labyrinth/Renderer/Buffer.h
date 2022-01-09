@@ -38,7 +38,7 @@ namespace Labyrinth {
 	{
 		ShaderDataType type;
 		std::string name;
-		uint32_t offset;
+		size_t offset;
 		uint32_t size;
 		bool normalised;
 
@@ -95,7 +95,7 @@ namespace Labyrinth {
 	private:
 		void CalculateOffsetsAndStride()
 		{
-			uint32_t offset = 0;
+			size_t offset = 0;
 			mStride = 0;
 			for (auto& element : mElements)
 			{
