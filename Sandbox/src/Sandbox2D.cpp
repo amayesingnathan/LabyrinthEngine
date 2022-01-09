@@ -11,7 +11,7 @@ Sandbox2D::Sandbox2D()
 
 void Sandbox2D::onAttach()
 {
-	mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkboard.png");
+	mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
 }
 
 void Sandbox2D::onDetach()
@@ -29,7 +29,7 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 
 	Labyrinth::Renderer2D::DrawQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, { 0.8f, 0.2f, 0.3f, 1.0f });
 	Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, { 0.2f, 0.3f, 0.8f, 1.0f });
-	Labyrinth::Renderer2D::DrawQuad({ 0.2f, 0.5f}, { 0.5f, 0.5f }, mCheckerboardTexture);
+	Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 10.0f, 10.0f }, mCheckerboardTexture);
 
 	Labyrinth::Renderer2D::EndState();
 }

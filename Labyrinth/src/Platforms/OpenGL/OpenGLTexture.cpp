@@ -8,11 +8,14 @@
 namespace Labyrinth {
 
 	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
-		: mPath(std::string("../Sandbox/") + path)
+		: mPath(path)
 	{
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		stbi_uc* data = stbi_load(mPath.c_str(), &width, &height, &channels, 0);
+		stbi_uc* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
+
+		if (stbi_failure_reason())
+			LAB_CORE_TRACE("{0}", stbi_failure_reason());
 		LAB_CORE_ASSERT(data, "Failed to load image!");
 		mWidth = width;
 		mHeight = height;
