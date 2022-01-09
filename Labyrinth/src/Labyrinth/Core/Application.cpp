@@ -44,8 +44,11 @@ namespace Labyrinth {
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
 
-			for (Layer* layer : mLayerStack)
-				layer->onUpdate(timestep);
+			if (!mMinimised)
+			{
+				for (Layer* layer : mLayerStack)
+					layer->onUpdate(timestep);
+			}
 
 			mImGuiLayer->begin();
 			for (Layer* layer : mLayerStack)
@@ -60,6 +63,7 @@ namespace Labyrinth {
 	{
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(BIND_EVENT_FUNC(Application::OnWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(BIND_EVENT_FUNC(Application::OnWindowResize));
 
 		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
 		{
@@ -83,5 +87,18 @@ namespace Labyrinth {
 	{
 		mRunning = false;
 		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+		if (e.getWidth() == 0 || e.getHeight() == 0)
+		{
+			mMinimised = true;
+			return false;
+		}
+
+		mMinimised = false;
+		Renderer::OnWindowResize(e.getWidth(), e.getHeight());
+		return false;
 	}
 }

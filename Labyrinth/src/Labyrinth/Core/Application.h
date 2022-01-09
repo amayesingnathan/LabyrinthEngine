@@ -36,6 +36,7 @@ namespace Labyrinth {
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
 
 	//Members
 	public:
@@ -46,6 +47,7 @@ namespace Labyrinth {
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
 		bool mRunning = false;
+		bool mMinimised = false;
 		LayerStack mLayerStack;
 
 		float mLastFrameTime = 0.0f;

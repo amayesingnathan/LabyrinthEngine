@@ -11,6 +11,11 @@ namespace Labyrinth {
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
+	void OpenGLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+	{
+		glViewport(x, y, w, h);
+	}
+
 	void OpenGLRendererAPI::setClearColor(const glm::vec4& colour)
 	{
 		glClearColor(colour.r, colour.g, colour.b, colour.a);

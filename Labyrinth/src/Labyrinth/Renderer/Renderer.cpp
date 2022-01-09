@@ -12,6 +12,11 @@ namespace Labyrinth {
 		RenderCommand::Init();
 	}
 
+	void Renderer::OnWindowResize(uint32_t w, uint32_t h)
+	{
+		RenderCommand::SetViewport(0, 0, w, h);
+	}
+
 	void Renderer::BeginState(OrthographicCamera& camera)
 	{
 		sSceneData->ViewProjectionMatrix = camera.getViewProjectionMatrix();

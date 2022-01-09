@@ -19,6 +19,9 @@ namespace Labyrinth {
 		OrthographicCamera& getCamera() { return mCamera; }
 		const OrthographicCamera& getCamera() const { return mCamera; }
 
+		float getZoom() const { return mZoom; }
+		void setZoom(float zoom) { mZoom = zoom; }
+
 	private:
 		bool onMouseScrolled(MouseScrolledEvent& e);
 		bool onWindowResized(WindowResizeEvent& e);

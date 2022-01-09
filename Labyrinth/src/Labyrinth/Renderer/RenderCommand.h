@@ -12,6 +12,11 @@ namespace Labyrinth {
 			sRendererAPI->init();
 		}
 
+		static void SetViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+		{
+			sRendererAPI->setViewport(x, y, w, h);
+		}
+
 		static void SetClearColor(const glm::vec4& colour)
 		{
 			sRendererAPI->setClearColor(colour);
