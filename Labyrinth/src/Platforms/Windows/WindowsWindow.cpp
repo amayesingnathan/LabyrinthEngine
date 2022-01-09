@@ -5,6 +5,8 @@
 #include "Labyrinth/Events/MouseEvent.h"
 #include "Labyrinth/Events/KeyEvent.h"
 
+#include "Labyrinth/Renderer/Renderer.h"
+
 #include "Platforms/OpenGL/OpenGLContext.h"
 
 #include <Glad/glad.h>
@@ -65,7 +67,16 @@ namespace Labyrinth {
 		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
-		mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
+		{
+			LAB_PROFILE_SCOPE("glfwCreateWindow");
+
+#if defined(LAB_DEBUG)
+			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
+				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+#endif
+
+			mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
+		}
 		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
 
 		mContext = CreateSingle<OpenGLContext>(mWindow);
