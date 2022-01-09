@@ -28,7 +28,7 @@ struct tilesetData
 using ColliderList = std::vector<Collider>;
 using Layer = std::vector<std::vector<int>>;
 
-class XMLParser
+class TiledIO
 {
 public:
 	static void openLevel(int lvl, std::vector<Layer>& layerList, std::map<int, tilesetData>& tilesets, std::map<int, ColliderList>& tilesetColliders);

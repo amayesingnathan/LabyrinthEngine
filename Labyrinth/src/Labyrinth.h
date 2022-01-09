@@ -19,6 +19,7 @@
 
 // ---Renderer------------------------
 #include "Labyrinth/Renderer/Renderer.h"
+#include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
 #include "Labyrinth/Renderer/Buffer.h"
@@ -28,7 +29,3 @@
 
 #include "Labyrinth/Renderer/Camera.h"
 // -----------------------------------
-
-// ---Entry Point------------------
-#include "Labyrinth/Core/EntryPoint.h"
-// --------------------------------

@@ -2,13 +2,13 @@
 
 #if 0
 
-#include "./XMLParser.h"
+#include "./TiledIO.h"
 
 #include "Scene.h"
 
 using namespace rapidxml;
 
-xml_node<>* XMLParser::getChild(xml_node<>* inputNode, std::string sNodeFilter)
+xml_node<>* TiledIO::getChild(xml_node<>* inputNode, std::string sNodeFilter)
 {
     // cycles every child
     for (xml_node<>* nodeChild = inputNode->first_node(); nodeChild; nodeChild = nodeChild->next_sibling())
@@ -25,7 +25,7 @@ xml_node<>* XMLParser::getChild(xml_node<>* inputNode, std::string sNodeFilter)
     return 0;
 }
 
-void XMLParser::getLayers(xml_node<>* mapNode, std::vector<Layer>& layerList)
+void TiledIO::getLayers(xml_node<>* mapNode, std::vector<Layer>& layerList)
 {
     int layerCount = 0;
     for (xml_node<>* layer = getChild(mapNode, "layer"); layer; layer = layer->next_sibling())
@@ -74,7 +74,7 @@ void XMLParser::getLayers(xml_node<>* mapNode, std::vector<Layer>& layerList)
     }
 }
 
-void XMLParser::getTileData(const std::string& tileset, int firstID, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
+void TiledIO::getTileData(const std::string& tileset, int firstID, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
 {
     std::string tilesetTmx = "levels/l";
 
@@ -112,7 +112,7 @@ void XMLParser::getTileData(const std::string& tileset, int firstID, std::map<in
     doc = nullptr;
 }
 
-void XMLParser::getTileData(xml_node<>* tilesetNode, int firstID, const std::string& pngPath, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
+void TiledIO::getTileData(xml_node<>* tilesetNode, int firstID, const std::string& pngPath, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
 {
     int tileWidth = std::atoi(tilesetNode->first_attribute("tilewidth")->value());
     int tileHeight = std::atoi(tilesetNode->first_attribute("tileheight")->value());
@@ -130,7 +130,7 @@ void XMLParser::getTileData(xml_node<>* tilesetNode, int firstID, const std::str
 
 }
 
-void XMLParser::getTilesets(xml_node<>* mapNode, const std::string& lvlPath, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
+void TiledIO::getTilesets(xml_node<>* mapNode, const std::string& lvlPath, std::map<int, tilesetData>& setData, std::map<int, ColliderList>& tilesetColliders)
 {
     for (xml_node<>* tileset = getChild(mapNode, "tileset"); std::string(tileset->name()) == "tileset"; tileset = tileset->next_sibling())
     {
@@ -149,7 +149,7 @@ void XMLParser::getTilesets(xml_node<>* mapNode, const std::string& lvlPath, std
     }
 }
 
-ColliderList XMLParser::getColliders(rapidxml::xml_node<>* inputNode)
+ColliderList TiledIO::getColliders(rapidxml::xml_node<>* inputNode)
 {
     //Initialise vector to return
     ColliderList returnColliders;
@@ -188,7 +188,7 @@ ColliderList XMLParser::getColliders(rapidxml::xml_node<>* inputNode)
     return returnColliders;
 }
 
-void XMLParser::openLevel(int lvl, std::vector<Layer>& layerList, std::map<int, tilesetData>& tilesetData, std::map<int, ColliderList>& tilesetColliders)
+void TiledIO::openLevel(int lvl, std::vector<Layer>& layerList, std::map<int, tilesetData>& tilesetData, std::map<int, ColliderList>& tilesetColliders)
 {
     std::string lvlPath = "levels/level" + std::to_string(lvl) + "/";
     std::string lvlLoc = lvlPath + "level" + std::to_string(lvl) + ".tmx";

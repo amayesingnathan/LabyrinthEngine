@@ -7,24 +7,24 @@
 
 namespace Labyrinth {
 
-	VertexBuffer* Labyrinth::VertexBuffer::Create(float* vertices, uint32_t size)
+	Ref<VertexBuffer> Labyrinth::VertexBuffer::Create(float* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:	return new OpenGLVertexBuffer(vertices, size);
+			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(vertices, size);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown renderer API");
 		return nullptr;
 	}
 
-	IndexBuffer* Labyrinth::IndexBuffer::Create(uint32_t* indices, uint32_t count)
+	Ref<IndexBuffer> Labyrinth::IndexBuffer::Create(uint32_t* indices, uint32_t count)
 	{
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:	return new OpenGLIndexBuffer(indices, count);
+			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLIndexBuffer>(indices, count);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown renderer API");

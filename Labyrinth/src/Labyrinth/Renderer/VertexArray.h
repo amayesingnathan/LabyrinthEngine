@@ -21,6 +21,6 @@ namespace Labyrinth {
 		virtual const std::vector<Ref<VertexBuffer>>& getVertexBuffers() const = 0;
 		virtual const Ref<IndexBuffer>& getIndexBuffer() const = 0;
 
-		static VertexArray* Create();
+		static Ref<VertexArray> Create();
 	};
 }
