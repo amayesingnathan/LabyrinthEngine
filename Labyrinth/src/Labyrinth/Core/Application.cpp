@@ -16,6 +16,8 @@ namespace Labyrinth {
 
 	Application::Application()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
 
@@ -31,15 +33,17 @@ namespace Labyrinth {
 
 	Application::~Application()
 	{
+		LAB_PROFILE_FUNCTION(); 
 		Renderer::Shutdown();
 	}
 
 	void Application::run()
 	{
-		mRunning = true;
+		LAB_PROFILE_FUNCTION();
 
 		while (mRunning)
 		{
+			LAB_PROFILE_SCOPE("RunLoop");
 			if (Input::IsKeyPressed(LAB_KEY_ESCAPE))
 				mRunning = false;
 
@@ -49,13 +53,19 @@ namespace Labyrinth {
 
 			if (!mMinimised)
 			{
+				LAB_PROFILE_SCOPE("LayerStack Update");
+
 				for (Layer* layer : mLayerStack)
 					layer->onUpdate(timestep);
 			}
 
 			mImGuiLayer->begin();
-			for (Layer* layer : mLayerStack)
-				layer->onImGuiRender();
+			{
+				LAB_PROFILE_SCOPE("LayerStack ImGuiRender");
+
+				for (Layer* layer : mLayerStack)
+					layer->onImGuiRender();
+			}
 			mImGuiLayer->end();
 
 			mWindow->onUpdate();
@@ -64,6 +74,8 @@ namespace Labyrinth {
 
 	void Application::onEvent(Event& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(Application::OnWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(Application::OnWindowResize));
@@ -78,11 +90,13 @@ namespace Labyrinth {
 
 	void Application::pushLayer(Layer* layer)
 	{
+		LAB_PROFILE_FUNCTION();
 		mLayerStack.pushLayer(layer);
 	}
 
 	void Application::pushOverlay(Layer* overlay)
 	{
+		LAB_PROFILE_FUNCTION();
 		mLayerStack.pushOverlay(overlay);
 	}
 
@@ -94,6 +108,8 @@ namespace Labyrinth {
 
 	bool Application::OnWindowResize(WindowResizeEvent& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		if (e.getWidth() == 0 || e.getHeight() == 0)
 		{
 			mMinimised = true;

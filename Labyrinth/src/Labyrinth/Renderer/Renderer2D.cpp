@@ -20,6 +20,8 @@ namespace Labyrinth {
 
 	void Renderer2D::Init()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		sData = new Renderer2DStorage();
 		sData->quadVertexArray = VertexArray::Create();
 
@@ -54,17 +56,23 @@ namespace Labyrinth {
 
 	void Renderer2D::Shutdown()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		delete sData;
 	}
 
 	void Renderer2D::BeginState(const OrthographicCamera& camera)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		sData->textureShader->bind();
 		sData->textureShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
 	}
 
 	void Renderer2D::EndState()
 	{
+		LAB_PROFILE_FUNCTION();
+
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)
@@ -74,6 +82,8 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		sData->textureShader->setFloat4("uColor", colour);
 		sData->whiteTexture->bind();
 
@@ -91,6 +101,8 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		sData->textureShader->setFloat4("uColor", glm::vec4(1.0f));
 		texture->bind();
 

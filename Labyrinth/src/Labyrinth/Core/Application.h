@@ -46,7 +46,7 @@ namespace Labyrinth {
 
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
-		bool mRunning = false;
+		bool mRunning = true;
 		bool mMinimised = false;
 		LayerStack mLayerStack;
 

@@ -21,16 +21,22 @@ namespace Labyrinth {
 
 	WindowsWindow::WindowsWindow(const WindowProps& props)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		init(props);
 	}
 
 	WindowsWindow::~WindowsWindow()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		shutdown();
 	}
 
 	void WindowsWindow::init(const WindowProps& props)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		mData.title = props.title;
 		mData.width = props.width;
 		mData.height = props.height;
@@ -39,6 +45,8 @@ namespace Labyrinth {
 
 		if (!sSDLInitialised)
 		{
+			LAB_PROFILE_SCOPE("SDLInit");
+
 			int success = SDL_Init(SDL_INIT_EVERYTHING);
 			LAB_CORE_ASSERT(!success, "Could not initialise SDL!");
 
@@ -70,6 +78,8 @@ namespace Labyrinth {
 
 	void WindowsWindow::shutdown()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		SDL_DestroyWindow(mWindow);
 		SDL_Quit();
 		LAB_CORE_TRACE("Shutdown complete");
@@ -78,6 +88,8 @@ namespace Labyrinth {
 
 	void WindowsWindow::onUpdate()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		SDL_PollEvent(&mEvent);
 		DispatchEvent();
 		mContext->swapBuffers();
@@ -85,6 +97,8 @@ namespace Labyrinth {
 
 	void WindowsWindow::setVSync(bool enabled)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		if (enabled)
 			SDL_GL_SetSwapInterval(1);
 		else

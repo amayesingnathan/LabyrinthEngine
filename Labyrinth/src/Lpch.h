@@ -5,6 +5,8 @@
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
 
+#include "Labyrinth/Debug/Profiling.h"
+
 //STL Containers/Types
 #include <cstdint>
 #include <map>

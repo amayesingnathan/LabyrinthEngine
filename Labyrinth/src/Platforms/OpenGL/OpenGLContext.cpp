@@ -6,6 +6,8 @@ namespace Labyrinth {
 	OpenGLContext::OpenGLContext(SDL_Window* windowHandle)
 		: mWindowHandle(windowHandle)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		LAB_CORE_ASSERT(windowHandle, "Window handle is null!");
 
 		mContextHandle = SDL_GL_CreateContext(mWindowHandle);
@@ -14,6 +16,8 @@ namespace Labyrinth {
 
 	void OpenGLContext::init()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		SDL_GL_MakeCurrent(mWindowHandle, mContextHandle);
 		int status = gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
 		LAB_CORE_ASSERT(status, "Failed to initialize Glad!");
@@ -35,6 +39,8 @@ namespace Labyrinth {
 
 	void OpenGLContext::swapBuffers()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		SDL_GL_SwapWindow(mWindowHandle);
 	}
 }

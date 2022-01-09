@@ -28,26 +28,36 @@ namespace Labyrinth {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glGenVertexArrays(1, &mRendererID);
 	}
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &mRendererID);
 	}
 
 	void OpenGLVertexArray::bind() const
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glBindVertexArray(mRendererID);
 	}
 
 	void OpenGLVertexArray::unbind() const
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
 	void OpenGLVertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		LAB_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex buffer has no layout!");
 
 		glBindVertexArray(mRendererID);
@@ -71,6 +81,8 @@ namespace Labyrinth {
 
 	void OpenGLVertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glBindVertexArray(mRendererID);
 		indexBuffer->bind();
 

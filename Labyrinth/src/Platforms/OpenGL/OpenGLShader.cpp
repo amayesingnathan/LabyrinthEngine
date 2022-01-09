@@ -20,6 +20,8 @@ namespace Labyrinth {
 
 	OpenGLShader::OpenGLShader(const std::string& filepath)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		//Extract name from file path
 		auto nameStart = filepath.rfind('/');
 		nameStart = nameStart == std::string::npos ? 0 : nameStart + 1;
@@ -36,6 +38,8 @@ namespace Labyrinth {
 	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const std::string& fragmentSrc)
 		: mName(name)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -44,11 +48,15 @@ namespace Labyrinth {
 
 	OpenGLShader::~OpenGLShader()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glDeleteProgram(mRendererID);
 	}
 
 	std::string OpenGLShader::ReadFile(const std::string filepath)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		std::string result;
 		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in)
@@ -77,6 +85,8 @@ namespace Labyrinth {
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const char* typeToken = "#type";
@@ -101,6 +111,8 @@ namespace Labyrinth {
 
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		GLuint program = glCreateProgram();
 		LAB_CORE_ASSERT(shaderSources.size() <= 2, "Two shaders per file supported only.");
 		std::array<GLenum, 2> glShaderIDs;
@@ -182,11 +194,15 @@ namespace Labyrinth {
 
 	void OpenGLShader::bind() const
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glUseProgram(mRendererID);
 	}
 
 	void OpenGLShader::unbind() const
 	{
+		LAB_PROFILE_FUNCTION();
+
 		glUseProgram(0);
 	}
 
@@ -244,6 +260,34 @@ namespace Labyrinth {
 		if (location == -1) return;
 
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
+	}
+
+	void OpenGLShader::setInt(const std::string& name, int value)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::setMat4(const std::string& name, const glm::mat4& value)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformMat4(name, value);
+	}
+
+	void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformFloat3(name, value);
+	}
+
+	void OpenGLShader::setFloat4(const std::string& name, const glm::vec4& value)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformFloat4(name, value);
 	}
 
 	GLint OpenGLShader::GetUniformLocation(const std::string& name) const

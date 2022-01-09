@@ -21,6 +21,8 @@ namespace Labyrinth {
 
 	void ImGuiLayer::onAttach()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
@@ -55,6 +57,8 @@ namespace Labyrinth {
 
 	void ImGuiLayer::onDetach()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		ImGui_ImplOpenGL3_Shutdown();
 		ImGui_ImplSDL2_Shutdown();
 		ImGui::DestroyContext();
@@ -62,6 +66,8 @@ namespace Labyrinth {
 
 	void ImGuiLayer::onEvent(Event& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnMouseButtonPressedEvent));
 		dispatcher.dispatch<MouseButtonReleasedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnMouseButtonReleasedEvent));
@@ -77,6 +83,8 @@ namespace Labyrinth {
 
 	void ImGuiLayer::begin()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		// Start the Dear ImGui frame
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
@@ -86,6 +94,8 @@ namespace Labyrinth {
 
 	void ImGuiLayer::end()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		ImGuiIO& io = ImGui::GetIO();
 
 		Application& app = Application::Get();
@@ -103,12 +113,6 @@ namespace Labyrinth {
 			ImGui::RenderPlatformWindowsDefault();
 			SDL_GL_MakeCurrent(backup_current_window, backup_current_context);
 		}
-	}
-
-	void ImGuiLayer::onImGuiRender()
-	{
-		static bool show = true;
-		ImGui::ShowDemoWindow(&show);
 	}
 
 	bool ImGuiLayer::OnMouseButtonPressedEvent(MouseButtonPressedEvent& e)

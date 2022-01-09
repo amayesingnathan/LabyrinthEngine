@@ -15,6 +15,8 @@ namespace Labyrinth {
 
 	void OrthographicCameraController::onUpdate(Timestep ts)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		//Calculate how much to move camera from mouse being dragged.
 		//Ignore keyboard input if dragging
 		if (mDragging)
@@ -99,6 +101,8 @@ namespace Labyrinth {
 
 	void OrthographicCameraController::onEvent(Event& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseScrolledEvent>(LAB_BIND_EVENT_FUNC(OrthographicCameraController::onMouseScrolled));
 		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OrthographicCameraController::onWindowResized));
@@ -109,6 +113,8 @@ namespace Labyrinth {
 
 	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		mZoom -= e.getYOffset() * 0.04f;
 		mZoom = std::min(mZoom, 4.0f); 
 		mCamera.setProjection(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom);
@@ -117,6 +123,8 @@ namespace Labyrinth {
 
 	bool OrthographicCameraController::onWindowResized(WindowResizeEvent& e)
 	{
+		LAB_PROFILE_FUNCTION();
+
 		mAspectRatio = (float)e.getWidth() / (float)e.getHeight();
 		mCamera.setProjection(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom);
 		return false;

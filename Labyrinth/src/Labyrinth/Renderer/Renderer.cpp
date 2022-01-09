@@ -8,6 +8,8 @@ namespace Labyrinth {
 
 	void Renderer::Init()
 	{
+		LAB_PROFILE_FUNCTION();
+
 		RenderCommand::Init();
 		Renderer2D::Init();
 	}
