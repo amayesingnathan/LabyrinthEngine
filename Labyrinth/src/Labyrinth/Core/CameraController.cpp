@@ -7,8 +7,8 @@
 
 namespace Labyrinth {
 
-	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation)
-		: mAspectRatio(aspectRatio), mCamera(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom), mRotation(rotation)
+	OrthographicCameraController::OrthographicCameraController(float aspectRatio, bool rotation, bool dragging)
+		: mAspectRatio(aspectRatio), mCamera(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom), mRotation(rotation), mDraggable(dragging)
 	{
 		mLastMousePos = { Input::GetMouseX(), Input::GetMouseY() };
 	}
@@ -133,7 +133,8 @@ namespace Labyrinth {
 	bool OrthographicCameraController::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
 		if (e.getMouseButton() == LAB_MOUSE_BUTTON_LEFT)
-			mDragging = true;
+			if (mDraggable)
+				mDragging = true;
 		return false;
 	}
 

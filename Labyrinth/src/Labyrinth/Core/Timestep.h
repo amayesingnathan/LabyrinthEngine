@@ -10,9 +10,9 @@ namespace Labyrinth {
 		{
 		}
 
-		operator float() const { return mTime / 1000.f; }
+		operator float() const { return mTime * 0.001f; }
 
-		float getSeconds() const { return mTime / 1000.f; }
+		float getSeconds() const { return mTime * 0.001f; }
 		float getMilliseconds() const { return mTime; }
 
 	private:

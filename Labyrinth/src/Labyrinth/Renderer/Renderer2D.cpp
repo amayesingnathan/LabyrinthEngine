@@ -21,9 +21,9 @@ namespace Labyrinth {
 
 	struct Renderer2DData
 	{
-		const uint32_t MaxQuads = 10000;
-		const uint32_t MaxVertices = MaxQuads * 4;
-		const uint32_t MaxIndices = MaxQuads * 6;
+		static const uint32_t MaxQuads = 20000;
+		static const uint32_t MaxVertices = MaxQuads * 4;
+		static const uint32_t MaxIndices = MaxQuads * 6;
 		static const uint32_t MaxTextureSlots = 32; //ToDo: RenderCaps
 
 		Ref<VertexArray> quadVertexArray;
@@ -39,6 +39,8 @@ namespace Labyrinth {
 		uint32_t textureSlotIndex;
 
 		glm::vec4 quadVertexPositions[4]; 
+
+		Renderer2D::Statistics stats;
 	};
 
 	static Renderer2DData sData;
@@ -135,6 +137,17 @@ namespace Labyrinth {
 			sData.textureSlots[i]->bind(i);
 
 		RenderCommand::DrawIndexed(sData.quadVertexArray, sData.quadIndexCount);
+		sData.stats.drawCalls++;
+	}
+
+	void Renderer2D::FlushAndReset()
+	{
+		EndState();
+
+		sData.quadIndexCount = 0;
+		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
+
+		sData.textureSlotIndex = 1;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)
@@ -149,38 +162,7 @@ namespace Labyrinth {
 		const float texIndex = 0.0f; // White Texture
 		const float tilingFactor = 1.0f;
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[0];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[1];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[2];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[3];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadIndexCount += 6;
+		UploadQuad(position, size, colour, texIndex, tilingFactor);
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour)
@@ -207,43 +189,15 @@ namespace Labyrinth {
 
 		if (textureIndex == 0.0f)
 		{
+			if (sData.textureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				FlushAndReset();
+
 			textureIndex = (float)sData.textureSlotIndex;
 			sData.textureSlots[sData.textureSlotIndex] = texture;
 			sData.textureSlotIndex++;
 		}
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[0];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[1];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[2];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[3];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadIndexCount += 6;
+		UploadQuad(position, size, colour, textureIndex, tilingFactor);
 
 #if OLD_PATH
 		sData.textureShader->setFloat4("uColour", glm::vec4(1.0f));
@@ -271,39 +225,8 @@ namespace Labyrinth {
 		const float texIndex = 0.0f; // White Texture
 		const float tilingFactor = 1.0f;
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
-			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
-			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		UploadQuad(position, size, colour, texIndex, tilingFactor, rotation);
 
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[0];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[1];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[2];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[3];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = texIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadIndexCount += 6;
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour)
@@ -329,44 +252,51 @@ namespace Labyrinth {
 
 		if (textureIndex == 0.0f)
 		{
+			if (sData.textureSlotIndex >= Renderer2DData::MaxTextureSlots)
+				FlushAndReset();
+
 			textureIndex = (float)sData.textureSlotIndex;
 			sData.textureSlots[sData.textureSlotIndex] = texture;
 			sData.textureSlotIndex++;
 		}
 
+		UploadQuad(position, size, colour, textureIndex, tilingFactor, rotation);
+	}
+
+	void Renderer2D::ResetStats()
+	{
+		memset(&sData.stats, 0, sizeof(Statistics));
+	}
+
+	Renderer2D::Statistics Renderer2D::GetStats()
+	{
+		return sData.stats;
+	}
+
+	void Renderer2D::UploadQuad(const glm::vec3& position, const glm::vec2& size, glm::vec4 colour, float textureIndex, float tilingFactor, float rotation)
+	{
+		constexpr size_t quadVertexCount = 4;
+		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+		if (sData.quadIndexCount >= Renderer2DData::MaxIndices)
+			FlushAndReset();
+
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::rotate(glm::mat4(1.0f), glm::radians(rotation), { 0.0f, 0.0f, 1.0f })
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[0];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[1];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 0.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[2];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 1.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
-
-		sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[3];
-		sData.quadVertexBufferPtr->colour = colour;
-		sData.quadVertexBufferPtr->texCoord = { 0.0f, 1.0f };
-		sData.quadVertexBufferPtr->texIndex = textureIndex;
-		sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
-		sData.quadVertexBufferPtr++;
+		for (size_t i = 0; i < quadVertexCount; i++)
+		{
+			sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[i];
+			sData.quadVertexBufferPtr->colour = colour;
+			sData.quadVertexBufferPtr->texCoord = textureCoords[i];
+			sData.quadVertexBufferPtr->texIndex = textureIndex;
+			sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
+			sData.quadVertexBufferPtr++;
+		}
 
 		sData.quadIndexCount += 6;
+		sData.stats.quadCount++;
 	}
 
 }

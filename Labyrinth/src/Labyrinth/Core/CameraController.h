@@ -11,7 +11,7 @@ namespace Labyrinth {
 	class OrthographicCameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool rotation = false);
+		OrthographicCameraController(float aspectRatio, bool rotation = false, bool dragging = false);
 
 		void onUpdate(Timestep ts);
 		void onEvent(Event& e);
@@ -34,6 +34,8 @@ namespace Labyrinth {
 		OrthographicCamera mCamera;
 
 		bool mRotation;
+		bool mDraggable;
+
 		bool mDragging = false;
 		bool mLockCam = false;
 
