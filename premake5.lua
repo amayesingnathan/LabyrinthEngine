@@ -127,7 +127,8 @@ project "Enigma"
         "Labyrinth/src",
 		"Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
     }
 	
     links
@@ -173,7 +174,8 @@ project "Sandbox"
         "Labyrinth/src",
 		"Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
-        "%{IncludeDir.glm}"
+        "%{IncludeDir.glm}",
+		"%{IncludeDir.entt}"
     }
 	
     links

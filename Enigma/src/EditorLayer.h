@@ -25,6 +25,9 @@ namespace Labyrinth {
 		Ref<Shader> mFlatColourShader;
 		Ref<Framebuffer> mFramebuffer;
 
+		Ref<Scene> mCurrentScene;
+		Entity mSquareEntity;
+
 		Ref<Texture2D> mCheckerboardTexture;
 
 		bool mViewportFocused = false, mViewportHovered = false;

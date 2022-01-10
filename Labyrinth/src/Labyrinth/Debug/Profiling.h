@@ -24,16 +24,9 @@ namespace Labyrinth {
 
 	class Profiler
 	{
-	private:
-		std::mutex mMutex;
-		ProfilingSession* mCurrentSession;
-		std::ofstream mOutputStream;
-
 	public:
-		Profiler()
-			: mCurrentSession(nullptr)
-		{
-		}
+		Profiler(const Profiler&) = delete;
+		Profiler(Profiler&&) = delete;
 
 		void BeginSession(const std::string& name, const std::string& filepath = "results.json")
 		{
@@ -96,6 +89,16 @@ namespace Labyrinth {
 		}
 
 	private:
+		Profiler()
+			: mCurrentSession(nullptr)
+		{
+		}
+
+		~Profiler()
+		{
+			EndSession();
+		}
+
 		void WriteHeader()
 		{
 			mOutputStream << "{\"otherData\": {},\"traceEvents\":[{}";
@@ -119,6 +122,11 @@ namespace Labyrinth {
 				mCurrentSession = nullptr;
 			}
 		}
+
+	private:
+		std::mutex mMutex;
+		ProfilingSession* mCurrentSession;
+		std::ofstream mOutputStream;
 	};
 
 	class ProfilingTimer
@@ -184,7 +192,7 @@ namespace Labyrinth {
 }
 
 #ifdef LAB_DEBUG
-	#define LAB_PROFILE 0
+	#define LAB_PROFILE 1
 #endif
 
 #if LAB_PROFILE
@@ -211,8 +219,10 @@ namespace Labyrinth {
 
 	#define LAB_PROFILE_BEGIN_SESSION(name, filepath) ::Labyrinth::Profiler::Get().BeginSession(name, filepath)
 	#define LAB_PROFILE_END_SESSION() ::Labyrinth::Profiler::Get().EndSession()
-	#define LAB_PROFILE_SCOPE(name) constexpr auto fixedName = ::Labyrinth::ProfilingUtils::CleanupOutputString(name, "__cdecl ");\
-									::Labyrinth::ProfilingTimer timer##__LINE__(fixedName.data)
+	#define LAB_PROFILE_SCOPE_LINE2(name, line) constexpr auto fixedName##line = ::Labyrinth::ProfilingUtils::CleanupOutputString(name, "__cdecl ");\
+												   ::Labyrinth::ProfilingTimer timer##line(fixedName##line.data)
+	#define LAB_PROFILE_SCOPE_LINE(name, line) LAB_PROFILE_SCOPE_LINE2(name, line)
+	#define LAB_PROFILE_SCOPE(name) LAB_PROFILE_SCOPE_LINE(name, __LINE__)
 	#define LAB_PROFILE_FUNCTION() LAB_PROFILE_SCOPE(LAB_FUNC_SIG)
 #else
 	#define LAB_PROFILE_BEGIN_SESSION(name, filepath)

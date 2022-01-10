@@ -8,7 +8,7 @@
 namespace Labyrinth {
 
 	EditorLayer::EditorLayer()
-		:	Layer("EditorLayer"), mCameraController(1280.0f / 720.0f, true, true), mSquareColour({ 0.2f, 0.3f, 0.8f, 1.0f })
+		:	Layer("EditorLayer"), mCameraController(1280.0f / 720.0f, true), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
 	{
 	}
 
@@ -22,6 +22,14 @@ namespace Labyrinth {
 		fbSpec.width = 1280;
 		fbSpec.height = 720;
 		mFramebuffer = Framebuffer::Create(fbSpec);
+
+		mCurrentScene = CreateRef<Scene>();
+
+		// Entity
+		auto square = mCurrentScene->CreateEntity("Green Square");
+		square.addComponent<SpriteRendererComponent>(mSquareColour);
+
+		mSquareEntity = square;
 	}
 
 	void EditorLayer::onDetach()
@@ -46,38 +54,18 @@ namespace Labyrinth {
 
 		Renderer2D::ResetStats();
 
-		{
-			LAB_PROFILE_SCOPE("Renderer Prep");
-			mFramebuffer->bind();
-			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-			RenderCommand::Clear();
-		}
+		mFramebuffer->bind();
+		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
+		RenderCommand::Clear();
 
-		{
-			static float rotation = 0.0f;
-			rotation += ts * 50;
+		Renderer2D::BeginState(mCameraController.getCamera());
 
-			LAB_PROFILE_SCOPE("Renderer Draw");
-			Renderer2D::BeginState(mCameraController.getCamera());
-			Renderer2D::DrawRotatedQuad({ -1.0f, 1.0f }, { 2.0f, 2.0f }, -rotation, mCheckerboardTexture);
-			Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.5f }, mSquareColour);
-			Renderer2D::DrawQuad({ -0.5f, -0.5f }, { 0.25f, 0.25f }, mSquareColour);
-			Renderer2D::DrawRotatedQuad({ 2.0f, 2.0f }, { 1.0f, 1.0f }, rotation, mCheckerboardTexture, 2.0f);
-			Renderer2D::EndState();
+		mCurrentScene->onUpdate(ts);
 
+		Renderer2D::EndState();
 
-			Renderer2D::BeginState(mCameraController.getCamera());
-			for (float y = -5.0f; y < 5.0f; y += 0.5f)
-			{
-				for (float x = -5.0f; x < 5.0f; x += 0.5f)
-				{
-					glm::vec4 colour = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-					Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, colour);
-				}
-			}
-			Renderer2D::EndState();
-			mFramebuffer->unbind();
-		}
+		mFramebuffer->unbind();
+		
 	}
 
 	void EditorLayer::onImGuiRender()
@@ -152,15 +140,14 @@ namespace Labyrinth {
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-		if (ImGui::Button("Reset Stats"))
-		{
-			Labyrinth::Renderer2D::ResetStats();
-		}
+		ImGui::Separator();
+		std::string& tag = mSquareEntity.getComponent<TagComponent>();
+		ImGui::Text("%s", tag.c_str());
 
-		ImGui::Dummy(ImVec2(0.0f, 20.0f));
-
-		ImGui::ColorEdit4("Square Colour", glm::value_ptr(mSquareColour));
-
+		auto& squareColor = mSquareEntity.getComponent<SpriteRendererComponent>().colour;
+		ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareColor));
+		ImGui::Separator();
+		
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });

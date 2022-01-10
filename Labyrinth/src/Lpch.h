@@ -8,6 +8,7 @@
 #include "Labyrinth/Debug/Profiling.h"
 
 #include "Labyrinth/Maths/Constant.h"
+#include "Labyrinth/Maths/Quad.h"
 
 //STL Containers/Types
 #include <cstdint>
