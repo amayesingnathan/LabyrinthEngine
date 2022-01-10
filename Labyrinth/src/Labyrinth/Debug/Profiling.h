@@ -156,7 +156,7 @@ namespace Labyrinth {
 }
 
 #ifdef LAB_DEBUG
-	#define LAB_PROFILE 1
+	#define LAB_PROFILE 0
 #endif
 
 #if LAB_PROFILE
