@@ -7,6 +7,7 @@ namespace Labyrinth {
 	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
+		OpenGLVertexBuffer(uint32_t size);
 		OpenGLVertexBuffer(float* vertices, uint32_t size);
 		virtual ~OpenGLVertexBuffer() override;
 
@@ -23,6 +24,7 @@ namespace Labyrinth {
 		BufferLayout mLayout;
 	};
 
+	//Labyrinth only supports 32-bit index buffers
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:

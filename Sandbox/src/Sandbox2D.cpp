@@ -25,9 +25,6 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 	LAB_PROFILE_FUNCTION();
 
 	mCameraController.onUpdate(ts);
-	
-	Labyrinth::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-	Labyrinth::RenderCommand::Clear();
 		
 	{
 		LAB_PROFILE_SCOPE("Renderer Prep");
@@ -36,11 +33,18 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 	}
 
 	{
+		static float rotation = 0.0f;
+		rotation += ts * 50;
+
 		LAB_PROFILE_SCOPE("Renderer Draw");
 		Labyrinth::Renderer2D::BeginState(mCameraController.getCamera());
-		Labyrinth::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, glm::radians(-45.0f), mRotatedSquareColor);
-		Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.75f }, mSquareColor);
+		Labyrinth::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, -rotation, mRotatedSquareColor);
+		Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.5f }, mSquareColor);
+		Labyrinth::Renderer2D::DrawQuad({ -0.5f, -0.5f }, { 0.25f, 0.25f }, mSquareColor);
+		Labyrinth::Renderer2D::DrawQuad({ 0.75f, 0.75f }, { 0.5f, 0.5f }, mSquareColor);
+		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.1f, 0.1f }, mSquareColor);
 		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 1.8f, 1.8f }, mCheckerboardTexture);
+		Labyrinth::Renderer2D::DrawRotatedQuad({ 2.0f, 2.0f }, { 1.0f, 1.0f }, rotation, mCheckerboardTexture, 2.0f);
 		Labyrinth::Renderer2D::EndState();
 	}
 }

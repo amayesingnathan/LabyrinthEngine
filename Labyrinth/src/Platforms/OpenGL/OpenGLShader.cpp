@@ -184,7 +184,6 @@ namespace Labyrinth {
 			return;
 		}
 
-		// Don't leak shaders
 		for (auto id : glShaderIDs)
 		{
 			glDetachShader(program, id);
@@ -212,6 +211,12 @@ namespace Labyrinth {
 		if (location == -1) return;
 
 		glUniform1i(location, value);
+	}
+
+	void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		GLint location = glGetUniformLocation(mRendererID, name.c_str());
+		glUniform1iv(location, count, values);
 	}
 
 	void OpenGLShader::uploadUniformFloat(const std::string& name, float value)
@@ -267,6 +272,13 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		uploadUniformInt(name, value);
+	}
+
+	void OpenGLShader::setIntArray(const std::string& name, int* values, uint32_t count)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformIntArray(name, values, count);
 	}
 
 	void OpenGLShader::setMat4(const std::string& name, const glm::mat4& value)

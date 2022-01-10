@@ -7,6 +7,8 @@
 
 #include "Labyrinth/Debug/Profiling.h"
 
+#include "Labyrinth/Maths/Consts.h"
+
 //STL Containers/Types
 #include <cstdint>
 #include <map>

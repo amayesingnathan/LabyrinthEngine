@@ -27,9 +27,9 @@ namespace Labyrinth {
 			sRendererAPI->clear();
 		}
 
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
 		{
-			sRendererAPI->drawIndexed(vertexArray);
+			sRendererAPI->drawIndexed(vertexArray, count);
 		}
 
 	private:

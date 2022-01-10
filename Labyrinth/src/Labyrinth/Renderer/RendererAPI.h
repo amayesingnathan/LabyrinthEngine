@@ -23,7 +23,7 @@ namespace Labyrinth {
 
 		virtual void clear() = 0;
 
-		virtual void drawIndexed(const Ref<VertexArray>& vertexArray) = 0;
+		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 
 		static API GetAPI() { return sAPI; }
 

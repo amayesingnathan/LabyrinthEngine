@@ -7,6 +7,18 @@
 
 namespace Labyrinth {
 
+	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+	{
+		switch (Renderer::GetAPI())
+		{
+			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
+			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(size);
+		}
+
+		LAB_CORE_ASSERT(false, "Unknown renderer API");
+		return nullptr;
+	}
+
 	Ref<VertexBuffer> Labyrinth::VertexBuffer::Create(float* vertices, uint32_t size)
 	{
 		switch (Renderer::GetAPI())
