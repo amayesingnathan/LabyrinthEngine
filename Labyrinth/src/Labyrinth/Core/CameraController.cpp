@@ -111,6 +111,12 @@ namespace Labyrinth {
 		dispatcher.dispatch<MouseButtonReleasedEvent>(LAB_BIND_EVENT_FUNC(OrthographicCameraController::onMouseButtonReleased));
 	}
 
+	void OrthographicCameraController::OnResize(float width, float height)
+	{
+		mAspectRatio = width / height;
+		mCamera.setProjection(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom);
+	}
+
 	bool OrthographicCameraController::onMouseScrolled(MouseScrolledEvent& e)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -125,8 +131,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mAspectRatio = (float)e.getWidth() / (float)e.getHeight();
-		mCamera.setProjection(-mAspectRatio * mZoom, mAspectRatio * mZoom, -mZoom, mZoom);
+		OnResize((float)e.getWidth(), (float)e.getHeight());
 		return false;
 	}
 

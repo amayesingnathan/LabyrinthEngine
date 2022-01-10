@@ -21,6 +21,8 @@ namespace Labyrinth {
 		void begin();
 		void end();
 
+		void blockEvents(bool block) { mBlockEvents = block; }
+
 	private:
 		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);

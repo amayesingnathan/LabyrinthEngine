@@ -16,6 +16,8 @@ namespace Labyrinth {
 		};
 
 	public:
+		virtual ~RendererAPI() = default;
+
 		virtual void init() = 0;
 
 		virtual void setViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h) = 0;

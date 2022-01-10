@@ -9,6 +9,7 @@ namespace Labyrinth {
 	{
 	public:
 		EnigmaEditor()
+			: Application("Enigma")
 		{
 			pushLayer(new EditorLayer());
 		}

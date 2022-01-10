@@ -68,6 +68,13 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
+		if (mBlockEvents)
+		{
+			ImGuiIO& io = ImGui::GetIO();
+			e.handled |= e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse;
+			e.handled |= e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		}
+
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnMouseButtonPressedEvent));
 		dispatcher.dispatch<MouseButtonReleasedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnMouseButtonReleasedEvent));

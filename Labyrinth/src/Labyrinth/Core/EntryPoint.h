@@ -16,7 +16,7 @@ int main(int argc, char** argv)
 	app->run();
 	LAB_PROFILE_END_SESSION();
 
-	LAB_PROFILE_BEGIN_SESSION("Runtime", "LabyrinthProfile-Shutdown.json");
+	LAB_PROFILE_BEGIN_SESSION("Shutdown", "LabyrinthProfile-Shutdown.json");
 	delete app;
 	LAB_PROFILE_END_SESSION();
 }

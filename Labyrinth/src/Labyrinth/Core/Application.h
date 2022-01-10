@@ -35,6 +35,8 @@ namespace Labyrinth {
 
 		void Close();
 
+		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
+
 	private:
 		void run();
 

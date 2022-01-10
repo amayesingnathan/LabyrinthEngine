@@ -7,6 +7,8 @@ namespace Labyrinth {
 	protected:
 		Input() = default;
 	public:
+		virtual ~Input() = default;
+
 		Input(const Input&) = delete;
 		Input& operator=(const Input&) = delete;
 

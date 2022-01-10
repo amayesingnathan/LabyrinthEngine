@@ -27,6 +27,9 @@ namespace Labyrinth {
 
 		Ref<Texture2D> mCheckerboardTexture;
 
+		bool mViewportFocused = false, mViewportHovered = false;
+		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+
 		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
 	};
 
