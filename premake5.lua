@@ -90,10 +90,6 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 
-		links
-		{
-			"SDL2main"
-		}
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
@@ -110,7 +106,52 @@ project "Labyrinth"
 		runtime "Release"
         optimize "on"
 
+project "Enigma"
+    location "Enigma"
+    kind "ConsoleApp"
+    language "C++"
+    cppdialect "C++17"
+    staticruntime "on"
+	
+    targetdir ("bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("bin/int/" .. outputdir .. "/%{prj.name}")
+	
+    files 
+    { 
+        "%{prj.name}/src/**.h", 
+        "%{prj.name}/src/**.cpp" 
+    }
+    
+    includedirs
+    {
+        "Labyrinth/src",
+		"Labyrinth/dependencies",
+        "%{IncludeDir.spdlog}",
+        "%{IncludeDir.glm}"
+    }
+	
+    links
+    {
+        "Labyrinth"
+    }
+
+    filter "system:windows"
+        systemversion "latest"
         
+    filter "configurations:Debug"
+        defines { "LAB_DEBUG" }
+        symbols "on"
+
+    filter "configurations:Release"
+        defines { "LAB_RELEASE" }
+        optimize "on"
+
+    filter "configurations:Dist"
+        defines { "LAB_DIST" }
+		runtime "Release"
+        optimize "on"
+       
+	   
 project "Sandbox"
     location "Sandbox"
     kind "ConsoleApp"

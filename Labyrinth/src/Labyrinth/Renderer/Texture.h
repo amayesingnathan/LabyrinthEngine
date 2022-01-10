@@ -13,6 +13,7 @@ namespace Labyrinth {
 
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
+		virtual uint32_t getRendererID() const = 0;
 
 		virtual void setData(void* data, uint32_t size) = 0;
 

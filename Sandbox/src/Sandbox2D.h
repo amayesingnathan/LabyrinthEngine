@@ -18,6 +18,8 @@ public:
 private:
 	Labyrinth::OrthographicCameraController mCameraController;
 
+	Labyrinth::Ref<Labyrinth::Framebuffer> mFramebuffer;
+
 	Labyrinth::Ref<Labyrinth::Texture2D> mCheckerboardTexture;
 
 	glm::vec4 mSquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };

@@ -15,6 +15,7 @@ namespace Labyrinth {
 
 		virtual uint32_t getWidth() const override { return mWidth; }
 		virtual uint32_t getHeight() const override { return mHeight; }
+		virtual uint32_t getRendererID() const override { return mRendererID; }
 
 		virtual void setData(void* data, uint32_t size) override;
 

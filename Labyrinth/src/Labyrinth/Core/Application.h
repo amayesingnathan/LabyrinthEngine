@@ -21,7 +21,7 @@ namespace Labyrinth {
 	{
 	//Methods
 	public:
-		Application();
+		Application(const std::string& name = "Labyrinth Application");
 		~Application();
 
 		void onEvent(Event& e);
@@ -32,6 +32,8 @@ namespace Labyrinth {
 		Window& getWindow() { return *mWindow; }
 
 		static Application& Get() { return *sInstance; }
+
+		void Close();
 
 	private:
 		void run();

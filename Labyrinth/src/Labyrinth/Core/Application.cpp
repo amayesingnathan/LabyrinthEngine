@@ -14,14 +14,14 @@ namespace Labyrinth {
 
 	Application* Application::sInstance = nullptr;
 
-	Application::Application()
+	Application::Application(const std::string& name)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
 
-		mWindow = Window::Create();
+		mWindow = Window::Create(WindowProps(name));
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
@@ -37,6 +37,11 @@ namespace Labyrinth {
 		Renderer::Shutdown();
 	}
 
+	void Application::Close()
+	{
+		mRunning = false;
+	}
+
 	void Application::run()
 	{
 		LAB_PROFILE_FUNCTION();
@@ -45,7 +50,7 @@ namespace Labyrinth {
 		{
 			LAB_PROFILE_SCOPE("RunLoop");
 			if (Input::IsKeyPressed(LAB_KEY_ESCAPE))
-				mRunning = false;
+				Close();
 
 			float time = (float)SDL_GetTicks();
 			Timestep timestep = time - mLastFrameTime;
@@ -102,7 +107,7 @@ namespace Labyrinth {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		mRunning = false;
+		Close();
 		return true;
 	}
 

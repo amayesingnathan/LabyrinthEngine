@@ -24,6 +24,7 @@
 
 #include "Labyrinth/Renderer/Buffer.h"
 #include "Labyrinth/Renderer/Shader.h"
+#include "Labyrinth/Renderer/Framebuffer.h"
 #include "Labyrinth/Renderer/Texture.h"
 #include "Labyrinth/Renderer/VertexArray.h"
 

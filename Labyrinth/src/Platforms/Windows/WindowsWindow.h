@@ -18,8 +18,8 @@ namespace Labyrinth {
 
 		void onUpdate() override;
 
-		inline unsigned int getWidth() const override { return mData.width; }
-		inline unsigned int getHeight() const override { return mData.height; }
+		inline uint32_t getWidth() const override { return mData.width; }
+		inline uint32_t getHeight() const override { return mData.height; }
 
 		inline void setEventCallback(const EventCallbackFunc& callback) override { mData.eventCallback = callback; }
 		void setVSync(bool enabled) override;

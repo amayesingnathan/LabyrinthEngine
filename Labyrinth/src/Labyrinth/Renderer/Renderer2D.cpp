@@ -106,6 +106,8 @@ namespace Labyrinth {
 	void Renderer2D::Shutdown()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		delete[] sData.quadVertexBufferBase;
 	}
 
 	void Renderer2D::BeginState(const OrthographicCamera& camera)
@@ -125,7 +127,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		uint32_t dataSize = (uint8_t*)sData.quadVertexBufferPtr - (uint8_t*)sData.quadVertexBufferBase;
+		uint32_t dataSize = (uint32_t)((uint8_t*)sData.quadVertexBufferPtr - (uint8_t*)sData.quadVertexBufferBase);
 		sData.quadVertexBuffer->setData(sData.quadVertexBufferBase, dataSize);
 
 		Flush();
@@ -133,6 +135,9 @@ namespace Labyrinth {
 
 	void Renderer2D::Flush()
 	{
+		if (sData.quadIndexCount == 0)
+			return; //Nothing to draw
+
 		for (uint32_t i = 0; i < sData.textureSlotIndex; i++)
 			sData.textureSlots[i]->bind(i);
 
@@ -174,8 +179,6 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		constexpr glm::vec4 colour = glm::vec4(1.0f);
-
 		float textureIndex = 0.0f;
 
 		for (uint32_t i = 1; i < sData.textureSlotIndex; i++)
@@ -197,7 +200,7 @@ namespace Labyrinth {
 			sData.textureSlotIndex++;
 		}
 
-		UploadQuad(position, size, colour, textureIndex, tilingFactor);
+		UploadQuad(position, size, tintColour, textureIndex, tilingFactor);
 
 #if OLD_PATH
 		sData.textureShader->setFloat4("uColour", glm::vec4(1.0f));
@@ -238,8 +241,6 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		constexpr glm::vec4 colour = { 1.0f, 1.0f, 1.0f, 1.0f };
-
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < sData.textureSlotIndex; i++)
 		{
@@ -260,7 +261,7 @@ namespace Labyrinth {
 			sData.textureSlotIndex++;
 		}
 
-		UploadQuad(position, size, colour, textureIndex, tilingFactor, rotation);
+		UploadQuad(position, size, tintColour, textureIndex, tilingFactor, rotation);
 	}
 
 	void Renderer2D::ResetStats()

@@ -8,13 +8,13 @@ namespace Labyrinth {
 
 	struct WindowProps {
 		std::string title;
-		unsigned int width;
-		unsigned int height;
+		uint32_t width;
+		uint32_t height;
 		uint32_t flags;
 
 		WindowProps(const std::string& t = "Labyrinth Engine",
-			unsigned int w = 1280,
-			unsigned int h = 720,
+			uint32_t w = 1280,
+			uint32_t h = 720,
 			//SDL not included here so use hex values that correspond to SDL_WINDOW_RESIZABLE and SDL_WINDOW_OPENGL
 			uint32_t f = 0x00000020 | 0x00000002)
 			: title(t), width(w), height(h), flags(f) {}
@@ -29,8 +29,8 @@ namespace Labyrinth {
 
 		virtual void onUpdate() = 0;
 
-		virtual unsigned int getWidth() const = 0;
-		virtual unsigned int getHeight() const = 0;
+		virtual uint32_t getWidth() const = 0;
+		virtual uint32_t getHeight() const = 0;
 
 		//Attributes
 		virtual void setEventCallback(const EventCallbackFunc& callback) = 0;

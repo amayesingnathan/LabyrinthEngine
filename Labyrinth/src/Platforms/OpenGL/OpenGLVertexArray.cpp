@@ -109,14 +109,6 @@ namespace Labyrinth {
 			default:
 				LAB_CORE_ASSERT(false, "Unknown ShaderDataType!");
 			}
-			/*glEnableVertexAttribArray(mVertexBufferIndex);
-			glVertexAttribPointer(mVertexBufferIndex,
-				element.getComponentCount(),
-				ShaderDataTypetoOpenGLType(element.type),
-				element.normalised ? GL_TRUE : GL_FALSE,
-				layout.getStride(),
-				(const void*)element.offset);
-			mVertexBufferIndex++;*/
 		}
 
 		mVertexBuffers.push_back(vertexBuffer);
