@@ -1,6 +1,6 @@
 workspace "Labyrinth"
     architecture "x86_64"
-    startproject "Sandbox"
+    startproject "Enigma"
 
     configurations { 
         "Debug", 

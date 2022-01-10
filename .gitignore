@@ -1,6 +1,6 @@
 #Ignore binaries
 **/bin/
-!dependencies/bin/premake/
+!dependencies/bin
 
 #Ignore VS temp files
 .vs/
@@ -11,3 +11,6 @@
 
 #Labyrinth Log files
 *.log
+
+#Ignore profiling files
+**.json
