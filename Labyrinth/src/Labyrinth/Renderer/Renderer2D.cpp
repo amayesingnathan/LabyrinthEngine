@@ -85,31 +85,79 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		sData->textureShader->setFloat4("uColor", colour);
+		sData->textureShader->setFloat("uScalingFactor", 1.0f);
 		sData->whiteTexture->bind();
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		sData->textureShader->setMat4("uTransform", transform);
 
 		sData->quadVertexArray->bind();
 		RenderCommand::DrawIndexed(sData->quadVertexArray);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float scale, const glm::vec4& tintColour)
 	{
-		DrawQuad({ position.x, position.y, 0.0f }, size, texture);
+		DrawQuad({ position.x, position.y, 0.0f }, size, texture, scale, tintColour);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float scale, const glm::vec4& tintColour)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		sData->textureShader->setFloat4("uColor", glm::vec4(1.0f));
+		sData->textureShader->setFloat("uScalingFactor", 1.0f);
 		texture->bind();
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) 
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
 		sData->textureShader->setMat4("uTransform", transform);
 
 		texture->bind();
+
+		sData->quadVertexArray->bind();
+		RenderCommand::DrawIndexed(sData->quadVertexArray);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour)
+	{
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, colour);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& colour)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		sData->textureShader->setFloat4("uColor", colour);
+		sData->textureShader->setFloat("uScalingFactor", 1.0f);
+		sData->whiteTexture->bind();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		sData->textureShader->setMat4("uTransform", transform);
+
+		sData->quadVertexArray->bind();
+		RenderCommand::DrawIndexed(sData->quadVertexArray);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float scale, const glm::vec4& tintColour)
+	{
+		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, scale, tintColour);
+	}
+
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float scale, const glm::vec4& tintColour)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		sData->textureShader->setFloat4("uColor", tintColour);
+		sData->textureShader->setFloat("uScalingFactor", scale);
+		sData->whiteTexture->bind();
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::rotate(glm::mat4(1.0f), rotation, { 0.0f, 0.0f, 1.0f })
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+		sData->textureShader->setMat4("uTransform", transform);
 
 		sData->quadVertexArray->bind();
 		RenderCommand::DrawIndexed(sData->quadVertexArray);

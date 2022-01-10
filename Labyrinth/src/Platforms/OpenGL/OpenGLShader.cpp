@@ -276,6 +276,13 @@ namespace Labyrinth {
 		uploadUniformMat4(name, value);
 	}
 
+	void OpenGLShader::setFloat(const std::string& name, float value)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		uploadUniformFloat(name, value);
+	}
+
 	void OpenGLShader::setFloat3(const std::string& name, const glm::vec3& value)
 	{
 		LAB_PROFILE_FUNCTION();
