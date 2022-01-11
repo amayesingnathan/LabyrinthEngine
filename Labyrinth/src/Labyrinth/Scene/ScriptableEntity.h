@@ -16,12 +16,12 @@ namespace Labyrinth {
 		}
 
 	protected:
-		virtual void OnCreate() {}
-		virtual void OnDestroy() {}
-		virtual void OnUpdate() {}
+		virtual void onCreate() {}
+		virtual void onDestroy() {}
+		virtual void onUpdate(Timestep ts) {}
 
 	private:
 		Entity mEntity;
-
+		friend class Scene;
 	};
 }

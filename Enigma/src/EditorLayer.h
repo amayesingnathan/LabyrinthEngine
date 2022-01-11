@@ -27,6 +27,10 @@ namespace Labyrinth {
 
 		Ref<Scene> mCurrentScene;
 		Entity mSquareEntity;
+		Entity mCameraEntity;
+		Entity mSecondCamera;
+
+		bool mPrimaryCamera = true;
 
 		Ref<Texture2D> mCheckerboardTexture;
 

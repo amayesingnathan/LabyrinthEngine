@@ -30,6 +30,44 @@ namespace Labyrinth {
 		square.addComponent<SpriteRendererComponent>(mSquareColour);
 
 		mSquareEntity = square;
+
+		mCameraEntity = mCurrentScene->CreateEntity("Camera Entity");
+		mCameraEntity.addComponent<CameraComponent>();
+
+		mSecondCamera = mCurrentScene->CreateEntity("Clip-Space Entity");
+		auto& cc = mSecondCamera.addComponent<CameraComponent>();
+		cc.primary = false;
+
+		class CameraController : public ScriptableEntity
+		{
+		public:
+			void onCreate() override
+			{
+			}
+
+			void onDestroy() override
+			{
+			}
+
+			void onUpdate(Timestep ts) override
+			{
+				auto& transform = getComponent<TransformComponent>().transform;
+				float speed = 5.0f;
+
+				if (Input::IsKeyPressed(LAB_KEY_A))
+					transform[3][0] -= speed * ts;
+				if (Input::IsKeyPressed(LAB_KEY_D))
+					transform[3][0] += speed * ts;
+				if (Input::IsKeyPressed(LAB_KEY_W))
+					transform[3][1] += speed * ts;
+				if (Input::IsKeyPressed(LAB_KEY_S))
+					transform[3][1] -= speed * ts;
+			}
+		};
+
+		mCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
+		mSecondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+
 	}
 
 	void EditorLayer::onDetach()
@@ -46,7 +84,9 @@ namespace Labyrinth {
 			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
 		{
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mCameraController.OnResize(mViewportSize.x, mViewportSize.y);
+			mCameraController.onResize(mViewportSize.x, mViewportSize.y);
+
+			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
 
 		if (mViewportFocused)
@@ -58,11 +98,7 @@ namespace Labyrinth {
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
 		RenderCommand::Clear();
 
-		Renderer2D::BeginState(mCameraController.getCamera());
-
 		mCurrentScene->onUpdate(ts);
-
-		Renderer2D::EndState();
 
 		mFramebuffer->unbind();
 		
@@ -140,14 +176,33 @@ namespace Labyrinth {
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-		ImGui::Separator();
-		std::string& tag = mSquareEntity.getComponent<TagComponent>();
-		ImGui::Text("%s", tag.c_str());
+		if (mSquareEntity)
+		{
+			ImGui::Separator();
+			std::string& tag = mSquareEntity.getComponent<TagComponent>();
+			ImGui::Text("%s", tag.c_str());
 
-		auto& squareColor = mSquareEntity.getComponent<SpriteRendererComponent>().colour;
-		ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareColor));
-		ImGui::Separator();
-		
+			auto& squareColor = mSquareEntity.getComponent<SpriteRendererComponent>().colour;
+			ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareColor));
+			ImGui::Separator();
+		}
+
+		ImGui::DragFloat3("Camera Transform",
+			glm::value_ptr(mCameraEntity.getComponent<TransformComponent>().transform[3]));
+
+		if (ImGui::Checkbox("Camera A", &mPrimaryCamera))
+		{
+			mCameraEntity.getComponent<CameraComponent>().primary = mPrimaryCamera;
+			mSecondCamera.getComponent<CameraComponent>().primary = !mPrimaryCamera;
+		}
+
+		{
+			auto& camera = mSecondCamera.getComponent<CameraComponent>().camera;
+			float orthoSize = camera.getOrthographicSize();
+			if (ImGui::SliderFloat("Second Camera Ortho Size", &orthoSize, 0.001f, 50.0f))
+				camera.setOrthographicSize(orthoSize);
+		}
+
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });

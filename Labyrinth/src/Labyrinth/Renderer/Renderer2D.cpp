@@ -110,6 +110,21 @@ namespace Labyrinth {
 		delete[] sData.quadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginState(const Camera& camera, const glm::mat4 transform)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.getProjection() * glm::inverse(transform);
+
+		sData.textureShader->bind();
+		sData.textureShader->setMat4("uViewProjection", viewProj);
+
+		sData.quadIndexCount = 0;
+		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
+
+		sData.textureSlotIndex = 1;
+	}
+
 	void Renderer2D::BeginState(const OrthographicCamera& camera)
 	{
 		LAB_PROFILE_FUNCTION();

@@ -5,8 +5,12 @@
 
 namespace Labyrinth {
 
+	/*
+		Orthographic Camera
+	*/
+
 	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top, float zoom)
-		: mProjectionMatrix(glm::ortho(left * zoom, right * zoom, bottom * zoom, top * zoom, -1.0f, 1.0f)),
+		: Camera(glm::ortho(left * zoom, right * zoom, bottom * zoom, top * zoom, -1.0f, 1.0f)),
 		  mViewMatrix(1.0f), mZoom(zoom)
 	{
 		LAB_PROFILE_FUNCTION();

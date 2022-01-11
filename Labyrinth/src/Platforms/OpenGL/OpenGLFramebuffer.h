@@ -8,7 +8,7 @@ namespace Labyrinth {
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpec& spec);
-		virtual ~OpenGLFramebuffer();
+		virtual ~OpenGLFramebuffer() override;
 
 		void Invalidate();
 

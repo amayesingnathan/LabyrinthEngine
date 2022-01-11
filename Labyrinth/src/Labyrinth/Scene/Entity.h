@@ -54,13 +54,13 @@ namespace Labyrinth {
 		//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
 		//}
 
-		entt::entity getID() { return mEntID; };
-
 		operator entt::entity() const { return mEntID; }
 		operator uint32_t() const { return static_cast<uint32_t>(mEntID); }
 
+		operator bool() const { return mEntID != entt::null; }
+
 	private:
-		entt::entity mEntID;
+		entt::entity mEntID{ entt::null };
 		Scene* mScene;
 
 	};

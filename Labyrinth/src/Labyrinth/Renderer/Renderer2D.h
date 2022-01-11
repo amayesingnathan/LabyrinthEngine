@@ -12,6 +12,7 @@ namespace Labyrinth {
 		static void Init();
 		static void Shutdown();
 
+		static void BeginState(const Camera& camera, const glm::mat4 transform);
 		static void BeginState(const OrthographicCamera& camera);
 		static void EndState();
 		static void Flush();

@@ -1,43 +1,45 @@
 #include "Lpch.h"
-#include "WindowsInput.h"
+#include "Labyrinth/Core/Input.h"
 
 #include "Labyrinth/Core/Application.h"
 
 #include "SDL.h"
 
+#ifdef	LAB_PLATFORM_WINDOWS  //Input redefine for Windows!
+
 namespace Labyrinth {
 
-	Single<Input> Input::sInstance = CreateSingle<WindowsInput>();
-
-	bool WindowsInput::isKeyPressedImpl(int keycode)
+	bool Input::IsKeyPressed(int keycode)
 	{
 		auto keys = SDL_GetKeyboardState(NULL);
 		return keys[keycode];
 	}
 
-	bool WindowsInput::isMouseButtonPressedImpl(int button)
+	bool Input::IsMouseButtonPressed(int button)
 	{
 		auto buttons = SDL_GetMouseState(NULL, NULL);
 		return button & buttons;
 	}
 
-	std::pair<float, float> WindowsInput::getMousePositionImpl()
+	glm::vec2 Input::GetMousePosition()
 	{
 		int x, y;
 		SDL_GetMouseState(&x, &y);
-		return std::pair<float, float>(static_cast<float>(x), static_cast<float>(y));
+		return { static_cast<float>(x), static_cast<float>(y) };
 	}
 
-	float WindowsInput::getMouseXImpl()
+	float Input::GetMouseX()
 	{
-		auto [x, y] = getMousePositionImpl();
-		return x;
+		auto pos = GetMousePosition();
+		return pos.x;
 	}
 
-	float WindowsInput::getMouseYImpl()
+	float Input::GetMouseY()
 	{
-		auto [x, y] = getMousePositionImpl();
-		return y;
+		auto pos = GetMousePosition();
+		return pos.y;
 	}
 
 }
+
+#endif

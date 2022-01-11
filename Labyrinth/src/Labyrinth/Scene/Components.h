@@ -5,6 +5,8 @@
 
 #include "ScriptableEntity.h"
 
+#include "SceneCamera.h"
+
 #include <glm/glm.hpp>
 
 struct SDL_Texture;
@@ -22,6 +24,20 @@ namespace Labyrinth {
 		Component() = default;
 		Component(class Entity* entt, Types type);
 		virtual ~Component() {}
+	};
+
+	struct CameraComponent
+	{
+		SceneCamera camera;
+		bool primary = true; //ToDo: Maybe move to Scene
+		bool fixedAspectRatio = false;
+
+		CameraComponent() = default;
+		CameraComponent(const CameraComponent&) = default;
+		CameraComponent(const SceneCamera & cam, bool prime = true, bool fixedAR = false)
+			: camera(cam), primary(prime), fixedAspectRatio(fixedAR) {}
+	
+
 	};
 
 	struct ColliderComponent : public Component
@@ -48,29 +64,18 @@ namespace Labyrinth {
 	};
 
 
-	struct ScriptComponent : public Component
+	struct NativeScriptComponent
 	{
 		ScriptableEntity* instance = nullptr;
 
-		ScriptableEntity* (*InstantiateScript)() = nullptr;
-		void (*DestroyScript)(ScriptComponent*) = nullptr;
-
-		void (*OnCreateFunc)(ScriptableEntity*) = nullptr;
-		void (*OnDestroyFunc)(ScriptableEntity*) = nullptr;
-		void (*OnUpdateFunc)(ScriptableEntity*) = nullptr;
-
-		ScriptComponent() = default;
-		ScriptComponent& operator=(const ScriptComponent&) = default;
+		ScriptableEntity* (*instantiateScript)() = nullptr;
+		void (*destroyScript)(NativeScriptComponent*) = nullptr;
 
 		template<typename T>
 		void bind()
 		{
-			InstantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			DestroyScript = [](ScriptComponent* sc) { delete sc->instance; sc->instance = nullptr; };
-
-			OnCreateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnCreate(); };
-			OnDestroyFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnDestroy(); };
-			OnUpdateFunc = [](ScriptableEntity* inst) { dynamic_cast<T*>(inst)->OnUpdate(); };
+			instantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
+			destroyScript = [](NativeScriptComponent* sc) { delete sc->instance; sc->instance = nullptr; };
 		}
 	};
 
@@ -104,6 +109,7 @@ namespace Labyrinth {
 			animations.emplace(anim, Animation(i, f, s));
 		}
 	};
+
 #endif
 
 	struct SpriteRendererComponent
