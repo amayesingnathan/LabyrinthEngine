@@ -53,7 +53,7 @@ namespace Labyrinth {
 	{
 		auto& tag = entity.getComponent<TagComponent>().tag;
 
-		ImGuiTreeNodeFlags flags = ((mSelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
+		ImGuiTreeNodeFlags flags = ((mSelectionContext == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnDoubleClick;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
 		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
@@ -72,12 +72,12 @@ namespace Labyrinth {
 		}
 
 		if (opened)
-		{
+		{/*
 			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
 			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
 			if (opened)
 				ImGui::TreePop();
-			ImGui::TreePop();
+			ImGui::TreePop();*/
 		}
 		if (entityDeleted)
 		{
@@ -220,13 +220,19 @@ namespace Labyrinth {
 		{
 			if (ImGui::MenuItem("Camera"))
 			{
-				mSelectionContext.addComponent<CameraComponent>();
+				if (!mSelectionContext.hasComponent<CameraComponent>())
+					mSelectionContext.addComponent<CameraComponent>();
+				else
+					LAB_CORE_WARN("This entity already has the Camera Component!");
 				ImGui::CloseCurrentPopup();
 			}
 
 			if (ImGui::MenuItem("Sprite Renderer"))
 			{
-				mSelectionContext.addComponent<SpriteRendererComponent>();
+				if (!mSelectionContext.hasComponent<SpriteRendererComponent>())
+					mSelectionContext.addComponent<SpriteRendererComponent>();
+				else
+					LAB_CORE_WARN("This entity already has the Sprite Renderer Component!");
 				ImGui::CloseCurrentPopup();
 			}
 

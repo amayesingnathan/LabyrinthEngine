@@ -272,25 +272,25 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		std::string filepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (!filepath.empty())
+		std::optional<std::string> filepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (filepath)
 		{
 			mCurrentScene = CreateRef<Scene>();
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mScenePanel.setContext(mCurrentScene);
 
 			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.deserialise(filepath);
+			serialiser.deserialise(*filepath);
 		}
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::string filepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (!filepath.empty())
+		std::optional<std::string> filepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (filepath)
 		{
 			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.serialise(filepath);
+			serialiser.serialise(*filepath);
 		}
 	}
 }
