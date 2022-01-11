@@ -19,6 +19,14 @@ namespace Labyrinth {
 		virtual void onEvent(Event& e);
 
 	private:
+		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMousePressedEvent(MouseButtonPressedEvent& e);
+
+		void NewScene();
+		void OpenScene();
+		void SaveSceneAs();
+
+	private:
 		Labyrinth::OrthographicCameraController mCameraController;
 
 		//Temp

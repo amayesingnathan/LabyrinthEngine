@@ -5,6 +5,10 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "Labyrinth/Scene/SceneSerialiser.h"
+
+#include "Labyrinth/Tools/PlatformUtils.h"
+
 namespace Labyrinth {
 
 	EditorLayer::EditorLayer()
@@ -19,16 +23,13 @@ namespace Labyrinth {
 		mCheckerboardTexture = Texture2D::Create("assets/textures/checkerboard.png");
 
 		FramebufferSpec fbSpec;
-		fbSpec.width = 1280;
-		fbSpec.height = 720;
+		fbSpec.width = 1600;
+		fbSpec.height = 900;
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
 		mCurrentScene = CreateRef<Scene>();
 
-		// Entity
-		auto square = mCurrentScene->CreateEntity("Square");
-		square.addComponent<SpriteRendererComponent>(mSquareColour);
-
+#if 0
 		auto camera1 = mCurrentScene->CreateEntity("Camera A");
 		camera1.addComponent<CameraComponent>();
 
@@ -41,8 +42,6 @@ namespace Labyrinth {
 		public:
 			void onCreate() override
 			{
-				auto& translation = getComponent<TransformComponent>().translation;
-				translation.x = rand() % 10 - 5.0f;
 			}
 
 			void onDestroy() override
@@ -69,7 +68,7 @@ namespace Labyrinth {
 
 		camera1.addComponent<NativeScriptComponent>().bind<CameraController>();
 		camera2.addComponent<NativeScriptComponent>().bind<CameraController>();
-
+#endif
 		mScenePanel.setContext(mCurrentScene);
 
 	}
@@ -150,11 +149,17 @@ namespace Labyrinth {
 
 		// DockSpace
 		ImGuiIO& io = ImGui::GetIO();
+		ImGuiStyle& style = ImGui::GetStyle();
+		float minWinSizeX = style.WindowMinSize.x;
+		style.WindowMinSize.x = 370.0f;
+
 		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
 		{
 			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
 		}
+
+		style.WindowMinSize.x = minWinSizeX;
 
 		if (ImGui::BeginMenuBar())
 		{
@@ -163,6 +168,12 @@ namespace Labyrinth {
 				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
 				// which we can't undo at the moment without finer window depth/z control.
 				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
+				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+					OpenScene();
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
 
 				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
@@ -206,6 +217,80 @@ namespace Labyrinth {
 	void EditorLayer::onEvent(Event& e)
 	{
 		mCameraController.onEvent(e);
+
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMousePressedEvent));
 	}
 
+	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.getRepeatCount() > 0)
+			return false;
+
+		bool control = Input::IsKeyPressed(LAB_KEY_LCTRL) || Input::IsKeyPressed(LAB_KEY_RCTRL);
+		bool shift = Input::IsKeyPressed(LAB_KEY_LSHIFT) || Input::IsKeyPressed(LAB_KEY_RSHIFT);
+
+		switch (e.getKeyCode())
+		{
+		case LAB_KEY_N:
+		{
+			if (control)
+				NewScene();
+
+			break;
+		}
+		case LAB_KEY_O:
+		{
+			if (control)
+				OpenScene();
+
+			break;
+		}
+		case LAB_KEY_S:
+		{
+			if (control && shift)
+				SaveSceneAs();
+
+			break;
+		}
+		}
+		return false;
+	}
+
+	bool EditorLayer::OnMousePressedEvent(MouseButtonPressedEvent& e)
+	{
+		return false;
+	}
+
+	void EditorLayer::NewScene()
+	{
+		mCurrentScene = CreateRef<Scene>();
+		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+		mScenePanel.setContext(mCurrentScene);
+	}
+
+	void EditorLayer::OpenScene()
+	{
+		std::string filepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (!filepath.empty())
+		{
+			mCurrentScene = CreateRef<Scene>();
+			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mScenePanel.setContext(mCurrentScene);
+
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.deserialise(filepath);
+		}
+	}
+
+	void EditorLayer::SaveSceneAs()
+	{
+		std::string filepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (!filepath.empty())
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(filepath);
+		}
+	}
 }

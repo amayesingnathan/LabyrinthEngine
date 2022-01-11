@@ -34,6 +34,8 @@ namespace Labyrinth {
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
 		bool OnWindowCloseEvent(WindowCloseEvent& e);
 
+		void SetDarkThemeColours();
+
 	private:
 		bool mBlockEvents = true;
 		int mTime = 0;

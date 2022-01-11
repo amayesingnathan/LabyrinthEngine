@@ -6,13 +6,15 @@
 
 namespace Labyrinth {
 
+	class Entity;
+
 	class Scene
 	{
 	public:
 		Scene();
 		~Scene();
 
-		class Entity CreateEntity(const std::string& name);
+		Entity CreateEntity(const std::string& name);
 		void DestroyEntity(Entity entity);
 
 		void onUpdate(Timestep ts);
@@ -20,13 +22,14 @@ namespace Labyrinth {
 
 	private:
 		template<typename T>
-		void OnComponentAdded(Entity entity, T& component);
+		void onComponentAdded(Entity entity, T& component);
 
 	private:
 		entt::registry mRegistry;
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;
 
-		friend class Entity;
+		friend Entity;
+		friend class SceneSerialiser;
 		friend class ScenePanel;
 	};
 

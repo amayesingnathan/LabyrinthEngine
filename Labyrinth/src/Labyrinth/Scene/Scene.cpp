@@ -21,7 +21,7 @@ namespace Labyrinth {
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		Entity newEnt(mRegistry.create(), this);
-		newEnt.addComponent<TransformComponent>();
+		auto& trans = newEnt.addComponent<TransformComponent>();
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
@@ -102,34 +102,34 @@ namespace Labyrinth {
 	}
 
 	template<typename T>
-	void Scene::OnComponentAdded(Entity entity, T& component)
+	void Scene::onComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
 	}
 
 	template<>
-	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 	{
 	}
 
 	template<>
-	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{
 		component.camera.setViewportSize(mViewportWidth, mViewportHeight);
 	}
 
 	template<>
-	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
 	}
 
 	template<>
-	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
 	{
 	}
 
 	template<>
-	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
 	{
 	}
 

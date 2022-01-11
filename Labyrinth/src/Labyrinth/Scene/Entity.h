@@ -16,7 +16,9 @@ namespace Labyrinth {
 		T& addComponent(Args&&... args)
 		{
 			assert(!hasComponent<T>());
-			return mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
+			T& component = mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
+			mScene->onComponentAdded<T>(*this, component);
+			return component;
 		}
 
 		//template<typename T>
@@ -67,6 +69,11 @@ namespace Labyrinth {
 		bool operator!=(const Entity& other) const
 		{
 			return !(*this == other);
+		}
+
+		uint32_t getID()
+		{
+			return static_cast<uint32_t>(mEntID);
 		}
 
 	private:
