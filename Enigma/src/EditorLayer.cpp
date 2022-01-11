@@ -26,16 +26,14 @@ namespace Labyrinth {
 		mCurrentScene = CreateRef<Scene>();
 
 		// Entity
-		auto square = mCurrentScene->CreateEntity("Green Square");
+		auto square = mCurrentScene->CreateEntity("Square");
 		square.addComponent<SpriteRendererComponent>(mSquareColour);
 
-		mSquareEntity = square;
+		auto camera1 = mCurrentScene->CreateEntity("Camera Entity");
+		camera1.addComponent<CameraComponent>();
 
-		mCameraEntity = mCurrentScene->CreateEntity("Camera Entity");
-		mCameraEntity.addComponent<CameraComponent>();
-
-		mSecondCamera = mCurrentScene->CreateEntity("Clip-Space Entity");
-		auto& cc = mSecondCamera.addComponent<CameraComponent>();
+		auto camera2 = mCurrentScene->CreateEntity("Clip-Space Entity");
+		auto& cc = camera2.addComponent<CameraComponent>();
 		cc.primary = false;
 
 		class CameraController : public ScriptableEntity
@@ -54,6 +52,8 @@ namespace Labyrinth {
 				auto& transform = getComponent<TransformComponent>().transform;
 				float speed = 5.0f;
 
+				if (!getComponent<CameraComponent>().primary) return;
+
 				if (Input::IsKeyPressed(LAB_KEY_A))
 					transform[3][0] -= speed * ts;
 				if (Input::IsKeyPressed(LAB_KEY_D))
@@ -65,8 +65,10 @@ namespace Labyrinth {
 			}
 		};
 
-		mCameraEntity.addComponent<NativeScriptComponent>().bind<CameraController>();
-		mSecondCamera.addComponent<NativeScriptComponent>().bind<CameraController>();
+		camera1.addComponent<NativeScriptComponent>().bind<CameraController>();
+		camera2.addComponent<NativeScriptComponent>().bind<CameraController>();
+
+		mScenePanel.setContext(mCurrentScene);
 
 	}
 
@@ -167,6 +169,8 @@ namespace Labyrinth {
 			ImGui::EndMenuBar();
 		}
 
+		mScenePanel.onImGuiRender();
+
 		ImGui::Begin("Settings");
 
 		auto stats = Renderer2D::GetStats();
@@ -185,22 +189,6 @@ namespace Labyrinth {
 			auto& squareColor = mSquareEntity.getComponent<SpriteRendererComponent>().colour;
 			ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareColor));
 			ImGui::Separator();
-		}
-
-		ImGui::DragFloat3("Camera Transform",
-			glm::value_ptr(mCameraEntity.getComponent<TransformComponent>().transform[3]));
-
-		if (ImGui::Checkbox("Camera A", &mPrimaryCamera))
-		{
-			mCameraEntity.getComponent<CameraComponent>().primary = mPrimaryCamera;
-			mSecondCamera.getComponent<CameraComponent>().primary = !mPrimaryCamera;
-		}
-
-		{
-			auto& camera = mSecondCamera.getComponent<CameraComponent>().camera;
-			float orthoSize = camera.getOrthographicSize();
-			if (ImGui::SliderFloat("Second Camera Ortho Size", &orthoSize, 0.001f, 50.0f))
-				camera.setOrthographicSize(orthoSize);
 		}
 
 		ImGui::End();

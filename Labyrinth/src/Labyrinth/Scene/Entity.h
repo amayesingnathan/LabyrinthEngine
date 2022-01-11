@@ -59,6 +59,16 @@ namespace Labyrinth {
 
 		operator bool() const { return mEntID != entt::null; }
 
+		bool operator==(const Entity& other) const
+		{
+			return mEntID == other.mEntID && mScene == other.mScene;
+		}
+
+		bool operator!=(const Entity& other) const
+		{
+			return !(*this == other);
+		}
+
 	private:
 		entt::entity mEntID{ entt::null };
 		Scene* mScene;

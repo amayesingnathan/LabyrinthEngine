@@ -22,7 +22,7 @@ namespace Labyrinth {
 	{
 		Entity newEnt(mRegistry.create(), this);
 		newEnt.addComponent<TransformComponent>();
-		auto tag = newEnt.addComponent<TagComponent>();
+		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
 		return newEnt;

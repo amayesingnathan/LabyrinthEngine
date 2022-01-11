@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Labyrinth.h"
+#include "Panels/ScenePanel.h"
 
 namespace Labyrinth {
 
@@ -24,6 +25,8 @@ namespace Labyrinth {
 		Ref<VertexArray> mSquareVA;
 		Ref<Shader> mFlatColourShader;
 		Ref<Framebuffer> mFramebuffer;
+
+		ScenePanel mScenePanel;
 
 		Ref<Scene> mCurrentScene;
 		Entity mSquareEntity;
