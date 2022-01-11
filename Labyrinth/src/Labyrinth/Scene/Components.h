@@ -8,6 +8,7 @@
 #include "SceneCamera.h"
 
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 struct SDL_Texture;
 struct SDL_Rect;
@@ -151,15 +152,52 @@ namespace Labyrinth {
 
 	struct TransformComponent
 	{
-		glm::mat4 transform{ 1.0f };
+		glm::vec3 translation = glm::vec3{ 0.0f };
+		glm::vec3 rotation = glm::vec3{ 0.0f };
+		glm::vec3 scale = glm::vec3{ 1.0f };
+
 		glm::mat4 lastSafeTransform{ 1.0f };
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::mat4 trans) : transform(trans) {}
+		TransformComponent(const glm::vec3 trans) : translation(trans) {}
 
-		operator glm::mat4& () { return transform; }
-		operator const glm::mat4& () const { return transform; }
+		glm::mat4 getTransform() const
+		{
+			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+
+			return glm::translate(glm::mat4(1.0f), translation)
+				* rot
+				* glm::scale(glm::mat4(1.0f), scale);
+		}
+
+		// These operators function the same as "getTransform()" for easier 
+		// implicit direct access when using the component
+		operator glm::mat4 () 
+		{ 
+			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+
+			return glm::translate(glm::mat4(1.0f), translation)
+				* rot
+				* glm::scale(glm::mat4(1.0f), scale);
+		}
+
+		operator const glm::mat4 () const 
+		{
+			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
+				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+
+			return glm::translate(glm::mat4(1.0f), translation)
+				* rot
+				* glm::scale(glm::mat4(1.0f), scale);
+		}
+
+
 	};
 
 

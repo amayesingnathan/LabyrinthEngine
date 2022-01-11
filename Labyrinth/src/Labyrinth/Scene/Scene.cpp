@@ -28,6 +28,11 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
+	void Scene::DestroyEntity(Entity entity)
+	{
+		mRegistry.destroy(entity);
+	}
+
 	void Scene::onUpdate(Timestep ts)
 	{
 
@@ -47,7 +52,7 @@ namespace Labyrinth {
 		}
 
 		Camera* mainCamera = nullptr;
-		glm::mat4* cameraTransform = nullptr;
+		glm::mat4 cameraTransform;
 		{
 			auto view = mRegistry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
@@ -57,7 +62,7 @@ namespace Labyrinth {
 				if (cam.primary)
 				{
 					mainCamera = &cam.camera;
-					cameraTransform = &trans.transform;
+					cameraTransform = trans;
 				}
 			}
 		}
@@ -65,7 +70,7 @@ namespace Labyrinth {
 		if (mainCamera)
 		{
 
-			Renderer2D::BeginState(mainCamera->getProjection(), *cameraTransform);
+			Renderer2D::BeginState(*mainCamera, cameraTransform);
 
 			auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
@@ -94,6 +99,38 @@ namespace Labyrinth {
 			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(width, height);
 		}
+	}
+
+	template<typename T>
+	void Scene::OnComponentAdded(Entity entity, T& component)
+	{
+		static_assert(false);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
+	{
+		component.camera.setViewportSize(mViewportWidth, mViewportHeight);
+	}
+
+	template<>
+	void Scene::OnComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::OnComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
 	}
 
 }

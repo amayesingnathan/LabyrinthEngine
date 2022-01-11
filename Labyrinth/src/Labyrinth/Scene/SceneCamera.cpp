@@ -10,21 +10,21 @@ namespace Labyrinth {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
-	{
-		mProjectionType = ProjectionType::Orthographic;
-		mOrthographicSize = size;
-		mOrthographicNear = nearClip;
-		mOrthographicFar = farClip;
-		RecalculateProjection();
-	}
-
 	void SceneCamera::setPerspective(float verticalFOV, float nearClip, float farClip)
 	{
 		mProjectionType = ProjectionType::Perspective;
 		mPerspectiveFOV = verticalFOV;
 		mPerspectiveNear = nearClip;
 		mPerspectiveFar = farClip;
+		RecalculateProjection();
+	}
+
+	void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
+	{
+		mProjectionType = ProjectionType::Orthographic;
+		mOrthographicSize = size;
+		mOrthographicNear = nearClip;
+		mOrthographicFar = farClip;
 		RecalculateProjection();
 	}
 

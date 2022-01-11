@@ -29,10 +29,10 @@ namespace Labyrinth {
 		auto square = mCurrentScene->CreateEntity("Square");
 		square.addComponent<SpriteRendererComponent>(mSquareColour);
 
-		auto camera1 = mCurrentScene->CreateEntity("Camera Entity");
+		auto camera1 = mCurrentScene->CreateEntity("Camera A");
 		camera1.addComponent<CameraComponent>();
 
-		auto camera2 = mCurrentScene->CreateEntity("Clip-Space Entity");
+		auto camera2 = mCurrentScene->CreateEntity("Camera B");
 		auto& cc = camera2.addComponent<CameraComponent>();
 		cc.primary = false;
 
@@ -41,6 +41,8 @@ namespace Labyrinth {
 		public:
 			void onCreate() override
 			{
+				auto& translation = getComponent<TransformComponent>().translation;
+				translation.x = rand() % 10 - 5.0f;
 			}
 
 			void onDestroy() override
@@ -49,19 +51,19 @@ namespace Labyrinth {
 
 			void onUpdate(Timestep ts) override
 			{
-				auto& transform = getComponent<TransformComponent>().transform;
+				auto& translation = getComponent<TransformComponent>().translation;
 				float speed = 5.0f;
 
 				if (!getComponent<CameraComponent>().primary) return;
 
 				if (Input::IsKeyPressed(LAB_KEY_A))
-					transform[3][0] -= speed * ts;
+					translation.x -= speed * ts;
 				if (Input::IsKeyPressed(LAB_KEY_D))
-					transform[3][0] += speed * ts;
+					translation.x += speed * ts;
 				if (Input::IsKeyPressed(LAB_KEY_W))
-					transform[3][1] += speed * ts;
+					translation.y += speed * ts;
 				if (Input::IsKeyPressed(LAB_KEY_S))
-					transform[3][1] -= speed * ts;
+					translation.y -= speed * ts;
 			}
 		};
 
@@ -171,7 +173,7 @@ namespace Labyrinth {
 
 		mScenePanel.onImGuiRender();
 
-		ImGui::Begin("Settings");
+		ImGui::Begin("Stats");
 
 		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
@@ -179,17 +181,6 @@ namespace Labyrinth {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-
-		if (mSquareEntity)
-		{
-			ImGui::Separator();
-			std::string& tag = mSquareEntity.getComponent<TagComponent>();
-			ImGui::Text("%s", tag.c_str());
-
-			auto& squareColor = mSquareEntity.getComponent<SpriteRendererComponent>().colour;
-			ImGui::ColorEdit4("Square Colour", glm::value_ptr(squareColor));
-			ImGui::Separator();
-		}
 
 		ImGui::End();
 

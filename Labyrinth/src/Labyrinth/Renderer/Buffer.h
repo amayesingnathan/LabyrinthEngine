@@ -73,7 +73,7 @@ namespace Labyrinth {
 	{
 	public:
 		BufferLayout() = default;
-		BufferLayout(const std::initializer_list<BufferElement>& elements)
+		BufferLayout(std::initializer_list<BufferElement> elements)
 			: mElements(elements) 
 		{
 			CalculateOffsetsAndStride();

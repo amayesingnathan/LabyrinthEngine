@@ -5,6 +5,8 @@
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 
+#include <imgui/imgui_internal.h>
+
 namespace Labyrinth {
 
 	class ScenePanel

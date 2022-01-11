@@ -119,10 +119,7 @@ namespace Labyrinth {
 		sData.textureShader->bind();
 		sData.textureShader->setMat4("uViewProjection", viewProj);
 
-		sData.quadIndexCount = 0;
-		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
-
-		sData.textureSlotIndex = 1;
+		StartBatch();
 	}
 
 	void Renderer2D::BeginState(const OrthographicCamera& camera)
@@ -132,10 +129,7 @@ namespace Labyrinth {
 		sData.textureShader->bind();
 		sData.textureShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
 
-		sData.quadIndexCount = 0;
-		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
-
-		sData.textureSlotIndex = 1;
+		StartBatch();
 	}
 
 	void Renderer2D::EndState()
@@ -147,11 +141,22 @@ namespace Labyrinth {
 
 		Flush();
 	}
+	
+	void Renderer2D::StartBatch()
+	{
+		sData.quadIndexCount = 0;
+		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
+
+		sData.textureSlotIndex = 1;
+	}
 
 	void Renderer2D::Flush()
 	{
 		if (sData.quadIndexCount == 0)
 			return; //Nothing to draw
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)sData.quadVertexBufferPtr - (uint8_t*)sData.quadVertexBufferBase);
+		sData.quadVertexBuffer->setData(sData.quadVertexBufferBase, dataSize);
 
 		for (uint32_t i = 0; i < sData.textureSlotIndex; i++)
 			sData.textureSlots[i]->bind(i);
@@ -160,14 +165,10 @@ namespace Labyrinth {
 		sData.stats.drawCalls++;
 	}
 
-	void Renderer2D::FlushAndReset()
+	void Renderer2D::NextBatch()
 	{
-		EndState();
-
-		sData.quadIndexCount = 0;
-		sData.quadVertexBufferPtr = sData.quadVertexBufferBase;
-
-		sData.textureSlotIndex = 1;
+		Flush();
+		StartBatch();
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)
@@ -208,7 +209,7 @@ namespace Labyrinth {
 		const float tilingFactor = 1.0f;
 
 		if (sData.quadIndexCount >= Renderer2DData::MaxIndices)
-			FlushAndReset();
+			NextBatch();
 
 		for (size_t i = 0; i < quadVertexCount; i++)
 		{
@@ -233,7 +234,7 @@ namespace Labyrinth {
 		constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
 		if (sData.quadIndexCount >= Renderer2DData::MaxIndices)
-			FlushAndReset();
+			NextBatch();
 
 		float textureIndex = 0.0f;
 		for (uint32_t i = 1; i < sData.textureSlotIndex; i++)
@@ -248,7 +249,7 @@ namespace Labyrinth {
 		if (textureIndex == 0.0f)
 		{
 			if (sData.textureSlotIndex >= Renderer2DData::MaxTextureSlots)
-				FlushAndReset();
+				NextBatch();
 
 			textureIndex = (float)sData.textureSlotIndex;
 			sData.textureSlots[sData.textureSlotIndex] = texture;

@@ -27,11 +27,7 @@ namespace Labyrinth {
 		Ref<Framebuffer> mFramebuffer;
 
 		ScenePanel mScenePanel;
-
 		Ref<Scene> mCurrentScene;
-		Entity mSquareEntity;
-		Entity mCameraEntity;
-		Entity mSecondCamera;
 
 		bool mPrimaryCamera = true;
 

@@ -19,6 +19,8 @@ namespace Labyrinth {
 		glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
 	};
 
+
+
 	class OrthographicCamera : public Camera
 	{
 	public:

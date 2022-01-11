@@ -15,8 +15,8 @@ namespace Labyrinth {
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
-		void setOrthographic(float size, float nearClip, float farClip);
 		void setPerspective(float verticalFOV, float nearClip, float farClip);
+		void setOrthographic(float size, float nearClip, float farClip);
 
 		void setViewportSize(uint32_t width, uint32_t height);
 
