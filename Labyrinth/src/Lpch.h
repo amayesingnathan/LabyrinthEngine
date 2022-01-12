@@ -5,7 +5,7 @@
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
 
-#include "Labyrinth/Debug/Profiling.h"
+#include "Labyrinth/Tools/Profiling.h"
 
 #include "Labyrinth/Maths/Constant.h"
 #include "Labyrinth/Maths/Quad.h"

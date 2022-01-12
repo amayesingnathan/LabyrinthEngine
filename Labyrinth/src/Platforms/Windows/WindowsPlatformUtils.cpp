@@ -9,6 +9,9 @@
 
 namespace Labyrinth {
 
+	//Windows File Dialog Definition
+#ifdef LAB_PLATFORM_WINDOWS
+
 	std::optional<std::string> FileDialogs::OpenFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
@@ -57,5 +60,5 @@ namespace Labyrinth {
 		}
 		return std::nullopt;
 	}
-
+#endif
 }

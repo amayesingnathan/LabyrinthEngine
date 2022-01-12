@@ -14,7 +14,9 @@ void Sandbox2D::onAttach()
 
 	mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
 
-
+	mSpriteSheet = Labyrinth::Texture2DSheet::CreateFromPath("assets/textures/minecraft.png", { 64.0f, 64.0f });
+	//mTNT = Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 8.0f, 0.0f }, { 1.0f, 1.0f });
+	mSpriteSheet->createSubTex("TNT", { 8.0f, 0.0f }, {1.0f, 1.0f});
 }
 
 void Sandbox2D::onDetach()
@@ -40,13 +42,17 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 
 		LAB_PROFILE_SCOPE("Renderer Draw");
 		Labyrinth::Renderer2D::BeginState(mCameraController.getCamera());
-		Labyrinth::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, -rotation, mSquareColor2);
-		Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.5f }, mSquareColor);
-		Labyrinth::Renderer2D::DrawQuad({ -0.5f, -0.5f }, { 0.25f, 0.25f }, mSquareColor2);
-		Labyrinth::Renderer2D::DrawQuad({ 0.75f, 0.75f }, { 0.5f, 0.5f }, mSquareColor);
-		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.1f, 0.1f }, mSquareColor2);
-		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 1.8f, 1.8f }, mCheckerboardTexture);
-		Labyrinth::Renderer2D::DrawRotatedQuad({ 2.0f, 2.0f }, { 1.0f, 1.0f }, rotation, mCheckerboardTexture, 2.0f);
+		
+		//Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 10.0f, 10.0f }, mSpriteSheet->getTex());
+		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 2.0f, 2.0f }, mSpriteSheet->getSubTex("TNT"));
+		Labyrinth::Renderer2D::DrawQuad({ 2.0f, 2.0f }, { 2.0f, 2.0f }, Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 13.0f, 3.0f }, { 1.0f, 1.0f }));
+		//Labyrinth::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, -rotation, mSquareColor2);
+		//Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.5f }, mSquareColor);
+		//Labyrinth::Renderer2D::DrawQuad({ -0.5f, -0.5f }, { 0.25f, 0.25f }, mSquareColor2);
+		//Labyrinth::Renderer2D::DrawQuad({ 0.75f, 0.75f }, { 0.5f, 0.5f }, mSquareColor);
+		//Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 0.1f, 0.1f }, mSquareColor2);
+		//Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f}, { 1.8f, 1.8f }, mCheckerboardTexture);
+		//Labyrinth::Renderer2D::DrawRotatedQuad({ 2.0f, 2.0f }, { 1.0f, 1.0f }, rotation, mCheckerboardTexture, 2.0f);
 		Labyrinth::Renderer2D::EndState();
 
 

@@ -34,6 +34,7 @@
 #include "Labyrinth/Renderer/Shader.h"
 #include "Labyrinth/Renderer/Framebuffer.h"
 #include "Labyrinth/Renderer/Texture.h"
+#include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Renderer/VertexArray.h"
 
 #include "Labyrinth/Renderer/Camera.h"

@@ -20,6 +20,9 @@ private:
 
 	Labyrinth::Ref<Labyrinth::Texture2D> mCheckerboardTexture;
 
+	Labyrinth::Ref<Labyrinth::Texture2DSheet> mSpriteSheet;
+	Labyrinth::Ref<Labyrinth::SubTexture2D> mTNT;
+
 	glm::vec4 mSquareColor = { 0.2f, 0.3f, 0.8f, 1.0f };
 	glm::vec4 mSquareColor2 = { 0.8f, 0.5f, 0.1f, 1.0f };
 };
