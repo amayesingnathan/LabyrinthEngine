@@ -45,7 +45,7 @@ void Sandbox2D::onUpdate(Labyrinth::Timestep ts)
 		
 		//Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 10.0f, 10.0f }, mSpriteSheet->getTex());
 		Labyrinth::Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 2.0f, 2.0f }, mSpriteSheet->getSubTex("TNT"));
-		Labyrinth::Renderer2D::DrawQuad({ 2.0f, 2.0f }, { 2.0f, 2.0f }, Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 13.0f, 3.0f }, { 1.0f, 1.0f }));
+		//Labyrinth::Renderer2D::DrawQuad({ 2.0f, 2.0f }, { 2.0f, 2.0f }, Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 13.0f, 3.0f }, { 1.0f, 1.0f }));
 		//Labyrinth::Renderer2D::DrawRotatedQuad({ -1.0f, 0.0f }, { 0.8f, 0.8f }, -rotation, mSquareColor2);
 		//Labyrinth::Renderer2D::DrawQuad({ 0.5f, -0.5f }, { 0.5f, 0.5f }, mSquareColor);
 		//Labyrinth::Renderer2D::DrawQuad({ -0.5f, -0.5f }, { 0.25f, 0.25f }, mSquareColor2);
@@ -74,6 +74,8 @@ void Sandbox2D::onImGuiRender()
 {
 	LAB_PROFILE_FUNCTION();
 
+	Labyrinth::Renderer2D::ResetStats();
+
 	ImGui::Begin("Settings");
 
 	auto stats = Labyrinth::Renderer2D::GetStats();
@@ -83,10 +85,6 @@ void Sandbox2D::onImGuiRender()
 	ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 	ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
-	if (ImGui::Button("Reset Stats"))
-	{
-		Labyrinth::Renderer2D::ResetStats();
-	}
 
 	ImGui::Dummy(ImVec2(0.0f, 20.0f));
 

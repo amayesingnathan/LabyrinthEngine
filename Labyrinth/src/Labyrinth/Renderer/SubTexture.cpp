@@ -23,10 +23,6 @@ namespace Labyrinth {
 		mSubTextures.reserve(widthCount * heightCount);
 	}
 
-	Texture2DSheet::~Texture2DSheet()
-	{
-	}
-
 	Ref<SubTexture2D> Texture2DSheet::getSubTex(const std::string& name) const
 	{
 		if (mSubTextures.find(name) == mSubTextures.end())
@@ -38,7 +34,17 @@ namespace Labyrinth {
 		return mSubTextures.at(name);
 	}
 
-	//Create a sub texture and create a reference to the current sprite sheet
+	void Texture2DSheet::addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex)
+	{
+		if (mSubTextures.find(name) != mSubTextures.end())
+		{
+			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
+			return;
+		}
+
+		mSubTextures.emplace(name, subtex);
+	}
+
 	Ref<SubTexture2D> Texture2DSheet::createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
 	{
 		if (mSubTextures.find(name) != mSubTextures.end())
@@ -47,16 +53,23 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(Texture2DSheet::CreateFromTex(mTexture, mTileSize), coords, spriteSize);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CloneRef<Texture2DSheet>(*this), coords, spriteSize);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
 
-	/*
-		SubTexture2D
-	*/
+	void Texture2DSheet::deleteSubTex(const std::string& name)
+	{
+		if (mSubTextures.find(name) == mSubTextures.end())
+		{
+			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", name);
+			return;
+		}
 
-	Ref<Texture2DSheet> Texture2DSheet::CreateFromPath(const std::string& filepath,  const glm::vec2& tileSize)
+		mSubTextures.erase(name);
+	}
+
+	Ref<Texture2DSheet> Texture2DSheet::CreateFromPath(const std::string& filepath, const glm::vec2& tileSize)
 	{
 		return CreateRef<Texture2DSheet>(filepath, tileSize);
 	}
@@ -65,6 +78,11 @@ namespace Labyrinth {
 	{
 		return CreateRef<Texture2DSheet>(spriteSheet, tileSize);
 	}
+
+
+	/*
+		SubTexture2D
+	*/
 
 	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max)
 		: mSheet(sheet)

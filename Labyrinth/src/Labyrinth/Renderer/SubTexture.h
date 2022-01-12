@@ -9,14 +9,17 @@ namespace Labyrinth {
 
 	class SubTexture2D;
 
-	//Texture2DSheet is a thin wrapper around a Texture2D for sprite sheets which contains meta data about it,
-	//as well as an API for retrieving tiles from the sheet.
+	//Texture2DSheet is a thin wrapper around a Texture2D for sprite sheets which contains meta data about the sheet,
+	//as well as an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
+
+	//Subtextures can be created from a sprite sheet with no lifetime dependency also.
 	class Texture2DSheet
 	{
 	public:
 		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
 		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize);
-		~Texture2DSheet();
+		Texture2DSheet(const Texture2DSheet&) = default;
+		~Texture2DSheet() = default;
 
 		operator Ref<Texture2D>() const { return mTexture; }
 
@@ -26,7 +29,9 @@ namespace Labyrinth {
 		Ref<Texture2D> getTex() const { return mTexture; }
 		Ref<SubTexture2D> getSubTex(const std::string& name) const;
 
+		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f });
+		void deleteSubTex(const std::string& name);
 
 		static Ref<Texture2DSheet> CreateFromPath(const std::string& filepath, const glm::vec2& tileSize);
 		static Ref<Texture2DSheet> CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);

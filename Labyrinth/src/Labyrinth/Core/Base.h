@@ -42,5 +42,10 @@ namespace Labyrinth {
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
+	template<typename T>
+	constexpr Ref<T> CloneRef(const T& copy)
+	{
+		return std::shared_ptr<T>(new T(copy));
+	}
 
 }
