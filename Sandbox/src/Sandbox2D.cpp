@@ -78,6 +78,9 @@ void Sandbox2D::onImGuiRender()
 
 	ImGui::Begin("Settings");
 
+	static bool demo = true; //Enable demo
+	ImGui::ShowDemoWindow(&demo);
+
 	auto stats = Labyrinth::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");
 	ImGui::Text("Draw Calls: %d", stats.drawCalls);

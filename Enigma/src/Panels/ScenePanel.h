@@ -25,7 +25,7 @@ namespace Labyrinth {
 
 	private:
 		Ref<Scene> mContext;
-		Entity mSelectionContext;
+		Entity mSelectedEntity;
 	};
 
 }

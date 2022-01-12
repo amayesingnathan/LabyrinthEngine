@@ -23,6 +23,7 @@ namespace Labyrinth {
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMousePressedEvent(MouseButtonPressedEvent& e);
+		bool OnMouseMoveEvent(MouseMovedEvent& e);
 
 		void NewScene();
 		void OpenScene();

@@ -28,47 +28,6 @@ namespace Labyrinth {
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
 		mCurrentScene = CreateRef<Scene>();
-
-#if 0
-		auto camera1 = mCurrentScene->CreateEntity("Camera A");
-		camera1.addComponent<CameraComponent>();
-
-		auto camera2 = mCurrentScene->CreateEntity("Camera B");
-		auto& cc = camera2.addComponent<CameraComponent>();
-		cc.primary = false;
-
-		class CameraController : public ScriptableEntity
-		{
-		public:
-			void onCreate() override
-			{
-			}
-
-			void onDestroy() override
-			{
-			}
-
-			void onUpdate(Timestep ts) override
-			{
-				auto& translation = getComponent<TransformComponent>().translation;
-				float speed = 5.0f;
-
-				if (!getComponent<CameraComponent>().primary) return;
-
-				if (Input::IsKeyPressed(LAB_KEY_A))
-					translation.x -= speed * ts;
-				if (Input::IsKeyPressed(LAB_KEY_D))
-					translation.x += speed * ts;
-				if (Input::IsKeyPressed(LAB_KEY_W))
-					translation.y += speed * ts;
-				if (Input::IsKeyPressed(LAB_KEY_S))
-					translation.y -= speed * ts;
-			}
-		};
-
-		camera1.addComponent<NativeScriptComponent>().bind<CameraController>();
-		camera2.addComponent<NativeScriptComponent>().bind<CameraController>();
-#endif
 		mScenePanel.setContext(mCurrentScene);
 
 	}
@@ -223,6 +182,7 @@ namespace Labyrinth {
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMousePressedEvent));
+		dispatcher.dispatch<MouseMovedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMouseMoveEvent));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -264,6 +224,12 @@ namespace Labyrinth {
 
 	bool EditorLayer::OnMousePressedEvent(MouseButtonPressedEvent& e)
 	{
+		return false;
+	}
+
+	bool EditorLayer::OnMouseMoveEvent(MouseMovedEvent& e)
+	{
+
 		return false;
 	}
 

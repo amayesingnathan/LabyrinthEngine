@@ -21,6 +21,23 @@ namespace Labyrinth {
 		return button & buttons;
 	}
 
+	glm::vec2 Input::GetGlobalMousePosition()
+	{
+		int x, y;
+		SDL_GetGlobalMouseState(&x, &y);
+		return { static_cast<float>(x), static_cast<float>(y) };
+	}
+
+	float Input::GetGlobalMouseX()
+	{
+		return GetGlobalMousePosition().x;
+	}
+
+	float Input::GetGlobalMouseY()
+	{
+		return GetGlobalMousePosition().y;
+	}
+
 	glm::vec2 Input::GetMousePosition()
 	{
 		int x, y;
@@ -30,14 +47,12 @@ namespace Labyrinth {
 
 	float Input::GetMouseX()
 	{
-		auto pos = GetMousePosition();
-		return pos.x;
+		return GetMousePosition().x;
 	}
 
 	float Input::GetMouseY()
 	{
-		auto pos = GetMousePosition();
-		return pos.y;
+		return GetMousePosition().y;
 	}
 
 }

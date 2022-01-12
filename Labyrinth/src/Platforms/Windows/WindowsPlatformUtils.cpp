@@ -29,10 +29,13 @@ namespace Labyrinth {
 		ofn.nFilterIndex = 1;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
+		SDL_CaptureMouse(SDL_TRUE);
 		if (GetOpenFileNameA(&ofn) == TRUE)
 		{
+			SDL_CaptureMouse(SDL_FALSE);
 			return ofn.lpstrFile;
 		}
+		SDL_CaptureMouse(SDL_FALSE);
 		return std::nullopt;
 	}
 
@@ -54,10 +57,13 @@ namespace Labyrinth {
 		ofn.lpstrDefExt = std::strchr(filter, '\0') + 1;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
+		SDL_CaptureMouse(SDL_TRUE);
 		if (GetSaveFileNameA(&ofn) == TRUE)
 		{
+			SDL_CaptureMouse(SDL_FALSE);
 			return ofn.lpstrFile;
 		}
+		SDL_CaptureMouse(SDL_FALSE);
 		return std::nullopt;
 	}
 #endif
