@@ -3,6 +3,8 @@
 #include "Labyrinth.h"
 #include "Panels/ScenePanel.h"
 
+#include <optional>
+
 namespace Labyrinth {
 
 	class EditorLayer : public Layer
@@ -24,6 +26,7 @@ namespace Labyrinth {
 
 		void NewScene();
 		void OpenScene();
+		void SaveScene();
 		void SaveSceneAs();
 
 	private:
@@ -36,6 +39,8 @@ namespace Labyrinth {
 
 		ScenePanel mScenePanel;
 		Ref<Scene> mCurrentScene;
+
+		std::optional<std::string> mFileSave = std::nullopt;
 
 		bool mPrimaryCamera = true;
 

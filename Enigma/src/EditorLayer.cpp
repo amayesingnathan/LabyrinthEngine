@@ -170,8 +170,10 @@ namespace Labyrinth {
 				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
 				if (ImGui::MenuItem("New", "Ctrl+N"))
 					NewScene();
-				if (ImGui::MenuItem("Open...", "Ctrl+O"))
+				if (ImGui::MenuItem("Open", "Ctrl+O"))
 					OpenScene();
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					SaveScene();
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
 
@@ -251,6 +253,8 @@ namespace Labyrinth {
 		{
 			if (control && shift)
 				SaveSceneAs();
+			else if (control)
+				SaveScene();
 
 			break;
 		}
@@ -272,25 +276,35 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		std::optional<std::string> filepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (filepath)
+		mFileSave = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (mFileSave)
 		{
 			mCurrentScene = CreateRef<Scene>();
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mScenePanel.setContext(mCurrentScene);
 
 			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.deserialise(*filepath);
+			serialiser.deserialise(*mFileSave);
 		}
+	}
+
+	void EditorLayer::SaveScene()
+	{
+		if (mFileSave)
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(*mFileSave);
+		}
+		else SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::optional<std::string> filepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (filepath)
+		std::optional<std::string> mFileSave = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (mFileSave)
 		{
 			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.serialise(*filepath);
+			serialiser.serialise(*mFileSave);
 		}
 	}
 }

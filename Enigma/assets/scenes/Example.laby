@@ -1,6 +1,6 @@
 Scene: Untitled
 Entities:
-  - Entity: 1
+  - Entity: 2
     TagComponent:
       Tag: Quad
     TransformComponent:
@@ -9,7 +9,7 @@ Entities:
       Scale: [1, 1, 1]
     SpriteRendererComponent:
       Colour: [0.112654872, 0.339045554, 0.884169877, 1]
-  - Entity: 0
+  - Entity: 1
     TagComponent:
       Tag: Camera
     TransformComponent:
@@ -27,3 +27,12 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 0
+    TagComponent:
+      Tag: Quad 2
+    TransformComponent:
+      Translation: [2.5999999, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Colour: [0.239382267, 0.0268034209, 0.0268034209, 1]
