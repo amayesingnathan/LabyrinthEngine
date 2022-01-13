@@ -24,7 +24,7 @@ namespace Labyrinth {
 
 	private:
 		void DrawEntityNode(Entity entity);
-		void DrawComponents(Entity entity);
+		void DrawComponents();
 
 	private:
 		Ref<Scene> mContext;

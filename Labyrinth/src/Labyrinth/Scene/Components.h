@@ -135,6 +135,8 @@ namespace Labyrinth {
 
 		operator std::string& () { return tag; }
 		operator const std::string& () const { return tag; }
+
+		operator const char* () { return tag.c_str(); }
 	};
 
 

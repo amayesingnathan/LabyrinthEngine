@@ -65,9 +65,9 @@ namespace Labyrinth {
 			glm::vec2 delta = (mouse - mInitialMousePosition) * 0.003f;
 			mInitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_MIDDLE))
+			if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT))
 				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT))
+			else if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_MIDDLE))
 				MouseRotate(delta);
 			else if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_RIGHT))
 				MouseZoom(delta.y);

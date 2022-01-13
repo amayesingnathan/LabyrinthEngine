@@ -12,11 +12,13 @@
 
 //STL Containers/Types
 #include <cstdint>
-#include <map>
-#include <unordered_map>
 #include <vector>
 #include <array>
 #include <string>
+#include <map>
+#include <set>
+#include <unordered_map>
+#include <unordered_set>
 
 //STL Functions
 #include <cmath>

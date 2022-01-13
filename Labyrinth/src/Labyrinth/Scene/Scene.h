@@ -15,6 +15,7 @@ namespace Labyrinth {
 		Scene();
 		~Scene();
 
+		Entity CreateEntity(const std::string& name, const Entity& parent);
 		Entity CreateEntity(const std::string& name);
 		void DestroyEntity(Entity entity);
 

@@ -18,18 +18,41 @@ namespace Labyrinth {
 	{
 	}
 
-	Entity Scene::CreateEntity(const std::string& name)
+	Entity Scene::CreateEntity(const std::string& name, const Entity& parent)
 	{
 		Entity newEnt(mRegistry.create(), this);
-		auto& trans = newEnt.addComponent<TransformComponent>();
+		newEnt.addComponent<TransformComponent>();
+		auto& node = newEnt.addComponent<NodeComponent>();
+		node.parent = parent;
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
 		return newEnt;
 	}
 
+	Entity Scene::CreateEntity(const std::string& name)
+	{
+		return CreateEntity(name, {entt::null, nullptr});
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
+		auto& parent = entity.getParent();
+
+		if (parent)  //Remove entity from parents list of children
+			parent.getChildren().erase(entity);
+
+		//Set this to true to link parent and children of entity being destroyed
+		//instead of destroying them.
+		static bool linkOnDestroy = false;
+
+		//Set the parent of all entity's children (will be null entity if no parent)
+		for (auto child : entity.getChildren())
+			if (linkOnDestroy)
+				child.setParent(parent);
+			else
+				DestroyEntity(child);
+
 		mRegistry.destroy(entity);
 	}
 
@@ -132,6 +155,11 @@ namespace Labyrinth {
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
+	}
+
+	template<>
+	void Scene::onComponentAdded<NodeComponent>(Entity entity, NodeComponent& component)
+	{
 	}
 
 	template<>

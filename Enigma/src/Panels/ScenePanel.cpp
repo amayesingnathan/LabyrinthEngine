@@ -23,10 +23,11 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		mContext->mRegistry.each([&](auto entityID)
+		mContext->mRegistry.view<NodeComponent>().each([&](auto entityID, auto& nc)
 			{
 				Entity entity{ entityID , mContext.get() };
-				DrawEntityNode(entity);
+				if (!entity.hasParent())
+					DrawEntityNode(entity);
 			});
 
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
@@ -44,7 +45,7 @@ namespace Labyrinth {
 
 		ImGui::Begin("Properties");
 		if (mSelectedEntity)
-			DrawComponents(mSelectedEntity);
+			DrawComponents();
 
 		ImGui::End();
 	}
@@ -60,7 +61,8 @@ namespace Labyrinth {
 
 	void ScenePanel::DrawEntityNode(Entity entity)
 	{
-		auto& tag = entity.getComponent<TagComponent>().tag;
+		std::string& tag = entity.getComponent<TagComponent>();
+		auto& children = entity.getComponent<NodeComponent>().children;
 
 		ImGuiTreeNodeFlags flags = ((mSelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -82,10 +84,8 @@ namespace Labyrinth {
 
 		if (opened)
 		{
-			ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow;
-			bool opened = ImGui::TreeNodeEx((void*)9817239, flags, tag.c_str());
-			if (opened)
-				ImGui::TreePop();
+			for (auto& child : children)
+				DrawEntityNode(entity);
 			ImGui::TreePop();
 		}
 		if (entityDeleted)
@@ -204,11 +204,11 @@ namespace Labyrinth {
 		}
 	}
 
-	void ScenePanel::DrawComponents(Entity entity)
+	void ScenePanel::DrawComponents()
 	{
-		if (entity.hasComponent<TagComponent>())
+		if (mSelectedEntity.hasComponent<TagComponent>())
 		{
-			std::string& tag = entity.getComponent<TagComponent>();
+			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
@@ -250,7 +250,45 @@ namespace Labyrinth {
 
 		ImGui::PopItemWidth();
 
-		DrawComponent<TransformComponent>("Transform", entity, [](auto& component)
+		if (mSelectedEntity.hasComponent<NodeComponent>())
+		{
+			std::unordered_map<std::string, Entity> entityStrings;
+			entityStrings.emplace("None", Entity());
+
+			mContext->mRegistry.view<TagComponent>().each([&](auto entityID, auto& tc) {
+				if (mSelectedEntity != entityID)
+				{
+					Entity parentEnts{ entityID , mContext.get() };
+					entityStrings.emplace(tc, parentEnts);
+				}
+			});
+
+			const char* currentEntityString = "None";
+			auto& parent = mSelectedEntity.getParent();
+			if (parent)
+				currentEntityString = parent.getComponent<TagComponent>();
+
+			if (ImGui::BeginCombo("", currentEntityString))
+			{
+				for (auto [name, parentEnt] : entityStrings)
+				{
+					bool isSelected = (name.c_str() == currentEntityString);
+
+					if (ImGui::Selectable(name.c_str()), isSelected)
+					{
+						currentEntityString = name.c_str();
+						mSelectedEntity.setParent(parentEnt);
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+		}
+
+		DrawComponent<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
 		{
 			DrawVec3Control("Translation", component.translation);
 			glm::vec3 rotation = glm::degrees(component.rotation);
@@ -259,7 +297,7 @@ namespace Labyrinth {
 			DrawVec3Control("Scale", component.scale, 1.0f);
 		});
 		
-		DrawComponent<CameraComponent>("Camera", entity, [&entity, this](auto& component)
+		DrawComponent<CameraComponent>("Camera", mSelectedEntity, [this](auto& component)
 		{
 			auto& camera = component.camera;
 
@@ -271,7 +309,7 @@ namespace Labyrinth {
 					auto cams = mContext->mRegistry.view<CameraComponent>();
 					for (auto id : cams)
 					{
-						if (entity != id)
+						if (mSelectedEntity != id)
 						{
 							auto& primaryOther = cams.get<CameraComponent>(id).primary;
 							primaryOther = false;
@@ -329,7 +367,7 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", entity, [](auto& component)
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [](auto& component)
 		{
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
 		});

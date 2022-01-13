@@ -2,15 +2,31 @@
 
 #include "Scene.h"
 
+#include "Labyrinth/Core/Log.h"
+
 namespace Labyrinth {
+
+	struct NodeComponent;
 
 	class Entity
 	{
 	public:
-		Entity() = default;
-		Entity(entt::entity entID, Scene* scene) : mEntID(entID), mScene(scene) {}
-		Entity(const Entity& other) = default;
+		struct HashFunction
+		{
+			size_t operator()(const Entity& entity) const
+			{
+				size_t xHash = std::hash<uint32_t>()((uint32_t)entity.mEntID);
+				size_t yHash = std::hash<uint64_t>()(reinterpret_cast<uint64_t>(entity.mScene)) << 1;
+				return xHash ^ yHash;
+			}
+		};
 
+	public:
+		Entity() : mEntID(entt::null), mScene(nullptr) {}
+		Entity(entt::entity entID, Scene* scene);
+
+		Entity(const Entity& other) = default;
+		~Entity() {}
 
 		template<typename T, typename... Args>
 		T& addComponent(Args&&... args)
@@ -56,6 +72,11 @@ namespace Labyrinth {
 		//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
 		//}
 
+		uint32_t getID() const
+		{
+			return static_cast<uint32_t>(mEntID);
+		}
+
 		operator entt::entity() const { return mEntID; }
 		operator uint32_t() const { return static_cast<uint32_t>(mEntID); }
 
@@ -71,16 +92,44 @@ namespace Labyrinth {
 			return !(*this == other);
 		}
 
-		uint32_t getID()
+		bool operator!=(const entt::entity& other) const
 		{
-			return static_cast<uint32_t>(mEntID);
+			return !(getID() == static_cast<uint32_t>(other));
 		}
 
 		Scene* getScene() { return mScene; }
+
+		Entity& getParent();
+		bool hasParent();
+
+		void setParent(Entity newParent = {entt::null, nullptr});
+
+		std::unordered_set<Entity, Entity::HashFunction>& getChildren();
+		bool hasChild(Entity& child);
+
+	private:
+		void addChild(Entity& child);
+		void removeChild(Entity& child);
+
+		bool isRelated(Entity& filter);
 
 	private:
 		entt::entity mEntID{ entt::null };
 		Scene* mScene;
 
+	};
+
+	using Children = std::unordered_set<Entity, Entity::HashFunction>;
+
+	//Node component for use in parent/child relations
+	struct NodeComponent
+	{
+		Entity parent = { entt::null, nullptr };
+		Children children = {};
+
+		NodeComponent() = default;
+		NodeComponent(const Entity& _parent, const Children& _children = {});
+
+		operator bool() { return parent; }
 	};
 }
