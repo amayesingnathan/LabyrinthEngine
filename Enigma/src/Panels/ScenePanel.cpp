@@ -49,6 +49,15 @@ namespace Labyrinth {
 		ImGui::End();
 	}
 
+	void ScenePanel::setSelectedEntity(Entity entity)
+	{
+		if (entity.getScene() == mContext.get())
+		{
+			mSelectedEntity = entity;
+		}
+		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getID());
+	}
+
 	void ScenePanel::DrawEntityNode(Entity entity)
 	{
 		auto& tag = entity.getComponent<TagComponent>().tag;

@@ -9,11 +9,6 @@
 
 namespace Labyrinth {
 
-	void Input::ResetKey(int keycode)
-	{
-		auto keys = SDL_GetKeyboardState(NULL);
-	}
-
 	bool Input::IsKeyPressed(int keycode)
 	{
 		auto keys = SDL_GetKeyboardState(NULL);

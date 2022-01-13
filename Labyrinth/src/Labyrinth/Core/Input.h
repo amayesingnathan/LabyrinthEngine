@@ -10,7 +10,6 @@ namespace Labyrinth {
 	class Input
 	{
 	public:
-		static void ResetKey(int keycode);
 		static bool IsKeyPressed(int keycode);
 
 		static bool IsMouseButtonPressed(int button);

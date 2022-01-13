@@ -20,6 +20,7 @@ namespace Labyrinth {
 		void onImGuiRender();
 
 		Entity getSelectedEntity() const { return mSelectedEntity; }
+		void setSelectedEntity(Entity entity);
 
 	private:
 		void DrawEntityNode(Entity entity);

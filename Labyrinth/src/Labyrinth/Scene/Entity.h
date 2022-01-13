@@ -76,6 +76,8 @@ namespace Labyrinth {
 			return static_cast<uint32_t>(mEntID);
 		}
 
+		Scene* getScene() { return mScene; }
+
 	private:
 		entt::entity mEntID{ entt::null };
 		Scene* mScene;
