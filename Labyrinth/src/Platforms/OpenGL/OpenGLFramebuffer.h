@@ -17,13 +17,18 @@ namespace Labyrinth {
 
 		virtual void resize(uint32_t width, uint32_t height) override;
 
-		virtual uint32_t getColorAttachmentRendererID() const override { return mColorAttachment; }
+		virtual uint32_t getColorAttachmentRendererID(uint32_t index = 0) const override { LAB_CORE_ASSERT(index < mColourAttachments.size()); return mColourAttachments[index]; }
 
 		virtual const FramebufferSpec& getSpecification() const override { return mSpecification; }
 	private:
 		uint32_t mRendererID = 0;
-		uint32_t mColorAttachment = 0, mDepthAttachment = 0;
 		FramebufferSpec mSpecification;
+
+		std::vector<FramebufferTextureSpec> mColourAttachmentSpecs;
+		FramebufferTextureSpec mDepthAttachmentSpec = FramebufferTextureFormat::None;
+
+		std::vector<uint32_t> mColourAttachments;
+		uint32_t mDepthAttachment = 0;
 	};
 
 }

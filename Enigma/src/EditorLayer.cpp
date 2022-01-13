@@ -28,11 +28,14 @@ namespace Labyrinth {
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
 		fbSpec.height = 900;
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+			
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
 		mCurrentScene = CreateRef<Scene>();
 
-		//mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		mScenePanel.setContext(mCurrentScene);
 
