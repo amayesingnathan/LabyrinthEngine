@@ -33,6 +33,8 @@ namespace Labyrinth {
 		bool OnKeyTypedEvent(KeyTypedEvent& e);
 		bool OnWindowResizeEvent(WindowResizeEvent& e);
 		bool OnWindowCloseEvent(WindowCloseEvent& e);
+		bool OnWindowFocusEvent(WindowFocusEvent& e);
+		bool OnWindowFocusLostEvent(WindowFocusLostEvent& e);
 
 		void SetDarkThemeColours();
 

@@ -9,6 +9,11 @@
 
 namespace Labyrinth {
 
+	void Input::ResetKey(int keycode)
+	{
+		auto keys = SDL_GetKeyboardState(NULL);
+	}
+
 	bool Input::IsKeyPressed(int keycode)
 	{
 		auto keys = SDL_GetKeyboardState(NULL);
@@ -18,7 +23,7 @@ namespace Labyrinth {
 	bool Input::IsMouseButtonPressed(int button)
 	{
 		auto buttons = SDL_GetMouseState(NULL, NULL);
-		return button & buttons;
+		return LAB_MOUSE_BUTTON(button) & buttons;
 	}
 
 	glm::vec2 Input::GetGlobalMousePosition()

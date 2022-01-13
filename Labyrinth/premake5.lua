@@ -16,7 +16,9 @@ project "Labyrinth"
         "src/**.cpp",
         "dependencies/stb_image/**.h",
         "dependencies/stb_image/**.cpp",
-        "dependencies/glm/glm/**.hpp"
+        "dependencies/glm/glm/**.hpp",
+        "dependencies/ImGuizmo/ImGuizmo.h",
+        "dependencies/ImGuizmo/ImGuizmo.cpp"
     }
 	
 	defines
@@ -32,6 +34,7 @@ project "Labyrinth"
         "%{IncludeDir.glad}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
@@ -51,6 +54,9 @@ project "Labyrinth"
 		"yaml-cpp",
 		"opengl32.lib"
 	}
+	
+	filter "files:dependencies/ImGuizmo/**.cpp"
+		flags { "NoPCH" }
 	
     filter "system:windows"
         systemversion "latest"

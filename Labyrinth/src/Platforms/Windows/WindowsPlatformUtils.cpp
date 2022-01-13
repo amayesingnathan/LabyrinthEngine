@@ -6,6 +6,7 @@
 #include "SDL_syswm.h"
 
 #include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Core/Input.h"
 
 namespace Labyrinth {
 
@@ -16,26 +17,21 @@ namespace Labyrinth {
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-
-		SDL_SysWMinfo wmInfo;
-		SDL_VERSION(&wmInfo.version);
-		SDL_GetWindowWMInfo((SDL_Window*)Application::Get().getWindow().getNativeWindow(), &wmInfo);
-		ofn.hwndOwner = wmInfo.info.win.window;
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
 		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
 		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
 
-		SDL_CaptureMouse(SDL_TRUE);
 		if (GetOpenFileNameA(&ofn) == TRUE)
 		{
-			SDL_CaptureMouse(SDL_FALSE);
 			return ofn.lpstrFile;
 		}
-		SDL_CaptureMouse(SDL_FALSE);
 		return std::nullopt;
 	}
 
@@ -43,27 +39,22 @@ namespace Labyrinth {
 	{
 		OPENFILENAMEA ofn;
 		CHAR szFile[260] = { 0 };
+		CHAR currentDir[256] = { 0 };
 		ZeroMemory(&ofn, sizeof(OPENFILENAME));
 		ofn.lStructSize = sizeof(OPENFILENAME);
-
-		SDL_SysWMinfo wmInfo;
-		SDL_VERSION(&wmInfo.version);
-		SDL_GetWindowWMInfo((SDL_Window*)Application::Get().getWindow().getNativeWindow(), &wmInfo);
-		ofn.hwndOwner = wmInfo.info.win.window;
 		ofn.lpstrFile = szFile;
 		ofn.nMaxFile = sizeof(szFile);
+		if (GetCurrentDirectoryA(256, currentDir))
+			ofn.lpstrInitialDir = currentDir;
 		ofn.lpstrFilter = filter;
 		ofn.nFilterIndex = 1;
 		ofn.lpstrDefExt = std::strchr(filter, '\0') + 1;
-		ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+		ofn.Flags = OFN_PATHMUSTEXIST | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
 
-		SDL_CaptureMouse(SDL_TRUE);
 		if (GetSaveFileNameA(&ofn) == TRUE)
 		{
-			SDL_CaptureMouse(SDL_FALSE);
 			return ofn.lpstrFile;
 		}
-		SDL_CaptureMouse(SDL_FALSE);
 		return std::nullopt;
 	}
 #endif

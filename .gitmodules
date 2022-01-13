@@ -16,3 +16,6 @@
 [submodule "Labyrinth/dependencies/yaml_cpp"]
 	path = Labyrinth/dependencies/yaml-cpp
 	url = https://github.com/amayesingnathan/yaml-cpp
+[submodule "Labyrinth/dependencies/ImGuizmo"]
+	path = Labyrinth/dependencies/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo

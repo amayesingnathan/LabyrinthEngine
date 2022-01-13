@@ -29,18 +29,8 @@ namespace Labyrinth {
 				DrawEntityNode(entity);
 			});
 
-		if (ImGui::IsWindowHovered())
-			int i = 5;
-
-		if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
-			bool a = true;
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
-		else if (ImGui::IsMouseDown(ImGuiMouseButton_Left))
-			bool a = true;
-
-		if (ImGui::IsWindowHovered())
-			int i = 5;
 
 		if (ImGui::BeginPopupContextWindow(0, 1, false))
 		{

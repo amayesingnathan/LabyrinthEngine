@@ -132,6 +132,18 @@ namespace Labyrinth {
 		StartBatch();
 	}
 
+	void Renderer2D::BeginState(const EditorCamera& camera)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		glm::mat4 viewProj = camera.getViewProjection();
+
+		sData.textureShader->bind();
+		sData.textureShader->setMat4("uViewProjection", viewProj);
+
+		StartBatch();
+	}
+
 	void Renderer2D::EndState()
 	{
 		LAB_PROFILE_FUNCTION();

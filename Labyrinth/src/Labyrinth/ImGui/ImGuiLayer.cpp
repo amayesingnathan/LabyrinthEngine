@@ -6,6 +6,7 @@
 #include "Labyrinth/Core/MouseButtonCodes.h"
 
 #include "imgui.h"
+#include "ImGuizmo.h"
 
 #include "backends/imgui_impl_sdl.h"
 #include "backends/imgui_impl_opengl3.h"
@@ -124,6 +125,8 @@ namespace Labyrinth {
 		dispatcher.dispatch<KeyTypedEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnKeyTypedEvent));
 		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowResizeEvent));
 		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowCloseEvent));
+		dispatcher.dispatch<WindowFocusEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowFocusEvent));
+		dispatcher.dispatch<WindowFocusLostEvent>(LAB_BIND_EVENT_FUNC(ImGuiLayer::OnWindowFocusLostEvent));
 
 	}
 
@@ -135,6 +138,7 @@ namespace Labyrinth {
 		ImGui_ImplOpenGL3_NewFrame();
 		ImGui_ImplSDL2_NewFrame();
 		ImGui::NewFrame();	
+		ImGuizmo::BeginFrame();
 
 	}
 
@@ -316,6 +320,22 @@ namespace Labyrinth {
 		ImGuiViewport* viewport = ImGui::FindViewportByPlatformHandle((void*)SDL_GetWindowFromID(e.getID()));
 		viewport->PlatformRequestClose = true;
 		
+		return false;
+	}
+
+	bool ImGuiLayer::OnWindowFocusEvent(WindowFocusEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddFocusEvent(true);
+
+		return false;
+	}
+
+	bool ImGuiLayer::OnWindowFocusLostEvent(WindowFocusLostEvent& e)
+	{
+		ImGuiIO& io = ImGui::GetIO();
+		io.AddFocusEvent(false);
+
 		return false;
 	}
 

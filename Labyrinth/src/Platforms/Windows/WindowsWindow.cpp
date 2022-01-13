@@ -185,7 +185,16 @@ namespace Labyrinth {
 			WindowCloseEvent event(mEvent.window.windowID);
 			winData.eventCallback(event);
 		}
-		
+
+		if (mEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+			WindowFocusEvent event(mEvent.window.windowID);
+			winData.eventCallback(event);
+		}
+
+		if (mEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+			WindowFocusLostEvent event(mEvent.window.windowID);
+			winData.eventCallback(event);
+		}
 	}
 
 	void WindowsWindow::DispatchKeyEvent()

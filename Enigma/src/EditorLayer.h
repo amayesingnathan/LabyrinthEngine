@@ -3,6 +3,8 @@
 #include "Labyrinth.h"
 #include "Panels/ScenePanel.h"
 
+#include "Labyrinth/Renderer/EditorCamera.h"
+
 #include <optional>
 
 namespace Labyrinth {
@@ -22,13 +24,13 @@ namespace Labyrinth {
 
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
-		bool OnMousePressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseMoveEvent(MouseMovedEvent& e);
 
 		void NewScene();
 		void OpenScene();
 		void SaveScene();
 		void SaveSceneAs();
+
+		void ResetKeys(int key);
 
 	private:
 		Labyrinth::OrthographicCameraController mCameraController;
@@ -45,12 +47,15 @@ namespace Labyrinth {
 
 		bool mPrimaryCamera = true;
 
+		EditorCamera mEditorCamera;
+
 		Ref<Texture2D> mCheckerboardTexture;
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
 		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
+		int mGizmoType = -1;
 	};
 
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Camera.h"
+#include "EditorCamera.h"
 
 #include "Texture.h"
 #include "SubTexture.h"
@@ -15,6 +16,7 @@ namespace Labyrinth {
 
 		static void BeginState(const Camera& camera, const glm::mat4 transform);
 		static void BeginState(const OrthographicCamera& camera);
+		static void BeginState(const EditorCamera& camera);
 		static void EndState();
 		static void Flush();
 

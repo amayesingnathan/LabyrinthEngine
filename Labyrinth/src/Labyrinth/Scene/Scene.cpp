@@ -33,7 +33,7 @@ namespace Labyrinth {
 		mRegistry.destroy(entity);
 	}
 
-	void Scene::onUpdate(Timestep ts)
+	void Scene::onUpdateRuntime(Timestep ts)
 	{
 
 		{	// Update Scripts
@@ -86,6 +86,21 @@ namespace Labyrinth {
 
 	}
 
+	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
+	{
+		Renderer2D::BeginState(camera);
+
+		auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
+		for (auto entity : group)
+		{
+			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+
+			Renderer2D::DrawQuad(transform.getTransform(), sprite.colour);
+		}
+
+		Renderer2D::EndState();
+	}
+
 	void Scene::onViewportResize(uint32_t width, uint32_t height)
 	{
 		mViewportWidth = width;
@@ -99,6 +114,18 @@ namespace Labyrinth {
 			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(width, height);
 		}
+	}
+
+	Entity Scene::getPrimaryCameraEntity()
+	{
+		auto view = mRegistry.view<CameraComponent>();
+		for (auto entity : view)
+		{
+			const auto& camera = view.get<CameraComponent>(entity);
+			if (camera.primary)
+				return Entity{ entity, this };
+		}
+		return {};
 	}
 
 	template<typename T>

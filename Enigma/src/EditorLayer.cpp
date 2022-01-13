@@ -1,13 +1,16 @@
 #include "EditorLayer.h"
 
-#include "imgui/imgui.h"
-
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
-
 #include "Labyrinth/Scene/SceneSerialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
+
+#include "Labyrinth/Maths/Maths.h"
+
+#include "imgui/imgui.h"
+#include "ImGuizmo.h"
+
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 namespace Labyrinth {
 
@@ -28,6 +31,9 @@ namespace Labyrinth {
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
 		mCurrentScene = CreateRef<Scene>();
+
+		//mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
 		mScenePanel.setContext(mCurrentScene);
 
 	}
@@ -48,11 +54,14 @@ namespace Labyrinth {
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mCameraController.onResize(mViewportSize.x, mViewportSize.y);
 
+			mEditorCamera.setViewportSize(mViewportSize.x, mViewportSize.y);
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
 
 		if (mViewportFocused)
 			mCameraController.onUpdate(ts);
+
+		mEditorCamera.onUpdate(ts);
 
 		Renderer2D::ResetStats();
 
@@ -60,7 +69,7 @@ namespace Labyrinth {
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
 		RenderCommand::Clear();
 
-		mCurrentScene->onUpdate(ts);
+		mCurrentScene->onUpdateEditor(ts, mEditorCamera);
 
 		mFramebuffer->unbind();
 		
@@ -161,13 +170,65 @@ namespace Labyrinth {
 
 		mViewportFocused = ImGui::IsWindowFocused();
 		mViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused || !mViewportHovered);
+		Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused && !mViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = mFramebuffer->getColorAttachmentRendererID();
-		ImGui::Image((void*)textureID, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+		// Gizmos
+		Entity selectedEntity = mScenePanel.getSelectedEntity();
+		if (selectedEntity && mGizmoType != -1)
+		{
+			ImGuizmo::SetOrthographic(false);
+			ImGuizmo::SetDrawlist();
+
+			float windowWidth = (float)ImGui::GetWindowWidth();
+			float windowHeight = (float)ImGui::GetWindowHeight();
+			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+
+			// Runtime camera from entity
+			//auto cameraEntity = mCurrentScene->getPrimaryCameraEntity();
+			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
+			//const glm::mat4& cameraProjection = camera.getProjection();
+			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
+
+			//Editor camera
+			const glm::mat4& cameraProjection = mEditorCamera.getProjection();
+			glm::mat4 cameraView = mEditorCamera.getViewMatrix();
+
+			// Entity transform
+			auto& tc = selectedEntity.getComponent<TransformComponent>();
+			glm::mat4 transform = tc.getTransform();
+
+			// Snapping
+			bool snap = Input::IsKeyPressed(LAB_KEY_LCTRL);
+			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+			// Snap to 45 degrees for rotation
+			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
+				snapValue = 45.0f;
+
+			float snapValues[3] = { snapValue, snapValue, snapValue };
+
+			ImGuizmo::Manipulate(glm::value_ptr(cameraView), glm::value_ptr(cameraProjection),
+				(ImGuizmo::OPERATION)mGizmoType, ImGuizmo::LOCAL, glm::value_ptr(transform),
+				nullptr, snap ? snapValues : nullptr);
+
+			if (ImGuizmo::IsUsing())
+			{
+				glm::vec3 translation, rotation, scale;
+				Math::DecomposeTransform(transform, translation, rotation, scale);
+
+				glm::vec3 deltaRotation = rotation - tc.rotation;
+				tc.translation = translation;
+				tc.rotation += deltaRotation;
+				tc.scale = scale;
+			}
+		}
+
+
 		ImGui::End();
 		ImGui::PopStyleVar();
 
@@ -177,12 +238,11 @@ namespace Labyrinth {
 
 	void EditorLayer::onEvent(Event& e)
 	{
-		mCameraController.onEvent(e);
+		mCameraController.onEvent(e); 
+		mEditorCamera.onEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
-		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMousePressedEvent));
-		dispatcher.dispatch<MouseMovedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMouseMoveEvent));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -195,40 +255,58 @@ namespace Labyrinth {
 
 		switch (e.getKeyCode())
 		{
-		case LAB_KEY_N:
-		{
-			if (control)
-				NewScene();
+			case LAB_KEY_N:
+			{
+				if (control)
+					NewScene();
 
-			break;
+				break;
+			}
+			case LAB_KEY_O:
+			{
+				if (control)
+					OpenScene();
+
+				break;
+			}
+			case LAB_KEY_S:
+			{
+				if (control && shift)
+					SaveSceneAs();
+				else if (control)
+					SaveScene();
+
+				break;
+			}
+
+
+			// Gizmos
+			case LAB_KEY_Q:
+			{
+				if (!ImGuizmo::IsUsing())
+					mGizmoType = -1;
+				break;
+			}
+			case LAB_KEY_W:
+			{
+				if (!ImGuizmo::IsUsing())
+					mGizmoType = ImGuizmo::OPERATION::TRANSLATE;
+				break;
+			}
+			case LAB_KEY_E:
+			{
+				if (!ImGuizmo::IsUsing())
+					mGizmoType = ImGuizmo::OPERATION::ROTATE;
+				break;
+			}
+			case LAB_KEY_R:
+			{
+				if (!ImGuizmo::IsUsing())
+					mGizmoType = ImGuizmo::OPERATION::SCALE;
+				break;
+			}
 		}
-		case LAB_KEY_O:
-		{
-			if (control)
-				OpenScene();
 
-			break;
-		}
-		case LAB_KEY_S:
-		{
-			if (control && shift)
-				SaveSceneAs();
-			else if (control)
-				SaveScene();
-
-			break;
-		}
-		}
-		return false;
-	}
-
-	bool EditorLayer::OnMousePressedEvent(MouseButtonPressedEvent& e)
-	{
-		return false;
-	}
-
-	bool EditorLayer::OnMouseMoveEvent(MouseMovedEvent& e)
-	{
 
 		return false;
 	}
@@ -252,6 +330,8 @@ namespace Labyrinth {
 			SceneSerialiser serialiser(mCurrentScene);
 			serialiser.deserialise(*mFileSave);
 		}
+
+		ResetKeys(LAB_KEY_O);
 	}
 
 	void EditorLayer::SaveScene()
@@ -272,5 +352,13 @@ namespace Labyrinth {
 			SceneSerialiser serialiser(mCurrentScene);
 			serialiser.serialise(*mFileSave);
 		}
+
+		ResetKeys(LAB_KEY_S); 
+	}
+
+	void EditorLayer::ResetKeys(int key)
+	{
+
+		bool ctrlPressed = (Input::IsKeyPressed(LAB_KEY_LCTRL) || Input::IsKeyPressed(LAB_KEY_RCTRL));
 	}
 }

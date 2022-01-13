@@ -2,6 +2,8 @@
 
 #include "Labyrinth/Core/Base.h"
 
+#include <sstream>
+
 namespace Labyrinth {
 
 	enum class EventType

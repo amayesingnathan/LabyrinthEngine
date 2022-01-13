@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Labyrinth/Core/Timestep.h"
+#include "Labyrinth/Renderer/EditorCamera.h"
 
 #include "entt.hpp"
 
@@ -17,8 +18,12 @@ namespace Labyrinth {
 		Entity CreateEntity(const std::string& name);
 		void DestroyEntity(Entity entity);
 
-		void onUpdate(Timestep ts);
+		void onUpdateRuntime(Timestep ts);
+		void onUpdateEditor(Timestep ts, EditorCamera& camera);
+
 		void onViewportResize(uint32_t width, uint32_t height);
+
+		Entity getPrimaryCameraEntity();
 
 	private:
 		template<typename T>
