@@ -1,24 +1,26 @@
 #pragma once
 
 #include "Entity.h"
+#include "Components.h"
 
 namespace Labyrinth {
 
 	class ScriptableEntity
 	{
 	public:
-		ScriptableEntity() = default;
-
 		template<typename T>
 		T& getComponent()
 		{
 			return mEntity.getComponent<T>();
 		}
 
-	protected:
-		virtual void onCreate() {}
-		virtual void onDestroy() {}
-		virtual void onUpdate(Timestep ts) {}
+		virtual void onNativeScript(NativeScriptComponent& nsc)
+		{
+			for (auto& script : nsc.runScripts)
+			{
+				script();
+			}
+		}
 
 	private:
 		Entity mEntity;

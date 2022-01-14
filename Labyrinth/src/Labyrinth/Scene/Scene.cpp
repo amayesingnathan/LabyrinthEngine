@@ -60,17 +60,14 @@ namespace Labyrinth {
 	{
 
 		{	// Update Scripts
-			
 			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 				if (!nsc.instance)
 				{
-					nsc.instance = nsc.instantiateScript();
-					nsc.instance->mEntity = Entity{ entity, this };
-
-					nsc.instance->onCreate();
+					nsc.instantiateScript();
 				}
 
-				nsc.instance->onUpdate(ts);
+				nsc.instance->onNativeScript(nsc);
+
 			});
 		}
 

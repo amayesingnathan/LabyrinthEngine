@@ -33,9 +33,11 @@ IncludeDir["entt"] 		= "%{wks.location}/Labyrinth/dependencies/entt/include"
 IncludeDir["spdlog"] 	= "%{wks.location}/Labyrinth/dependencies/spdlog/include"
 IncludeDir["rapidxml"] 	= "%{wks.location}/Labyrinth/dependencies/rapidxml"
 IncludeDir["yaml_cpp"] 	= "%{wks.location}/Labyrinth/dependencies/yaml-cpp/include"
+IncludeDir["lua"] 		= "%{wks.location}/Labyrinth/dependencies/lua/include"
 
 LibDir = {}
 LibDir["SDL2"] = "%{wks.location}/Labyrinth/dependencies/SDL2/lib"
+LibDir["lua"] = "%{wks.location}/Labyrinth/dependencies/lua"
 
 group "Dependencies"
 	include "dependencies/premake"

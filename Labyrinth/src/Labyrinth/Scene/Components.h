@@ -4,7 +4,6 @@
 #include "Labyrinth/Maths/Quad.h"
 
 #include "SceneCamera.h"
-#include "ScriptableEntity.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -66,19 +65,26 @@ namespace Labyrinth {
 		KeyboardController(class Entity* entt);
 	};
 
-
 	struct NativeScriptComponent
 	{
-		ScriptableEntity* instance = nullptr;
+		class ScriptableEntity* instance = nullptr;
 
-		ScriptableEntity* (*instantiateScript)() = nullptr;
-		void (*destroyScript)(NativeScriptComponent*) = nullptr;
+		std::function<void()> instantiateScript;
+		std::function<void()> destroyScript;
+
+		std::vector<std::function<void()>> runScripts;
 
 		template<typename T>
-		void bind()
+		void bind(std::vector<std::function<void()>> scripts)
 		{
-			instantiateScript = []() { return static_cast<ScriptableEntity*>(new T()); };
-			destroyScript = [](NativeScriptComponent* sc) { delete sc->instance; sc->instance = nullptr; };
+			LAB_CORE_ASSERT(std::is_base_of<ScriptableEntity, T>::value);
+			instantiateScript = [&]() { instance = new T(); };
+			destroyScript = [&]() { delete dynamic_cast<T*>(instance); instance = nullptr; };
+
+			runScripts.reserve(scripts.size());
+			
+			for (auto script : scripts)
+				runScripts.emplace_back(script);
 		}
 	};
 

@@ -18,7 +18,8 @@ project "Labyrinth"
         "dependencies/stb_image/**.cpp",
         "dependencies/glm/glm/**.hpp",
         "dependencies/ImGuizmo/ImGuizmo.h",
-        "dependencies/ImGuizmo/ImGuizmo.cpp"
+        "dependencies/ImGuizmo/ImGuizmo.cpp",
+        "dependencies/lua/**.hpp"
     }
 	
 	defines
@@ -38,12 +39,14 @@ project "Labyrinth"
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
-        "%{IncludeDir.yaml_cpp}"
+        "%{IncludeDir.yaml_cpp}",
+        "%{IncludeDir.lua}"
     }
 	
 	libdirs
 	{
 		"%{LibDir.SDL2}",
+		"%{LibDir.lua}"
 	}
 
 	links
@@ -52,6 +55,7 @@ project "Labyrinth"
 		"glad",
 		"ImGui",
 		"yaml-cpp",
+		"lua54",
 		"opengl32.lib"
 	}
 	

@@ -20,7 +20,8 @@ project "Enigma"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.ImGuizmo}"
+		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.lua}"
     }
 	
     links
