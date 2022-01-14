@@ -62,7 +62,7 @@ namespace Labyrinth {
 	void ScenePanel::DrawEntityNode(Entity entity)
 	{
 		std::string& tag = entity.getComponent<TagComponent>();
-		auto& children = entity.getComponent<NodeComponent>().children;
+		auto& node = entity.getComponent<NodeComponent>();
 
 		ImGuiTreeNodeFlags flags = ((mSelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
@@ -84,8 +84,8 @@ namespace Labyrinth {
 
 		if (opened)
 		{
-			for (auto& child : children)
-				DrawEntityNode(entity);
+			for (auto& child : node.children)
+				DrawEntityNode(child);
 			ImGui::TreePop();
 		}
 		if (entityDeleted)
@@ -252,32 +252,32 @@ namespace Labyrinth {
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
-			std::unordered_map<std::string, Entity> entityStrings;
+			std::unordered_map<const char*, Entity> entityStrings;
 			entityStrings.emplace("None", Entity());
 
 			mContext->mRegistry.view<TagComponent>().each([&](auto entityID, auto& tc) {
 				if (mSelectedEntity != entityID)
 				{
 					Entity parentEnts{ entityID , mContext.get() };
-					entityStrings.emplace(tc, parentEnts);
+					entityStrings.emplace(tc.tag.c_str(), parentEnts);
 				}
 			});
 
 			const char* currentEntityString = "None";
 			auto& parent = mSelectedEntity.getParent();
 			if (parent)
-				currentEntityString = parent.getComponent<TagComponent>();
+				currentEntityString = parent.getComponent<TagComponent>().tag.c_str();
 
-			if (ImGui::BeginCombo("", currentEntityString))
+			if (ImGui::BeginCombo("Parent", currentEntityString))
 			{
 				for (auto [name, parentEnt] : entityStrings)
 				{
-					bool isSelected = (name.c_str() == currentEntityString);
+					bool isSelected = (std::string(currentEntityString) == name);
 
-					if (ImGui::Selectable(name.c_str()), isSelected)
+					if (ImGui::Selectable(name, isSelected))
 					{
-						currentEntityString = name.c_str();
-						mSelectedEntity.setParent(parentEnt);
+						if (mSelectedEntity.setParent(parentEnt))
+							currentEntityString = name;
 					}
 
 					if (isSelected)

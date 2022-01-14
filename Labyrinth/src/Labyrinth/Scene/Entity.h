@@ -102,7 +102,7 @@ namespace Labyrinth {
 		Entity& getParent();
 		bool hasParent();
 
-		void setParent(Entity newParent = {entt::null, nullptr});
+		bool setParent(Entity newParent = {entt::null, nullptr});
 
 		std::unordered_set<Entity, Entity::HashFunction>& getChildren();
 		bool hasChild(Entity& child);

@@ -1,0 +1,16 @@
+Scene: Untitled
+Entities:
+  - Entity: 1
+    TagComponent:
+      Tag: Child
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 0
+    TagComponent:
+      Tag: Parent
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]

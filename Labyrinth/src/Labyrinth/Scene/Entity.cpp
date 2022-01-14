@@ -14,24 +14,26 @@ namespace Labyrinth {
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
-	void Entity::setParent(Entity newParent)
+	bool Entity::setParent(Entity newParent)
 	{
-		Entity& parent = getParent();
-		if (parent == newParent)
-			return;
+		auto& node = getComponent<NodeComponent>();
+		if (node.parent == newParent)
+			return false;
 
 		if (newParent)
 			if (isRelated(newParent))
-				LAB_CORE_WARN("Cannot create circular ownership of entities!"); return;
+			{
+				LAB_CORE_WARN("Cannot create circular ownership of entities!"); return false;
+			}
 
-		if (parent)
-			parent.removeChild(*this);
+		if (node.parent)
+			node.parent.removeChild(*this);
 		
 		if (newParent)
 			newParent.addChild(*this);
 
-		parent = newParent;
-
+		node.parent = newParent;
+		return true;
 	}
 
 	Children& Entity::getChildren() { return getComponent<NodeComponent>().children; }
@@ -41,7 +43,7 @@ namespace Labyrinth {
 	void Entity::addChild(Entity& child)
 	{
 		auto& node = getComponent<NodeComponent>();
-		node.children.emplace(*this);
+		node.children.emplace(child);
 	}
 
 	void Entity::removeChild(Entity& child)
