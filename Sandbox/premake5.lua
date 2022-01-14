@@ -19,7 +19,8 @@ project "Sandbox"
 		"%{wks.location}/Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
-		"%{IncludeDir.entt}"
+		"%{IncludeDir.entt}",
+		"%{IncludeDir.lua}"
     }
 	
     links
