@@ -59,7 +59,14 @@ namespace Labyrinth {
 		}
 
 		template<typename T>
-		bool hasComponent()
+		T getComponentCopy() const
+		{
+			assert(hasComponent<T>());
+			return mScene->mRegistry.get<T>(mEntID);
+		}
+
+		template<typename T>
+		bool hasComponent() const
 		{
 			return mScene->mRegistry.all_of<T>(mEntID);
 		}
@@ -105,13 +112,14 @@ namespace Labyrinth {
 		bool setParent(Entity newParent = {entt::null, nullptr});
 
 		std::unordered_set<Entity, Entity::HashFunction>& getChildren();
-		bool hasChild(Entity& child);
+		std::unordered_set<Entity, Entity::HashFunction>& getChildren() const;
+		bool hasChild(const Entity& child) const;
+
+		bool isRelated(const Entity& filter) const;
 
 	private:
 		void addChild(Entity& child);
 		void removeChild(Entity& child);
-
-		bool isRelated(Entity& filter);
 
 	private:
 		entt::entity mEntID{ entt::null };

@@ -24,6 +24,7 @@ namespace Labyrinth {
 
 	private:
 		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
 		void OpenScene();
@@ -43,6 +44,8 @@ namespace Labyrinth {
 		ScenePanel mScenePanel;
 		Ref<Scene> mCurrentScene;
 
+		Entity mHoveredEntity;
+
 		std::optional<std::string> mFileSave = std::nullopt;
 
 		bool mPrimaryCamera = true;
@@ -53,6 +56,7 @@ namespace Labyrinth {
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+		std::array<glm::vec2, 2> mViewportBounds;
 
 		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
 		int mGizmoType = -1;

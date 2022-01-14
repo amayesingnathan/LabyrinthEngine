@@ -17,6 +17,9 @@ namespace Labyrinth {
 
 		float texIndex;
 		float tilingFactor;
+
+		// Editor-only
+		int entityID;
 	};
 
 	struct Renderer2DData
@@ -53,11 +56,12 @@ namespace Labyrinth {
 
 		sData.quadVertexBuffer = VertexBuffer::Create(sData.MaxVertices * sizeof(quadVertex));
 		sData.quadVertexBuffer->setLayout({
-			{ ShaderDataType::Float3, "aPosition" },
-			{ ShaderDataType::Float4, "aColour" },
-			{ ShaderDataType::Float2, "aTexCoord" },
-			{ ShaderDataType::Float, "aTexIndex" },
-			{ ShaderDataType::Float, "aTilingFactor" }
+			{ ShaderDataType::Float3, "aPosition"		},
+			{ ShaderDataType::Float4, "aColour"			},
+			{ ShaderDataType::Float2, "aTexCoord"		},
+			{ ShaderDataType::Float, "aTexIndex"		},
+			{ ShaderDataType::Float, "aTilingFactor"	},
+			{ ShaderDataType::Int,    "aEntityID"		}
 			});
 
 		sData.quadVertexArray->addVertexBuffer(sData.quadVertexBuffer);
@@ -219,7 +223,7 @@ namespace Labyrinth {
 		DrawQuad(position, size, subtexture->getTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour, int entityID)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -238,6 +242,7 @@ namespace Labyrinth {
 			sData.quadVertexBufferPtr->texCoord = textureCoords[i];
 			sData.quadVertexBufferPtr->texIndex = textureIndex;
 			sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
+			sData.quadVertexBufferPtr->entityID = entityID;
 			sData.quadVertexBufferPtr++;
 		}
 
@@ -246,7 +251,7 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords, int entityID)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -285,12 +290,18 @@ namespace Labyrinth {
 			sData.quadVertexBufferPtr->texCoord = textureCoords[i];
 			sData.quadVertexBufferPtr->texIndex = textureIndex;
 			sData.quadVertexBufferPtr->tilingFactor = tilingFactor;
+			sData.quadVertexBufferPtr->entityID = entityID;
 			sData.quadVertexBufferPtr++;
 		}
 
 		sData.quadIndexCount += 6;
 
 		sData.stats.quadCount++;
+	}
+
+	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+	{
+		DrawQuad(transform, src.colour, entityID);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour)

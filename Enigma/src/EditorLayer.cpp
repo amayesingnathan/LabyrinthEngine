@@ -28,7 +28,7 @@ namespace Labyrinth {
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
 		fbSpec.height = 900;
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 			
 		mFramebuffer = Framebuffer::Create(fbSpec);
@@ -72,7 +72,24 @@ namespace Labyrinth {
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
 		RenderCommand::Clear();
 
+		// Clear our entity ID attachment to -1
+		mFramebuffer->clearAttachment(1, -1);
+
 		mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+
+		auto [mx, my] = ImGui::GetMousePos();
+		mx -= mViewportBounds[0].x;
+		my -= mViewportBounds[0].y;
+		glm::vec2 viewportSize = mViewportBounds[1] - mViewportBounds[0];
+		my = viewportSize.y - my;
+		int mouseX = (int)mx;
+		int mouseY = (int)my;
+
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		{
+			int pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
+			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene.get());
+		}
 
 		mFramebuffer->unbind();
 		
@@ -159,6 +176,11 @@ namespace Labyrinth {
 
 		ImGui::Begin("Stats");
 
+		std::string name = "None";
+		if (mHoveredEntity)
+			name = mHoveredEntity.getComponent<TagComponent>().tag;
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+
 		auto stats = Renderer2D::GetStats();
 		ImGui::Text("Renderer2D Stats:");
 		ImGui::Text("Draw Calls: %d", stats.drawCalls);
@@ -169,7 +191,13 @@ namespace Labyrinth {
 		ImGui::End();
 
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport");
+		ImGui::Begin("Viewport"); 
+		
+		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
+		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+		auto viewportOffset = ImGui::GetWindowPos();
+		mViewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
+		mViewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
 		mViewportFocused = ImGui::IsWindowFocused();
 		mViewportHovered = ImGui::IsWindowHovered();
@@ -190,7 +218,7 @@ namespace Labyrinth {
 
 			float windowWidth = (float)ImGui::GetWindowWidth();
 			float windowHeight = (float)ImGui::GetWindowHeight();
-			ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+			ImGuizmo::SetRect(mViewportBounds[0].x, mViewportBounds[0].y, mViewportBounds[1].x - mViewportBounds[0].x, mViewportBounds[1].y - mViewportBounds[0].y);
 
 			// Runtime camera from entity
 			//auto cameraEntity = mCurrentScene->getPrimaryCameraEntity();
@@ -246,6 +274,7 @@ namespace Labyrinth {
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
+		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMouseButtonPressed));
 	}
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -310,6 +339,20 @@ namespace Labyrinth {
 			}
 		}
 
+
+		return false;
+	}
+
+	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		switch (e.getMouseButton())
+		{
+			case LAB_MOUSE_BUTTON_LEFT:
+			{
+				if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(LAB_KEY_LALT))
+					mScenePanel.setSelectedEntity(mHoveredEntity);
+			}
+		}
 
 		return false;
 	}

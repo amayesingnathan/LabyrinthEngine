@@ -100,7 +100,7 @@ namespace Labyrinth {
 			{
 				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-				Renderer2D::DrawQuad(transform, sprite.colour);
+				Renderer2D::DrawSprite(transform, sprite, (int)entity);
 			}
 
 			Renderer2D::EndState();
@@ -118,7 +118,7 @@ namespace Labyrinth {
 		{
 			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
-			Renderer2D::DrawQuad(transform.getTransform(), sprite.colour);
+			Renderer2D::DrawSprite(transform.getTransform(), sprite, (int)entity);
 		}
 
 		Renderer2D::EndState();

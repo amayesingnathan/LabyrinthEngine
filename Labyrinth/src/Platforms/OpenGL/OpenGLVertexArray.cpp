@@ -72,6 +72,17 @@ namespace Labyrinth {
 			case ShaderDataType::Float2:
 			case ShaderDataType::Float3:
 			case ShaderDataType::Float4:
+			{
+				glEnableVertexAttribArray(mVertexBufferIndex);
+				glVertexAttribPointer(mVertexBufferIndex,
+					element.getComponentCount(),
+					ShaderDataTypetoOpenGLType(element.type),
+					element.normalised ? GL_TRUE : GL_FALSE,
+					layout.getStride(),
+					(const void*)element.offset);
+				mVertexBufferIndex++;
+				break;
+			}
 			case ShaderDataType::Int:
 			case ShaderDataType::Int2:
 			case ShaderDataType::Int3:
@@ -79,10 +90,9 @@ namespace Labyrinth {
 			case ShaderDataType::Bool:
 			{
 				glEnableVertexAttribArray(mVertexBufferIndex);
-				glVertexAttribPointer(mVertexBufferIndex,
+				glVertexAttribIPointer(mVertexBufferIndex,
 					element.getComponentCount(),
 					ShaderDataTypetoOpenGLType(element.type),
-					element.normalised ? GL_TRUE : GL_FALSE,
 					layout.getStride(),
 					(const void*)element.offset);
 				mVertexBufferIndex++;
