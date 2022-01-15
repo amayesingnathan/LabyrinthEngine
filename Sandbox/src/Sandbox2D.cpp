@@ -1,4 +1,5 @@
 #include "Sandbox2D.h"
+#include <Labyrinth.h>
 #include "imgui/imgui.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -14,28 +15,46 @@ void Sandbox2D::onAttach()
 {
 	LAB_PROFILE_FUNCTION();
 
-	lua_State* L = luaL_newstate();
-	luaL_dofile(L, "assets/scripts/example.lua");
-	lua_getglobal(L, "Pythagoras");
-	if (lua_isfunction(L, -1))
+	struct TestComponent
 	{
-		constexpr int params = 2;
-		constexpr int returns = 3;
-		for (int i = 0; i < params; i++)
+		float x;
+		float y;
+
+		void move(float newX, float newY)
 		{
-			lua_pushnumber(L, 3 + i);
+			x += newX;
+			y += newY;
 		}
+	};
+		
+	auto CreateSprite = [](lua_State* L) -> int
+	{
+		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_newuserdata(L, sizeof(TestComponent)));
+		comp->x = 0.0f;
+		comp->y = 0.0f;
+		return 1;
+	};
 
-		std::vector<float> returnVals;
-		returnVals.reserve(returns);
+	auto MoveSprite = [](lua_State* L) -> int
+	{
+		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, 1));
+		float velX = (float)lua_tonumber(L, -2);
+		float velY = (float)lua_tonumber(L, -1);
+		comp->move(velX, velY);
+		return 1;
+	};
 
-		lua_pcall(L, params, returns, 0);
-		for (int i = 1; i <= returns; i++)
-		{
-			returnVals.emplace_back((float)lua_tonumber(L, i));
-		}
-		LAB_TRACE("{0}^2 + {1}^2 = {2}", returnVals[0], returnVals[1], returnVals[2]);
-
+	lua_State* L = luaL_newstate();
+	lua_pushcfunction(L, CreateSprite);
+	lua_setglobal(L, "CreateSprite");
+	lua_pushcfunction(L, MoveSprite);
+	lua_setglobal(L, "MoveSprite");
+	luaL_dofile(L, "assets/scripts/example.lua");
+	lua_getglobal(L, "sprite");
+	if (lua_isuserdata(L, -1))
+	{
+		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, -1));
+		LAB_TRACE("X: {0}; Y: {1}", comp->x, comp->y);
 	}
 	lua_close(L);
 

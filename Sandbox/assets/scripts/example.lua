@@ -1,3 +1,2 @@
-function Pythagoras(a, b)
-	return a, b, (a*a) + (b*b)
-end	
+sprite = CreateSprite()
+MoveSprite(sprite, 1, -2)

@@ -4,6 +4,7 @@
 #include "Labyrinth/Core/Base.h"
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
+#include "Labyrinth/Core/Cast.h"
 
 #include "Labyrinth/Tools/Profiling.h"
 

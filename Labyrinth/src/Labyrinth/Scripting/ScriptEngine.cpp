@@ -38,7 +38,6 @@ namespace Labyrinth {
 
 				}
 			}
-			dispatcher.dispatch<stc.trigger>(LAB_BIND_EVENT_FUNC(Application::OnWindowClose));
 		});
 	}
 

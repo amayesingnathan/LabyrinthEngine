@@ -1,5 +1,7 @@
 #include "ScenePanel.h"
 
+#include <Labyrinth.h>
+
 #include <imgui/imgui.h>
 
 #include <glm/gtc/type_ptr.hpp>

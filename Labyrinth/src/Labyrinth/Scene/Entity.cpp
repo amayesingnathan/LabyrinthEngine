@@ -37,7 +37,7 @@ namespace Labyrinth {
 	}
 
 	Children& Entity::getChildren() { return getComponent<NodeComponent>().children; }
-	Children& Entity::getChildren() const { return getComponentCopy<NodeComponent>().children; }
+	const Children& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
 
 	bool Entity::hasChild(const Entity& child) const 
 	{ 
@@ -57,13 +57,13 @@ namespace Labyrinth {
 
 	bool Entity::isRelated(const Entity& filter) const
 	{
-		auto& children = getComponentCopy<NodeComponent>().children;
-		// cycles every child
-		for (auto& child : children)
+		const auto& children = getComponent<NodeComponent>().children;
+		// Cycles every child
+		for (const auto& child : children)
 		{
 			if (child == filter)
 			{
-				// returns the desired child
+				// Found the child
 				return true;
 			}
 			bool found = isRelated(filter);
@@ -72,11 +72,5 @@ namespace Labyrinth {
 		}
 		return false;
 	}
-
-
-
-
-	NodeComponent::NodeComponent(const Entity& _parent, const Children& _children)
-		: parent(_parent), children(_children) {}
 
 }

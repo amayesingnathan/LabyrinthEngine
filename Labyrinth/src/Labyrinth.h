@@ -8,6 +8,7 @@
 #include "Labyrinth/Core/Layer.h"
 #include "Labyrinth/Core/Log.h"
 #include "Labyrinth/Core/Assert.h"
+#include "Labyrinth/Core/Cast.h"
 
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/Input.h"

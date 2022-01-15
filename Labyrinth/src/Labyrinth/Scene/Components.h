@@ -108,8 +108,9 @@ namespace Labyrinth {
 		};
 
 		TriggerSpec trigger;
-		const ScriptComponent& startScript;
+		ScriptComponent startScript;
 
+		ScriptTriggerComponent() = default;
 		ScriptTriggerComponent(const TriggerSpec& triggerSpec, const ScriptComponent& script)
 			: trigger(triggerSpec), startScript(script) {}
 		ScriptTriggerComponent(const ScriptTriggerComponent&) = default;

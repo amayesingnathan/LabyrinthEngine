@@ -27,6 +27,10 @@
 
 namespace Labyrinth {
 
+	/*
+		Smart Pointer Tools
+	*/
+
 	template<typename T>
 	using Single = std::unique_ptr<T>;
 	template<typename T, typename ... Args>
