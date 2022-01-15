@@ -1,4 +1,4 @@
-#pragma once
+	#pragma once
 
 #include <memory>
 #include "Labyrinth/Core/Platforms.h"
@@ -45,7 +45,7 @@ namespace Labyrinth {
 	template<typename T>
 	constexpr Ref<T> CloneRef(const T& copy)
 	{
-		return std::shared_ptr<T>(new T(copy));
+		return std::make_shared<T>(copy);
 	}
 
 }

@@ -22,8 +22,10 @@
 
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
-#include "Labyrinth/Scene/ScriptableEntity.h"
 #include "Labyrinth/Scene/Components.h"
+
+#include "Labyrinth/Scripting/ScriptEngine.h"
+#include "Labyrinth/Scripting/ScriptableEntity.h"
 
 // ---Renderer------------------------
 #include "Labyrinth/Renderer/Renderer.h"

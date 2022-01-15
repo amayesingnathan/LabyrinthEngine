@@ -4,6 +4,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "lua.hpp"
+
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), mCameraController(1280.0f / 720.0f, true)
 {}
@@ -11,6 +13,31 @@ Sandbox2D::Sandbox2D()
 void Sandbox2D::onAttach()
 {
 	LAB_PROFILE_FUNCTION();
+
+	lua_State* L = luaL_newstate();
+	luaL_dofile(L, "assets/scripts/example.lua");
+	lua_getglobal(L, "Pythagoras");
+	if (lua_isfunction(L, -1))
+	{
+		constexpr int params = 2;
+		constexpr int returns = 3;
+		for (int i = 0; i < params; i++)
+		{
+			lua_pushnumber(L, 3 + i);
+		}
+
+		std::vector<float> returnVals;
+		returnVals.reserve(returns);
+
+		lua_pcall(L, params, returns, 0);
+		for (int i = 1; i <= returns; i++)
+		{
+			returnVals.emplace_back((float)lua_tonumber(L, i));
+		}
+		LAB_TRACE("{0}^2 + {1}^2 = {2}", returnVals[0], returnVals[1], returnVals[2]);
+
+	}
+	lua_close(L);
 
 	mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
 

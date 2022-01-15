@@ -8,7 +8,7 @@ namespace Labyrinth {
 
 	enum class EventType
 	{
-		None = 0,
+		None = -1,
 		WindowClose, WindowResize, WindowFocus, WindowLostFoucus, WindowMoved,
 		AppTick, AppUpdate, AppRender,
 		KeyPressed, KeyReleased, KeyTyped,

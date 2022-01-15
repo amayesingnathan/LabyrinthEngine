@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Entity.h"
-#include "Components.h"
+#include "Labyrinth/Scene/Entity.h"
+#include "Labyrinth/Scene/Components.h"
 
 namespace Labyrinth {
 

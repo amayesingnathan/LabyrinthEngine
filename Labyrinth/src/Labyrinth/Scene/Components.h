@@ -88,6 +88,33 @@ namespace Labyrinth {
 		}
 	};
 
+	struct ScriptComponent
+	{
+		std::string filepath = "";
+		void* input = nullptr;
+		mutable void* output = nullptr;
+
+		ScriptComponent() = default;
+		ScriptComponent(const std::string& scriptPath, void* in, void* out)
+			: filepath(scriptPath), input(in), output(out){}
+		ScriptComponent(const ScriptComponent&) = default;
+	};
+
+	struct ScriptTriggerComponent
+	{	
+		struct TriggerSpec
+		{
+			Labyrinth::EventType type = EventType::None;
+		};
+
+		TriggerSpec trigger;
+		const ScriptComponent& startScript;
+
+		ScriptTriggerComponent(const TriggerSpec& triggerSpec, const ScriptComponent& script)
+			: trigger(triggerSpec), startScript(script) {}
+		ScriptTriggerComponent(const ScriptTriggerComponent&) = default;
+	};
+
 #if 0
 	struct SpriteComponent : public Component
 	{

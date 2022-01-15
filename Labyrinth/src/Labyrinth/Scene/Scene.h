@@ -37,6 +37,9 @@ namespace Labyrinth {
 		friend Entity;
 		friend class SceneSerialiser;
 		friend class ScenePanel;
+		friend class ScriptEngine;
 	};
 
 }
+
+
