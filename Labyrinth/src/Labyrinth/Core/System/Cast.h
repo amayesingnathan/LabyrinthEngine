@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Assert.h"
+#include "Labyrinth/Core/System/Assert.h"
 
 namespace Labyrinth {
 

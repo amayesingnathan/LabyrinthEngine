@@ -1,5 +1,5 @@
 #include "Lpch.h"
-#include "Labyrinth/Core/Input.h"
+#include "Labyrinth/IO/Input.h"
 
 #include "Labyrinth/Core/Application.h"
 

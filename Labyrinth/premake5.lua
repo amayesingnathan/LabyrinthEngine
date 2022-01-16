@@ -29,7 +29,9 @@ project "Labyrinth"
 
     includedirs
     {
-        "src",
+        "%{IncludeDir.Labyrinth}",
+        "%{IncludeDir.LabCore}",
+        "%{IncludeDir.RenderAPI}",
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
@@ -64,6 +66,7 @@ project "Labyrinth"
 	
     filter "system:windows"
         systemversion "latest"
+		includedirs "%{IncludeDir.LabWin}"
 
         
     filter "configurations:Debug"

@@ -1,9 +1,7 @@
 #include "Lpch.h"
 #include "CameraController.h"
 
-#include "Input.h"
-#include "KeyCodes.h"
-#include "MouseButtonCodes.h"
+#include "Labyrinth/IO/Input.h"
 
 namespace Labyrinth {
 

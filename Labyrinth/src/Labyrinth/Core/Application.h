@@ -1,11 +1,10 @@
 #pragma once
 
-#include "Base.h"
-
-#include "Window.h"
-#include "LayerStack.h"
-
+#include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/Core/Window.h>
 #include <Labyrinth/Core/Timestep.h>
+#include <Labyrinth/Core/LayerStack.h>
+
 
 #include <Labyrinth/Events/ApplicationEvent.h>
 #include <Labyrinth/Events/KeyEvent.h>

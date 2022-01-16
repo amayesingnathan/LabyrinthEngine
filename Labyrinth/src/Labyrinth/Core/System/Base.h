@@ -1,7 +1,7 @@
 	#pragma once
 
 #include <memory>
-#include "Labyrinth/Core/Platforms.h"
+#include "Labyrinth/Core/System/Platforms.h"
 
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)

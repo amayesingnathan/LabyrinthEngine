@@ -7,7 +7,7 @@
 
 #include "Labyrinth/Renderer/Renderer.h"
 
-#include "Platforms/OpenGL/OpenGLContext.h"
+#include "OpenGL/OpenGLContext.h"
 
 #include <Glad/glad.h>
 #include <SDL_opengl.h>

@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "RenderCommand.h"
 
-#include "Platforms/OpenGL/OpenGLRendererAPI.h"
+#include "OpenGL/OpenGLRendererAPI.h"
 
 namespace Labyrinth {
 

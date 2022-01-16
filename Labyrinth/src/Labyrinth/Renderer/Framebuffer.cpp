@@ -3,7 +3,7 @@
 
 #include "Labyrinth/Renderer/Renderer.h"
 
-#include "Platforms/OpenGL/OpenGLFramebuffer.h"
+#include "OpenGL/OpenGLFramebuffer.h"
 
 namespace Labyrinth {
 

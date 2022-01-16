@@ -1,9 +1,7 @@
 #include "Lpch.h"
 #include "EditorCamera.h"
 
-#include "Labyrinth/Core/Input.h"
-#include "Labyrinth/Core/KeyCodes.h"
-#include "Labyrinth/Core/MouseButtonCodes.h"
+#include "Labyrinth/IO/Input.h"
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>

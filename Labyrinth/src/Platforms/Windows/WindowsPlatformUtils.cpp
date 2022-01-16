@@ -1,12 +1,12 @@
 #include "Lpch.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
 
+#include "Labyrinth/Core/Application.h"
+
 #include <commdlg.h>
 #include "SDL.h"
 #include "SDL_syswm.h"
 
-#include "Labyrinth/Core/Application.h"
-#include "Labyrinth/Core/Input.h"
 
 namespace Labyrinth {
 

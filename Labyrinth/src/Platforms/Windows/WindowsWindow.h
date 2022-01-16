@@ -1,14 +1,11 @@
 #pragma once
 
-#include "Lpch.h"
-
-#include "Labyrinth/Core/Window.h"
+#include <Labyrinth/Core/Window.h>
 #include "Labyrinth/Renderer/GraphicsContext.h"
 
 #include "SDL.h"
 
 namespace Labyrinth {
-
 
 	class WindowsWindow : public Window
 	{

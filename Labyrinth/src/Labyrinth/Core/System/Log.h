@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Base.h"
+#include "Labyrinth/Core/System/Base.h"
 
 // This ignores all warnings raised inside External headers
 #pragma warning(push, 0)

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Labyrinth/Core/KeyCodes.h"
-#include "Labyrinth/Core/MouseButtonCodes.h"
+#include "Labyrinth/IO/KeyCodes.h"
+#include "Labyrinth/IO/MouseButtonCodes.h"
 
 #include <glm/glm.hpp>
 

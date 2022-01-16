@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Labyrinth/Core/Base.h"
-#include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/System/Log.h"
 #include <filesystem>
 
 #ifdef LAB_ENABLE_ASSERTS

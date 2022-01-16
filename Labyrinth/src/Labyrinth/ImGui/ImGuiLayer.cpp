@@ -2,8 +2,7 @@
 #include "ImGuiLayer.h"
 
 #include "Labyrinth/Core/Application.h"
-#include "Labyrinth/Core/Input.h"
-#include "Labyrinth/Core/MouseButtonCodes.h"
+#include "Labyrinth/IO/Input.h"
 
 #include "imgui.h"
 #include "ImGuizmo.h"

@@ -23,6 +23,10 @@ workspace "Labyrinth"
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
+IncludeDir["Labyrinth"] = "%{wks.location}/Labyrinth/src"
+IncludeDir["LabCore"] = "%{wks.location}/Labyrinth/src/Labyrinth/Core"
+IncludeDir["RenderAPI"] = "%{wks.location}/Labyrinth/src/Labyrinth/Renderer/APIs"
+IncludeDir["LabWin"] = "%{wks.location}/Labyrinth/src/Platforms/Windows"
 IncludeDir["SDL2"] 		= "%{wks.location}/Labyrinth/dependencies/SDL2/include"
 IncludeDir["stb_image"] = "%{wks.location}/Labyrinth/dependencies/stb_image"
 IncludeDir["glad"] 		= "%{wks.location}/Labyrinth/dependencies/glad/include"

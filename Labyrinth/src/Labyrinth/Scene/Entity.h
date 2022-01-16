@@ -2,7 +2,7 @@
 
 #include "Scene.h"
 
-#include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Core/System/Log.h"
 
 namespace Labyrinth {
 

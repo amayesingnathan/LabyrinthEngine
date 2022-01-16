@@ -1,14 +1,12 @@
 #include "Lpch.h"
 #include "Application.h"
 
-#include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Core/System/Log.h"
 #include "Platforms/Windows/WindowsWindow.h"
 
 #include "Labyrinth/Renderer/Renderer.h"
 
-#include "Input.h"
-#include "KeyCodes.h"
-#include "MouseButtonCodes.h"
+#include "Labyrinth/IO/Input.h"
 
 namespace Labyrinth {
 

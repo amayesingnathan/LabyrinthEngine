@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Base.h"
-#include "Labyrinth/Core/Log.h"
+#include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 

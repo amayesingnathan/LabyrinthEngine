@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Base.h"
+#include "Labyrinth/Core/System/Base.h"
 #include "Layer.h"
 
 namespace Labyrinth {

@@ -2,7 +2,7 @@
 #include "Texture.h"
 
 #include "Renderer.h"
-#include "Platforms/OpenGL/OpenGLTexture.h"
+#include "OpenGL/OpenGLTexture.h"
 
 namespace Labyrinth {
 

@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "Renderer.h"
-#include "Platforms/OpenGL/OpenGLShader.h"
+#include "OpenGL/OpenGLShader.h"
 
 namespace Labyrinth {
 

@@ -2,19 +2,20 @@
 
 //For use by Labyrinth applications
 
-#include "Labyrinth/Core/Base.h"
+#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/System/Log.h"
+#include "Labyrinth/Core/System/Assert.h"
+#include "Labyrinth/Core/System/Cast.h"
 
 #include "Labyrinth/Core/Application.h"
 #include "Labyrinth/Core/Layer.h"
-#include "Labyrinth/Core/Log.h"
-#include "Labyrinth/Core/Assert.h"
-#include "Labyrinth/Core/Cast.h"
 
 #include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Core/Input.h"
-#include "Labyrinth/Core/KeyCodes.h"
-#include "Labyrinth/Core/MouseButtonCodes.h"
 #include "Labyrinth/Core/CameraController.h"
+
+#include "Labyrinth/IO/Input.h"
+#include "Labyrinth/IO/KeyCodes.h"
+#include "Labyrinth/IO/MouseButtonCodes.h"
 
 #include "Labyrinth/Maths/Constant.h"
 #include "Labyrinth/Maths/Quad.h"

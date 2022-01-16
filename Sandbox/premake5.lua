@@ -15,7 +15,8 @@ project "Sandbox"
     
     includedirs
     {
-        "%{wks.location}/Labyrinth/src",
+        "%{IncludeDir.Labyrinth}",
+        "%{IncludeDir.LabCore}",
 		"%{wks.location}/Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
