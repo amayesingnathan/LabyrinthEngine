@@ -18,13 +18,7 @@ namespace Labyrinth {
 
 	struct Component
 	{
-		enum class Types { Null = -1, Tag = 0, Velocity, Transform, Sprite, Controller, Collider, Tile, Script };
-
-		class Entity* entity = nullptr;
-		Types derived = Types::Null;
-
 		Component() = default;
-		Component(class Entity* entt, Types type);
 		virtual ~Component() {}
 	};
 
@@ -42,7 +36,7 @@ namespace Labyrinth {
 
 	};
 
-	struct ColliderComponent : public Component
+	struct ColliderComponent 
 	{
 		//THIS MUST MIRROR ENUM "Type" IN XMLParser.h
 		enum class Type { Solid = 0, Trigger };

@@ -38,6 +38,7 @@ namespace Labyrinth {
 		friend class SceneSerialiser;
 		friend class ScenePanel;
 		friend class ScriptEngine;
+		friend class YAMLParser;
 	};
 
 }

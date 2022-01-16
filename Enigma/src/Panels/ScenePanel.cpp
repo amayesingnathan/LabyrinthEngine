@@ -54,6 +54,8 @@ namespace Labyrinth {
 
 	void ScenePanel::setSelectedEntity(Entity entity)
 	{
+		if (!entity) return;
+
 		if (entity.getScene() == mContext.get())
 		{
 			mSelectedEntity = entity;

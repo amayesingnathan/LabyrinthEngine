@@ -373,7 +373,7 @@ namespace Labyrinth {
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mScenePanel.setContext(mCurrentScene);
 
-			SceneSerialiser serialiser(mCurrentScene);
+			SceneSerialiser serialiser(mCurrentScene); 
 			serialiser.deserialise(*mFileSave);
 		}
 
