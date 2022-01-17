@@ -301,7 +301,14 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
 	{
-		DrawQuad(transform, src.colour, entityID);
+		if (src.hasTex())
+			switch (src.type)
+			{
+				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, nullptr, entityID);
+				case SpriteRendererComponent::TexType::Tile: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, src.texture.subtex->getTexCoords(), entityID);
+			}
+		else
+			DrawQuad(transform, src.colour, entityID);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour)

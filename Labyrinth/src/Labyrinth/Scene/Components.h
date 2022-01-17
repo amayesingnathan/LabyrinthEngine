@@ -4,6 +4,7 @@
 #include "Labyrinth/Maths/Quad.h"
 
 #include "SceneCamera.h"
+#include "Labyrinth/Renderer/SubTexture.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -145,12 +146,57 @@ namespace Labyrinth {
 
 	struct SpriteRendererComponent
 	{
+		enum class TexType { None = -1, Texture, Tile };
+
+		union TextureComponent
+		{
+			void* noTex = nullptr;
+			Ref<Texture2D> tex;
+			Ref<SubTexture2D> subtex;
+
+			TextureComponent() : noTex(nullptr) {}
+			TextureComponent(Ref<Texture2D> t) : tex(t) {}
+			TextureComponent(Ref<SubTexture2D> st) : subtex(st) {}
+			TextureComponent(const TextureComponent& other)
+			{
+				memcpy(this, &other, sizeof(TextureComponent));
+			}
+			~TextureComponent() {}
+
+			TextureComponent& operator= (const TextureComponent& other)
+			{
+				memcpy(this, &other, sizeof(TextureComponent));
+				return *this;
+			}
+
+			operator Ref<Texture2D>() const { return tex; }
+			operator Ref<SubTexture2D>() const { return subtex; }
+		};
+
+		TexType type = TexType::None;
+
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
+		TextureComponent texture;
+		bool tile = false;
+		float tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
-		SpriteRendererComponent(const SpriteRendererComponent&) = default;
+		//SpriteRendererComponent(const SpriteRendererComponent& other)
+		//{
+		//	type = other.type;
+		//	colour = other.colour;
+		//	memcpy(&texture, &other.texture, sizeof(TextureComponent));
+		//	tile = other.tile;
+		//	tilingFactor = other.tilingFactor;
+		//}
 		SpriteRendererComponent(const glm::vec4& rgba)
-			: colour(rgba) {}
+			: type(TexType::None), colour(rgba), tile(false) {}
+		SpriteRendererComponent(Ref<Texture2D> tex, float tf)
+			: type(TexType::Texture), texture(tex), tilingFactor(tf), tile(false) {}
+		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf)
+			: type(TexType::Tile), texture(subtex), tilingFactor(tf), tile(true) {}
+
+		bool hasTex() { return type != TexType::None; }
 	};
 
 	struct TagComponent

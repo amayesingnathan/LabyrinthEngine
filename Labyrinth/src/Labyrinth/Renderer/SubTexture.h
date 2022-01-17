@@ -9,10 +9,9 @@ namespace Labyrinth {
 
 	class SubTexture2D;
 
-	//Texture2DSheet is a thin wrapper around a Texture2D for sprite sheets which contains meta data about the sheet,
-	//as well as an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
+	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
+	//IT also provides an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
 
-	//Subtextures can be created from a sprite sheet with no lifetime dependency also.
 	class Texture2DSheet
 	{
 	public:
@@ -48,6 +47,7 @@ namespace Labyrinth {
 	{
 	public:
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max);
+		SubTexture2D(const SubTexture2D&) = default;
 		~SubTexture2D() = default;
 
 		const Ref<Texture2DSheet>& getSheet() { return mSheet; }
