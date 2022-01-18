@@ -203,14 +203,26 @@ namespace Labyrinth {
 	}
 
 	template<>
+	TransformComponent YAMLParser::decodeObject<TransformComponent>()
+	{
+		LAB_CORE_ASSERT(mIn["TransformComponent"], "File must contain a transform component!");
+
+		auto& transformComponent = mIn["TransformComponent"];
+		return TransformComponent(
+			transformComponent["Translation"].as<glm::vec3>(), 
+			transformComponent["Rotation"].as<glm::vec3>(), 
+			transformComponent["Scale"].as<glm::vec3>()
+		);
+	}
+
+	template<>
 	CameraComponent* YAMLParser::decodeObject<CameraComponent>(Entity entity, YAML::Node node)
 	{
-		auto cameraComponent = node["CameraComponent"];
+		auto& cameraComponent = node["CameraComponent"];
 		if (cameraComponent)
 		{
-			auto& cc = entity.addComponent<CameraComponent>();
-
 			auto& cameraProps = cameraComponent["Camera"];
+			auto& cc = entity.addComponent<CameraComponent>();
 			cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
 
 			cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
@@ -229,6 +241,28 @@ namespace Labyrinth {
 	}
 
 	template<>
+	CameraComponent YAMLParser::decodeObject<CameraComponent>()
+	{
+		LAB_CORE_ASSERT(mIn["CameraComponent"], "File must contain a camera component!");
+
+		auto& cameraComponent = mIn["CameraComponent"];
+		auto& cameraProps = cameraComponent["Camera"];
+		SceneCamera camera;
+
+		camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+
+		camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
+		camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
+		camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+
+		camera.setOrthographicSize(cameraProps["OrthographicSize"].as<float>());
+		camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
+		camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+
+		return CameraComponent(camera, cameraComponent["Primary"].as<bool>(), cameraComponent["FixedAspectRatio"].as<bool>());
+	}
+
+	template<>
 	SpriteRendererComponent* YAMLParser::decodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
 	{
 		auto spriteRendererComponent = node["SpriteRendererComponent"];
@@ -239,6 +273,15 @@ namespace Labyrinth {
 			return &src;
 		}
 		return nullptr;
+	}
+
+	template<>
+	SpriteRendererComponent YAMLParser::decodeObject<SpriteRendererComponent>()
+	{
+		LAB_CORE_ASSERT(mIn["SpriteRendererComponent"], "File must contain a SpriteRenderer component!");
+		auto& spriteRendererComponent = mIn["SpriteRendererComponent"];
+
+		return SpriteRendererComponent(spriteRendererComponent["Colour"].as<glm::vec4>());
 	}
 
 	template<>
@@ -264,18 +307,16 @@ namespace Labyrinth {
 	}
 
 	template<>
-	Entity* YAMLParser::decodeObject<Entity, Ref<Scene>>(Ref<Scene> scene)
+	Entity* YAMLParser::decodeObject<Entity>(Ref<Scene> scene)
 	{
 		if (!mIn["Entity"]) return false;
 
 		auto entity = mIn["Entity"];
-		decodeObject<Entity>(scene, entity);
-
-		return nullptr;
+		return decodeObject<Entity>(scene, entity);
 	}
 
 	template<>
-	Scene* YAMLParser::decodeObject<Scene, Ref<Scene>>(Ref<Scene> scene)
+	Scene* YAMLParser::decodeObject<Scene>(Ref<Scene> scene)
 	{
 		if (!mIn["Scene"]) return nullptr;
 
@@ -296,63 +337,4 @@ namespace Labyrinth {
 
 		return scene.get();
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene)
-		: mScene(scene)
-	{
-	}
-
-
-	void SceneSerialiser::serialise(const std::string& filepath)
-	{
-		//YAMLParser parser;
-		//parser.serialiseObject<Scene>(*mScene.get());
-
-		//std::ofstream fout(filepath);
-		//fout << parser.getData();
-	}
-
-	void SceneSerialiser::serialiseRuntime(const std::string& filepath)
-	{
-		// Not implemented
-		LAB_CORE_ASSERT(false);
-	}
-
-	bool SceneSerialiser::deserialise(const std::string& filepath)
-	{
-		//YAMLParser parser(filepath);
-		//return parser.deserialiseScene(mScene);
-		return false;
-	}
-
-	bool SceneSerialiser::deserialiseRuntime(const std::string& filepath)
-	{
-		// Not implemented
-		LAB_CORE_ASSERT(false);
-		return false;
-	}
-
 }

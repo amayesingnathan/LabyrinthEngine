@@ -90,7 +90,7 @@ namespace Labyrinth {
 		}
 
 		template<typename T>
-		const T& YAMLParser::decodeObject()
+		T YAMLParser::decodeObject()
 		{
 			static_assert(false);
 		}

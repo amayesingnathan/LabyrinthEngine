@@ -34,7 +34,7 @@ namespace Labyrinth {
 		void encodeObject(const T& data);
 
 		template<typename T>
-		const T& decodeObject();
+		T decodeObject();
 		template<typename T, typename Target>
 		T* decodeObject(Target target);
 

@@ -37,21 +37,4 @@ namespace Labyrinth {
 			return false;
 		}
 	};
-
-
-	class SceneSerialiser
-	{
-	public:
-		SceneSerialiser(const Ref<Scene>& scene);
-
-		void serialise(const std::string& filepath);
-		void serialiseRuntime(const std::string& filepath);
-
-		bool deserialise(const std::string& filepath);
-		bool deserialiseRuntime(const std::string& filepath);
-
-	private:
-		Ref<Scene> mScene;
-	};
-
 }

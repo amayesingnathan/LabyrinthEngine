@@ -238,7 +238,8 @@ namespace Labyrinth {
 
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
-		TransformComponent(const glm::vec3 trans) : translation(trans) {}
+		TransformComponent(const glm::vec3& trans, const glm::vec3& rot, const glm::vec3& sc) 
+			: translation(trans), rotation(rot), scale(sc) {}
 
 		glm::mat4 getTransform() const
 		{
