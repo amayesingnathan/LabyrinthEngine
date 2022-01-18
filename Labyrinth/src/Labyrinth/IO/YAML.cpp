@@ -96,13 +96,13 @@ namespace Labyrinth {
 		}
 
 		template<typename T, typename Target>
-		T* YAMLParser::decodeObject(Target data)
+		Ref<T> YAMLParser::decodeObject(Target data)
 		{
 			static_assert(false);
 		}
 
 		template<typename T, typename Target>
-		T* YAMLParser::decodeObject(Target data, YAML::Node node)
+		Ref<T> YAMLParser::decodeObject(Target data, YAML::Node node)
 		{
 			static_assert(false);
 		}

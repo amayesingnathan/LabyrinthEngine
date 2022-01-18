@@ -36,11 +36,11 @@ namespace Labyrinth {
 		template<typename T>
 		T decodeObject();
 		template<typename T, typename Target>
-		T* decodeObject(Target target);
+		Ref<T> decodeObject(Target target);
 
 	private:
 		template<typename T, typename Target>
-		T* decodeObject(Target target, YAML::Node node);
+		Ref<T> decodeObject(Target target, YAML::Node node);
 
 
 
