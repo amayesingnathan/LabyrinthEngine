@@ -47,13 +47,13 @@ project "Labyrinth"
 	
 	libdirs
 	{
-		"%{LibDir.SDL2}",
+		--"%{LibDir.SDL2}",
 		"%{LibDir.lua}"
 	}
 
 	links
 	{
-		"SDL2.lib",
+		"SDL2",
 		"glad",
 		"ImGui",
 		"yaml-cpp",

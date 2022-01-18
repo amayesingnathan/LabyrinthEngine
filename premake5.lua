@@ -40,11 +40,12 @@ IncludeDir["yaml_cpp"] 	= "%{wks.location}/Labyrinth/dependencies/yaml-cpp/inclu
 IncludeDir["lua"] 		= "%{wks.location}/Labyrinth/dependencies/lua/include"
 
 LibDir = {}
-LibDir["SDL2"] = "%{wks.location}/Labyrinth/dependencies/SDL2/lib"
+--LibDir["SDL2"] = "%{wks.location}/Labyrinth/dependencies/SDL2/lib"
 LibDir["lua"] = "%{wks.location}/Labyrinth/dependencies/lua"
 
 group "Dependencies"
 	include "dependencies/premake"
+	include "Labyrinth/dependencies/SDL2"
 	include "Labyrinth/dependencies/glad"
 	include "Labyrinth/dependencies/imgui"
 	include "Labyrinth/dependencies/yaml-cpp"

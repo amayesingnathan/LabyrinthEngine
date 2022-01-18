@@ -19,3 +19,6 @@
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
+[submodule "Labyrinth/dependencies/SDL2"]
+	path = Labyrinth/dependencies/SDL2
+	url = https://github.com/amayesingnathan/SDL2
