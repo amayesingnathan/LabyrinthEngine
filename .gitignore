@@ -9,8 +9,11 @@
 **.vcxproj.filters
 **.vcxproj.user
 
+#Ignore make files
+**/Makefile/
+
 #Labyrinth Log files
-*.log
+**.log
 
 #Ignore profiling files
 **.json

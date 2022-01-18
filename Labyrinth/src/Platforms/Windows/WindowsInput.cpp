@@ -5,8 +5,6 @@
 
 #include "SDL.h"
 
-#ifdef	LAB_PLATFORM_WINDOWS  //Input redefine for Windows!
-
 namespace Labyrinth {
 
 	bool Input::IsKeyPressed(int keycode)
@@ -56,5 +54,3 @@ namespace Labyrinth {
 	}
 
 }
-
-#endif

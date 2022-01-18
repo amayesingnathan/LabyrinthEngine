@@ -366,7 +366,7 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		mFileSave = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		//mFileSave = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
 		if (mFileSave)
 		{
 			mCurrentScene = CreateRef<Scene>();
@@ -390,7 +390,7 @@ namespace Labyrinth {
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::optional<std::string> mFileSave = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		//mFileSave = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
 		if (mFileSave)
 		{
 			Serialiser::Serialise(mCurrentScene, *mFileSave);

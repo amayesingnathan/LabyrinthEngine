@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef LAB_PLATFORM_WINDOWS
+//#ifdef LAB_PLATFORM_WINDOWS
 
 extern Labyrinth::Application* Labyrinth::CreateApplication();
 
@@ -21,6 +21,6 @@ int main(int argc, char** argv)
 	LAB_PROFILE_END_SESSION();
 }
 
-#else
-	#error Labyrinth only supports Windows!
-#endif // LAB_PLATFORM_WINDOWS
+//#else
+//#error Labyrinth only supports Windows!
+//#endif // LAB_PLATFORM_WINDOWS
