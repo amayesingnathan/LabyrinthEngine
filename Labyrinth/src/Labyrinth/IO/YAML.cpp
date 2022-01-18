@@ -5,6 +5,8 @@
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 
+#if 0
+
 namespace YAML {
 
 	template<>
@@ -77,9 +79,37 @@ namespace Labyrinth {
 		return mOut;
 	}
 
+#endif
 
+	namespace Labyrinth {
 
+		template<typename T>
+		void YAMLParser::encodeObject(const T& data)
+		{
+			static_assert(false);
+		}
 
+		template<typename T>
+		const T& YAMLParser::decodeObject()
+		{
+			static_assert(false);
+		}
+
+		template<typename T, typename Target>
+		T* YAMLParser::decodeObject(Target data)
+		{
+			static_assert(false);
+		}
+
+		template<typename T, typename Target>
+		T* YAMLParser::decodeObject(Target data, YAML::Node node)
+		{
+			static_assert(false);
+		}
+
+	}
+
+#if 0
 
 	template<typename T>
 	void YAMLParser::serialiseObject(T& data)
@@ -116,25 +146,25 @@ namespace Labyrinth {
 		mOut << YAML::EndMap; // Entity
 	}
 
-	template<>
-	void YAMLParser::serialiseObject<Scene>(Scene& scene)
-	{
-		mOut << YAML::BeginMap;
-		mOut << YAML::Key << "Scene" << YAML::Value << "Untitled";
-		mOut << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
+	//template<>
+	//void YAMLParser::serialiseObject<Scene>(Scene& scene)
+	//{
+	//	mOut << YAML::BeginMap;
+	//	mOut << YAML::Key << "Scene" << YAML::Value << "Untitled";
+	//	mOut << YAML::Key << "Entities" << YAML::Value << YAML::BeginSeq;
 
-		scene.mRegistry.each([&](auto entityID)
-		{
-			Entity entity = { entityID, &scene };
-			if (!entity)
-				return;
+	//	scene.mRegistry.each([&](auto entityID)
+	//	{
+	//		Entity entity = { entityID, &scene };
+	//		if (!entity)
+	//			return;
 
-			serialiseObject<Entity>(entity);
-		});
-		
-		mOut << YAML::EndSeq;
-		mOut << YAML::EndMap;
-	}
+	//		serialiseObject<Entity>(entity);
+	//	});
+	//	
+	//	mOut << YAML::EndSeq;
+	//	mOut << YAML::EndMap;
+	//}
 
 	template<typename T>
 	void YAMLParser::serialiseComponent(T& data)
@@ -320,3 +350,5 @@ namespace Labyrinth {
 		return true;
 	}
 }
+
+#endif

@@ -22,6 +22,7 @@ project "Enigma"
         "%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
+        "%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.lua}"
     }
 	

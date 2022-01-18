@@ -1,6 +1,6 @@
 #include "EditorLayer.h"
 
-#include "Labyrinth/Scene/SceneSerialiser.h"
+#include "Labyrinth/Scene/Serialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
 
@@ -373,8 +373,7 @@ namespace Labyrinth {
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mScenePanel.setContext(mCurrentScene);
 
-			SceneSerialiser serialiser(mCurrentScene); 
-			serialiser.deserialise(*mFileSave);
+			Serialiser::Deserialise<Scene>(*mFileSave, mCurrentScene);
 		}
 
 		ResetKeys(LAB_KEY_O);
@@ -384,8 +383,7 @@ namespace Labyrinth {
 	{
 		if (mFileSave)
 		{
-			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.serialise(*mFileSave);
+			Serialiser::Serialise(mCurrentScene, *mFileSave);
 		}
 		else SaveSceneAs();
 	}
@@ -395,8 +393,7 @@ namespace Labyrinth {
 		std::optional<std::string> mFileSave = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
 		if (mFileSave)
 		{
-			SceneSerialiser serialiser(mCurrentScene);
-			serialiser.serialise(*mFileSave);
+			Serialiser::Serialise(mCurrentScene, *mFileSave);
 		}
 
 		ResetKeys(LAB_KEY_S); 
