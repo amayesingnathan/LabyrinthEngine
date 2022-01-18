@@ -9,6 +9,8 @@ project "Labyrinth"
 	
 	pchheader "Lpch.h"
 	pchsource "src/Lpch.cpp"
+	
+	vectorextensions  "SSE2" 
 
     files 
     { 
