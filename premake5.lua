@@ -20,8 +20,6 @@ workspace "Labyrinth"
 		"MultiProcessorCompile"
 	}
 	
-	vectorextensions  "SSE2"   
-	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}

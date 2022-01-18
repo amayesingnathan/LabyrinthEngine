@@ -68,6 +68,8 @@ project "Labyrinth"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
 
+	filter "system:linux"
+		gccprefix ("-msse2")
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
