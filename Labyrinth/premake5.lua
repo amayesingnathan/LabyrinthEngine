@@ -46,12 +46,6 @@ project "Labyrinth"
         "%{IncludeDir.yaml_cpp}",
         "%{IncludeDir.lua}"
     }
-	
-	libdirs
-	{
-		--"%{LibDir.SDL2}",
-		"%{LibDir.lua}"
-	}
 
 	links
 	{
@@ -69,7 +63,17 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
+		libdirs
+		{
+			"%{LibDir.lua}/windows"
+		}
 
+    filter "system:linux"
+		includedirs "%{IncludeDir.LabLinux}"
+		libdirs
+		{
+			"%{LibDir.lua}/linux"
+		}
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
