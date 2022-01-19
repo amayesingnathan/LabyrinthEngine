@@ -16,10 +16,6 @@ namespace Labyrinth {
 
 		virtual void onNativeScript(NativeScriptComponent& nsc)
 		{
-			for (auto& script : nsc.runScripts)
-			{
-				script();
-			}
 		}
 
 	private:

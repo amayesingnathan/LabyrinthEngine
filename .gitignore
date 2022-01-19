@@ -4,13 +4,15 @@
 
 #Ignore VS temp files
 .vs/
+.vscode/
 **.sln
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
 
 #Ignore make files
-**/Makefile/
+Makefile
+Makefile.in
 
 #Labyrinth Log files
 **.log

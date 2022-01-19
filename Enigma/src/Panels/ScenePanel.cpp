@@ -216,7 +216,12 @@ namespace Labyrinth {
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
+#ifdef __STDC_LIB_EXT1__
 			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+#else   //Linux does not come with strcpy_s, so use strcopy. This is not ideal,
+		//and should be replaced with a safer option.
+			strcpy(buffer, tag.c_str());
+#endif
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);

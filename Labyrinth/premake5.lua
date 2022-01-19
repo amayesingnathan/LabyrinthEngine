@@ -9,8 +9,6 @@ project "Labyrinth"
 	
 	pchheader "Lpch.h"
 	pchsource "src/Lpch.cpp"
-	
-	vectorextensions  "SSE2" 
 
     files 
     { 
@@ -50,11 +48,11 @@ project "Labyrinth"
 	links
 	{
 		"SDL2",
+		"opengl32.lib",
 		"glad",
 		"ImGui",
 		"yaml-cpp",
 		"lua54",
-		"opengl32.lib"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
@@ -74,7 +72,7 @@ project "Labyrinth"
 		{
 			"%{LibDir.lua}/linux"
 		}
-        
+       
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
 		runtime "Debug"
@@ -85,7 +83,15 @@ project "Labyrinth"
 		runtime "Release"
         optimize "on"
 
-    filter "configurations:Dist"
+    filter "configurations:Dist" 
         defines { "LAB_DIST" }
 		runtime "Release"
         optimize "on"
+
+    filter "system:windows"
+        systemversion "latest"
+		includedirs "%{IncludeDir.LabWin}"
+
+    filter "system:linux"
+        systemversion "latest"
+        includedirs "%{IncludeDir.LabLinux}"

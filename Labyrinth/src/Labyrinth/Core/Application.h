@@ -36,8 +36,8 @@ namespace Labyrinth {
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
-	private:
 		void run();
+	private:
 
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);

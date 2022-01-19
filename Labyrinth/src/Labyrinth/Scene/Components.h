@@ -67,19 +67,12 @@ namespace Labyrinth {
 		std::function<void()> instantiateScript;
 		std::function<void()> destroyScript;
 
-		std::vector<std::function<void()>> runScripts;
-
 		template<typename T>
-		void bind(std::vector<std::function<void()>> scripts)
+		void bind()
 		{
-			LAB_CORE_ASSERT(std::is_base_of<ScriptableEntity, T>::value);
 			instantiateScript = [&]() { instance = new T(); };
-			destroyScript = [&]() { delete dynamic_cast<T*>(instance); instance = nullptr; };
+			destroyScript = [&]() { delete CastToRelative<T>(instance); instance = nullptr; };
 
-			runScripts.reserve(scripts.size());
-			
-			for (auto script : scripts)
-				runScripts.emplace_back(script);
 		}
 	};
 
@@ -275,18 +268,6 @@ namespace Labyrinth {
 		}
 
 
-	};
-
-
-	struct VelocityComponent : public Component
-	{
-		Vector2D vel;
-
-		VelocityComponent& operator=(const VelocityComponent&) = default;
-
-		template<typename T>
-		VelocityComponent(class Entity* entt, T velocity) :
-			Component(entt, Types::Velocity), vel(velocity) {}
 	};
 
 }

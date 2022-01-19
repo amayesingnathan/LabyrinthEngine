@@ -3,15 +3,15 @@
 
 #include "Labyrinth/Core/Application.h"
 
+#ifdef LAB_PLATFORM_WINDOWS
+
 #include <commdlg.h>
 #include "SDL.h"
 #include "SDL_syswm.h"
 
-
 namespace Labyrinth {
 
 	//Windows File Dialog Definition
-#ifdef LAB_PLATFORM_WINDOWS
 
 	std::optional<std::string> FileDialogs::OpenFile(const char* filter)
 	{
@@ -57,5 +57,6 @@ namespace Labyrinth {
 		}
 		return std::nullopt;
 	}
-#endif
 }
+
+#endif

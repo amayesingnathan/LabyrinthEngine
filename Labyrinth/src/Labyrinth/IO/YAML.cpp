@@ -86,25 +86,33 @@ namespace Labyrinth {
 		template<typename T>
 		void YAMLParser::encodeObject(const T& data)
 		{
-			static_assert(false);
+#ifndef LAB_PLATFORM_LINUX
+		static_assert(false);
+#endif
 		}
 
 		template<typename T>
 		T YAMLParser::decodeObject()
 		{
-			static_assert(false);
+#ifndef LAB_PLATFORM_LINUX
+		static_assert(false);
+#endif
 		}
 
 		template<typename T, typename Target>
 		Ref<T> YAMLParser::decodeObject(Target data)
 		{
-			static_assert(false);
+#ifndef LAB_PLATFORM_LINUX
+		static_assert(false);
+#endif
 		}
 
 		template<typename T, typename Target>
-		Ref<T> YAMLParser::decodeObject(Target data, YAML::Node node)
+		Ref<T> YAMLParser::decodeObject(Target data, const YAML::Node& node)
 		{
-			static_assert(false);
+#ifndef LAB_PLATFORM_LINUX
+		static_assert(false);
+#endif
 		}
 
 	}

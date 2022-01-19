@@ -40,7 +40,7 @@ namespace Labyrinth {
 
 	private:
 		template<typename T, typename Target>
-		Ref<T> decodeObject(Target target, YAML::Node node);
+		Ref<T> decodeObject(Target target, const YAML::Node& node);
 
 
 

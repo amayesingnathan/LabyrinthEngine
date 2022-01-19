@@ -11,7 +11,7 @@
 #include "backends/imgui_impl_opengl3.h"
 
 #include "SDL.h"
-#include "Glad/glad.h"
+#include "glad/glad.h"
 #include "SDL_opengl.h"
 
 #if SDL_VERSION_ATLEAST(2,0,4) && !defined(__EMSCRIPTEN__) && !defined(__ANDROID__) && !(defined(__APPLE__) && TARGET_OS_IOS)
