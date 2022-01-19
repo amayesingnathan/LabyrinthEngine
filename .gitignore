@@ -9,6 +9,11 @@
 **.vcxproj.filters
 **.vcxproj.user
 
+#Ignore makefiles
+/Makefile
+/Makefile.am
+/Makefile.in
+
 #Labyrinth Log files
 *.log
 

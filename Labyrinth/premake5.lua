@@ -19,12 +19,14 @@ project "Labyrinth"
         "dependencies/glm/glm/**.hpp",
         "dependencies/ImGuizmo/ImGuizmo.h",
         "dependencies/ImGuizmo/ImGuizmo.cpp",
-        "dependencies/lua/**.hpp"
+        "dependencies/lua/**.hpp",
+        "dependencies/asio/include/asio.hpp"
     }
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"ASIO_STANDALONE"
 	}
 
     includedirs
@@ -42,7 +44,8 @@ project "Labyrinth"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.lua}"
+        "%{IncludeDir.lua}",
+        "%{IncludeDir.asio}"
     }
 	
 	libdirs
