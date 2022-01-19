@@ -77,7 +77,7 @@ namespace Labyrinth {
 			auto view = mRegistry.view<TransformComponent, CameraComponent>();
 			for (auto entity : view)
 			{
-				auto& [trans, cam] = view.get<TransformComponent, CameraComponent>(entity);
+				const auto& [trans, cam] = view.get<TransformComponent, CameraComponent>(entity);
 
 				if (cam.primary)
 				{
@@ -95,7 +95,7 @@ namespace Labyrinth {
 			auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
 			for (auto entity : group)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				const auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
 
 				Renderer2D::DrawSprite(transform, sprite, (int)entity);
 			}
@@ -151,7 +151,9 @@ namespace Labyrinth {
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
+#ifndef LAB_PLATFORM_LINUX
 		static_assert(false);
+#endif
 	}
 
 	template<>

@@ -3,7 +3,7 @@
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 
-#include "entt.hpp"
+#include <entt.hpp>
 
 namespace Labyrinth {
 

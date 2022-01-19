@@ -9,7 +9,7 @@
 
 #include "OpenGL/OpenGLContext.h"
 
-#include <Glad/glad.h>
+#include <glad/glad.h>
 #include <SDL_opengl.h>
 
 namespace Labyrinth {
