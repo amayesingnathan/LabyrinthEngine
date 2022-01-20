@@ -52,4 +52,6 @@ namespace Labyrinth {
 		return std::make_shared<T>(copy);
 	}
 
+	template<typename T>
+	using RefFromThis = std::enable_shared_from_this<T>;
 }

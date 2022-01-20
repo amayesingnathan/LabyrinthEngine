@@ -1,14 +1,6 @@
 #pragma 
 
-#include "Labyrinth/Core/System/Platforms.h"
-
-#ifdef LAB_PLATFORM_WINDOWS
-#define _WIN32_WINNT 0x0A00
-#endif
-
-#include <asio.hpp>
-#include <asio/ts/buffer.hpp>
-#include <asio/ts/internet.hpp>
+#include "NetCommon.h"
 
 namespace Labyrinth {
 
@@ -71,6 +63,22 @@ namespace Labyrinth {
 				return msg;
 			}
 
+		};
+
+		template<typename T>
+		class Connection;
+
+		template<typename T>
+		struct OwnedMessage
+		{
+			Ref<Connection<T>> remote = nullptr;
+			Message<T> msg;
+
+			friend std::ostream& operator << (std::ostream& os, const OwnedMessage<T>& msg)
+			{
+				os << msg.msg;
+				return os;
+			}
 		};
 
 	}
