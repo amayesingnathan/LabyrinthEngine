@@ -1,12 +1,14 @@
 #pragma once
 
-#ifdef LAB_PLATFORM_WINDOWS
+#ifndef LABYRINTH_APP_NAME
+#define LABYRINTH_APP_NAME "APP"
+#endif
 
 extern Labyrinth::Application* Labyrinth::CreateApplication();
 
 int main(int argc, char** argv)
 {	
-	Labyrinth::Log::Init();
+	Labyrinth::Log::Init(LABYRINTH_APP_NAME);
 
 	LAB_PROFILE_BEGIN_SESSION("Startup", "LabyrinthProfile-Startup.json");
 	auto app = Labyrinth::CreateApplication();	
@@ -20,7 +22,3 @@ int main(int argc, char** argv)
 	delete app;
 	LAB_PROFILE_END_SESSION();
 }
-
-#else
-	#error Labyrinth only supports Windows!
-#endif // LAB_PLATFORM_WINDOWS

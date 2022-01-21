@@ -13,14 +13,17 @@
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/CameraController.h"
 
+#include "Labyrinth/ImGui/ImGuiLayer.h"
+
 #include "Labyrinth/IO/Input.h"
 #include "Labyrinth/IO/KeyCodes.h"
 #include "Labyrinth/IO/MouseButtonCodes.h"
 
+#include "Labyrinth/Networking/ServerLayer.h"
+#include "Labyrinth/Networking/ClientLayer.h"
+
 #include "Labyrinth/Maths/Constant.h"
 #include "Labyrinth/Maths/Quad.h"
-
-#include "Labyrinth/ImGui/ImGuiLayer.h"
 
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
@@ -28,6 +31,8 @@
 
 #include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Scripting/ScriptableEntity.h"
+
+#include "Labyrinth/Tools/Timer.h"
 
 // ---Renderer------------------------
 #include "Labyrinth/Renderer/Renderer.h"

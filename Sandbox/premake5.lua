@@ -4,8 +4,8 @@ project "Sandbox"
     cppdialect "C++17"
     staticruntime "on"
 	
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/")
-    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/%{prj.name}")
 	
     files 
     { 
@@ -21,7 +21,8 @@ project "Sandbox"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.lua}"
+		"%{IncludeDir.lua}",
+        "%{IncludeDir.asio}"
     }
 	
     links

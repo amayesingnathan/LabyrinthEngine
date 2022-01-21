@@ -13,7 +13,7 @@ namespace Labyrinth {
 	class Log
 	{
 	public:
-		static void Init();
+		static void Init(const std::string& appName = "APP");
 
 		static Ref<spdlog::logger>& GetCoreLogger() { return sCoreLogger; }
 		static Ref<spdlog::logger>& GetClientLogger() { return sClientLogger; }

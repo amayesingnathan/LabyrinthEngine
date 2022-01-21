@@ -1,4 +1,4 @@
-#pragma 
+#pragma once
 
 #include "NetCommon.h"
 
@@ -48,7 +48,7 @@ namespace Labyrinth {
 			}
 
 			template<typename DataType>
-			friend Message<T>& operator>> (Message<T>& msg, const DataType& data)
+			friend Message<T>& operator>> (Message<T>& msg, DataType& data)
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
 
@@ -56,7 +56,7 @@ namespace Labyrinth {
 
 				std::memcpy(&data, msg.body.data() + i, sizeof(DataType));
 
-				msg.body.resize();
+				msg.body.resize(i);
 
 				msg.header.size = msg.size();
 

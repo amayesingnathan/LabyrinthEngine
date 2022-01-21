@@ -1,4 +1,6 @@
-	#pragma once
+#pragma once
+
+#define LABYRINTH_VER 1.0
 
 #include <memory>
 #include "Labyrinth/Core/System/Platforms.h"

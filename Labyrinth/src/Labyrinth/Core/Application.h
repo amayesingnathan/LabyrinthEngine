@@ -5,7 +5,6 @@
 #include <Labyrinth/Core/Timestep.h>
 #include <Labyrinth/Core/LayerStack.h>
 
-
 #include <Labyrinth/Events/ApplicationEvent.h>
 #include <Labyrinth/Events/KeyEvent.h>
 #include <Labyrinth/Events/MouseEvent.h>
@@ -21,6 +20,7 @@ namespace Labyrinth {
 	//Methods
 	public:
 		Application(const std::string& name = "Labyrinth Application");
+
 		~Application();
 
 		void onEvent(Event& e);
@@ -51,6 +51,7 @@ namespace Labyrinth {
 
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
+
 		bool mRunning = true;
 		bool mMinimised = false;
 		LayerStack mLayerStack;
