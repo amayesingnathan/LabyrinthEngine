@@ -412,10 +412,4 @@ namespace Labyrinth {
 			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
 	}
-
-	void EditorLayer::ResetKeys(int key)
-	{
-
-		bool ctrlPressed = (Input::IsKeyPressed(LAB_KEY_LCTRL) || Input::IsKeyPressed(LAB_KEY_RCTRL));
-	}
 }

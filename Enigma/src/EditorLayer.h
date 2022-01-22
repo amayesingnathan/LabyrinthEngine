@@ -33,8 +33,6 @@ namespace Labyrinth {
 		void SaveScene();
 		void SaveSceneAs();
 
-		void ResetKeys(int key);
-
 	private:
 		Labyrinth::OrthographicCameraController mCameraController;
 
