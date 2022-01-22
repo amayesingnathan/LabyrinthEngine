@@ -1,0 +1,14 @@
+#pragma once
+
+// From SDL_mouse.h
+#define LAB_MOUSE_BUTTON(X)       (1 << ((X)-1))
+#define LAB_MOUSE_BUTTON_1	      1
+#define LAB_MOUSE_BUTTON_2		  2
+#define LAB_MOUSE_BUTTON_3        3
+#define LAB_MOUSE_BUTTON_4        4
+#define LAB_MOUSE_BUTTON_5        5
+#define LAB_MOUSE_BUTTON_LAST     LAB_MOUSE_BUTTON_5
+#define LAB_MOUSE_BUTTON_LEFT     LAB_MOUSE_BUTTON_1
+#define LAB_MOUSE_BUTTON_RIGHT    LAB_MOUSE_BUTTON_3
+#define LAB_MOUSE_BUTTON_MIDDLE   LAB_MOUSE_BUTTON_2 
+
