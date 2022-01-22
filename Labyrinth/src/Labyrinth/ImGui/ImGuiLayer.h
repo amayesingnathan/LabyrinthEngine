@@ -40,7 +40,6 @@ namespace Labyrinth {
 
 	private:
 		bool mBlockEvents = true;
-		int mTime = 0;
 	};
 
 }

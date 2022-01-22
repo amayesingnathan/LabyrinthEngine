@@ -19,7 +19,7 @@ namespace Labyrinth {
 		}
 	};
 
-	Application* Labyrinth::CreateApplication()
+	Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args)
 	{
 		return new EnigmaEditor();
 	}

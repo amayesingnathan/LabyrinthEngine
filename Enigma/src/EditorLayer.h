@@ -2,6 +2,7 @@
 
 #include "Labyrinth.h"
 #include "Panels/ScenePanel.h"
+#include "Panels/ContentBrowserPanel.h"
 
 #include "Labyrinth/Renderer/EditorCamera.h"
 
@@ -28,10 +29,9 @@ namespace Labyrinth {
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveSceneAs();
-
-		void ResetKeys(int key);
 
 	private:
 		Labyrinth::OrthographicCameraController mCameraController;
@@ -44,9 +44,11 @@ namespace Labyrinth {
 		ScenePanel mScenePanel;
 		Ref<Scene> mCurrentScene;
 
+		ContentBrowserPanel mContentBrowserPanel;
+
 		Entity mHoveredEntity;
 
-		std::optional<std::string> mFileSave = std::nullopt;
+		std::string mFilepath;
 
 		bool mPrimaryCamera = true;
 

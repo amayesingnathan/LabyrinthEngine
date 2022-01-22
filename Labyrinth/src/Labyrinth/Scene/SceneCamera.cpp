@@ -30,6 +30,7 @@ namespace Labyrinth {
 
 	void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
 	{
+		LAB_CORE_ASSERT(width > 0 && height > 0);
 		mAspectRatio = (float)width / (float)height;
 		RecalculateProjection();
 	}

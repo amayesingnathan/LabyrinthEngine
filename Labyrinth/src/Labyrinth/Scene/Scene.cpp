@@ -167,7 +167,8 @@ namespace Labyrinth {
 	template<>
 	void Scene::onComponentAdded<CameraComponent>(Entity entity, CameraComponent& component)
 	{
-		component.camera.setViewportSize(mViewportWidth, mViewportHeight);
+		if (mViewportWidth > 0 && mViewportHeight > 0)
+			component.camera.setViewportSize(mViewportWidth, mViewportHeight);
 	}
 
 	template<>

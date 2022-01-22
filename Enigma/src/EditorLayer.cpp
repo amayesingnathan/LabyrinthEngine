@@ -14,6 +14,8 @@
 
 namespace Labyrinth {
 
+	extern const std::filesystem::path gAssetPath;
+
 	EditorLayer::EditorLayer()
 		:	Layer("EditorLayer"), mCameraController(1280.0f / 720.0f, true), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
 	{
@@ -173,6 +175,7 @@ namespace Labyrinth {
 		}
 
 		mScenePanel.onImGuiRender();
+		mContentBrowserPanel.onImGuiRender();
 
 		ImGui::Begin("Stats");
 
@@ -209,9 +212,19 @@ namespace Labyrinth {
 		uint32_t textureID = mFramebuffer->getColorAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const wchar_t* path = (const wchar_t*)payload->Data;
+				OpenScene(std::filesystem::path(gAssetPath) / path);
+			}
+			ImGui::EndDragDropTarget();
+		}
+
 		// Gizmos
 		Entity selectedEntity = mScenePanel.getSelectedEntity();
-		if (selectedEntity && mGizmoType != -1)
+		if (selectedEntity && mGizmoType != -1 && mViewportFocused)
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -366,42 +379,37 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		mFileSave = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (mFileSave)
+		mFilepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (!mFilepath.empty())
 		{
-			mCurrentScene = CreateRef<Scene>();
-			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mScenePanel.setContext(mCurrentScene);
-
-			Serialiser::Deserialise<Scene>(*mFileSave, mCurrentScene);
+			OpenScene(mFilepath);
 		}
+	}
 
-		ResetKeys(LAB_KEY_O);
+	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	{
+		mCurrentScene = CreateRef<Scene>();
+		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+		mScenePanel.setContext(mCurrentScene);
+
+		Serialiser::Deserialise<Scene>(path.string(), mCurrentScene);
 	}
 
 	void EditorLayer::SaveScene()
 	{
-		if (mFileSave)
+		if (!mFilepath.empty())
 		{
-			Serialiser::Serialise(mCurrentScene, *mFileSave);
+			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
 		else SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		std::optional<std::string> mFileSave = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
-		if (mFileSave)
+		mFilepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		if (!mFilepath.empty())
 		{
-			Serialiser::Serialise(mCurrentScene, *mFileSave);
+			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
-
-		ResetKeys(LAB_KEY_S); 
-	}
-
-	void EditorLayer::ResetKeys(int key)
-	{
-
-		bool ctrlPressed = (Input::IsKeyPressed(LAB_KEY_LCTRL) || Input::IsKeyPressed(LAB_KEY_RCTRL));
 	}
 }

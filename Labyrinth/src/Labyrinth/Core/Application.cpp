@@ -12,7 +12,8 @@ namespace Labyrinth {
 
 	Application* Application::sInstance = nullptr;
 
-	Application::Application(const std::string& name)
+	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
+		: mCommandLineArgs(args)
 	{
 		LAB_PROFILE_FUNCTION();
 
