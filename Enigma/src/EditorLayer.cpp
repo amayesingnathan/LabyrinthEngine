@@ -173,6 +173,7 @@ namespace Labyrinth {
 		}
 
 		mScenePanel.onImGuiRender();
+		mContentBrowserPanel.onImGuiRender();
 
 		ImGui::Begin("Stats");
 
