@@ -83,7 +83,7 @@ namespace Labyrinth {
 			}
 
 		public:
-			void send(const Message<T>& msg)
+			void Send(const Message<T>& msg)
 			{
 				if (isConnected())
 					mConnection->send(msg);

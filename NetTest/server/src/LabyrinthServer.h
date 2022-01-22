@@ -21,11 +21,7 @@ namespace Labyrinth {
 
 		protected:  //Layer overrides
 
-			virtual void onUpdate(Timestep ts) override
-			{
-				update(-1, true);
-			}
-
+			virtual void onUpdate(Timestep ts) override;
 			virtual void onEvent(Labyrinth::Event& e) override {}
 
 		protected: //Server Interface overrides

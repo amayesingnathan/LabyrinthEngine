@@ -48,7 +48,7 @@ namespace Labyrinth {
 				std::scoped_lock lock(mQueueMutex);
 				mQueue.emplace_back(std::move(item));
 
-				std::unique_lock loc(mBlockingMutex);
+				std::unique_lock<std::mutex> loc(mBlockingMutex);
 				mBlocking.notify_one();
 			}
 
@@ -57,7 +57,7 @@ namespace Labyrinth {
 				std::scoped_lock lock(mQueueMutex);
 				mQueue.emplace_front(std::move(item));
 
-				std::unique_lock loc(mBlockingMutex);
+				std::unique_lock<std::mutex> loc(mBlockingMutex);
 				mBlocking.notify_one();
 			}
 

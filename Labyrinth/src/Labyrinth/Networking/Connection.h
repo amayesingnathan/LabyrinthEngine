@@ -54,8 +54,9 @@ namespace Labyrinth {
 
 				mID = uid;
 
-				WriteValidation();
-				ReadValidation(server);
+				//WriteValidation();
+				//ReadValidation(server);
+				ReadHeader();
 			}
 
 			void connectToServer(const asio::ip::tcp::resolver::results_type& endpoints)
@@ -67,7 +68,8 @@ namespace Labyrinth {
 					{
 						if (!ec)
 						{
-							ReadValidation();
+							ReadHeader();
+							//ReadValidation();
 						}
 						else
 						{

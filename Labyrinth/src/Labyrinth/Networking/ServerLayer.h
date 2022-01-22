@@ -26,7 +26,10 @@ namespace Labyrinth {
 
 			virtual void onUpdate(Timestep ts) override
 			{
-				update(-1, true);
+				while (1)
+				{
+					update(-1, true);
+				}
 			}
 
 		public:
@@ -92,7 +95,7 @@ namespace Labyrinth {
 				);
 			}
 
-			void MessageClient(Ref<Connection<T>> client, const Message<T> msg)
+			void MessageClient(Ref<Connection<T>> client, const Message<T>& msg)
 			{
 				if (client && client->isConnected())
 				{
@@ -106,7 +109,7 @@ namespace Labyrinth {
 				}
 			}
 
-			void BroadcastToClients(const Message<T> msg, Ref<Connection<T>> ignoreClient = nullptr)
+			void BroadcastToClients(const Message<T>& msg, Ref<Connection<T>> ignoreClient = nullptr)
 			{
 				bool invalidClientExists = false;
 
@@ -133,7 +136,7 @@ namespace Labyrinth {
 				}
 			}
 
-			void update(size_t maxMessages = -1, bool wait = false)
+			void update(size_t maxMessages = std::numeric_limits<size_t>::max(), bool wait = false)
 			{
 				if (wait) mQMessagesIn.wait();
 

@@ -4,6 +4,11 @@ namespace Labyrinth
 {
 	namespace Net {
 
+		void TestServerLayer::onUpdate(Timestep ts)
+		{
+			update(-1, true);
+		}
+
 		bool TestServerLayer::onClientConnect(Ref<Connection<MessageTypes>> client)
 		{
 			Message<MessageTypes> msg;
