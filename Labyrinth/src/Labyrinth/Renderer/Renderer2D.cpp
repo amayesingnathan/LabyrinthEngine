@@ -304,7 +304,8 @@ namespace Labyrinth {
 		if (src.hasTex())
 			switch (src.type)
 			{
-				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, nullptr, entityID);
+				case SpriteRendererComponent::TexType::None: break;
+				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, nullptr, entityID); break;
 				case SpriteRendererComponent::TexType::Tile: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, src.texture.subtex->getTexCoords(), entityID);
 			}
 		else

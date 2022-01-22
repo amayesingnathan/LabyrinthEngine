@@ -29,6 +29,7 @@ namespace Labyrinth {
 
 		void NewScene();
 		void OpenScene();
+		void OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveSceneAs();
 
@@ -49,7 +50,7 @@ namespace Labyrinth {
 
 		Entity mHoveredEntity;
 
-		std::optional<std::string> mFileSave = std::nullopt;
+		std::string mFilepath;
 
 		bool mPrimaryCamera = true;
 

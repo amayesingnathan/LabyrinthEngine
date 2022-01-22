@@ -300,8 +300,8 @@ namespace Labyrinth {
 
 		//Must add new components here as they are added.
 		if (!decodeObject<TransformComponent>(deserializedEntity, entity)) return nullptr;
-		if (!decodeObject<CameraComponent>(deserializedEntity, entity)) return nullptr;
-		if (!decodeObject<SpriteRendererComponent>(deserializedEntity, entity)) return nullptr;
+		decodeObject<CameraComponent>(deserializedEntity, entity);
+		decodeObject<SpriteRendererComponent>(deserializedEntity, entity);
 
 		return CreateRef<Entity>(deserializedEntity);
 	}

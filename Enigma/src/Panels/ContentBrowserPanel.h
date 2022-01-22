@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Labyrinth/Renderer/Texture.h"
+
 #include <filesystem>
 
 namespace Labyrinth {
@@ -12,7 +14,10 @@ namespace Labyrinth {
 		void onImGuiRender();
 
 	private:
-		std::filesystem::path mCurrentDirectory;
+		std::filesystem::path mCurrentDirectory; 
+		
+		Ref<Texture2D> mDirectoryIcon;
+		Ref<Texture2D> mFileIcon;
 	};
 
 }

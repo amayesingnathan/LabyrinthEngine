@@ -1,15 +1,18 @@
 #pragma once
 
+#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/Application.h"
+
 #ifdef LAB_PLATFORM_WINDOWS
 
-extern Labyrinth::Application* Labyrinth::CreateApplication();
+extern Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {	
 	Labyrinth::Log::Init();
 
 	LAB_PROFILE_BEGIN_SESSION("Startup", "LabyrinthProfile-Startup.json");
-	auto app = Labyrinth::CreateApplication();	
+	auto app = Labyrinth::CreateApplication({ argc, argv });
 	LAB_PROFILE_END_SESSION();
 
 	LAB_PROFILE_BEGIN_SESSION("Runtime", "LabyrinthProfile-Runtime.json");

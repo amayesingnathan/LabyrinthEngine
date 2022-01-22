@@ -17,7 +17,7 @@ public:
 	}
 };
 
-Labyrinth::Application* Labyrinth::CreateApplication()
+Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args)
 {
 	return new Sandbox();
 }

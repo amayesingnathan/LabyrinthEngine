@@ -10,6 +10,8 @@
 
 namespace Labyrinth {
 
+	extern const std::filesystem::path gAssetPath;
+
 	ScenePanel::ScenePanel(const Ref<Scene>& scene)
 	{
 		setContext(scene);
@@ -381,13 +383,12 @@ namespace Labyrinth {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 				{
 					const wchar_t* path = (const wchar_t*)payload->Data;
-					//std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
-					//component.texture = Texture2D::Create(texturePath.string());
+					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+					component.texture = Texture2D::Create(texturePath.string());
+					component.type = SpriteRendererComponent::TexType::Texture;
 				}
 				ImGui::EndDragDropTarget();
 			}
-
-
 
 			ImGui::DragFloat("Tiling Factor", &component.tilingFactor, 0.1f, 0.0f, 100.0f);
 		});
