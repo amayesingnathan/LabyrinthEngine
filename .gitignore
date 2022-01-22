@@ -1,0 +1,19 @@
+#Ignore binaries
+**/bin/
+!dependencies/premake/bin/
+
+#Ignore VS temp files
+.vs/
+**.sln
+**.vcxproj
+**.vcxproj.filters
+**.vcxproj.user
+
+#Labyrinth Log files
+*.log
+
+#Ignore profiling files
+**.json
+
+#Ignore Labyrinth scene files
+**.labr

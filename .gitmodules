@@ -1,0 +1,21 @@
+[submodule "Labyrinth/dependencies/spdlog"]
+	path = Labyrinth/dependencies/spdlog
+	url = https://github.com/gabime/spdlog
+	branch = v1.x
+[submodule "Labyrinth/dependencies/rapidxml"]
+	path = Labyrinth/dependencies/rapidxml
+	url = https://github.com/discord/rapidxml
+[submodule "Labyrinth/dependencies/imgui"]
+	path = Labyrinth/dependencies/imgui
+	url = https://github.com/amayesingnathan/imgui
+	branch = docking
+[submodule "Labyrinth/dependencies/glm"]
+	path = Labyrinth/dependencies/glm
+	url = https://github.com/g-truc/glm
+	branch = master
+[submodule "Labyrinth/dependencies/yaml_cpp"]
+	path = Labyrinth/dependencies/yaml-cpp
+	url = https://github.com/amayesingnathan/yaml-cpp
+[submodule "Labyrinth/dependencies/ImGuizmo"]
+	path = Labyrinth/dependencies/ImGuizmo
+	url = https://github.com/CedricGuillemet/ImGuizmo
