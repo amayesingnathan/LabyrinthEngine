@@ -60,11 +60,12 @@ namespace YAML {
 			return true;
 		}
 	};
-
 }
 
 
 namespace Labyrinth {
+
+	static Entity currentEntity = Entity();
 
 	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec3& v)
 	{
@@ -80,8 +81,30 @@ namespace Labyrinth {
 		return mOut;
 	}
 
+	//Forward declare entity encoding for use in Node component encoding
 	template<>
-	void YAMLParser::encodeObject<TagComponent>(const TagComponent& tag)
+	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps);
+
+	template<>
+	void YAMLParser::EncodeObject<NodeComponent>(const NodeComponent& node, bool flag)
+	{
+		BeginObject("NodeComponent");
+
+		ObjectProperty("Parent", node.parent.getID());
+		ObjectProperty("ChildCount", node.children.size());
+
+		BeginSequence("Children");
+		for (auto& child : node.children)
+		{
+			EncodeObject(child);
+		}
+		EndSequence();
+
+		EndObject();
+	}
+
+	template<>
+	void YAMLParser::EncodeObject<TagComponent>(const TagComponent& tag, bool flag)
 	{
 		BeginObject("TagComponent");
 		ObjectProperty("Tag", tag.tag);
@@ -89,19 +112,19 @@ namespace Labyrinth {
 	}
 
 	template<>
-	void YAMLParser::encodeObject<TransformComponent>(const TransformComponent& transform)
+	void YAMLParser::EncodeObject<TransformComponent>(const TransformComponent& transform, bool flag)
 	{
 		BeginObject("TransformComponent");
 
 		ObjectProperty("Translation", transform.translation);
-		ObjectProperty("Rotation", transform.translation);
-		ObjectProperty("Scale", transform.translation);
+		ObjectProperty("Rotation", transform.rotation);
+		ObjectProperty("Scale", transform.scale);
 
 		EndObject();
 	}
 
 	template<>
-	void YAMLParser::encodeObject<CameraComponent>(const CameraComponent& cameraComponent)
+	void YAMLParser::EncodeObject<CameraComponent>(const CameraComponent& cameraComponent, bool flag)
 	{
 		BeginObject("CameraComponent");
 
@@ -124,62 +147,74 @@ namespace Labyrinth {
 	}
 
 	template<>
-	void YAMLParser::encodeObject<SpriteRendererComponent>(const SpriteRendererComponent& srComponent)
+	void YAMLParser::EncodeObject<SpriteRendererComponent>(const SpriteRendererComponent& srComponent, bool flag)
 	{
 		BeginObject("SpriteRendererComponent");
 
 		ObjectProperty("Colour", srComponent.colour);
 
-		mOut << YAML::EndMap; // SpriteRendererComponent
+		EndObject();
 	}
 
 	template<>
-	void YAMLParser::encodeObject<Entity>(const Entity& entity)
+	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps)
 	{
 		BeginObject();
 		ObjectProperty("Entity", entity.getID());
 
+		if (!includeComps)
+		{
+			EndObject();
+			return;
+		}
+
+		if (entity.hasComponent<NodeComponent>())
+		{
+			const NodeComponent& nc = entity.getComponent<NodeComponent>();
+			EncodeObject(nc);
+		}
+
 		if (entity.hasComponent<TagComponent>())
 		{
 			const TagComponent& tc = entity.getComponent<TagComponent>();
-			encodeObject<TagComponent>(tc);
+			EncodeObject(tc);
 		}
 
 		if (entity.hasComponent<TransformComponent>())
 		{
 			const TransformComponent& tc = entity.getComponent<TransformComponent>();
-			encodeObject<TransformComponent>(tc);
+			EncodeObject(tc);
 		}
 
 		if (entity.hasComponent<CameraComponent>())
 		{
 			const CameraComponent& cc = entity.getComponent<CameraComponent>();
-			encodeObject<CameraComponent>(cc);
+			EncodeObject(cc);
 		}
 
 		if (entity.hasComponent<SpriteRendererComponent>())
 		{
 			const SpriteRendererComponent& src = entity.getComponent<SpriteRendererComponent>();
-			encodeObject<SpriteRendererComponent>(src);
+			EncodeObject(src);
 		}
 
 		EndObject();
 	}
 
 	template<>
-	void YAMLParser::encodeObject<Ref<Scene>>(const Ref<Scene>& scene)
+	void YAMLParser::EncodeObject<Ref<Scene>>(const Ref<Scene>& scene, bool flag)
 	{
 		BeginObject();
 		ObjectProperty("Scene", "Untitled");
 		BeginSequence("Entities");
 
-		scene->mRegistry.each([&](auto entityID)
+		scene->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
-				Entity entity = { entityID, scene.get() };
+				Entity entity = { entityID, scene };
 				if (!entity)
 					return;
 
-				encodeObject(entity);
+				EncodeObject(entity);
 			});
 
 		EndSequence();
@@ -187,7 +222,48 @@ namespace Labyrinth {
 	}
 
 	template<>
-	Ref<TransformComponent> YAMLParser::decodeObject<TransformComponent>(Entity entity, YAML::Node node)
+	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
+
+
+	template<>
+	Ref<NodeComponent> YAMLParser::DecodeObject<NodeComponent>(Entity entity, YAML::Node node)
+	{
+		auto nodeComponent = node["NodeComponent"];
+		if (nodeComponent)
+		{
+			// Entities always have node components
+			auto& nc = entity.getComponent<NodeComponent>();
+
+			entt::entity parentID = Cast<entt::entity>(nodeComponent["Parent"].as<uint32_t>());
+			if (parentID != entt::null)
+				entity.setParent(currentEntity);
+
+			auto childCount = nodeComponent["ChildCount"];
+			if (childCount)
+				if (childCount.as<size_t>() != 0)
+					nc.children.reserve(childCount.as<size_t>());
+
+			auto children = nodeComponent["Children"];
+			if (children)
+			{
+				Entity holdEntity = currentEntity;
+				currentEntity = entity;
+
+				for (auto child : children)
+				{
+					Ref<Entity> childEnt = DecodeObject<Entity>(entity.getScene(), child);
+				}
+
+				currentEntity = holdEntity;
+			}
+
+			return CreateRef<NodeComponent>(nc);
+		}
+		return nullptr;
+	}
+
+	template<>
+	Ref<TransformComponent> YAMLParser::DecodeObject<TransformComponent>(Entity entity, YAML::Node node)
 	{
 		auto transformComponent = node["TransformComponent"];
 		if (transformComponent)
@@ -203,7 +279,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	TransformComponent YAMLParser::decodeObject<TransformComponent>()
+	TransformComponent YAMLParser::DecodeObject<TransformComponent>()
 	{
 		LAB_CORE_ASSERT(mIn["TransformComponent"], "File must contain a transform component!");
 
@@ -216,7 +292,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	Ref<CameraComponent> YAMLParser::decodeObject<CameraComponent>(Entity entity, YAML::Node node)
+	Ref<CameraComponent> YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
 	{
 		auto& cameraComponent = node["CameraComponent"];
 		if (cameraComponent)
@@ -241,7 +317,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	CameraComponent YAMLParser::decodeObject<CameraComponent>()
+	CameraComponent YAMLParser::DecodeObject<CameraComponent>()
 	{
 		LAB_CORE_ASSERT(mIn["CameraComponent"], "File must contain a camera component!");
 
@@ -263,7 +339,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	Ref<SpriteRendererComponent> YAMLParser::decodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
+	Ref<SpriteRendererComponent> YAMLParser::DecodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
 	{
 		auto spriteRendererComponent = node["SpriteRendererComponent"];
 		if (spriteRendererComponent)
@@ -276,7 +352,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	SpriteRendererComponent YAMLParser::decodeObject<SpriteRendererComponent>()
+	SpriteRendererComponent YAMLParser::DecodeObject<SpriteRendererComponent>()
 	{
 		LAB_CORE_ASSERT(mIn["SpriteRendererComponent"], "File must contain a SpriteRenderer component!");
 		auto& spriteRendererComponent = mIn["SpriteRendererComponent"];
@@ -285,7 +361,7 @@ namespace Labyrinth {
 	}
 
 	template<>
-	Ref<Entity> YAMLParser::decodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
+	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
 	{
 		uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
 
@@ -299,28 +375,29 @@ namespace Labyrinth {
 		Entity deserializedEntity = scene->CreateEntity(name);
 
 		//Must add new components here as they are added.
-		if (!decodeObject<TransformComponent>(deserializedEntity, entity)) return nullptr;
-		decodeObject<CameraComponent>(deserializedEntity, entity);
-		decodeObject<SpriteRendererComponent>(deserializedEntity, entity);
+		if (!DecodeObject<NodeComponent>(deserializedEntity, entity)) return nullptr;
+		if (!DecodeObject<TransformComponent>(deserializedEntity, entity)) return nullptr;
+		DecodeObject<CameraComponent>(deserializedEntity, entity);
+		DecodeObject<SpriteRendererComponent>(deserializedEntity, entity);
 
 		return CreateRef<Entity>(deserializedEntity);
 	}
 
 	template<>
-	Ref<Entity> YAMLParser::decodeObject<Entity>(Ref<Scene> scene)
+	Ref<Entity> YAMLParser::DecodeObject<Entity>(Ref<Scene> scene)
 	{
 		if (!mIn["Entity"]) return false;
 
 		auto entity = mIn["Entity"];
-		return decodeObject<Entity>(scene, entity);
+		return DecodeObject<Entity>(scene, entity);
 	}
 
 	template<>
-	Ref<Scene> YAMLParser::decodeObject<Scene>(Ref<Scene> scene)
+	Ref<Scene> YAMLParser::DecodeObject<Scene>(Ref<Scene> scene)
 	{
 		if (!mIn["Scene"]) return nullptr;
 
-		bool success = true;
+		currentEntity = Entity();
 
 		std::string sceneName = mIn["Scene"].as<std::string>();
 		LAB_CORE_TRACE("Deserializing scene '{0}'", sceneName);
@@ -330,7 +407,7 @@ namespace Labyrinth {
 		{
 			for (auto entity : entities)
 			{
-				Ref<Entity> deserialisedEntity = decodeObject<Entity>(scene, entity);
+				Ref<Entity> deserialisedEntity = DecodeObject<Entity>(scene, entity);
 				if (!deserialisedEntity) return nullptr;
 			}
 		}

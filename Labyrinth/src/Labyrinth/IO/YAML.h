@@ -31,16 +31,16 @@ namespace Labyrinth {
 		operator bool() { if (mIn) return true; else return false; }
 
 		template<typename T>
-		void encodeObject(const T& data);
+		void EncodeObject(const T& data, bool flag = true);
 
 		template<typename T>
-		T decodeObject();
+		T DecodeObject();
 		template<typename T, typename Target>
-		Ref<T> decodeObject(Target target);
+		Ref<T> DecodeObject(Target target);
 
 	private:
 		template<typename T, typename Target>
-		Ref<T> decodeObject(Target target, YAML::Node node);
+		Ref<T> DecodeObject(Target target, YAML::Node node);
 
 
 

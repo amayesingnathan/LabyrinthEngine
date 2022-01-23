@@ -2,28 +2,20 @@
 
 #include "Scene.h"
 
+#include "Labyrinth/Core/System/Assert.h"
 #include "Labyrinth/Core/System/Log.h"
 
 namespace Labyrinth {
 
+	struct RootComponent;
 	struct NodeComponent;
 
 	class Entity
 	{
 	public:
-		struct HashFunction
-		{
-			size_t operator()(const Entity& entity) const
-			{
-				size_t xHash = std::hash<uint32_t>()((uint32_t)entity.mEntID);
-				size_t yHash = std::hash<uint64_t>()(reinterpret_cast<uint64_t>(entity.mScene)) << 1;
-				return xHash ^ yHash;
-			}
-		};
-
-	public:
 		Entity() : mEntID(entt::null), mScene(nullptr) {}
-		Entity(entt::entity entID, Scene* scene);
+		Entity(entt::entity entID, Ref<Scene> scene);
+		//Entity(uint32_t entID, Scene* scene);
 
 		Entity(const Entity& other) = default;
 		~Entity() {}
@@ -31,9 +23,9 @@ namespace Labyrinth {
 		template<typename T, typename... Args>
 		T& addComponent(Args&&... args)
 		{
-			assert(!hasComponent<T>());
+			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on component");
 			T& component = mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
-			mScene->onComponentAdded<T>(*this, component);
+			//mScene->onComponentAdded<T>(*this, component);
 			return component;
 		}
 
@@ -47,21 +39,21 @@ namespace Labyrinth {
 		template<typename T>
 		void removeComponent()
 		{
-			assert(hasComponent<T>());
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't remove component that doesn't exist on component");
 			mScene->mRegistry.erase<T>(mEntID);
 		}
 
 		template<typename T>
 		T& getComponent()
 		{
-			assert(hasComponent<T>());
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on component");
 			return mScene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
 		const T& getComponent() const
 		{
-			assert(hasComponent<T>());
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on component");
 			return mScene->mRegistry.get<T>(mEntID);
 		}
 
@@ -104,39 +96,50 @@ namespace Labyrinth {
 			return !(getID() == static_cast<uint32_t>(other));
 		}
 
-		Scene* getScene() { return mScene; }
+		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();
 		bool hasParent();
 
-		bool setParent(Entity newParent = {entt::null, nullptr});
+		bool setParent(Entity& newParent, NodeComponent& node);
+		bool setParent(Entity& newParent);
 
-		std::unordered_set<Entity, Entity::HashFunction>& getChildren();
-		const std::unordered_set<Entity, Entity::HashFunction>& getChildren() const;
+		std::vector<Entity>& getChildren();
+		const std::vector<Entity>& getChildren() const;
 		bool hasChild(const Entity& child) const;
 
 		bool isRelated(const Entity& filter) const;
 
 	private:
-		void addChild(Entity& child);
-		void removeChild(Entity& child);
+		void addChild(const Entity& child, NodeComponent& node);
+		void addChild(const Entity& child);
+		void removeChild(const Entity& child);
 
 	private:
 		entt::entity mEntID{ entt::null };
-		Scene* mScene;
+		Ref<Scene> mScene = nullptr;
+
+		friend Scene;
 
 	};
 
-	using Children = std::unordered_set<Entity, Entity::HashFunction>;
+	//Root components just indicates an entity has no parent.
+	struct RootComponent 
+	{
+		// Seem to need some actual data to be able to use as template parameter in addComponent
+		// so just added a random zero byte.
+		uint8_t data = 0; 
+		RootComponent() = default;
+	};
 
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
 		Entity parent = { entt::null, nullptr };
-		Children children = {};
+		std::vector<Entity> children = {};
 
 		NodeComponent() = default;
-		NodeComponent(const Entity& _parent, const Children& _children = {})
+		NodeComponent(const Entity& _parent, const std::vector<Entity>& _children = {})
 		: parent(_parent), children(_children) {}
 
 		operator bool() { return parent; }

@@ -90,7 +90,7 @@ namespace Labyrinth {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
 		{
 			int pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
-			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene.get());
+			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
 
 		mFramebuffer->unbind();
@@ -393,6 +393,8 @@ namespace Labyrinth {
 		mScenePanel.setContext(mCurrentScene);
 
 		Serialiser::Deserialise<Scene>(path.string(), mCurrentScene);
+
+		mFilepath = path.string();
 	}
 
 	void EditorLayer::SaveScene()

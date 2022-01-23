@@ -29,7 +29,7 @@ namespace Labyrinth {
 
 		mContext->mRegistry.view<NodeComponent>().each([&](auto entityID, auto& nc)
 			{
-				Entity entity{ entityID , mContext.get() };
+				Entity entity{ entityID , mContext };
 				if (!entity.hasParent())
 					DrawEntityNode(entity);
 			});
@@ -58,7 +58,7 @@ namespace Labyrinth {
 	{
 		if (!entity) return;
 
-		if (entity.getScene() == mContext.get())
+		if (entity.getScene() == mContext)
 		{
 			mSelectedEntity = entity;
 		}
@@ -264,7 +264,7 @@ namespace Labyrinth {
 			mContext->mRegistry.view<TagComponent>().each([&](auto entityID, auto& tc) {
 				if (mSelectedEntity != entityID)
 				{
-					Entity parentEnts{ entityID , mContext.get() };
+					Entity parentEnts{ entityID , mContext };
 					entityStrings.emplace(tc.tag.c_str(), parentEnts);
 				}
 			});
@@ -281,10 +281,8 @@ namespace Labyrinth {
 					bool isSelected = (std::string(currentEntityString) == name);
 
 					if (ImGui::Selectable(name, isSelected))
-					{
 						if (mSelectedEntity.setParent(parentEnt))
-							currentEntityString = name;
-					}
+								currentEntityString = name;
 
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();

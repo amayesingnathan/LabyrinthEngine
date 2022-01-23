@@ -3,56 +3,76 @@
 
 namespace Labyrinth {
 
-	using Children = std::unordered_set<Entity, Entity::HashFunction>;
-
-	Entity::Entity(entt::entity entID, Scene* scene)
+	Entity::Entity(entt::entity entID, Ref<Scene> scene)
 		: mEntID(entID), mScene(scene)
 	{
 	}
+
+	//Entity::Entity(uint32_t entID, Scene* scene)
+	//	: mEntID(Cast<entt::entity>(entID)), mScene(scene)
+	//{
+	//}
 
 	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
-	bool Entity::setParent(Entity newParent)
+	bool Entity::setParent(Entity& newParent, NodeComponent& node)
 	{
-		auto& node = getComponent<NodeComponent>();
-		if (node.parent == newParent)
-			return false;
+		if (node.parent == newParent) return false;
 
 		if (newParent)
-			if (isRelated(newParent))
-			{
-				LAB_CORE_WARN("Cannot create circular ownership of entities!"); return false;
-			}
+		{
+			if (!isRelated(newParent)) // Can only add to new parent's list of children if we're not already related.
+				newParent.addChild(*this);
+			else { LAB_CORE_WARN("Cannot create circular ownership of entities!"); return false; }
+		}
+		else { addComponent<RootComponent>(); };
 
 		if (node.parent)
+		{
 			node.parent.removeChild(*this);
-		
-		if (newParent)
-			newParent.addChild(*this);
+		}
+		else
+		{
+			removeComponent<RootComponent>(); //No longer root entity (has parent)
+		}
 
 		node.parent = newParent;
 		return true;
 	}
 
-	Children& Entity::getChildren() { return getComponent<NodeComponent>().children; }
-	const Children& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
+	bool Entity::setParent(Entity& newParent)
+	{
+		return setParent(newParent, getComponent<NodeComponent>());
+	}
+
+	std::vector<Entity>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
+	const std::vector<Entity>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
 
 	bool Entity::hasChild(const Entity& child) const 
 	{ 
-		return getChildren().find(child) != getChildren().end();
+		const std::vector<Entity>& children = getChildren();
+		auto it = std::find(children.begin(), children.end(), child);
+		return it != getChildren().end();
 	}
 
-	void Entity::addChild(Entity& child)
+	void Entity::addChild(const Entity& child, NodeComponent& node)
 	{
-		auto& node = getComponent<NodeComponent>();
-		node.children.emplace(child);
+		node.children.emplace_back(child);
 	}
 
-	void Entity::removeChild(Entity& child)
+	void Entity::addChild(const Entity& child)
 	{
-		getChildren().erase(child);
+		addChild(child, getComponent<NodeComponent>());
+	}
+
+	void Entity::removeChild(const Entity& child)
+	{
+		std::vector<Entity>& children = getChildren();
+		auto it = std::find(children.begin(), children.end(), child);
+		if (it != children.end())
+			children.erase(it);
 	}
 
 	bool Entity::isRelated(const Entity& filter) const

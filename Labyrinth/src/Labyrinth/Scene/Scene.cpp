@@ -20,10 +20,15 @@ namespace Labyrinth {
 
 	Entity Scene::CreateEntity(const std::string& name, const Entity& parent)
 	{
-		Entity newEnt(mRegistry.create(), this);
+		Entity newEnt(mRegistry.create(), CreateRefFromThis(this));
+
 		newEnt.addComponent<TransformComponent>();
+
 		auto& node = newEnt.addComponent<NodeComponent>();
 		node.parent = parent;
+		if (!parent)
+			newEnt.addComponent<RootComponent>();
+
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
@@ -40,15 +45,15 @@ namespace Labyrinth {
 		auto& parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
-			parent.getChildren().erase(entity);
+			parent.removeChild(entity);
 
-		//Set this to true to link parent and children of entity being destroyed
-		//instead of destroying them.
-		static bool linkOnDestroy = false;
+		//Set this to true to link parent of entity with children of entity 
+		//instead of destroying all child entities.
+		static bool sLinkOnDestroy = false;
 
 		//Set the parent of all entity's children (will be null entity if no parent)
 		for (auto child : entity.getChildren())
-			if (linkOnDestroy)
+			if (sLinkOnDestroy)
 				child.setParent(parent);
 			else
 				DestroyEntity(child);
@@ -143,7 +148,7 @@ namespace Labyrinth {
 		{
 			const auto& camera = view.get<CameraComponent>(entity);
 			if (camera.primary)
-				return Entity{ entity, this };
+				return Entity{ entity,CreateRefFromThis(this) };
 		}
 		return {};
 	}
@@ -152,6 +157,11 @@ namespace Labyrinth {
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
+	}
+
+	template<>
+	void Scene::onComponentAdded<RootComponent>(Entity entity, RootComponent& component)
+	{
 	}
 
 	template<>

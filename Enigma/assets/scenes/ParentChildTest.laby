@@ -1,20 +1,29 @@
 Scene: Untitled
 Entities:
-  - Entity: 1
+  - Entity: 0
+    NodeComponent:
+      Parent: 4294967295
+      ChildCount: 1
+      Children:
+        - Entity: 1
+          NodeComponent:
+            Parent: 0
+            ChildCount: 0
+            Children:
+              []
+          TagComponent:
+            Tag: Child
+          TransformComponent:
+            Translation: [0.36448884, -0.797937155, 0]
+            Rotation: [0.36448884, -0.797937155, 0]
+            Scale: [0.36448884, -0.797937155, 0]
+          SpriteRendererComponent:
+            Colour: [0.818532825, 0.0316035859, 0.651424348, 1]
     TagComponent:
       Tag: Parent
     TransformComponent:
-      Translation: [-1.57249069, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
+      Translation: [-1.99975276, -0.60091269, 0]
+      Rotation: [-1.99975276, -0.60091269, 0]
+      Scale: [-1.99975276, -0.60091269, 0]
     SpriteRendererComponent:
-      Colour: [0.6795367, 0, 0, 1]
-  - Entity: 0
-    TagComponent:
-      Tag: Child
-    TransformComponent:
-      Translation: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Colour: [0.00706609571, 0.631091356, 0.915057898, 1]
+      Colour: [0.0452885553, 0.837837815, 0.645055413, 1]

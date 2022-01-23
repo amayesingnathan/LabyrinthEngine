@@ -9,7 +9,7 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class Scene
+	class Scene : public AllowRefFromThis<Scene>
 	{
 	public:
 		Scene();
