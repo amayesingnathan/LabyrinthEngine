@@ -2,10 +2,22 @@
 
 #include "Scene.h"
 
+#include "Labyrinth/Core/System/Cast.h"
 #include "Labyrinth/Core/System/Assert.h"
 #include "Labyrinth/Core/System/Log.h"
+#include "Labyrinth/Core/UUID.h"
 
 namespace Labyrinth {
+
+	//Defined here so it can be used in body of Entity.
+	struct IDComponent
+	{
+		UUID id;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+	};
+
 
 	struct RootComponent;
 	struct NodeComponent;
@@ -71,29 +83,36 @@ namespace Labyrinth {
 		//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
 		//}
 
-		uint32_t getID() const
+		uint32_t getEntID() const
 		{
-			return static_cast<uint32_t>(mEntID);
+			return Cast<uint32_t>(mEntID);
+		}
+
+		UUID getUUID() const
+		{
+			return getComponent<IDComponent>().id;
 		}
 
 		operator entt::entity() const { return mEntID; }
-		operator uint32_t() const { return static_cast<uint32_t>(mEntID); }
+		operator uint32_t() const { return Cast<uint32_t>(mEntID); }
+
+		operator UUID() const { return getUUID(); }
+		operator uint64_t() const { return getUUID(); }
 
 		operator bool() const { return mEntID != entt::null; }
 
 		bool operator==(const Entity& other) const
 		{
-			return mEntID == other.mEntID && mScene == other.mScene;
+			// Be sure to check for cases involving null entity because we can't do getUUID() on null entity.
+			if (!*this != !other) return false;
+			if (!*this && !other) return true;
+
+			return getUUID() == other.getUUID();
 		}
 
 		bool operator!=(const Entity& other) const
 		{
 			return !(*this == other);
-		}
-
-		bool operator!=(const entt::entity& other) const
-		{
-			return !(getID() == static_cast<uint32_t>(other));
 		}
 
 		Ref<Scene> getScene() { return mScene; }
@@ -123,12 +142,17 @@ namespace Labyrinth {
 
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//   Components exclusively for interaction with and between entities are stored here instead of Components.h	//
+	//   as they need the full Entity definition, and we can't to include Entity.h in Components.h					//
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	//Root components just indicates an entity has no parent.
-	struct RootComponent 
+	struct RootComponent
 	{
 		// Seem to need some actual data to be able to use as template parameter in addComponent
 		// so just added a random zero byte.
-		uint8_t data = 0; 
+		uint8_t data = 0;
 		RootComponent() = default;
 	};
 
@@ -140,7 +164,7 @@ namespace Labyrinth {
 
 		NodeComponent() = default;
 		NodeComponent(const Entity& _parent, const std::vector<Entity>& _children = {})
-		: parent(_parent), children(_children) {}
+			: parent(_parent), children(_children) {}
 
 		operator bool() { return parent; }
 	};

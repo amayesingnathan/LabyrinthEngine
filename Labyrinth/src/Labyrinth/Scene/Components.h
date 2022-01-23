@@ -17,11 +17,12 @@ struct SDL_Rect;
 
 namespace Labyrinth {
 
-	struct Component
-	{
-		Component() = default;
-		virtual ~Component() {}
-	};
+
+
+
+	//////////////////////////////////////////
+	//    General object data components	//
+	//////////////////////////////////////////
 
 	struct CameraComponent
 	{
@@ -54,7 +55,7 @@ namespace Labyrinth {
 	};
 
 
-	struct KeyboardController : public Component
+	struct KeyboardController
 	{
 		KeyboardController() = default;
 		KeyboardController(class Entity* entt);
@@ -112,7 +113,7 @@ namespace Labyrinth {
 	};
 
 #if 0
-	struct SpriteComponent : public Component
+	struct SpriteComponent 
 	{
 
 		SDL_Texture* texture;
@@ -214,7 +215,7 @@ namespace Labyrinth {
 	};
 
 
-	struct TileComponent : public Component
+	struct TileComponent 
 	{
 		Vector2D position;
 		struct SpriteComponent* sprite;
@@ -278,7 +279,7 @@ namespace Labyrinth {
 	};
 
 
-	struct VelocityComponent : public Component
+	struct VelocityComponent 
 	{
 		Vector2D vel;
 

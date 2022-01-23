@@ -18,10 +18,26 @@ namespace Labyrinth {
 	{
 	}
 
+	Entity Scene::CreateEntity(const std::string& name)
+	{
+		return CreateEntityWithID(UUID(), name, Entity());
+	}
+
 	Entity Scene::CreateEntity(const std::string& name, const Entity& parent)
+	{
+		return CreateEntityWithID(UUID(), name, parent);
+	}
+
+	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name)
+	{
+		return CreateEntityWithID(id, name, Entity());
+	}
+
+	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, const Entity& parent)
 	{
 		Entity newEnt(mRegistry.create(), CreateRefFromThis(this));
 
+		newEnt.addComponent<IDComponent>(id);
 		newEnt.addComponent<TransformComponent>();
 
 		auto& node = newEnt.addComponent<NodeComponent>();
@@ -33,11 +49,6 @@ namespace Labyrinth {
 		tag = name.empty() ? "Entity" : name;
 
 		return newEnt;
-	}
-
-	Entity Scene::CreateEntity(const std::string& name)
-	{
-		return CreateEntity(name, {entt::null, nullptr});
 	}
 
 	void Scene::DestroyEntity(Entity entity)

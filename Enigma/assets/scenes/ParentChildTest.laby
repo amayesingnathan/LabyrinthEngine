@@ -1,13 +1,11 @@
 Scene: Untitled
 Entities:
-  - Entity: 0
+  - Entity: 11793449104312634429
     NodeComponent:
-      Parent: 4294967295
       ChildCount: 1
       Children:
-        - Entity: 1
+        - Entity: 2555422854956630128
           NodeComponent:
-            Parent: 0
             ChildCount: 0
             Children:
               []
@@ -15,7 +13,7 @@ Entities:
             Tag: Child
           TransformComponent:
             Translation: [0.36448884, -0.797937155, 0]
-            Rotation: [0.36448884, -0.797937155, 0]
+            Rotation: [0.36448884, -0.797937214, 0]
             Scale: [0.36448884, -0.797937155, 0]
           SpriteRendererComponent:
             Colour: [0.818532825, 0.0316035859, 0.651424348, 1]

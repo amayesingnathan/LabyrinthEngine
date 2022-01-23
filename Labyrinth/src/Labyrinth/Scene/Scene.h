@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 
@@ -15,8 +16,12 @@ namespace Labyrinth {
 		Scene();
 		~Scene();
 
-		Entity CreateEntity(const std::string& name, const Entity& parent);
 		Entity CreateEntity(const std::string& name);
+		Entity CreateEntity(const std::string& name, const Entity& parent);
+
+		Entity CreateEntityWithID(const UUID& id, const std::string& name);
+		Entity CreateEntityWithID(const UUID& id, const std::string& name, const Entity& parent);
+
 		void DestroyEntity(Entity entity);
 
 		void onUpdateRuntime(Timestep ts);

@@ -65,7 +65,7 @@ namespace YAML {
 
 namespace Labyrinth {
 
-	static Entity currentEntity = Entity();
+	static Entity currentParent = Entity();
 
 	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec3& v)
 	{
@@ -90,7 +90,6 @@ namespace Labyrinth {
 	{
 		BeginObject("NodeComponent");
 
-		ObjectProperty("Parent", node.parent.getID());
 		ObjectProperty("ChildCount", node.children.size());
 
 		BeginSequence("Children");
@@ -159,8 +158,10 @@ namespace Labyrinth {
 	template<>
 	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps)
 	{
+		LAB_CORE_ASSERT(entity.hasComponent<IDComponent>());
+
 		BeginObject();
-		ObjectProperty("Entity", entity.getID());
+		ObjectProperty("Entity", entity.getUUID());
 
 		if (!includeComps)
 		{
@@ -234,9 +235,8 @@ namespace Labyrinth {
 			// Entities always have node components
 			auto& nc = entity.getComponent<NodeComponent>();
 
-			entt::entity parentID = Cast<entt::entity>(nodeComponent["Parent"].as<uint32_t>());
-			if (parentID != entt::null)
-				entity.setParent(currentEntity);
+			if (currentParent)
+				entity.setParent(currentParent, nc);
 
 			auto childCount = nodeComponent["ChildCount"];
 			if (childCount)
@@ -246,15 +246,19 @@ namespace Labyrinth {
 			auto children = nodeComponent["Children"];
 			if (children)
 			{
-				Entity holdEntity = currentEntity;
-				currentEntity = entity;
+				// Save and then set new currentParent entity for setting parent of all 
+				// child entities to this entity.
+				Entity holdParent = currentParent;
+				currentParent = entity;
 
 				for (auto child : children)
 				{
 					Ref<Entity> childEnt = DecodeObject<Entity>(entity.getScene(), child);
 				}
 
-				currentEntity = holdEntity;
+				// Once all children have had parent set, restore the currentParent entity
+				// to this entity's parent.
+				currentParent = holdParent;
 			}
 
 			return CreateRef<NodeComponent>(nc);
@@ -363,7 +367,7 @@ namespace Labyrinth {
 	template<>
 	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
 	{
-		uint64_t uuid = entity["Entity"].as<uint64_t>(); // TODO
+		uint64_t uuid = entity["Entity"].as<uint64_t>(); 
 
 		std::string name;
 		auto tagComponent = entity["TagComponent"];
@@ -372,6 +376,7 @@ namespace Labyrinth {
 
 		LAB_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
+		//Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
 		Entity deserializedEntity = scene->CreateEntity(name);
 
 		//Must add new components here as they are added.
@@ -397,7 +402,9 @@ namespace Labyrinth {
 	{
 		if (!mIn["Scene"]) return nullptr;
 
-		currentEntity = Entity();
+		// Initialise current parent entity to null entity as first entity
+		// read should have no parent.
+		currentParent = Entity();
 
 		std::string sceneName = mIn["Scene"].as<std::string>();
 		LAB_CORE_TRACE("Deserializing scene '{0}'", sceneName);

@@ -62,7 +62,7 @@ namespace Labyrinth {
 		{
 			mSelectedEntity = entity;
 		}
-		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getID());
+		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getUUID());
 	}
 
 	void ScenePanel::DrawEntityNode(Entity entity)
