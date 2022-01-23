@@ -1,10 +1,10 @@
 Scene: Untitled
 Entities:
-  - Entity: 11793449104312634429
+  - Entity: 9476559088447719990
     NodeComponent:
-      ChildCount: 1
+      ChildCount: 4
       Children:
-        - Entity: 2555422854956630128
+        - Entity: 13187794337885728977
           NodeComponent:
             ChildCount: 0
             Children:
@@ -17,6 +17,39 @@ Entities:
             Scale: [0.36448884, -0.797937155, 0]
           SpriteRendererComponent:
             Colour: [0.818532825, 0.0316035859, 0.651424348, 1]
+        - Entity: 9352864174208119264
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TagComponent:
+            Tag: Child 3
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 4397705377278777992
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TagComponent:
+            Tag: Child 4
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 6130640908067602263
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TagComponent:
+            Tag: Child 2
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
     TagComponent:
       Tag: Parent
     TransformComponent:

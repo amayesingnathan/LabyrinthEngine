@@ -77,6 +77,24 @@ namespace Labyrinth {
 		{
 			mSelectedEntity = entity;
 		}
+		if (ImGui::BeginDragDropSource())
+		{
+			Entity* dragEntity = &entity;
+			ImGui::SetDragDropPayload("ENTITY_ITEM", dragEntity, sizeof(Entity));
+			ImGui::EndDragDropSource();
+		}
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ITEM"))
+			{
+				Entity* dragEntity = Cast<Entity>(payload->Data);
+				if (*dragEntity != entity)
+				{
+					dragEntity->setParent(entity);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		bool childCreated = false;
 		bool entityDeleted = false;
