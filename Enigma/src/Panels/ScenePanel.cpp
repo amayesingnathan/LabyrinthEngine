@@ -119,9 +119,9 @@ namespace Labyrinth {
 
 		if (entityDeleted)
 		{
-			mContext->DestroyEntity(entity);
 			if (mSelectedEntity == entity)
 				mSelectedEntity = {};
+			mContext->DestroyEntity(entity);
 		}
 	}
 
