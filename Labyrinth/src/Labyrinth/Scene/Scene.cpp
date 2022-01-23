@@ -50,28 +50,18 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	template<>
-	NodeComponent Scene::CloneComponent<NodeComponent>(NodeComponent& copy);
-
-	void Scene::CloneNodeComponent(Entity& copyFrom, Entity& copyTo)
-	{
-		auto nodeCopy = copyFrom.getComponent<NodeComponent>();
-		copyTo.setParent(nodeCopy.parent);
-
-		// Use counting loop to prevent iterator invalidation
-		size_t copyChildCount = nodeCopy.children.size();
-		for (size_t i = 0; i < copyChildCount; i++)
-		{
-			CloneEntity(nodeCopy.children[i]);
-		}
-	}
-
 	Entity Scene::CloneEntity(Entity& copy)
 	{
 		auto& tag = copy.getComponent<TagComponent>();
 		Entity newEnt = CreateEntity(tag.tag);
 
-		CloneNodeComponent(copy, newEnt);
+		auto nodeCopy = copy.getComponent<NodeComponent>();
+		newEnt.setParent(nodeCopy.parent);
+
+		// Use counting loop to prevent iterator invalidation
+		size_t copyChildCount = nodeCopy.children.size();
+		for (size_t i = 0; i < copyChildCount; i++)
+			CloneChild(nodeCopy.children[i], newEnt);
 
 		auto& trans = newEnt.getComponent<TransformComponent>();
 		trans = copy.getComponent<TransformComponent>();
@@ -84,27 +74,58 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	void Scene::DestroyEntity(Entity entity)
+	Entity Scene::CloneChild(Entity& copy, Entity& newParent)
+	{
+		auto& tag = copy.getComponent<TagComponent>();
+		Entity newEnt = CreateEntity(tag.tag);
+
+		auto nodeCopy = copy.getComponent<NodeComponent>();
+		newEnt.setParent(newParent);
+
+		// Use counting loop to prevent iterator invalidation
+		size_t copyChildCount = nodeCopy.children.size();
+		for (size_t i = 0; i < copyChildCount; i++)
+			CloneChild(nodeCopy.children[i], newEnt);
+
+		auto& trans = newEnt.getComponent<TransformComponent>();
+		trans = copy.getComponent<TransformComponent>();
+
+		if (copy.hasComponent<CameraComponent>())
+			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
+		if (copy.hasComponent<SpriteRendererComponent>())
+			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
+
+		return newEnt;
+	}
+
+	void Scene::DestroyEntity(Entity& entity)
 	{
 		auto& parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
 
+		DestroyEntityR(entity, parent);
+	}
+
+	void Scene::DestroyEntityR(Entity& entity, Entity& parent)
+	{
 		//Set this to true to link parent of entity with children of entity 
 		//instead of destroying all child entities.
 		static bool sLinkOnDestroy = false;
 
 		// Set the parent of all entity's children (will be null entity if no parent)
-		// Use counting loop to prevent iterator invalidation
 		auto& children = entity.getChildren();
-		size_t size = children.size();
-		for (size_t i = 0; i < size; i++)
+		for (auto& child : children)
 		{
 			if (sLinkOnDestroy)
-				children[i].setParent(parent);
-			else
-				DestroyEntity(children[i]);
+			{
+				if (parent)
+					child.setParent(parent);
+				else
+					DestroyEntityR(child, entity);
+			}
+			else DestroyEntityR(child, entity);
 		}
 
 		mRegistry.destroy(entity);
@@ -212,18 +233,6 @@ namespace Labyrinth {
 				return Entity{ entity,CreateRefFromThis(this) };
 		}
 		return {};
-	}
-
-	template<typename T>
-	T Scene::CloneComponent(Entity& copy)
-	{
-		static_assert(false);
-	}
-
-	template<typename T>
-	T Scene::CloneComponent(T& copy)
-	{
-		static_assert(false);
 	}
 
 	template<typename T>

@@ -33,6 +33,10 @@ namespace Labyrinth {
 				DrawEntityNode(entity);
 			});
 
+		for (auto& entity : mToRemove)
+			mContext->DestroyEntity(entity);
+		mToRemove.clear();
+
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
 
@@ -129,9 +133,8 @@ namespace Labyrinth {
 
 		if (entityDeleted)
 		{
-			if (mSelectedEntity == entity)
-				mSelectedEntity = {};
-			mContext->DestroyEntity(entity);
+			mToRemove.emplace_back(entity); // Queue up to delete after range for loop so it isn't invalidated.
+			mSelectedEntity = {};
 		}
 	}
 

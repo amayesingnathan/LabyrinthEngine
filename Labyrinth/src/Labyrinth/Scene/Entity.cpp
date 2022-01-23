@@ -13,6 +13,7 @@ namespace Labyrinth {
 	//{
 	//}
 
+	//const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
 	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
@@ -86,11 +87,10 @@ namespace Labyrinth {
 				// Found the child
 				return true;
 			}
-			bool found = isRelated(filter);
+			bool found = child.isRelated(filter);
 			if (found)
 				return found;
 		}
 		return false;
 	}
-
 }

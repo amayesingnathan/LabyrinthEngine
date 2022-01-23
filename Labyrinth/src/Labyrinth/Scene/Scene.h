@@ -23,8 +23,9 @@ namespace Labyrinth {
 		Entity CreateEntityWithID(const UUID& id, const std::string& name, Entity& parent);
 
 		Entity CloneEntity(Entity& copy);
+		Entity CloneChild(Entity& copy, Entity& newParent);
 
-		void DestroyEntity(Entity entity);
+		void DestroyEntity(Entity& entity);
 
 		Entity FindEntity(UUID id);
 
@@ -36,7 +37,7 @@ namespace Labyrinth {
 		Entity getPrimaryCameraEntity();
 
 	private:
-		void CloneNodeComponent(Entity& copyFrom, Entity& copyTo);
+		void DestroyEntityR(Entity& entity, Entity& parent);
 
 		template<typename T>
 		void onComponentAdded(Entity entity, T& component);

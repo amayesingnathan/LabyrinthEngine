@@ -37,7 +37,7 @@ namespace Labyrinth {
 		template<typename T, typename... Args>
 		T& addComponent(Args&&... args)
 		{
-			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on component");
+			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on entity");
 			T& component = mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
 			//mScene->onComponentAdded<T>(*this, component);
 			return component;
@@ -53,21 +53,21 @@ namespace Labyrinth {
 		template<typename T>
 		void removeComponent()
 		{
-			LAB_CORE_ASSERT(hasComponent<T>(), "Can't remove component that doesn't exist on component");
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't remove component that doesn't exist on entity");
 			mScene->mRegistry.erase<T>(mEntID);
 		}
 
 		template<typename T>
 		T& getComponent()
 		{
-			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on component");
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
 			return mScene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
 		const T& getComponent() const
 		{
-			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on component");
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
 			return mScene->mRegistry.get<T>(mEntID);
 		}
 
@@ -120,6 +120,7 @@ namespace Labyrinth {
 		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();
+		const Entity& getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity& newParent, NodeComponent& node);
