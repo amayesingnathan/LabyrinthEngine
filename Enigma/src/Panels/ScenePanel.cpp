@@ -97,11 +97,14 @@ namespace Labyrinth {
 		}
 
 		bool childCreated = false;
+		bool cloneEntity = false;
 		bool entityDeleted = false;
 		if (ImGui::BeginPopupContextItem())
 		{
 			if (ImGui::MenuItem("Create Child"))
 				childCreated = true;
+			if (ImGui::MenuItem("Clone Entity"))
+				cloneEntity = true;
 			if (ImGui::MenuItem("Delete Entity"))
 				entityDeleted = true;
 
@@ -110,12 +113,19 @@ namespace Labyrinth {
 
 		if (opened)
 		{
-			for (auto& child : node.children)
-				DrawEntityNode(child);
+			// Range for loop iterators may become invalidated if a new entity is added
+			// to this node's children during looping, so ignore new additions for now
+			// and they'll be drawn next render.
+			size_t fixedSize = node.children.size();
+			for (size_t i = 0; i < fixedSize; i++)
+				DrawEntityNode(node.children[i]);
 			ImGui::TreePop();
 		}
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
+
+		if (cloneEntity)
+			mContext->CloneEntity(entity);
 
 		if (entityDeleted)
 		{

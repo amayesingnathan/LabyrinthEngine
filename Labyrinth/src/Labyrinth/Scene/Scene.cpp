@@ -50,6 +50,40 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
+	template<>
+	NodeComponent Scene::CloneComponent<NodeComponent>(NodeComponent& copy);
+
+	void Scene::CloneNodeComponent(Entity& copyFrom, Entity& copyTo)
+	{
+		auto nodeCopy = copyFrom.getComponent<NodeComponent>();
+		copyTo.setParent(nodeCopy.parent);
+
+		// Use counting loop to prevent iterator invalidation
+		size_t copyChildCount = nodeCopy.children.size();
+		for (size_t i = 0; i < copyChildCount; i++)
+		{
+			CloneEntity(nodeCopy.children[i]);
+		}
+	}
+
+	Entity Scene::CloneEntity(Entity& copy)
+	{
+		auto& tag = copy.getComponent<TagComponent>();
+		Entity newEnt = CreateEntity(tag.tag);
+
+		CloneNodeComponent(copy, newEnt);
+
+		auto& trans = newEnt.getComponent<TransformComponent>();
+		trans = copy.getComponent<TransformComponent>();
+
+		if (copy.hasComponent<CameraComponent>())
+			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
+		if (copy.hasComponent<SpriteRendererComponent>())
+			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
+
+		return newEnt;
+	}
+
 	void Scene::DestroyEntity(Entity entity)
 	{
 		auto& parent = entity.getParent();
@@ -61,12 +95,17 @@ namespace Labyrinth {
 		//instead of destroying all child entities.
 		static bool sLinkOnDestroy = false;
 
-		//Set the parent of all entity's children (will be null entity if no parent)
-		for (auto child : entity.getChildren())
+		// Set the parent of all entity's children (will be null entity if no parent)
+		// Use counting loop to prevent iterator invalidation
+		auto& children = entity.getChildren();
+		size_t size = children.size();
+		for (size_t i = 0; i < size; i++)
+		{
 			if (sLinkOnDestroy)
-				child.setParent(parent);
+				children[i].setParent(parent);
 			else
-				DestroyEntity(child);
+				DestroyEntity(children[i]);
+		}
 
 		mRegistry.destroy(entity);
 	}
@@ -173,6 +212,18 @@ namespace Labyrinth {
 				return Entity{ entity,CreateRefFromThis(this) };
 		}
 		return {};
+	}
+
+	template<typename T>
+	T Scene::CloneComponent(Entity& copy)
+	{
+		static_assert(false);
+	}
+
+	template<typename T>
+	T Scene::CloneComponent(T& copy)
+	{
+		static_assert(false);
 	}
 
 	template<typename T>
