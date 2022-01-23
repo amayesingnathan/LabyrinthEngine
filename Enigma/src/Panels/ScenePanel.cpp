@@ -27,11 +27,10 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		mContext->mRegistry.view<NodeComponent>().each([&](auto entityID, auto& nc)
+		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
 				Entity entity{ entityID , mContext };
-				if (!entity.hasParent())
-					DrawEntityNode(entity);
+				DrawEntityNode(entity);
 			});
 
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
@@ -79,9 +78,12 @@ namespace Labyrinth {
 			mSelectedEntity = entity;
 		}
 
+		bool childCreated = false;
 		bool entityDeleted = false;
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Create Child"))
+				childCreated = true;
 			if (ImGui::MenuItem("Delete Entity"))
 				entityDeleted = true;
 
@@ -94,6 +96,9 @@ namespace Labyrinth {
 				DrawEntityNode(child);
 			ImGui::TreePop();
 		}
+		if (childCreated)
+			mContext->CreateEntity("Empty Entity", entity);
+
 		if (entityDeleted)
 		{
 			mContext->DestroyEntity(entity);
@@ -258,31 +263,41 @@ namespace Labyrinth {
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
-			std::unordered_map<const char*, Entity> entityStrings;
-			entityStrings.emplace("None", Entity());
+			std::pair<std::string, Entity> noParent("None", Entity());
+			std::unordered_map<std::string, Entity> possibleParents;
+			possibleParents.emplace(noParent);
 
-			mContext->mRegistry.view<TagComponent>().each([&](auto entityID, auto& tc) {
+			// Create map of possible 
+			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) {
 				if (mSelectedEntity != entityID)
 				{
-					Entity parentEnts{ entityID , mContext };
-					entityStrings.emplace(tc.tag.c_str(), parentEnts);
+					possibleParents.emplace(tc.tag + "    (ID = " + idc.id.to_string() + ")", Entity{entityID, mContext});
 				}
 			});
 
-			const char* currentEntityString = "None";
+			std::string currentParentString = "None";
 			auto& parent = mSelectedEntity.getParent();
 			if (parent)
-				currentEntityString = parent.getComponent<TagComponent>().tag.c_str();
+				currentParentString = parent.getComponent<TagComponent>().tag + "    (ID =" + parent.getUUID().to_string() + ")";
 
-			if (ImGui::BeginCombo("Parent", currentEntityString))
+			if (ImGui::BeginCombo("Parent", currentParentString.c_str()))
 			{
-				for (auto [name, parentEnt] : entityStrings)
-				{
-					bool isSelected = (std::string(currentEntityString) == name);
+				bool clear = currentParentString == noParent.first;
+				if (ImGui::Selectable(noParent.first.c_str(), clear))
+					if (mSelectedEntity.setParent(Entity()))
+						currentParentString = noParent.first;
 
-					if (ImGui::Selectable(name, isSelected))
+				for (auto [name, parentEnt] : possibleParents)
+				{
+					//Ignore "None" has deliberately done first so it is top of list.
+					if (name == noParent.first)
+						continue;
+
+					bool isSelected = currentParentString == name;
+
+					if (ImGui::Selectable(name.c_str(), isSelected))
 						if (mSelectedEntity.setParent(parentEnt))
-								currentEntityString = name;
+							currentParentString = name;
 
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();

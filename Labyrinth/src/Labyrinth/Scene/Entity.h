@@ -16,6 +16,8 @@ namespace Labyrinth {
 
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
+
+		operator UUID() { return id; }
 	};
 
 

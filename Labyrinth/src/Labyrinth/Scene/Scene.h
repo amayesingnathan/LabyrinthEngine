@@ -17,12 +17,14 @@ namespace Labyrinth {
 		~Scene();
 
 		Entity CreateEntity(const std::string& name);
-		Entity CreateEntity(const std::string& name, const Entity& parent);
+		Entity CreateEntity(const std::string& name, Entity& parent);
 
 		Entity CreateEntityWithID(const UUID& id, const std::string& name);
-		Entity CreateEntityWithID(const UUID& id, const std::string& name, const Entity& parent);
+		Entity CreateEntityWithID(const UUID& id, const std::string& name, Entity& parent);
 
 		void DestroyEntity(Entity entity);
+
+		Entity FindEntity(UUID id);
 
 		void onUpdateRuntime(Timestep ts);
 		void onUpdateEditor(Timestep ts, EditorCamera& camera);

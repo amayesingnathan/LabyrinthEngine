@@ -1,6 +1,7 @@
 #pragma once
 
 #include <xhash>
+#include <string>
 
 namespace Labyrinth {
 
@@ -12,6 +13,8 @@ namespace Labyrinth {
 		UUID(const UUID&) = default;
 
 		operator uint64_t() const { return mID; }
+
+		std::string to_string() const { return std::to_string(mID); }
 
 	private:
 		uint64_t mID;

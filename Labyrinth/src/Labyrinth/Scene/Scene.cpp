@@ -23,7 +23,7 @@ namespace Labyrinth {
 		return CreateEntityWithID(UUID(), name, Entity());
 	}
 
-	Entity Scene::CreateEntity(const std::string& name, const Entity& parent)
+	Entity Scene::CreateEntity(const std::string& name, Entity& parent)
 	{
 		return CreateEntityWithID(UUID(), name, parent);
 	}
@@ -33,17 +33,16 @@ namespace Labyrinth {
 		return CreateEntityWithID(id, name, Entity());
 	}
 
-	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, const Entity& parent)
+	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity& parent)
 	{
 		Entity newEnt(mRegistry.create(), CreateRefFromThis(this));
 
 		newEnt.addComponent<IDComponent>(id);
 		newEnt.addComponent<TransformComponent>();
 
+		newEnt.addComponent<RootComponent>();
 		auto& node = newEnt.addComponent<NodeComponent>();
-		node.parent = parent;
-		if (!parent)
-			newEnt.addComponent<RootComponent>();
+		newEnt.setParent(parent, node);
 
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
@@ -70,6 +69,18 @@ namespace Labyrinth {
 				DestroyEntity(child);
 
 		mRegistry.destroy(entity);
+	}
+
+	Entity Scene::FindEntity(UUID findID)
+	{
+		auto IDs = mRegistry.view<IDComponent>();
+		for (auto entity : IDs)
+		{
+			auto& idc = IDs.get<IDComponent>(entity);
+			if (idc.id == findID)
+				return { entity, CreateRefFromThis(this) };
+		}
+		return Entity();
 	}
 
 	void Scene::onUpdateRuntime(Timestep ts)
