@@ -39,7 +39,7 @@ namespace Labyrinth {
 		{
 			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on entity");
 			T& component = mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
-			//mScene->onComponentAdded<T>(*this, component);
+			mScene->onComponentAdded<T>(*this, component);
 			return component;
 		}
 

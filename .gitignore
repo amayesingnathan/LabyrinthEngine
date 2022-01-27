@@ -1,19 +1,22 @@
-#Ignore binaries
+#Binaries
 **/bin/
 !dependencies/premake/bin/
 
-#Ignore VS temp files
+#VS temp files
 .vs/
 **.sln
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
 
-#Labyrinth Log files
+#Log files
 *.log
 
-#Ignore profiling files
+#Profiling files
 **.json
 
-#Ignore Labyrinth scene files
+#Labyrinth scene files
 **.labr
+
+#Python cache files
+__pycache__/

@@ -33,12 +33,13 @@ namespace Labyrinth {
 		void SaveScene();
 		void SaveSceneAs();
 
-	private:
-		Labyrinth::OrthographicCameraController mCameraController;
+		void OnScenePlay();
+		void OnSceneStop();
 
-		//Temp
-		Ref<VertexArray> mSquareVA;
-		Ref<Shader> mFlatColourShader;
+		// UI Panels
+		void UI_Toolbar();
+
+	private:
 		Ref<Framebuffer> mFramebuffer;
 
 		ScenePanel mScenePanel;
@@ -55,6 +56,9 @@ namespace Labyrinth {
 		EditorCamera mEditorCamera;
 
 		Ref<Texture2D> mCheckerboardTexture;
+		
+		// Editor resources
+		Ref<Texture2D> mIconPlay, mIconStop;
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
@@ -62,6 +66,12 @@ namespace Labyrinth {
 
 		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
 		int mGizmoType = -1;
+
+		enum class SceneState
+		{
+			Edit = 0, Play = 1
+		};
+		SceneState mSceneState = SceneState::Edit;
 	};
 
 }

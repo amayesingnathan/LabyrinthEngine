@@ -272,7 +272,9 @@ namespace Labyrinth {
 			if (ImGui::MenuItem("Camera"))
 			{
 				if (!mSelectedEntity.hasComponent<CameraComponent>())
-					mSelectedEntity.addComponent<CameraComponent>();
+				{
+					auto& cam = mSelectedEntity.addComponent<CameraComponent>();
+				}
 				else
 					LAB_CORE_WARN("This entity already has the Camera Component!");
 				ImGui::CloseCurrentPopup();
@@ -408,6 +410,10 @@ namespace Labyrinth {
 				float orthoSize = camera.getOrthographicSize();
 				if (ImGui::DragFloat("Size", &orthoSize))
 					camera.setOrthographicSize(orthoSize);
+
+				float orthoNear = camera.getOrthographicNearClip();
+				if (ImGui::DragFloat("Near", &orthoNear))
+					camera.setOrthographicNearClip(orthoNear);
 
 				float orthoFar = camera.getOrthographicFarClip();
 				if (ImGui::DragFloat("Far", &orthoFar))

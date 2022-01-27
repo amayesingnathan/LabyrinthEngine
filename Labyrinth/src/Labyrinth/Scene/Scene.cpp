@@ -252,6 +252,11 @@ namespace Labyrinth {
 	}
 
 	template<>
+	void Scene::onComponentAdded<IDComponent>(Entity entity, IDComponent& component)
+	{
+	}
+
+	template<>
 	void Scene::onComponentAdded<TransformComponent>(Entity entity, TransformComponent& component)
 	{
 	}

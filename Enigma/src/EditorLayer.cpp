@@ -17,7 +17,7 @@ namespace Labyrinth {
 	extern const std::filesystem::path gAssetPath;
 
 	EditorLayer::EditorLayer()
-		:	Layer("EditorLayer"), mCameraController(1280.0f / 720.0f, true), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
+		:	Layer("EditorLayer"), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
 	{
 	}
 
@@ -26,6 +26,8 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		mCheckerboardTexture = Texture2D::Create("assets/textures/checkerboard.png");
+		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
+		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -57,16 +59,10 @@ namespace Labyrinth {
 			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
 		{
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mCameraController.onResize(mViewportSize.x, mViewportSize.y);
 
 			mEditorCamera.setViewportSize(mViewportSize.x, mViewportSize.y);
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
-
-		if (mViewportFocused)
-			mCameraController.onUpdate(ts);
-
-		mEditorCamera.onUpdate(ts);
 
 		Renderer2D::ResetStats();
 
@@ -77,7 +73,21 @@ namespace Labyrinth {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
-		mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+		switch (mSceneState)
+		{
+		case SceneState::Edit:
+		{
+			mEditorCamera.onUpdate(ts);
+
+			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+			break;
+		}
+		case SceneState::Play:
+		{
+			mCurrentScene->onUpdateRuntime(ts);
+			break;
+		}
+		}
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= mViewportBounds[0].x;
@@ -276,13 +286,42 @@ namespace Labyrinth {
 		ImGui::End();
 		ImGui::PopStyleVar();
 
+		UI_Toolbar();
+
 		ImGui::End();
 
 	}
 
+	void EditorLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		auto& colours = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if (ImGui::ImageButton((ImTextureID)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		{
+			if (mSceneState == SceneState::Edit)
+				OnScenePlay();
+			else if (mSceneState == SceneState::Play)
+				OnSceneStop();
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
+		ImGui::End();
+	}
+
 	void EditorLayer::onEvent(Event& e)
 	{
-		mCameraController.onEvent(e); 
 		mEditorCamera.onEvent(e);
 
 		EventDispatcher dispatcher(e);
@@ -413,5 +452,16 @@ namespace Labyrinth {
 		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
+	}
+	
+	void EditorLayer::OnScenePlay()
+	{
+		mSceneState = SceneState::Play;
+	}
+
+	void EditorLayer::OnSceneStop()
+	{
+		mSceneState = SceneState::Edit;
+
 	}
 }
