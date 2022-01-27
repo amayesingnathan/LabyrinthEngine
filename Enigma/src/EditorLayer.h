@@ -3,10 +3,9 @@
 #include "Labyrinth.h"
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/SpriteSheetPanel.h"
 
 #include "Labyrinth/Renderer/EditorCamera.h"
-
-#include <optional>
 
 namespace Labyrinth {
 
@@ -46,6 +45,7 @@ namespace Labyrinth {
 		Ref<Scene> mCurrentScene;
 
 		ContentBrowserPanel mContentBrowserPanel;
+		SpriteSheetPanel mSpriteSheetPanel;
 
 		Entity mHoveredEntity;
 

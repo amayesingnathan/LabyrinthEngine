@@ -1,9 +1,11 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "Texture.h"
 #include "Labyrinth/Maths/Quad.h"
+
+#include <glm/glm.hpp>
+
+#include <unordered_map>
 
 namespace Labyrinth {
 
@@ -25,8 +27,14 @@ namespace Labyrinth {
 		uint32_t getWidth() const { return mTexture->getWidth(); }
 		uint32_t getHeight() const { return mTexture->getHeight(); }
 
+		uint32_t getTileCountX() const { return mTileCountX; }
+		uint32_t getTileCountY() const { return mTileCountY; }
+
 		Ref<Texture2D> getTex() const { return mTexture; }
 		Ref<SubTexture2D> getSubTex(const std::string& name) const;
+
+		std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() { return mSubTextures; }
+		const std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() const { return mSubTextures; }
 
 		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f });
@@ -38,7 +46,8 @@ namespace Labyrinth {
 	private:
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
-		std::unordered_map <std::string, Ref<SubTexture2D>> mSubTextures;
+		uint32_t mTileCountX, mTileCountY;
+		std::unordered_map<std::string, Ref<SubTexture2D>> mSubTextures;
 		
 		friend SubTexture2D;
 	};

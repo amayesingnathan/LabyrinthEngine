@@ -186,6 +186,7 @@ namespace Labyrinth {
 
 		mScenePanel.onImGuiRender();
 		mContentBrowserPanel.onImGuiRender();
+		mSpriteSheetPanel.onImGuiRender();
 
 		ImGui::Begin("Stats");
 
@@ -227,7 +228,9 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				OpenScene(std::filesystem::path(gAssetPath) / path);
+				std::filesystem::path fullPath = (std::filesystem::path(gAssetPath) / path).string();
+				if (fullPath.extension().string() == ".labr")
+					OpenScene();
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -303,7 +306,7 @@ namespace Labyrinth {
 		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
 
-		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
