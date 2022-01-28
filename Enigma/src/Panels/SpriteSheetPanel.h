@@ -15,7 +15,9 @@ namespace Labyrinth {
 	public:
 		SpriteSheetPanel();
 
+		void onAttach();
 		void onImGuiRender();
+
 
 	private:
 		void TileWidthModal();
@@ -28,12 +30,12 @@ namespace Labyrinth {
 		Ref<Texture2DSheet> mCurrentSheet;
 		std::string mCurrentSheetPath;
 
+		std::string mSelectedSubTexName = "None";
 		Ref<SubTexture2D> mSelectedSubTex;
 
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
-		SubTexModal subTexSelector;
-		bool mSubTexModalOpen = false;
+		SubTexModal mSubTexSelector;
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

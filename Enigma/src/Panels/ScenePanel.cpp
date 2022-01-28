@@ -296,9 +296,8 @@ namespace Labyrinth {
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
-			std::pair<std::string, Entity> noParent("None", Entity());
+			std::string noParent = "None";
 			std::unordered_map<std::string, Entity> possibleParents;
-			possibleParents.emplace(noParent);
 
 			// Create map of possible 
 			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) {
@@ -315,17 +314,14 @@ namespace Labyrinth {
 
 			if (ImGui::BeginCombo("Parent", currentParentString.c_str()))
 			{
-				bool clear = currentParentString == noParent.first;
-				if (ImGui::Selectable(noParent.first.c_str(), clear))
+				// Display "None" at the top of the list
+				bool clear = currentParentString == noParent;
+				if (ImGui::Selectable(noParent.c_str(), clear))
 					if (mSelectedEntity.setParent(Entity()))
-						currentParentString = noParent.first;
+						currentParentString = noParent;
 
 				for (auto [name, parentEnt] : possibleParents)
 				{
-					//Ignore "None" has deliberately done first so it is top of list.
-					if (name == noParent.first)
-						continue;
-
 					bool isSelected = currentParentString == name;
 
 					if (ImGui::Selectable(name.c_str(), isSelected))

@@ -10,11 +10,11 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		mNoSheet = Texture2D::Create("assets/textures/empty.png");
+		mNoSheet = Texture2D::Create("assets/textures/checkerboard.png");
 
 		FramebufferSpec fbSpec;
-		fbSpec.width = 1600;
-		fbSpec.height = 900;
+		fbSpec.width = 1;
+		fbSpec.height = 1;
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 
@@ -28,11 +28,10 @@ namespace Labyrinth {
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		float viewportWidth = ImGui::GetWindowSize().x;
 		if (mCurrentSheet)
-			ImGui::Image((void*)mCurrentSheet->getTex()->getRendererID(), { viewportWidth - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((void*)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((void*)mNoSheet->getRendererID(), { viewportWidth - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -56,21 +55,20 @@ namespace Labyrinth {
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
 		{
 			ImGui::OpenPopup("SubTexModal");
-			mSubTexModalOpen = true;
+			mSubTexSelector.init(mCurrentSheet);
 		}
 
-		std::string currentSubTexString = "None";
-		if (ImGui::BeginCombo("Subtextures", currentSubTexString.c_str()))
+		if (ImGui::BeginCombo("Subtextures", mSelectedSubTexName.c_str()))
 		{
 			if (mCurrentSheet)
 			{
 				for (const auto& [key, value] : mCurrentSheet->getSubTexList())
 				{
-					bool isSelected = currentSubTexString == key;
+					bool isSelected = mSelectedSubTexName == key;
 
 					if (ImGui::Selectable(key.c_str(), isSelected))
 					{
-						currentSubTexString = key;
+						mSelectedSubTexName = key;
 						mSelectedSubTex = value;
 					}
 
@@ -81,6 +79,24 @@ namespace Labyrinth {
 
 			ImGui::EndCombo();
 		}
+
+		if (mSelectedSubTex)
+		{
+			mFramebuffer->bind();
+
+			Renderer2D::BeginState();
+			Renderer2D::DrawQuad({ -5.0f, -5.0f }, { 10.0f, 10.0f }, mSelectedSubTex);
+			Renderer2D::EndState();
+
+			mFramebuffer->unbind();
+
+			ImGui::Image((void*)mFramebuffer->getColorAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		}
+		else
+		{
+			ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		}
+
 
 		TileWidthModal();
 		SubTexModalRender();
@@ -106,7 +122,6 @@ namespace Labyrinth {
 			{
 				loadSheet = true;
 				ImGui::CloseCurrentPopup();
-				mSubTexModalOpen = false;
 			}
 
 		ImGui::SetItemDefaultFocus();
@@ -114,7 +129,6 @@ namespace Labyrinth {
 		if (ImGui::Button("Cancel"))
 		{
 			ImGui::CloseCurrentPopup();
-			mSubTexModalOpen = false;
 		}
 
 		ImGui::EndPopup();
@@ -124,7 +138,7 @@ namespace Labyrinth {
 			mCurrentSheet = Texture2DSheet::CreateFromPath(mCurrentSheetPath, { mTileWidth, mTileHeight });
 			mSheetWidth = mCurrentSheet->getWidth();
 			mSheetHeight = mCurrentSheet->getHeight();
-			mFramebuffer->resize(Cast<uint32_t>(mSheetWidth), Cast<uint32_t>(mSheetHeight));
+			mFramebuffer->resize(Cast<uint32_t>(mTileWidth), Cast<uint32_t>(mTileHeight));
 		}
 		
 	}
@@ -134,12 +148,10 @@ namespace Labyrinth {
 		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, ImGuiWindowFlags_NoResize)) return;
+		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
+		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
 
-		subTexSelector.init(mCurrentSheet);
-
-		subTexSelector.display();
-
+		mSubTexSelector.display();
 
 		ImGui::EndPopup();
 				
