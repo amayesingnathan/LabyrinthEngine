@@ -115,7 +115,7 @@ namespace Labyrinth {
 
 		if (mPayload.mSelectedSubTex)
 		{
-			ImGui::Image((void*)mFramebuffer->getColorAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((void*)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 			{
 				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPayload, sizeof(SubTexPayload));

@@ -222,7 +222,7 @@ namespace Labyrinth {
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		uint32_t textureID = mFramebuffer->getColorAttachmentRendererID();
+		uint32_t textureID = mFramebuffer->getColourAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
@@ -230,9 +230,9 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::filesystem::path fullPath = (std::filesystem::path(gAssetPath) / path).string();
-				if (std::regex_match(fullPath.extension().string(), std::regex(".labr")))
-					OpenScene();
+				std::filesystem::path fullPath = gAssetPath / path;
+				if (std::regex_match(fullPath.extension().string(), std::regex(".laby")))
+					OpenScene(fullPath);
 			}
 			ImGui::EndDragDropTarget();
 		}
