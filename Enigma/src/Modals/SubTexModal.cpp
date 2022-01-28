@@ -2,13 +2,8 @@
 
 namespace Labyrinth {
 
-	void SubTexModal::init(Ref<Texture2DSheet> sheet)
+	void SubTexModal::display(Ref<Texture2DSheet> sheet)
 	{
-		mName = "";
-
-		mWidthCount = 1;
-		mHeightCount = 1;
-
 		mMaxWidthCount = sheet->getTileCountX();
 		mMaxHeightCount = sheet->getTileCountY();
 
@@ -21,14 +16,9 @@ namespace Labyrinth {
 				mSquares.emplace_back(i, j);
 		}
 
-		mSheet = sheet;
-
-	}
-
-	void SubTexModal::display()
-	{
 		char buffer[256];
 		memset(buffer, 0, sizeof(buffer));
+		strcpy_s(buffer, sizeof(buffer), mName.c_str());
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
 		{
 			mName = std::string(buffer);
@@ -40,7 +30,7 @@ namespace Labyrinth {
 		auto imageSize = ImGui::GetWindowSize();
 		imageSize = { imageSize.x - 2 * xpos, imageSize.y - 1.5f * ypos };
 		ImVec2 tileSize = { imageSize.x / mMaxWidthCount, imageSize.y / mMaxHeightCount };
-		ImGui::Image((void*)mSheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((void*)sheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
 
 		const ImVec4 onColour = {};
 
@@ -90,7 +80,7 @@ namespace Labyrinth {
 
 		if (ImGui::Button("OK"))
 		{
-			if (CheckSelection())
+			if (CheckSelection(sheet))
 				Close();
 			else
 				LAB_WARN("Selection was not valid!");
@@ -109,10 +99,18 @@ namespace Labyrinth {
 
 	void SubTexModal::Close()
 	{
+		mName = "SubTextureName";
+
+		mSquares.clear();
+		mPressedSquares.clear();
+
+		mWidthCount = 1;
+		mHeightCount = 1;
+
 		ImGui::CloseCurrentPopup();
 	}
 
-	bool SubTexModal::CheckSelection()
+	bool SubTexModal::CheckSelection(Ref<Texture2DSheet> sheet)
 	{
 		if (mPressedSquares.empty()) return false;
 
@@ -153,8 +151,8 @@ namespace Labyrinth {
 		int width = lastSquare.first - firstSquare.pos.first;
 		int height = lastSquare.second - firstSquare.pos.second;
 
-		mSheet->createSubTex(mName,
-			{ Cast<float>(firstSquare.pos.first), Cast<float>(firstSquare.pos.second) }, 
+		sheet->createSubTex(mName,
+			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) },
 			{ Cast<float>(width), Cast<float>(height) });
 
 		return true;

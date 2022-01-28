@@ -10,12 +10,19 @@
 
 namespace Labyrinth {
 
+	struct SubTexPayload
+	{
+		Ref<SubTexture2D> mSelectedSubTex;
+
+		SubTexPayload() = default;
+	};
+
 	class SpriteSheetPanel
 	{
 	public:
 		SpriteSheetPanel();
 
-		void onAttach();
+		void onUpdate(Timestep ts);
 		void onImGuiRender();
 
 
@@ -31,7 +38,8 @@ namespace Labyrinth {
 		std::string mCurrentSheetPath;
 
 		std::string mSelectedSubTexName = "None";
-		Ref<SubTexture2D> mSelectedSubTex;
+
+		SubTexPayload mPayload;
 
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
@@ -42,6 +50,7 @@ namespace Labyrinth {
 		int mTileWidth = 0;
 		int mTileHeight = 0;
 
+		const std::string noSubTex = "None";
 	};
 
 }

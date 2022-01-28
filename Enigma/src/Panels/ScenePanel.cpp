@@ -1,12 +1,13 @@
 #include "ScenePanel.h"
 
+#include "SpriteSheetPanel.h"
+
 #include <Labyrinth.h>
 
 #include <imgui/imgui.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Labyrinth/Scene/Components.h"
 
 namespace Labyrinth {
 
@@ -430,8 +431,19 @@ namespace Labyrinth {
 				{
 					const wchar_t* path = (const wchar_t*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
-					component.texture = Texture2D::Create(texturePath.string());
 					component.type = SpriteRendererComponent::TexType::Texture;
+					component.texture.tex = Texture2D::Create(texturePath.string());
+				}
+				ImGui::EndDragDropTarget();
+			}
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_SHEET_ITEM"))
+				{
+					SubTexPayload data = *Cast<SubTexPayload>(payload->Data);
+
+					component.type = SpriteRendererComponent::TexType::Tile;
+					component.texture = data.mSelectedSubTex;
 				}
 				ImGui::EndDragDropTarget();
 			}

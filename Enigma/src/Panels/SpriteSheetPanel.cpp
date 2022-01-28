@@ -21,6 +21,23 @@ namespace Labyrinth {
 		mFramebuffer = Framebuffer::Create(fbSpec);
 	}
 
+	void SpriteSheetPanel::onUpdate(Timestep ts)
+	{
+		if (mPayload.mSelectedSubTex)
+		{
+			mFramebuffer->bind();
+
+			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+			RenderCommand::Clear();
+
+			Renderer2D::BeginState();
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mPayload.mSelectedSubTex);
+			Renderer2D::EndState();
+
+			mFramebuffer->unbind();
+		}
+	}
+
 	void SpriteSheetPanel::onImGuiRender()
 	{
 		ImGui::Begin("Sprite Sheets");
@@ -53,13 +70,27 @@ namespace Labyrinth {
 		}
 
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
-		{
 			ImGui::OpenPopup("SubTexModal");
-			mSubTexSelector.init(mCurrentSheet);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Remove  Subtexture") && mCurrentSheet)
+		{
+			mCurrentSheet->deleteSubTex(mSelectedSubTexName);
+			mPayload.mSelectedSubTex = nullptr;
+			mSelectedSubTexName = noSubTex;
 		}
 
 		if (ImGui::BeginCombo("Subtextures", mSelectedSubTexName.c_str()))
 		{
+			// Display "None" at the top of the list
+			bool clear = mSelectedSubTexName == noSubTex;
+			if (ImGui::Selectable(noSubTex.c_str(), clear))
+			{
+				mSelectedSubTexName = noSubTex;
+				mPayload.mSelectedSubTex = nullptr;
+			}
+
 			if (mCurrentSheet)
 			{
 				for (const auto& [key, value] : mCurrentSheet->getSubTexList())
@@ -69,7 +100,7 @@ namespace Labyrinth {
 					if (ImGui::Selectable(key.c_str(), isSelected))
 					{
 						mSelectedSubTexName = key;
-						mSelectedSubTex = value;
+						mPayload.mSelectedSubTex = value;
 					}
 
 					if (isSelected)
@@ -80,23 +111,18 @@ namespace Labyrinth {
 			ImGui::EndCombo();
 		}
 
-		if (mSelectedSubTex)
+		ImGui::NewLine();
+
+		if (mPayload.mSelectedSubTex)
 		{
-			mFramebuffer->bind();
-
-			Renderer2D::BeginState();
-			Renderer2D::DrawQuad({ -5.0f, -5.0f }, { 10.0f, 10.0f }, mSelectedSubTex);
-			Renderer2D::EndState();
-
-			mFramebuffer->unbind();
-
 			ImGui::Image((void*)mFramebuffer->getColorAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+			{
+				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPayload, sizeof(SubTexPayload));
+				ImGui::EndDragDropSource();
+			}
 		}
-		else
-		{
-			ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
-		}
-
+		else ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		TileWidthModal();
 		SubTexModalRender();
@@ -135,10 +161,11 @@ namespace Labyrinth {
 
 		if (loadSheet)
 		{
+			mCurrentSheet.reset();
 			mCurrentSheet = Texture2DSheet::CreateFromPath(mCurrentSheetPath, { mTileWidth, mTileHeight });
 			mSheetWidth = mCurrentSheet->getWidth();
 			mSheetHeight = mCurrentSheet->getHeight();
-			mFramebuffer->resize(Cast<uint32_t>(mTileWidth), Cast<uint32_t>(mTileHeight));
+			mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
 		}
 		
 	}
@@ -151,7 +178,7 @@ namespace Labyrinth {
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
 		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
 
-		mSubTexSelector.display();
+		mSubTexSelector.display(mCurrentSheet);
 
 		ImGui::EndPopup();
 				

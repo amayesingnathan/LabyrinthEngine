@@ -13,14 +13,13 @@ namespace Labyrinth {
 	public:
 		SubTexModal() = default;
 
-		void init(Ref<Texture2DSheet> sheet);
-		void display();
+		void display(Ref<Texture2DSheet> sheet);
 
 	private:
 		void Close();
 
 		//Verify this is a valid subtexture i.e. a quad
-		bool CheckSelection();
+		bool CheckSelection(Ref<Texture2DSheet> sheet);
 		void SortSelected();
 
 		//Navigate grid
@@ -53,21 +52,19 @@ namespace Labyrinth {
 
 		bool success = false;
 
-		std::string mName;
+		std::string mName = "SubTextureName";
 
 		Position outTopLeft;
 		Position outBottomRight;
 
-		Ref<Texture2DSheet> mSheet;
-
 		std::vector<SquareData> mSquares = {};
 		std::vector<SquareData> mPressedSquares = {};
 
-		uint32_t mWidthCount = 0;
-		uint32_t mHeightCount = 0;
+		uint32_t mWidthCount = 1;
+		uint32_t mHeightCount = 1;
 
-		uint32_t mMaxWidthCount;
-		uint32_t mMaxHeightCount;
+		uint32_t mMaxWidthCount = 1;
+		uint32_t mMaxHeightCount = 1;
 
 		const ImVec4 mUnpressedColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 		const ImVec4 mPressedColour = { 0.25f, 1.0f, 1.0f, 0.5f };

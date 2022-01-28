@@ -53,7 +53,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CloneRef<Texture2DSheet>(*this), coords, spriteSize);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, spriteSize);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}

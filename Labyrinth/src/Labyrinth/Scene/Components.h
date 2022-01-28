@@ -167,7 +167,6 @@ namespace Labyrinth {
 				return *this;
 			}
 
-			operator Ref<Texture2D>() const { return tex; }
 			operator Ref<SubTexture2D>() const { return subtex; }
 		};
 
