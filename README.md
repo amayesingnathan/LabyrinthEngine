@@ -1,6 +1,6 @@
 # Labyrinth #
 Labyrinth is a game engine built for designing and creating 2D games.
-**It was created as a learning experiment** for me to gain understanding about the many aspects of game and game engine development. It is still early in development.
+**It was created as a learning experiment** for me to gain understanding about the many aspects of game and game engine development. It is still early in development. It comes with a work-in-progress editor called *Enigma*.
 
 So far during development, I have learned a great deal, including but not limited to:
   
