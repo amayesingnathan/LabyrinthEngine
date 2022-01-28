@@ -26,9 +26,11 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
 #include <execution>
 #include <memory>
 #include <chrono>
 #include <thread>
 #include <functional>
+#include <regex>
 

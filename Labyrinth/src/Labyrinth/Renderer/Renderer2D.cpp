@@ -114,6 +114,16 @@ namespace Labyrinth {
 		delete[] sData.quadVertexBufferBase;
 	}
 
+	void Renderer2D::BeginState()
+	{
+		LAB_PROFILE_FUNCTION();
+
+		sData.textureShader->bind();
+		sData.textureShader->setMat4("uViewProjection", glm::mat4(1.0f));
+
+		StartBatch();
+	}
+
 	void Renderer2D::BeginState(const Camera& camera, const glm::mat4 transform)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -304,9 +314,8 @@ namespace Labyrinth {
 		if (src.hasTex())
 			switch (src.type)
 			{
-				case SpriteRendererComponent::TexType::None: break;
-				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, nullptr, entityID); break;
-				case SpriteRendererComponent::TexType::Tile: DrawQuad(transform, src.texture, src.tilingFactor, src.colour, src.texture.subtex->getTexCoords(), entityID);
+				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture.tex, src.tilingFactor, src.colour, nullptr, entityID); break;
+				case SpriteRendererComponent::TexType::Tile: DrawQuad(transform, src.texture.subtex->getTex(), src.tilingFactor, src.colour, src.texture.subtex->getTexCoords(), entityID); break;
 			}
 		else
 			DrawQuad(transform, src.colour, entityID);

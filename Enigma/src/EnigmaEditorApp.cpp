@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	class EnigmaEditor : public Labyrinth::Application
+	class EnigmaEditor : public Application
 	{
 	public:
 		EnigmaEditor()
@@ -19,7 +19,7 @@ namespace Labyrinth {
 		}
 	};
 
-	Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args)
+	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
 		return new EnigmaEditor();
 	}

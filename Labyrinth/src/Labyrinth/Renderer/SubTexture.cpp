@@ -10,17 +10,17 @@ namespace Labyrinth {
 	Texture2DSheet::Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize)
 		: mTexture(spriteSheet), mTileSize(tileSize)
 	{
-		uint32_t widthCount = (uint32_t)(round(mTexture->getWidth() / tileSize.x));
-		uint32_t heightCount = (uint32_t)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(widthCount * heightCount);
+		mTileCountX = (uint32_t)(round(mTexture->getWidth() / tileSize.x));
+		mTileCountY = (uint32_t)(round(mTexture->getHeight() / tileSize.y));
+		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
 	Texture2DSheet::Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize)
 		: mTexture(Texture2D::Create(filepath)), mTileSize(tileSize)
 	{
-		uint32_t widthCount = (uint32_t)(round(mTexture->getWidth() / tileSize.x));
-		uint32_t heightCount = (uint32_t)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(widthCount * heightCount);
+		mTileCountX = (uint32_t)(round(mTexture->getWidth() / tileSize.x));
+		mTileCountY = (uint32_t)(round(mTexture->getHeight() / tileSize.y));
+		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
 	Ref<SubTexture2D> Texture2DSheet::getSubTex(const std::string& name) const
@@ -53,7 +53,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CloneRef<Texture2DSheet>(*this), coords, spriteSize);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, spriteSize);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}

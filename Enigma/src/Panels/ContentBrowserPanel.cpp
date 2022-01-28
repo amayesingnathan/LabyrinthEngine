@@ -1,4 +1,3 @@
-#include "Lpch.h"
 #include "ContentBrowserPanel.h"
 
 #include <Labyrinth.h>

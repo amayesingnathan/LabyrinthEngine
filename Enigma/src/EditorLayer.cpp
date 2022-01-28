@@ -66,6 +66,8 @@ namespace Labyrinth {
 
 		Renderer2D::ResetStats();
 
+		mSpriteSheetPanel.onUpdate(ts);
+
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
 		RenderCommand::Clear();
@@ -186,6 +188,7 @@ namespace Labyrinth {
 
 		mScenePanel.onImGuiRender();
 		mContentBrowserPanel.onImGuiRender();
+		mSpriteSheetPanel.onImGuiRender();
 
 		ImGui::Begin("Stats");
 
@@ -227,7 +230,9 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				OpenScene(std::filesystem::path(gAssetPath) / path);
+				std::filesystem::path fullPath = (std::filesystem::path(gAssetPath) / path).string();
+				if (std::regex_match(fullPath.extension().string(), std::regex(".labr")))
+					OpenScene();
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -242,12 +247,6 @@ namespace Labyrinth {
 			float windowWidth = (float)ImGui::GetWindowWidth();
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(mViewportBounds[0].x, mViewportBounds[0].y, mViewportBounds[1].x - mViewportBounds[0].x, mViewportBounds[1].y - mViewportBounds[0].y);
-
-			// Runtime camera from entity
-			//auto cameraEntity = mCurrentScene->getPrimaryCameraEntity();
-			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
-			//const glm::mat4& cameraProjection = camera.getProjection();
-			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
 
 			//Editor camera
 			const glm::mat4& cameraProjection = mEditorCamera.getProjection();
@@ -303,7 +302,7 @@ namespace Labyrinth {
 		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
 		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
 
-		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoDecoration | ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;

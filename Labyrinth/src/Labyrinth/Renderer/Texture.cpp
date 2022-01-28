@@ -6,6 +6,8 @@
 
 namespace Labyrinth {
 
+	const std::regex Texture2D::mSuppImgTypes = std::regex(".png|.svg");
+
 	Ref<Texture2D> Texture2D::Create(uint32_t width, uint32_t height)
 	{
 		switch (Renderer::GetAPI())
