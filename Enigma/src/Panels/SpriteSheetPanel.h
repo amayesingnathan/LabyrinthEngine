@@ -12,7 +12,7 @@ namespace Labyrinth {
 
 	struct SubTexPayload
 	{
-		Ref<SubTexture2D> mSelectedSubTex;
+		Ref<SubTexture2D> mSelectedSubTex = nullptr;
 
 		SubTexPayload() = default;
 	};

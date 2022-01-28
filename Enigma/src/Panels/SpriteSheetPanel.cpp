@@ -31,7 +31,7 @@ namespace Labyrinth {
 			RenderCommand::Clear();
 
 			Renderer2D::BeginState();
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mPayload.mSelectedSubTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 2.0f, 2.0f }, mPayload.mSelectedSubTex);
 			Renderer2D::EndState();
 
 			mFramebuffer->unbind();
@@ -57,7 +57,7 @@ namespace Labyrinth {
 				const wchar_t* path = (const wchar_t*)payload->Data;
 				std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
 
-				if (texturePath.extension().string() == ".png")
+				if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
 				{
 					mCurrentSheetPath = texturePath.string();
 					ImGui::OpenPopup("TileWidthModal");

@@ -23,13 +23,13 @@ namespace Labyrinth {
 		glTextureParameteri(mRendererID, GL_TEXTURE_WRAP_T, GL_REPEAT);
 	}
 
-	OpenGLTexture2D::OpenGLTexture2D(const std::string& path, bool flip)
+	OpenGLTexture2D::OpenGLTexture2D(const std::string& path)
 		: mPath(path)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		int width, height, channels;
-		stbi_set_flip_vertically_on_load(!flip);
+		stbi_set_flip_vertically_on_load(1);
 		stbi_uc* data = nullptr;
 		{
 			LAB_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");

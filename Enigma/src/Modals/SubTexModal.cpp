@@ -32,8 +32,6 @@ namespace Labyrinth {
 		ImVec2 tileSize = { imageSize.x / mMaxWidthCount, imageSize.y / mMaxHeightCount };
 		ImGui::Image((void*)sheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
 
-		const ImVec4 onColour = {};
-
 		auto& colours = ImGui::GetStyle().Colors;
 		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
 		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
@@ -73,7 +71,6 @@ namespace Labyrinth {
 			}
 
 			ImGui::PopStyleColor();
-
 		}
 
 		ImGui::PopStyleColor(2);
@@ -83,7 +80,7 @@ namespace Labyrinth {
 			if (CheckSelection(sheet))
 				Close();
 			else
-				LAB_WARN("Selection was not valid!");
+				LAB_WARN("Selection was not valid!");  //TODO: Add warning modal
 			
 			mWidthCount = 1; mHeightCount = 1;
 		}
@@ -93,6 +90,7 @@ namespace Labyrinth {
 		if (ImGui::Button("Cancel"))
 		{
 			Close();
+			mWidthCount = 1; mHeightCount = 1;
 		}
 
 	}
@@ -103,10 +101,6 @@ namespace Labyrinth {
 
 		mSquares.clear();
 		mPressedSquares.clear();
-
-		mWidthCount = 1;
-		mHeightCount = 1;
-
 		ImGui::CloseCurrentPopup();
 	}
 
@@ -116,20 +110,19 @@ namespace Labyrinth {
 
 		SortSelected();
 
-		//Get top leftmost selection.
+		//Get top leftmost selection and its index in the vector of all squares.
 		const auto& firstSquare = mPressedSquares[0];
-		int selectedGridIndex = (firstSquare.pos.first * mMaxWidthCount) + firstSquare.pos.second;
+		int gridIndex = (firstSquare.pos.first * mMaxWidthCount) + firstSquare.pos.second;
 
 		//Find the quad that extends from this selection to the right and down if there is one
-		int checkGridIndex = selectedGridIndex;
-		while (CheckRight(checkGridIndex))
+		while (CheckRight(gridIndex))
 		{
-			checkGridIndex++;
+			gridIndex++;
 			mWidthCount++;
 		}
-		while (CheckDown(checkGridIndex))
+		while (CheckDown(gridIndex))
 		{
-			checkGridIndex += mMaxHeightCount;
+			gridIndex += mMaxHeightCount;
 			mHeightCount++;
 		}
 
@@ -148,12 +141,12 @@ namespace Labyrinth {
 			if (!IsInSquare(firstSquare.pos, lastSquare, selectedSquare.pos)) return false;
 		}
 
-		int width = lastSquare.first - firstSquare.pos.first;
-		int height = lastSquare.second - firstSquare.pos.second;
+		float width = Cast<float>(lastSquare.first - firstSquare.pos.first);
+		float height = Cast<float>(lastSquare.second - firstSquare.pos.second);
 
 		sheet->createSubTex(mName,
-			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) },
-			{ Cast<float>(width), Cast<float>(height) });
+			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) }, 
+			{ width, height });
 
 		return true;
 	}

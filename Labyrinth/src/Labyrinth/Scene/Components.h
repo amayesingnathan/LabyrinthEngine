@@ -166,8 +166,6 @@ namespace Labyrinth {
 				memcpy(this, &other, sizeof(TextureComponent));
 				return *this;
 			}
-
-			operator Ref<SubTexture2D>() const { return subtex; }
 		};
 
 		TexType type = TexType::None;

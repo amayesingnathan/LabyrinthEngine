@@ -431,8 +431,12 @@ namespace Labyrinth {
 				{
 					const wchar_t* path = (const wchar_t*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
-					component.type = SpriteRendererComponent::TexType::Texture;
-					component.texture.tex = Texture2D::Create(texturePath.string());
+
+					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
+					{
+						component.type = SpriteRendererComponent::TexType::Texture;
+						component.texture.tex = Texture2D::Create(texturePath.string());
+					}
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -440,7 +444,7 @@ namespace Labyrinth {
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_SHEET_ITEM"))
 				{
-					SubTexPayload data = *Cast<SubTexPayload>(payload->Data);
+					SubTexPayload& data = *Cast<SubTexPayload>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::Tile;
 					component.texture = data.mSelectedSubTex;

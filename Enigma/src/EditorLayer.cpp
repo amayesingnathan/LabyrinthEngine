@@ -231,7 +231,7 @@ namespace Labyrinth {
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
 				std::filesystem::path fullPath = (std::filesystem::path(gAssetPath) / path).string();
-				if (fullPath.extension().string() == ".labr")
+				if (std::regex_match(fullPath.extension().string(), std::regex(".labr")))
 					OpenScene();
 			}
 			ImGui::EndDragDropTarget();
@@ -247,12 +247,6 @@ namespace Labyrinth {
 			float windowWidth = (float)ImGui::GetWindowWidth();
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(mViewportBounds[0].x, mViewportBounds[0].y, mViewportBounds[1].x - mViewportBounds[0].x, mViewportBounds[1].y - mViewportBounds[0].y);
-
-			// Runtime camera from entity
-			//auto cameraEntity = mCurrentScene->getPrimaryCameraEntity();
-			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
-			//const glm::mat4& cameraProjection = camera.getProjection();
-			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
 
 			//Editor camera
 			const glm::mat4& cameraProjection = mEditorCamera.getProjection();
