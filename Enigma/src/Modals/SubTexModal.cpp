@@ -75,6 +75,12 @@ namespace Labyrinth {
 
 		ImGui::PopStyleColor(2);
 
+		if (ImGui::IsKeyPressed(LAB_KEY_ESCAPE))
+		{
+			Close();
+			mWidthCount = 1; mHeightCount = 1;
+		}
+
 		if (ImGui::Button("OK"))
 		{
 			if (CheckSelection(sheet))
@@ -102,6 +108,7 @@ namespace Labyrinth {
 		mSquares.clear();
 		mPressedSquares.clear();
 		ImGui::CloseCurrentPopup();
+		Application::BlockEsc(false);
 	}
 
 	bool SubTexModal::CheckSelection(Ref<Texture2DSheet> sheet)

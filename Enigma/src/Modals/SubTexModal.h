@@ -50,7 +50,7 @@ namespace Labyrinth {
 			}
 		};
 
-		bool success = false;
+		bool open = false;
 
 		std::string mName = "SubTextureName";
 

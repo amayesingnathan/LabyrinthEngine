@@ -70,7 +70,10 @@ namespace Labyrinth {
 		}
 
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
+		{
 			ImGui::OpenPopup("SubTexModal");
+			Application::BlockEsc();
+		}
 
 		ImGui::SameLine();
 

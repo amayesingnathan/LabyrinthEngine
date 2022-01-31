@@ -44,6 +44,8 @@ namespace Labyrinth {
 
 		static Application& Get() { return *sInstance; }
 
+		static void BlockEsc(bool block = true) { sInstance->mBlockExit = block; }
+
 		void Close();
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
@@ -55,6 +57,7 @@ namespace Labyrinth {
 
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
 
 	//Members
 	public:
@@ -68,6 +71,7 @@ namespace Labyrinth {
 		ImGuiLayer* mImGuiLayer;
 		bool mRunning = true;
 		bool mMinimised = false;
+		bool mBlockExit = false;
 		LayerStack mLayerStack;
 
 		float mLastFrameTime = 0.0f;
