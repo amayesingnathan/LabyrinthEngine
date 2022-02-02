@@ -13,7 +13,7 @@ namespace Labyrinth {
 	public:
 		SubTexModal() = default;
 
-		void display(Ref<Texture2DSheet> sheet);
+		void display(Ref<Texture2DSheet> sheet, struct SubTexPayload& data);
 
 	private:
 		void Close();

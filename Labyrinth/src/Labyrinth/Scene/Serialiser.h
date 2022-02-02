@@ -3,6 +3,7 @@
 #include "Scene.h"
 
 #include "Labyrinth/IO/YAML.h"
+#include "Labyrinth/Renderer/SubTexture.h"
 
 namespace Labyrinth {
 
@@ -10,9 +11,10 @@ namespace Labyrinth {
 	{
 	public:
 		template<typename T>
-		static void Serialise(T obj, const std::string& filepath)
+		static void Serialise(const T& obj, const std::string& filepath, const std::vector<Ref<Texture2DSheet>>& sheets = {})
 		{
 			YAMLParser parser;
+
 			parser.EncodeObject(obj);
 
 			std::ofstream fout(filepath);

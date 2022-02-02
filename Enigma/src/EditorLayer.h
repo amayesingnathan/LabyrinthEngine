@@ -54,11 +54,10 @@ namespace Labyrinth {
 		bool mPrimaryCamera = true;
 
 		EditorCamera mEditorCamera;
-
-		Ref<Texture2D> mCheckerboardTexture;
 		
 		// Editor resources
 		Ref<Texture2D> mIconPlay, mIconStop;
+		Ref<Texture2D> mHighlight;
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };

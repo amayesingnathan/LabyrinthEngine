@@ -12,6 +12,7 @@ namespace Labyrinth {
 
 	struct SubTexPayload
 	{
+		std::string mSelectedSubTexName = "None";
 		Ref<SubTexture2D> mSelectedSubTex = nullptr;
 
 		SubTexPayload() = default;
@@ -37,7 +38,7 @@ namespace Labyrinth {
 		Ref<Texture2DSheet> mCurrentSheet;
 		std::string mCurrentSheetPath;
 
-		std::string mSelectedSubTexName = "None";
+		std::string mSheetName = "";
 
 		SubTexPayload mPayload;
 

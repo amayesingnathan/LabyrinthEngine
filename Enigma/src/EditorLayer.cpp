@@ -25,7 +25,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mCheckerboardTexture = Texture2D::Create("assets/textures/checkerboard.png");
+		mHighlight = Texture2D::Create("resources/icons/highlight.png");
 		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
 		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
 
@@ -258,7 +258,7 @@ namespace Labyrinth {
 
 			// Snapping
 			bool snap = Input::IsKeyPressed(LAB_KEY_LCTRL);
-			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+			float snapValue = 1.0f; // Snap to 0.5m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
 				snapValue = 45.0f;
@@ -439,7 +439,8 @@ namespace Labyrinth {
 	{
 		if (!mFilepath.empty())
 		{
-			Serialiser::Serialise(mCurrentScene, mFilepath);
+			std::vector<Ref<Texture2DSheet>> sheetsInUse;
+			Serialiser::Serialise(mCurrentScene, mFilepath, sheetsInUse);
 		}
 		else SaveSceneAs();
 	}

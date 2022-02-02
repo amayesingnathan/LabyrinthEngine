@@ -10,6 +10,29 @@
 namespace YAML {
 
 	template<>
+	struct convert<glm::vec2>
+	{
+		static Node encode(const glm::vec2& rhs)
+		{
+			Node node;
+			node.push_back(rhs.x);
+			node.push_back(rhs.y);
+			//node.SetStyle(EmitterStyle::Flow);
+			return node;
+		}
+
+		static bool decode(const Node& node, glm::vec2& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<float>();
+			rhs.y = node[1].as<float>();
+			return true;
+		}
+	};
+
+	template<>
 	struct convert<glm::vec3>
 	{
 		static Node encode(const glm::vec3& rhs)
@@ -65,7 +88,12 @@ namespace YAML {
 
 namespace Labyrinth {
 
-	static Entity currentParent = Entity();
+	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec2& v)
+	{
+		mOut << YAML::Flow;
+		mOut << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
+		return mOut;
+	}
 
 	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec3& v)
 	{
@@ -79,6 +107,25 @@ namespace Labyrinth {
 		mOut << YAML::Flow;
 		mOut << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
 		return mOut;
+	}
+
+	template<> 
+	void YAMLParser::EncodeObject<std::vector<Ref<Texture2DSheet>>>(const std::vector<Ref<Texture2DSheet>>& sheets, bool flag)
+	{
+		BeginSequence("SpriteSheets");
+
+		for (Ref<Texture2DSheet> sheet : sheets)
+		{
+			BeginObject();
+
+			ObjectProperty("Name", sheet->getName());
+			ObjectProperty("Source", sheet->getTex()->getPath());
+			ObjectProperty("TileSize", sheet->getTileSize());
+
+			EndObject();
+		}
+
+		EndSequence();
 	}
 
 	//Forward declare entity encoding for use in Node component encoding
@@ -150,7 +197,40 @@ namespace Labyrinth {
 	{
 		BeginObject("SpriteRendererComponent");
 
+		ObjectProperty("Type", Cast<int>(srComponent.type));
 		ObjectProperty("Colour", srComponent.colour);
+
+		switch (srComponent.type)
+		{
+		case SpriteRendererComponent::TexType::Texture:
+		{
+			BeginObject("Texture");
+			ObjectProperty("Source", srComponent.texture.tex->getPath());
+			EndObject();
+			break;
+		}
+		case SpriteRendererComponent::TexType::Tile:
+		{
+			BeginObject("Texture");
+
+			ObjectProperty("Sheet", srComponent.texture.subtex->getSheet()->getName());
+
+			BeginSequence("Coordinates");
+			for (size_t i = 0; i < 4; i++)
+			{
+				BeginObject();
+				ObjectProperty(std::to_string(i), srComponent.texture.subtex->getTexCoords()[i]);
+				EndObject();
+			}
+
+			EndSequence();
+
+			EndObject();
+			break;
+		}
+		default:
+			break;
+		}
 
 		EndObject();
 	}
@@ -169,19 +249,14 @@ namespace Labyrinth {
 			return;
 		}
 
-		if (entity.hasComponent<NodeComponent>())
-		{
-			const NodeComponent& nc = entity.getComponent<NodeComponent>();
-			EncodeObject(nc);
-		}
-
-		if (entity.hasComponent<TagComponent>())
 		{
 			const TagComponent& tc = entity.getComponent<TagComponent>();
 			EncodeObject(tc);
 		}
-
-		if (entity.hasComponent<TransformComponent>())
+		{
+			const NodeComponent& nc = entity.getComponent<NodeComponent>();
+			EncodeObject(nc);
+		}
 		{
 			const TransformComponent& tc = entity.getComponent<TransformComponent>();
 			EncodeObject(tc);
@@ -207,6 +282,12 @@ namespace Labyrinth {
 	{
 		BeginObject();
 		ObjectProperty("Scene", "Untitled");
+
+		std::vector<Ref<Texture2DSheet>> sheets;
+		scene->getSheetsInUse(sheets);
+		if (!sheets.empty())
+			EncodeObject(sheets);
+
 		BeginSequence("Entities");
 
 		scene->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
@@ -222,9 +303,38 @@ namespace Labyrinth {
 		EndObject();
 	}
 
-	template<>
-	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
+	static std::vector<Ref<Texture2DSheet>> SpriteSheets;
 
+	static Entity CurrentParent = Entity();
+
+	template<>
+	void YAMLParser::DecodeObject<std::vector<Ref<Texture2DSheet>>>(std::vector<Ref<Texture2DSheet>>& sheetsOut)
+	{
+		if (!mIn["SpriteSheets"]) return;
+
+		auto sheetsNode = mIn["SpriteSheets"];
+		if (sheetsNode)
+		{
+			size_t count = 0;
+			for (auto sheet : sheetsNode)
+				count++;
+
+			if (sheetsOut.capacity() < count)
+				sheetsOut.reserve(count);
+
+			for (auto sheet : sheetsNode)
+			{
+				std::string name = sheet["Name"].as<std::string>();
+				std::string path = sheet["Source"].as<std::string>();
+				glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
+
+				sheetsOut.emplace_back(Texture2DSheet::CreateFromPath(path, tileSize, name));
+			}
+		}
+	}
+
+	template<>	
+	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
 
 	template<>
 	Ref<NodeComponent> YAMLParser::DecodeObject<NodeComponent>(Entity entity, YAML::Node node)
@@ -235,8 +345,8 @@ namespace Labyrinth {
 			// Entities always have node components
 			auto& nc = entity.getComponent<NodeComponent>();
 
-			if (currentParent)
-				entity.setParent(currentParent, nc);
+			if (CurrentParent)
+				entity.setParent(CurrentParent, nc);
 
 			auto childCount = nodeComponent["ChildCount"];
 			if (childCount)
@@ -246,10 +356,10 @@ namespace Labyrinth {
 			auto children = nodeComponent["Children"];
 			if (children)
 			{
-				// Save and then set new currentParent entity for setting parent of all 
-				// child entities to this entity.
-				Entity holdParent = currentParent;
-				currentParent = entity;
+				// Save and then set new currentParent entity for setting 
+				// the parent of all created child entities.
+				Entity holdParent = CurrentParent;
+				CurrentParent = entity;
 
 				for (auto child : children)
 				{
@@ -258,7 +368,7 @@ namespace Labyrinth {
 
 				// Once all children have had parent set, restore the currentParent entity
 				// to this entity's parent.
-				currentParent = holdParent;
+				CurrentParent = holdParent;
 			}
 
 			return CreateRef<NodeComponent>(nc);
@@ -349,10 +459,52 @@ namespace Labyrinth {
 		if (spriteRendererComponent)
 		{
 			auto& src = entity.addComponent<SpriteRendererComponent>();
+
+			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<int>();
 			src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
-			return CreateRef< SpriteRendererComponent>(src);
+
+			switch (src.type)
+			{
+			case SpriteRendererComponent::TexType::None: break;
+			case SpriteRendererComponent::TexType::Texture: break;
+			case SpriteRendererComponent::TexType::Tile:
+			{
+				auto texture = spriteRendererComponent["Texture"];
+				std::string sheetName = texture["Sheet"].as<std::string>();
+
+				auto it = std::find_if(SpriteSheets.begin(), SpriteSheets.end(), [&](Ref<Texture2DSheet> match) 
+					{
+						return match->getName() == sheetName;
+					});
+
+				if (it != SpriteSheets.end())
+				{
+					glm::vec2 subtexCoords[4];
+					auto coordsSeq = texture["Coordinates"];
+					if (coordsSeq)
+					{
+						int i = 0;
+						for (auto& coord : coordsSeq)
+						{
+							if (i >= 4) break;
+
+							subtexCoords[i] = coord[std::to_string(i)].as<glm::vec2>();
+							i++;
+						}
+					}
+
+					src.texture.subtex = (*it)->createSubTex((*it)->getName(), subtexCoords);
+				}
+
+				break;
+			}
+			}
+
+			return CreateRef<SpriteRendererComponent>(src);
 		}
+
 		return nullptr;
+
 	}
 
 	template<>
@@ -402,9 +554,12 @@ namespace Labyrinth {
 	{
 		if (!mIn["Scene"]) return nullptr;
 
+		// Load spritesheets
+		DecodeObject(SpriteSheets);
+
 		// Initialise current parent entity to null entity as first entity
 		// read should have no parent.
-		currentParent = Entity();
+		CurrentParent = Entity();
 
 		std::string sceneName = mIn["Scene"].as<std::string>();
 		LAB_CORE_TRACE("Deserializing scene '{0}'", sceneName);

@@ -31,7 +31,7 @@ namespace Labyrinth {
 			RenderCommand::Clear();
 
 			Renderer2D::BeginState();
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 2.0f, 2.0f }, mPayload.mSelectedSubTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mPayload.mSelectedSubTex);
 			Renderer2D::EndState();
 
 			mFramebuffer->unbind();
@@ -62,6 +62,7 @@ namespace Labyrinth {
 					mCurrentSheetPath = texturePath.string();
 					ImGui::OpenPopup("TileWidthModal");
 
+					mSheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 				}
 
@@ -79,18 +80,18 @@ namespace Labyrinth {
 
 		if (ImGui::Button("Remove  Subtexture") && mCurrentSheet)
 		{
-			mCurrentSheet->deleteSubTex(mSelectedSubTexName);
+			mCurrentSheet->deleteSubTex(mPayload.mSelectedSubTexName);
 			mPayload.mSelectedSubTex = nullptr;
-			mSelectedSubTexName = noSubTex;
+			mPayload.mSelectedSubTexName = noSubTex;
 		}
 
-		if (ImGui::BeginCombo("Subtextures", mSelectedSubTexName.c_str()))
+		if (ImGui::BeginCombo("Subtextures", mPayload.mSelectedSubTexName.c_str()))
 		{
 			// Display "None" at the top of the list
-			bool clear = mSelectedSubTexName == noSubTex;
+			bool clear = mPayload.mSelectedSubTexName == noSubTex;
 			if (ImGui::Selectable(noSubTex.c_str(), clear))
 			{
-				mSelectedSubTexName = noSubTex;
+				mPayload.mSelectedSubTexName = noSubTex;
 				mPayload.mSelectedSubTex = nullptr;
 			}
 
@@ -98,11 +99,11 @@ namespace Labyrinth {
 			{
 				for (const auto& [key, value] : mCurrentSheet->getSubTexList())
 				{
-					bool isSelected = mSelectedSubTexName == key;
+					bool isSelected = mPayload.mSelectedSubTexName == key;
 
 					if (ImGui::Selectable(key.c_str(), isSelected))
 					{
-						mSelectedSubTexName = key;
+						mPayload.mSelectedSubTexName = key;
 						mPayload.mSelectedSubTex = value;
 					}
 
@@ -140,6 +141,14 @@ namespace Labyrinth {
 		ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
 		ImGui::NewLine();
 
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		strcpy_s(buffer, sizeof(buffer), mSheetName.c_str());
+		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
+		{
+			mSheetName = std::string(buffer);
+		}
+
 		ImGui::InputInt("Width", &mTileWidth);
 		ImGui::InputInt("Height", &mTileHeight);
 		ImGui::NewLine();
@@ -165,7 +174,7 @@ namespace Labyrinth {
 		if (loadSheet)
 		{
 			mCurrentSheet.reset();
-			mCurrentSheet = Texture2DSheet::CreateFromPath(mCurrentSheetPath, { mTileWidth, mTileHeight });
+			mCurrentSheet = Texture2DSheet::CreateFromPath(mCurrentSheetPath, { mTileWidth, mTileHeight }, mSheetName);
 			mSheetWidth = mCurrentSheet->getWidth();
 			mSheetHeight = mCurrentSheet->getHeight();
 			mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
@@ -181,7 +190,7 @@ namespace Labyrinth {
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
 		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
 
-		mSubTexSelector.display(mCurrentSheet);
+		mSubTexSelector.display(mCurrentSheet, mPayload);
 
 		ImGui::EndPopup();
 				

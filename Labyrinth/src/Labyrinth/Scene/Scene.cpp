@@ -143,6 +143,53 @@ namespace Labyrinth {
 		return Entity();
 	}
 
+	void Scene::onUpdateRuntime(Timestep ts, OrthographicCamera& mainCamera)
+	{
+		{	// Update Scripts
+			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
+				if (!nsc.instance)
+				{
+					nsc.instantiateScript();
+				}
+
+				nsc.instance->onNativeScript(nsc);
+
+				});
+		}
+
+		{
+			Renderer2D::BeginState(mainCamera);
+
+			auto view = mRegistry.view<SpriteRendererComponent, TransformComponent>();
+			for (auto entity : view)
+			{
+				auto& [sprite, transform] = view.get<SpriteRendererComponent, TransformComponent>(entity);
+
+				Renderer2D::DrawSprite(transform, sprite, (int)entity);
+			}
+
+			Renderer2D::EndState();
+		}
+		
+	}
+
+	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
+	{
+		sheets.clear();
+		mRegistry.view<SpriteRendererComponent>().each([&sheets](auto entity, auto& srComponent)
+			{
+				if (srComponent.type == SpriteRendererComponent::TexType::Tile)
+				{
+					if (std::find_if(sheets.begin(), sheets.end(),
+						[&](Ref<Texture2DSheet> match) {
+							return srComponent.texture.subtex->getTex()->getPath() == match->getTex()->getPath();
+						})
+						== sheets.end())
+						sheets.emplace_back(srComponent.texture.subtex->getSheet());
+				}
+			});
+	}
+	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
 

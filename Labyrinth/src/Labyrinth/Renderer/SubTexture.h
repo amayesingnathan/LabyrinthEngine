@@ -17,8 +17,8 @@ namespace Labyrinth {
 	class Texture2DSheet : public AllowRefFromThis<Texture2DSheet>
 	{
 	public:
-		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
-		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize);
+		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name);
+		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name);
 		Texture2DSheet(const Texture2DSheet&) = default;
 		~Texture2DSheet() = default;
 
@@ -29,7 +29,12 @@ namespace Labyrinth {
 
 		uint32_t getTileCountX() const { return mTileCountX; }
 		uint32_t getTileCountY() const { return mTileCountY; }
+		
+		glm::vec2 getTileSize() const { return mTileSize; }
+		uint32_t getTileWidth() const { return Cast<uint32_t>(mTileSize.x); }
+		uint32_t getTileHeight() const { return Cast< uint32_t>(mTileSize.y); }
 
+		std::string& getName() { return mName; }
 		Ref<Texture2D> getTex() const { return mTexture; }
 		Ref<SubTexture2D> getSubTex(const std::string& name) const;
 
@@ -38,12 +43,14 @@ namespace Labyrinth {
 
 		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f });
+		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
 		void deleteSubTex(const std::string& name);
 
-		static Ref<Texture2DSheet> CreateFromPath(const std::string& filepath, const glm::vec2& tileSize);
-		static Ref<Texture2DSheet> CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
+		static Ref<Texture2DSheet> CreateFromPath(const std::string& filepath, const glm::vec2& tileSize, const std::string& name = "");
+		static Ref<Texture2DSheet> CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name = "");
 
 	private:
+		std::string mName;
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
 		uint32_t mTileCountX, mTileCountY;
@@ -56,6 +63,7 @@ namespace Labyrinth {
 	{
 	public:
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max);
+		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4]);
 		SubTexture2D(const SubTexture2D&) = default;
 		~SubTexture2D() = default;
 
@@ -66,6 +74,7 @@ namespace Labyrinth {
 		const glm::vec2* getTexCoords() const { return mTexCoords; }
 
 		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f });
+		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4]);
 
 	private:
 		Ref<Texture2DSheet> mSheet;

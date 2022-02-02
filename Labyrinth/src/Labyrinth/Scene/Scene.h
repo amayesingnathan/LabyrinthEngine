@@ -29,6 +29,14 @@ namespace Labyrinth {
 
 		Entity FindEntity(UUID id);
 
+		template<typename Component, typename... Other, typename... Exclude>
+		entt::basic_view<entt::entity, entt::get_t<Component, Other...>, entt::exclude_t<Exclude...>> view(entt::exclude_t<Exclude...> = {})
+		{
+			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
+		}
+
+		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);
+
 		void onUpdateRuntime(Timestep ts);
 		void onUpdateEditor(Timestep ts, EditorCamera& camera);
 

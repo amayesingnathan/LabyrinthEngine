@@ -35,35 +35,14 @@ namespace Labyrinth {
 
 		template<typename T>
 		T DecodeObject();
+		template<typename T>
+		void DecodeObject(T& output);
 		template<typename T, typename Target>
 		Ref<T> DecodeObject(Target target);
 
 	private:
 		template<typename T, typename Target>
 		Ref<T> DecodeObject(Target target, YAML::Node node);
-
-
-
-		//template<typename T> 
-		//void serialiseObject(T& data);
-
-		//template<typename T>
-		//void serialiseComponent(class Entity& entity)
-		//{
-		//	T& component = entity.getComponent<T>();
-		//	serialiseComponent<T>(component);
-		//}
-		//template<typename T>
-		//void serialiseComponent(T& data);
-
-
-		//bool deserialiseScene(Ref<Scene> scene);
-		//bool deserialiseEntity(Ref<Scene> scene);
-		//bool deserialiseEntity(Ref<Scene> scene, YAML::Node entity);
-
-		//template<typename T>
-		//T* deserialiseComponent(class Entity& entity, YAML::Node node);
-
 
 	private: //Output API
 		void BeginObject(const std::string& name)
@@ -86,11 +65,10 @@ namespace Labyrinth {
 		}
 
 		template<typename Value>
-		void ObjectProperty(const std::string& key, Value value)
+		void ObjectProperty(const std::string& key, const Value& value)
 		{
 			mOut << YAML::Key << key << YAML::Value << value;
 		}
-
 
 		void EndObject()
 		{

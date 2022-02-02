@@ -19,6 +19,12 @@ namespace Labyrinth {
 		static_assert(false);
 	}
 
+	template<typename T>
+	void YAMLParser::DecodeObject(T& output)
+	{
+		static_assert(false);
+	}
+
 	template<typename T, typename Target>
 	Ref<T> YAMLParser::DecodeObject(Target data)
 	{

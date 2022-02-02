@@ -1,8 +1,10 @@
 #include "SubTexModal.h"
 
+#include "../Panels/SpriteSheetPanel.h"
+
 namespace Labyrinth {
 
-	void SubTexModal::display(Ref<Texture2DSheet> sheet)
+	void SubTexModal::display(Ref<Texture2DSheet> sheet, SubTexPayload& payload)
 	{
 		mMaxWidthCount = sheet->getTileCountX();
 		mMaxHeightCount = sheet->getTileCountY();
@@ -84,7 +86,11 @@ namespace Labyrinth {
 		if (ImGui::Button("OK"))
 		{
 			if (CheckSelection(sheet))
+			{
+				payload.mSelectedSubTexName = mName;
+				payload.mSelectedSubTex = sheet->getSubTex(mName);
 				Close();
+			}
 			else
 				LAB_WARN("Selection was not valid!");  //TODO: Add warning modal
 			

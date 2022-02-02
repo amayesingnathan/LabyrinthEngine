@@ -12,6 +12,7 @@ namespace Labyrinth {
 	public:
 		virtual ~Texture() = default;
 
+		virtual std::string getPath() const = 0;
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
 		virtual uint32_t getRendererID() const = 0;
