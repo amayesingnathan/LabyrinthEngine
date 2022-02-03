@@ -53,7 +53,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, spriteSize);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, spriteSize, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -66,7 +66,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -97,8 +97,8 @@ namespace Labyrinth {
 		SubTexture2D
 	*/
 
-	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max)
-		: mSheet(sheet)
+	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name)
+		: mSheet(sheet), mName(name)
 	{
 		//Y coordinates are flipped compared to usual so that sub texture coordinates are given from top left of sheet.
 		mTexCoords[0] = { min.x , max.y };
@@ -107,14 +107,14 @@ namespace Labyrinth {
 		mTexCoords[3] = { min.x , min.y };
 	}
 
-	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4])
-		: mSheet(sheet)
+	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name)
+		: mSheet(sheet), mName(name)
 	{
 		for (size_t i = 0; i < 4; i++)
 			mTexCoords[i] = coords[i];
 	}
 
-	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize)
+	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
 		const uint32_t sheetHeight = tex->getHeight();
@@ -122,16 +122,16 @@ namespace Labyrinth {
 		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
 		glm::vec2 min = { {(coords.x * tex->mTileSize.x) / sheetWidth}, {(sheetHeight - (coords.y * tex->mTileSize.y)) / sheetHeight} };
 		glm::vec2 max = { {((coords.x + spriteSize.x) * tex->mTileSize.x) / sheetWidth}, {(sheetHeight - ((coords.y + spriteSize.y) * tex->mTileSize.y)) / sheetHeight} };
-		return CreateRef<SubTexture2D>(tex, min, max);
+		return CreateRef<SubTexture2D>(tex, min, max, name);
 	}
 
-	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4])
+	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
 		const uint32_t sheetHeight = tex->getHeight();
 
 		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
-		return CreateRef<SubTexture2D>(tex, coords);
+		return CreateRef<SubTexture2D>(tex, coords, name);
 	}
 
 }

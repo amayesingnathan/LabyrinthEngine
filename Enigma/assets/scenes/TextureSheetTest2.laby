@@ -1,0 +1,113 @@
+Scene: Untitled
+SpriteSheets:
+  - Name: Player
+    Source: assets\textures\PlayerSprite.png
+    TileSize: [16, 22]
+  - Name: Pieces
+    Source: assets\textures\pieces.png
+    TileSize: [90, 90]
+Entities:
+  - Entity: 11059117513166565496
+    TagComponent:
+      Tag: Parent
+    NodeComponent:
+      ChildCount: 4
+      Children:
+        - Entity: 987139896001194963
+          TagComponent:
+            Tag: Child
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0.36448884, -0.797937155, 0]
+            Rotation: [0.36448884, -0.797937214, 0]
+            Scale: [0.36448884, -0.797937155, 0]
+          SpriteRendererComponent:
+            Type: -1
+            Colour: [0.818532825, 0.0316035859, 0.651424348, 1]
+        - Entity: 15482297288278683672
+          TagComponent:
+            Tag: Child 3
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 6508355904443302778
+          TagComponent:
+            Tag: Child 4
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 5669182942797986022
+          TagComponent:
+            Tag: Child 2
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+    TransformComponent:
+      Translation: [-1.99975276, -0.60091269, 0]
+      Rotation: [-1.99975276, -0.60091269, 0]
+      Scale: [-1.99975276, -0.60091269, 0]
+    SpriteRendererComponent:
+      Type: -1
+      Colour: [0.0452885553, 0.837837815, 0.645055413, 1]
+  - Entity: 146920174583853291
+    TagComponent:
+      Tag: Test
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-1.72657394, 1.22654724, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Type: 1
+      Colour: [1, 1, 1, 1]
+      Texture:
+        Sheet: Player
+        SubTexName: PlayerIdle1
+        Coordinates:
+          - 0: [0, 0.666666687]
+          - 1: [0.25, 0.666666687]
+          - 2: [0.25, 1]
+          - 3: [0, 1]
+  - Entity: 16984032488907717174
+    TagComponent:
+      Tag: Test2
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [2.22663546, 1.07557881, -6.10351562e-05]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Type: 1
+      Colour: [1, 1, 1, 1]
+      Texture:
+        Sheet: Pieces
+        SubTexName: WhiteQueen
+        Coordinates:
+          - 0: [0.666666687, 0.5]
+          - 1: [0.833333313, 0.5]
+          - 2: [0.833333313, 1]
+          - 3: [0.666666687, 1]

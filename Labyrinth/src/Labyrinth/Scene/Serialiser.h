@@ -11,7 +11,7 @@ namespace Labyrinth {
 	{
 	public:
 		template<typename T>
-		static void Serialise(const T& obj, const std::string& filepath, const std::vector<Ref<Texture2DSheet>>& sheets = {})
+		static void Serialise(const T& obj, const std::string& filepath)
 		{
 			YAMLParser parser;
 

@@ -439,8 +439,7 @@ namespace Labyrinth {
 	{
 		if (!mFilepath.empty())
 		{
-			std::vector<Ref<Texture2DSheet>> sheetsInUse;
-			Serialiser::Serialise(mCurrentScene, mFilepath, sheetsInUse);
+			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
 		else SaveSceneAs();
 	}

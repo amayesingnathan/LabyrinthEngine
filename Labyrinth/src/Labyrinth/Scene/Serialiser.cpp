@@ -214,6 +214,7 @@ namespace Labyrinth {
 			BeginObject("Texture");
 
 			ObjectProperty("Sheet", srComponent.texture.subtex->getSheet()->getName());
+			ObjectProperty("SubTexName", srComponent.texture.subtex->getName());
 
 			BeginSequence("Coordinates");
 			for (size_t i = 0; i < 4; i++)
@@ -479,6 +480,8 @@ namespace Labyrinth {
 
 				if (it != SpriteSheets.end())
 				{
+					std::string subTexName = texture["SubTexName"].as<std::string>();
+
 					glm::vec2 subtexCoords[4];
 					auto coordsSeq = texture["Coordinates"];
 					if (coordsSeq)
@@ -493,7 +496,7 @@ namespace Labyrinth {
 						}
 					}
 
-					src.texture.subtex = (*it)->createSubTex((*it)->getName(), subtexCoords);
+					src.texture.subtex = (*it)->createSubTex(subTexName, subtexCoords);
 				}
 
 				break;
