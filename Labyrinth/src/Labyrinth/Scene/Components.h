@@ -170,28 +170,26 @@ namespace Labyrinth {
 
 		TexType type = TexType::None;
 
+		uint8_t layer = 0;
+		static const uint8_t MaxLayers = std::numeric_limits<uint8_t>::max();
+
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
 		TextureComponent texture;
 		bool tile = false;
 		float tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
-		//SpriteRendererComponent(const SpriteRendererComponent& other)
-		//{
-		//	type = other.type;
-		//	colour = other.colour;
-		//	memcpy(&texture, &other.texture, sizeof(TextureComponent));
-		//	tile = other.tile;
-		//	tilingFactor = other.tilingFactor;
-		//}
-		SpriteRendererComponent(const glm::vec4& rgba)
-			: type(TexType::None), colour(rgba), tile(false) {}
-		SpriteRendererComponent(Ref<Texture2D> tex, float tf)
-			: type(TexType::Texture), texture(tex), tilingFactor(tf), tile(false) {}
-		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf)
-			: type(TexType::Tile), texture(subtex), tilingFactor(tf), tile(true) {}
+		SpriteRendererComponent(const glm::vec4& rgba, uint8_t layer = 0)
+			: type(TexType::None), layer(layer), colour(rgba), tile(false) {}
+		SpriteRendererComponent(Ref<Texture2D> tex, float tf, uint8_t layer = 0)
+			: type(TexType::Texture), layer(layer), texture(tex), tilingFactor(tf), tile(false) {}
+		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf, uint8_t layer = 0)
+			: type(TexType::Tile), layer(layer), texture(subtex), tilingFactor(tf), tile(true) {}
 
-		bool hasTex() { return type != TexType::None; }
+		bool hasTex() const { return type != TexType::None; }
+
+		// Get normalised layer value
+		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
 	};
 
 	struct TagComponent

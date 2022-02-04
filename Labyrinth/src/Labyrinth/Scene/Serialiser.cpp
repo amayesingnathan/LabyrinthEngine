@@ -198,6 +198,8 @@ namespace Labyrinth {
 		BeginObject("SpriteRendererComponent");
 
 		ObjectProperty("Type", Cast<int>(srComponent.type));
+		ObjectProperty("Layer", srComponent.layer);
+
 		ObjectProperty("Colour", srComponent.colour);
 
 		switch (srComponent.type)
@@ -462,6 +464,8 @@ namespace Labyrinth {
 			auto& src = entity.addComponent<SpriteRendererComponent>();
 
 			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<int>();
+			src.layer = spriteRendererComponent["Layer"].as<uint8_t>();
+
 			src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
 
 			switch (src.type)
