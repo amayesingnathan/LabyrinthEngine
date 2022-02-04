@@ -420,8 +420,21 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [](auto& component)
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
 		{
+			int layerVal = component.layer;
+			if (ImGui::InputInt("Layer", &layerVal))
+			{
+				if (layerVal < 0) layerVal = 0;
+				if (layerVal > component.MaxLayers) layerVal = component.MaxLayers;
+
+				if (layerVal != component.layer)
+				{
+					component.layer = layerVal;
+					mSelectedEntity.getComponent<TransformComponent>().translation.z = component.getNLayer();
+				}
+			}
+
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
 
 			ImGui::Button("Texture", ImVec2(100.0f, 0.0f));

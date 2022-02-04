@@ -318,6 +318,9 @@ namespace Labyrinth {
 	template<>
 	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
+		// Overwrite transform component z value using render layer value
+		auto& trans = entity.getComponent<TransformComponent>().translation;
+		trans.z = component.getNLayer();
 	}
 
 	template<>
