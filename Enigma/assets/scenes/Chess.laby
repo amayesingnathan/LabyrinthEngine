@@ -1,0 +1,1472 @@
+Scene: Untitled
+Entities:
+  - Entity: 8233199631116772796
+    NodeComponent:
+      ChildCount: 2
+      Children:
+        - Entity: 4137402881188372769
+          NodeComponent:
+            ChildCount: 6
+            Children:
+              - Entity: 4761007548736960564
+                NodeComponent:
+                  ChildCount: 8
+                  Children:
+                    - Entity: 1488765805122432858
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [0, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 16186249001075102787
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [2, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 15010900680852096833
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 3
+                      TransformComponent:
+                        Translation: [4, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 865423438377248165
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 4
+                      TransformComponent:
+                        Translation: [6, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 8120617363024246383
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 5
+                      TransformComponent:
+                        Translation: [8, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 7480260949413104387
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 6
+                      TransformComponent:
+                        Translation: [10, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 18306262914163244993
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 7
+                      TransformComponent:
+                        Translation: [12, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 3057291720978220430
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 8
+                      TransformComponent:
+                        Translation: [14, 2, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Pawns
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 10617334718419052973
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 14129657315509711997
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [0, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 9631258516093711368
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [14, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Rooks
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 2779354018441336456
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 13653199672640721118
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [12, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 14181676450594463352
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [2, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Knights
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 11496869796079647687
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 5432880220771714751
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [4, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 2732174364007153521
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [10, 0, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Bishops
+                TransformComponent:
+                  Translation: [4, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 10351162942924650570
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: Queen
+                TransformComponent:
+                  Translation: [6, 0, 0.5]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [1, 1, 1, 1]
+              - Entity: 4162053013111304556
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: King
+                TransformComponent:
+                  Translation: [8, 0, 0.5]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [1, 1, 1, 1]
+          TagComponent:
+            Tag: White
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 9638161310036115979
+          NodeComponent:
+            ChildCount: 6
+            Children:
+              - Entity: 6984048278957262012
+                NodeComponent:
+                  ChildCount: 8
+                  Children:
+                    - Entity: 2390862656887064919
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [0, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 12941403855371600962
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [2, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 9772831354123907836
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 3
+                      TransformComponent:
+                        Translation: [4, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 17783527972981238035
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 4
+                      TransformComponent:
+                        Translation: [6, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 7115457364827164116
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 5
+                      TransformComponent:
+                        Translation: [8, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 5882924354703725296
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 6
+                      TransformComponent:
+                        Translation: [10, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 9307427022300364888
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 7
+                      TransformComponent:
+                        Translation: [12, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 9993440700699324327
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 8
+                      TransformComponent:
+                        Translation: [14, 12, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Pawns
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 14664474276410774658
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 3065154652219205634
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [0, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 1088696230437809825
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [14, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Rooks
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 4902508049874022603
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 14119463177418376695
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [2, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 17929551020095398670
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [12, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Knights
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 3442647238097044309
+                NodeComponent:
+                  ChildCount: 2
+                  Children:
+                    - Entity: 2746050164571383569
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 1
+                      TransformComponent:
+                        Translation: [4, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                    - Entity: 17917560336517698162
+                      NodeComponent:
+                        ChildCount: 0
+                        Children:
+                          []
+                      TagComponent:
+                        Tag: 2
+                      TransformComponent:
+                        Translation: [10, 14, 0.5]
+                        Rotation: [0, 0, 0]
+                        Scale: [1, 1, 1]
+                      SpriteRendererComponent:
+                        Colour: [1, 1, 1, 1]
+                TagComponent:
+                  Tag: Bishops
+                TransformComponent:
+                  Translation: [4, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+              - Entity: 16934282107036832906
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: Queen
+                TransformComponent:
+                  Translation: [6, 14, 0.5]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [1, 1, 1, 1]
+              - Entity: 17400799703506200535
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: King
+                TransformComponent:
+                  Translation: [8, 14, 0.5]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [1, 1, 1, 1]
+          TagComponent:
+            Tag: Black
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Pieces
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 11294127988002866840
+    NodeComponent:
+      ChildCount: 8
+      Children:
+        - Entity: 7336393532854510870
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 6126904456429543556
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A1
+                TransformComponent:
+                  Translation: [0, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 9580168675486164928
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A2
+                TransformComponent:
+                  Translation: [2, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 11206450704728271217
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A3
+                TransformComponent:
+                  Translation: [4, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 5024953088586660399
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A4
+                TransformComponent:
+                  Translation: [6, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 12774978120954593330
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A5
+                TransformComponent:
+                  Translation: [8, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 9491943770302856003
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A6
+                TransformComponent:
+                  Translation: [10, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 774367677174147930
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A7
+                TransformComponent:
+                  Translation: [12, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 3356198551030386040
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: A8
+                TransformComponent:
+                  Translation: [14, 0, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+          TagComponent:
+            Tag: Row A
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 13592300217820623088
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 18359194142173705853
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B1
+                TransformComponent:
+                  Translation: [0, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 4218742130347064284
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B2
+                TransformComponent:
+                  Translation: [2, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 7028849821310458385
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B3
+                TransformComponent:
+                  Translation: [4, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 17783813102502382535
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B4
+                TransformComponent:
+                  Translation: [6, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 5141277257591630604
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B5
+                TransformComponent:
+                  Translation: [8, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 13427683009545477895
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B6
+                TransformComponent:
+                  Translation: [10, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 16359362398590080416
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B7
+                TransformComponent:
+                  Translation: [12, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 7346085321906429692
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: B8
+                TransformComponent:
+                  Translation: [14, 2, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+          TagComponent:
+            Tag: Row B
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 623018258845642621
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 10989256593067695681
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C1
+                TransformComponent:
+                  Translation: [0, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 10614090738470873570
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C2
+                TransformComponent:
+                  Translation: [2, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 11117164865513592040
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C3
+                TransformComponent:
+                  Translation: [4, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 11379194609741130192
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C4
+                TransformComponent:
+                  Translation: [6, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 11274990030883261165
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C5
+                TransformComponent:
+                  Translation: [8, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 15818180799878816533
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C6
+                TransformComponent:
+                  Translation: [10, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 9812111856492080000
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C7
+                TransformComponent:
+                  Translation: [12, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 1353598636417639876
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: C8
+                TransformComponent:
+                  Translation: [14, 4, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+          TagComponent:
+            Tag: Row C
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 6980206650641864090
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 7561079725286799155
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D1
+                TransformComponent:
+                  Translation: [0, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 1321361524593326045
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D2
+                TransformComponent:
+                  Translation: [2, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 12962378288999898074
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D3
+                TransformComponent:
+                  Translation: [4, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 17061717327079497098
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D4
+                TransformComponent:
+                  Translation: [6, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 17471509622522182869
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D5
+                TransformComponent:
+                  Translation: [8, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 1120252191255335724
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D6
+                TransformComponent:
+                  Translation: [10, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 1486588269458903203
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D7
+                TransformComponent:
+                  Translation: [12, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 14006361082330106848
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: D8
+                TransformComponent:
+                  Translation: [14, 6, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+          TagComponent:
+            Tag: Row D
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 13170385761733754943
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 16605645418036323660
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E1
+                TransformComponent:
+                  Translation: [0, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 4091121338060030454
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E2
+                TransformComponent:
+                  Translation: [2, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 13882260072443409089
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E3
+                TransformComponent:
+                  Translation: [4, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 15713719498434967360
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E4
+                TransformComponent:
+                  Translation: [6, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 634532904973054824
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E5
+                TransformComponent:
+                  Translation: [8, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 605106319252773219
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E6
+                TransformComponent:
+                  Translation: [10, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 3195675988172543896
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E7
+                TransformComponent:
+                  Translation: [12, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 12114786103580167032
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: E8
+                TransformComponent:
+                  Translation: [14, 8, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+          TagComponent:
+            Tag: Row E
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 3939854539666765169
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 1669478639478933178
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F1
+                TransformComponent:
+                  Translation: [0, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 15777759836864622867
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F2
+                TransformComponent:
+                  Translation: [2, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 6587097853950424777
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F3
+                TransformComponent:
+                  Translation: [4, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 15270821055357161878
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F4
+                TransformComponent:
+                  Translation: [6, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 12949750302001793609
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F5
+                TransformComponent:
+                  Translation: [8, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 12552933166575099684
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F6
+                TransformComponent:
+                  Translation: [10, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 13888541276728940056
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F7
+                TransformComponent:
+                  Translation: [12, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 8949379748718430011
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: F8
+                TransformComponent:
+                  Translation: [14, 10, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.525490224, 0.125490203, 1]
+          TagComponent:
+            Tag: Row F
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 16868189016892240311
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 6301163130445791363
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G1
+                TransformComponent:
+                  Translation: [0, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 15487507757441380586
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G2
+                TransformComponent:
+                  Translation: [2, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 2375293201550052713
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G3
+                TransformComponent:
+                  Translation: [4, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 4914176258503237244
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G4
+                TransformComponent:
+                  Translation: [6, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 7809206073901553805
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G5
+                TransformComponent:
+                  Translation: [8, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 14897699279512462451
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G6
+                TransformComponent:
+                  Translation: [10, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 2407527338075805955
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G7
+                TransformComponent:
+                  Translation: [12, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 8807381556695236060
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: G8
+                TransformComponent:
+                  Translation: [14, 12, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+          TagComponent:
+            Tag: Row G
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+        - Entity: 3037486935269452140
+          NodeComponent:
+            ChildCount: 8
+            Children:
+              - Entity: 14729573018311530130
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H1
+                TransformComponent:
+                  Translation: [0, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 15172216340884207880
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H2
+                TransformComponent:
+                  Translation: [2, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 9595571178560914232
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H3
+                TransformComponent:
+                  Translation: [4, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 2459139912508478822
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H4
+                TransformComponent:
+                  Translation: [6, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 5998586222736948596
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H5
+                TransformComponent:
+                  Translation: [8, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 15638648756386367629
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H6
+                TransformComponent:
+                  Translation: [10, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+              - Entity: 5424298556049020920
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H7
+                TransformComponent:
+                  Translation: [12, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.250980407, 0.0313725509, 0.0352941193, 1]
+              - Entity: 18068740430731975021
+                NodeComponent:
+                  ChildCount: 0
+                  Children:
+                    []
+                TagComponent:
+                  Tag: H8
+                TransformComponent:
+                  Translation: [14, 14, 0]
+                  Rotation: [0, 0, 0]
+                  Scale: [1, 1, 1]
+                SpriteRendererComponent:
+                  Colour: [0.800000012, 0.529411793, 0.125490203, 1]
+          TagComponent:
+            Tag: Row H
+          TransformComponent:
+            Translation: [0, 0, 0]
+            Rotation: [0, 0, 0]
+            Scale: [1, 1, 1]
+    TagComponent:
+      Tag: Chessboard
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 4025635119023105047
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TagComponent:
+      Tag: Camera
+    TransformComponent:
+      Translation: [6.66699982, 7, 1]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 1
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 21
+        OrthographicNear: -1
+        OrthographicFar: 2
+      Primary: true
+      FixedAspectRatio: false
