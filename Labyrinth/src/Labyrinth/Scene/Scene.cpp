@@ -192,7 +192,6 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
-
 		{	// Update Scripts
 			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 				if (!nsc.instance)
@@ -200,7 +199,7 @@ namespace Labyrinth {
 					nsc.instantiateScript();
 				}
 
-				nsc.instance->onNativeScript(nsc);
+				//nsc.instance->onNativeScript(nsc);
 
 			});
 		}

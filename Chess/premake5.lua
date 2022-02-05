@@ -1,11 +1,11 @@
-project "Sandbox"
+project "Chess"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "on"
 	
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/")
-    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/")
+    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
+    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/%{prj.name}")
 	
     files 
     { 
@@ -21,7 +21,8 @@ project "Sandbox"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-		"%{IncludeDir.yaml_cpp}",
+		"%{IncludeDir.ImGuizmo}",
+        "%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.lua}"
     }
 	

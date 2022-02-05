@@ -213,4 +213,12 @@ namespace Labyrinth {
 		glClearTexImage(mColourAttachments[attachmentIndex], 0,
 			Utils::LabyrinthFBTextureFormatToGL(spec.textureFormat), GL_INT, &value);
 	}
+
+	void OpenGLFramebuffer::bindColourAttachment(uint32_t index)
+	{
+		LAB_CORE_ASSERT(index < mColourAttachments.size(), "Binding attachment out of range!");
+
+		bool multisample = mSpecification.samples > 1;
+		Utils::BindTexture(multisample, mColourAttachments[index]);
+	}
 }

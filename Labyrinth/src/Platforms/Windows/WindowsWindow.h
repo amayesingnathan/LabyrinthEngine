@@ -15,6 +15,7 @@ namespace Labyrinth {
 
 		void onUpdate() override;
 
+		inline glm::vec2 getSize() const override { return { mData.width, mData.height }; }
 		inline uint32_t getWidth() const override { return mData.width; }
 		inline uint32_t getHeight() const override { return mData.height; }
 

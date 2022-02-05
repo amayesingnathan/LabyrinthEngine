@@ -10,8 +10,10 @@ namespace Labyrinth {
 	class Input
 	{
 	public:
-		static bool IsKeyPressed(int keycode);
+		static bool IsWindowFocused();
+		static bool IsWindowHovered();
 
+		static bool IsKeyPressed(int keycode);
 		static bool IsMouseButtonPressed(int button);
 
 		static glm::vec2 GetGlobalMousePosition();

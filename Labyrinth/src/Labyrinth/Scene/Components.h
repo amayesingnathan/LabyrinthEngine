@@ -179,6 +179,8 @@ namespace Labyrinth {
 		float tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
+		SpriteRendererComponent(uint8_t layer)
+			: type(TexType::None), layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }), tile(false) {}
 		SpriteRendererComponent(const glm::vec4& rgba, uint8_t layer = 0)
 			: type(TexType::None), layer(layer), colour(rgba), tile(false) {}
 		SpriteRendererComponent(Ref<Texture2D> tex, float tf, uint8_t layer = 0)

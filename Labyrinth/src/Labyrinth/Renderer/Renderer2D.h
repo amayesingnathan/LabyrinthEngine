@@ -5,7 +5,7 @@
 
 #include "Texture.h"
 #include "SubTexture.h"
-#include <Labyrinth.h>
+#include "Framebuffer.h"
 
 #include "Labyrinth/Scene/Components.h"
 
@@ -23,6 +23,8 @@ namespace Labyrinth {
 		static void BeginState(const EditorCamera& camera);
 		static void EndState();
 		static void Flush();
+
+		static void DrawFramebuffer(Ref<Framebuffer> framebuffer);
 
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour);

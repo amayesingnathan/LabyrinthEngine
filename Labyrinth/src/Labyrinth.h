@@ -25,6 +25,7 @@
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
+#include "Labyrinth/Scene/Serialiser.h"
 
 #include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Scripting/ScriptableEntity.h"

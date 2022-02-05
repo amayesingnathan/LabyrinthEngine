@@ -120,7 +120,6 @@ namespace Labyrinth {
 		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();
-		const Entity& getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity& newParent, NodeComponent& node);
@@ -128,6 +127,7 @@ namespace Labyrinth {
 
 		std::vector<Entity>& getChildren();
 		const std::vector<Entity>& getChildren() const;
+		const size_t getChildCount() const { return getChildren().size(); }
 		bool hasChild(const Entity& child) const;
 
 		bool isRelated(const Entity& filter) const;
