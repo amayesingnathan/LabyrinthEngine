@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Labyrinth/Scene/Scene.h"
-
 #include "glm/glm.hpp"
 
 namespace Labyrinth {
@@ -92,15 +90,5 @@ namespace Labyrinth {
 		}
 
 	};
-
-	template<>
-	void Scene::onComponentAdded<SquareComponent>(Entity entity, SquareComponent& component)
-	{
-	}
-
-	template<>
-	void Scene::onComponentAdded<PieceComponent>(Entity entity, PieceComponent& component)
-	{
-	}
 
 }

@@ -73,8 +73,6 @@ namespace Labyrinth {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
-
-
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= mViewportBounds[0].x;
 		my -= mViewportBounds[0].y;

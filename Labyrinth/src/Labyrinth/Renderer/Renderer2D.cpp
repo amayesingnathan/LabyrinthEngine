@@ -73,8 +73,8 @@ namespace Labyrinth {
 		sData.displayVertexArray = VertexArray::Create();
 		sData.displayVertexBuffer = VertexBuffer::Create(4 * sizeof(displayVertex));
 		sData.displayVertexBuffer->setLayout({
-			{ ShaderDataType::Float3, "aPosition"		},
-			{ ShaderDataType::Float2, "aTexCoord"		}
+			{ ShaderDataType::Float3, "aPosition" },
+			{ ShaderDataType::Float2, "aTexCoord" }
 			});
 		sData.displayVertexArray->addVertexBuffer(sData.displayVertexBuffer);
 
@@ -155,7 +155,7 @@ namespace Labyrinth {
 		for (uint32_t i = 0; i < sData.MaxTextureSlots; i++)
 			samplers[i] = i;
 
-		sData.framebufferShader = Shader::Create("assets/shaders/texture.glsl");
+		sData.framebufferShader = Shader::Create("assets/shaders/framebuffer.glsl");
 		sData.framebufferShader->bind();
 		sData.framebufferShader->setIntArray("uTextures", samplers, sData.MaxTextureSlots);
 

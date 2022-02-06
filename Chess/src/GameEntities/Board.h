@@ -16,6 +16,8 @@ namespace Labyrinth {
 
 		bool LoadBoard(const std::string& filepath);
 
+		void BuildRow(int row, std::vector<Entity>& squares);
+
 	private:
 		Ref<Scene> mContext = nullptr;
 
