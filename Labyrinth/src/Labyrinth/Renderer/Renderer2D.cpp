@@ -264,6 +264,7 @@ namespace Labyrinth {
 
 		framebuffer->unbind(); // Rendering to framebuffer complete so switch to default;
 		RenderCommand::Clear();
+		RenderCommand::DisableDepth();
 
 		sData.displayVertexArray->bind();
 		sData.displayShader->bind();
@@ -274,6 +275,7 @@ namespace Labyrinth {
 		sData.stats.drawCalls++;
 
 		// Reset back to framebuffer rendering.
+		RenderCommand::EnableDepth();
 		sData.quadVertexArray->bind();
 		sData.framebufferShader->bind();
 	}

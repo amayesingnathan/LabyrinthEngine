@@ -225,10 +225,10 @@ namespace Labyrinth {
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
 
-			auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (auto entity : group)
+			auto view = mRegistry.view<TransformComponent, SpriteRendererComponent>();
+			for (auto entity : view)
 			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
+				auto& [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
 
 				Renderer2D::DrawSprite(transform, sprite, (int)entity);
 			}

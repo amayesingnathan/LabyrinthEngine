@@ -195,6 +195,7 @@ namespace Labyrinth {
 
 		Invalidate();
 	}
+
 	int OpenGLFramebuffer::readPixel(uint32_t attachmentIndex, int x, int y)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());

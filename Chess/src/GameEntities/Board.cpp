@@ -27,7 +27,6 @@ namespace Labyrinth {
 
 	bool Board::LoadBoard(const std::string& filepath)
 	{
-
 		Serialiser::Deserialise<Scene>(filepath, mContext);
 
 		mContext->view<RootComponent>().each([&](auto entity, auto& root)

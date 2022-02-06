@@ -26,10 +26,7 @@ namespace Labyrinth {
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
 	private:
-		OrthographicCameraController mCameraController;
-
 		Ref<Scene> mCurrentScene;
-		SceneCamera* mSceneCamera = nullptr;
 
 		Ref<Framebuffer> mFramebuffer;
 

@@ -16,7 +16,7 @@ namespace Labyrinth {
 	extern const std::filesystem::path gAssetPath;
 
 	ChessLayer::ChessLayer()
-		: Layer("ChessLayer"), mCameraController(1280.0f / 720.0f)
+		: Layer("ChessLayer")
 	{
 	}
 
@@ -24,9 +24,11 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
+		mViewportSize = Application::Get().getWindow().getSize();
+
 		FramebufferSpec fbSpec;
-		fbSpec.width = 1600;
-		fbSpec.height = 900;
+		fbSpec.width = Cast<uint32_t>(mViewportSize.x);
+		fbSpec.height = Cast<uint32_t>(mViewportSize.y);
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 
@@ -36,6 +38,7 @@ namespace Labyrinth {
 		mViewportBounds[1] = { fbSpec.width, fbSpec.height };
 
 		mCurrentScene = CreateRef<Scene>();
+		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 
 		mBoard.create(mCurrentScene);
 	}
@@ -57,12 +60,8 @@ namespace Labyrinth {
 			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
 		{
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mCameraController.onResize(mViewportSize.x, mViewportSize.y);
-
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
-
-		mCameraController.onUpdate(ts);
 
 		Renderer2D::ResetStats();
 
@@ -73,13 +72,15 @@ namespace Labyrinth {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
-		auto [mx, my] = ImGui::GetMousePos();
-		mx -= mViewportBounds[0].x;
-		my -= mViewportBounds[0].y;
+		mCurrentScene->onUpdateRuntime(ts);
+
+		auto mousePos = Input::GetMousePosition();
+		mousePos.x -= mViewportBounds[0].x;
+		mousePos.y -= mViewportBounds[0].y;
 		glm::vec2 viewportSize = mViewportBounds[1] - mViewportBounds[0];
-		my = viewportSize.y - my;
-		int mouseX = (int)mx;
-		int mouseY = (int)my;
+		mousePos.y = viewportSize.y - mousePos.y;
+		int mouseX = (int)mousePos.x;
+		int mouseY = (int)mousePos.y;
 
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
 		{
@@ -111,8 +112,6 @@ namespace Labyrinth {
 
 	void ChessLayer::onEvent(Event& e)
 	{
-		mCameraController.onEvent(e);
-
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<MouseMovedEvent>(LAB_BIND_EVENT_FUNC(ChessLayer::OnMouseMoved));
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(ChessLayer::OnMouseButtonPressed));
@@ -125,7 +124,7 @@ namespace Labyrinth {
 		{
 			glm::vec2 delta = e.getPos() - mLastMousePos;
 			auto& trans = mSelectedEntity.getComponent<TransformComponent>();
-			trans.translation += glm::vec3(delta, 0);
+			trans.translation += (0.01f * glm::vec3(delta.x, -delta.y, 0));
 		}
 
 		mLastMousePos = e.getPos();

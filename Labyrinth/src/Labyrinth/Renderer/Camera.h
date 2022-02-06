@@ -13,7 +13,10 @@ namespace Labyrinth {
 
 		virtual ~Camera() = default;
 
-		const glm::mat4& getProjection() const { return mProjectionMatrix; }
+		const glm::mat4& getProjection() const 
+		{ 
+			return mProjectionMatrix;
+		}
 
 	protected:
 		glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
