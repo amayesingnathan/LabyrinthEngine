@@ -21,11 +21,10 @@ namespace Labyrinth {
 
 
 
-	class OrthographicCamera : public Camera
+	class OrthographicCamera
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top, float zoom = 1.0f);
-		virtual ~OrthographicCamera() override = default;
 
 		void setProjection(float left, float right, float bottom, float top);
 
@@ -38,6 +37,7 @@ namespace Labyrinth {
 		float getZoom() const { return mZoom; }
 		void setZoom(float zoom) { mZoom = zoom; recalculateViewMatrix(); }
 
+		const glm::mat4& getProjectionMatrix() const { return mProjectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
 		const glm::mat4& getViewProjectionMatrix() const { return mViewProjectionMatrix; }
 
@@ -45,6 +45,7 @@ namespace Labyrinth {
 		void recalculateViewMatrix();
 
 	private:
+		glm::mat4 mProjectionMatrix = glm::mat4(1.0f);
 		glm::mat4 mViewMatrix;
 		glm::mat4 mViewProjectionMatrix;
 

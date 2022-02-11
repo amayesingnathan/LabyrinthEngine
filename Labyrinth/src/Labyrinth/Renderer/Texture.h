@@ -3,6 +3,7 @@
 #include "Labyrinth/Core/System/Base.h"
 
 #include <string>
+#include <regex>
 
 namespace Labyrinth {
 
@@ -11,6 +12,7 @@ namespace Labyrinth {
 	public:
 		virtual ~Texture() = default;
 
+		virtual std::string getPath() const = 0;
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
 		virtual uint32_t getRendererID() const = 0;
@@ -27,6 +29,11 @@ namespace Labyrinth {
 	public:
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 		static Ref<Texture2D> Create(const std::string& path);
+
+		static const std::regex GetSuppTypes() { return mSuppImgTypes; }
+
+	private:
+		static const std::regex mSuppImgTypes;
 	};
 
 }

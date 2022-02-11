@@ -38,6 +38,8 @@ namespace Labyrinth {
 
 	void Application::Close()
 	{
+		if (mBlockExit) return;
+
 		mRunning = false;
 	}
 
@@ -48,8 +50,6 @@ namespace Labyrinth {
 		while (mRunning)
 		{
 			LAB_PROFILE_SCOPE("RunLoop");
-			if (Input::IsKeyPressed(LAB_KEY_ESCAPE))
-				Close();
 
 			float time = (float)SDL_GetTicks();
 			Timestep timestep = time - mLastFrameTime;
@@ -90,6 +90,9 @@ namespace Labyrinth {
 				break;
 			(*it)->onEvent(e);
 		}
+
+		// Check for Esc after in case an event in a layer handles it.
+		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(Application::OnKeyPressed));
 	}
 
 	void Application::pushLayer(Layer* layer)
@@ -122,6 +125,15 @@ namespace Labyrinth {
 
 		mMinimised = false;
 		Renderer::OnWindowResize(e.getWidth(), e.getHeight());
+		return false;
+	}
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.getKeyCode() == LAB_KEY_ESCAPE)
+		{
+			Close();
+		}
+
 		return false;
 	}
 }

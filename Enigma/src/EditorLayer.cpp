@@ -17,7 +17,7 @@ namespace Labyrinth {
 	extern const std::filesystem::path gAssetPath;
 
 	EditorLayer::EditorLayer()
-		:	Layer("EditorLayer"), mCameraController(1280.0f / 720.0f, true), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
+		:	Layer("EditorLayer"), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
 	{
 	}
 
@@ -25,7 +25,9 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mCheckerboardTexture = Texture2D::Create("assets/textures/checkerboard.png");
+		mHighlight = Texture2D::Create("resources/icons/highlight.png");
+		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
+		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -57,18 +59,14 @@ namespace Labyrinth {
 			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
 		{
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mCameraController.onResize(mViewportSize.x, mViewportSize.y);
 
 			mEditorCamera.setViewportSize(mViewportSize.x, mViewportSize.y);
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
 
-		if (mViewportFocused)
-			mCameraController.onUpdate(ts);
-
-		mEditorCamera.onUpdate(ts);
-
 		Renderer2D::ResetStats();
+
+		mSpriteSheetPanel.onUpdate(ts);
 
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
@@ -77,7 +75,21 @@ namespace Labyrinth {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
-		mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+		switch (mSceneState)
+		{
+		case SceneState::Edit:
+		{
+			mEditorCamera.onUpdate(ts);
+
+			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+			break;
+		}
+		case SceneState::Play:
+		{
+			mCurrentScene->onUpdateRuntime(ts);
+			break;
+		}
+		}
 
 		auto [mx, my] = ImGui::GetMousePos();
 		mx -= mViewportBounds[0].x;
@@ -90,7 +102,7 @@ namespace Labyrinth {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
 		{
 			int pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
-			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene.get());
+			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
 
 		mFramebuffer->unbind();
@@ -176,6 +188,7 @@ namespace Labyrinth {
 
 		mScenePanel.onImGuiRender();
 		mContentBrowserPanel.onImGuiRender();
+		mSpriteSheetPanel.onImGuiRender();
 
 		ImGui::Begin("Stats");
 
@@ -209,7 +222,7 @@ namespace Labyrinth {
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		uint32_t textureID = mFramebuffer->getColorAttachmentRendererID();
+		uint32_t textureID = mFramebuffer->getColourAttachmentRendererID();
 		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
@@ -217,7 +230,9 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				OpenScene(std::filesystem::path(gAssetPath) / path);
+				std::filesystem::path fullPath = gAssetPath / path;
+				if (std::regex_match(fullPath.extension().string(), std::regex(".laby")))
+					OpenScene(fullPath);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -233,12 +248,6 @@ namespace Labyrinth {
 			float windowHeight = (float)ImGui::GetWindowHeight();
 			ImGuizmo::SetRect(mViewportBounds[0].x, mViewportBounds[0].y, mViewportBounds[1].x - mViewportBounds[0].x, mViewportBounds[1].y - mViewportBounds[0].y);
 
-			// Runtime camera from entity
-			//auto cameraEntity = mCurrentScene->getPrimaryCameraEntity();
-			//const auto& camera = cameraEntity.getComponent<CameraComponent>().camera;
-			//const glm::mat4& cameraProjection = camera.getProjection();
-			//glm::mat4 cameraView = glm::inverse(cameraEntity.getComponent<TransformComponent>().getTransform());
-
 			//Editor camera
 			const glm::mat4& cameraProjection = mEditorCamera.getProjection();
 			glm::mat4 cameraView = mEditorCamera.getViewMatrix();
@@ -249,7 +258,7 @@ namespace Labyrinth {
 
 			// Snapping
 			bool snap = Input::IsKeyPressed(LAB_KEY_LCTRL);
-			float snapValue = 0.5f; // Snap to 0.5m for translation/scale
+			float snapValue = 1.0f; // Snap to 0.5m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
 				snapValue = 45.0f;
@@ -276,13 +285,42 @@ namespace Labyrinth {
 		ImGui::End();
 		ImGui::PopStyleVar();
 
+		UI_Toolbar();
+
 		ImGui::End();
 
 	}
 
+	void EditorLayer::UI_Toolbar()
+	{
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		auto& colours = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+
+		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = ImGui::GetWindowHeight() - 4.0f;
+		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
+		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+		if (ImGui::ImageButton((ImTextureID)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		{
+			if (mSceneState == SceneState::Edit)
+				OnScenePlay();
+			else if (mSceneState == SceneState::Play)
+				OnSceneStop();
+		}
+		ImGui::PopStyleVar(2);
+		ImGui::PopStyleColor(3);
+		ImGui::End();
+	}
+
 	void EditorLayer::onEvent(Event& e)
 	{
-		mCameraController.onEvent(e); 
 		mEditorCamera.onEvent(e);
 
 		EventDispatcher dispatcher(e);
@@ -393,6 +431,8 @@ namespace Labyrinth {
 		mScenePanel.setContext(mCurrentScene);
 
 		Serialiser::Deserialise<Scene>(path.string(), mCurrentScene);
+
+		mFilepath = path.string();
 	}
 
 	void EditorLayer::SaveScene()
@@ -411,5 +451,16 @@ namespace Labyrinth {
 		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
 		}
+	}
+	
+	void EditorLayer::OnScenePlay()
+	{
+		mSceneState = SceneState::Play;
+	}
+
+	void EditorLayer::OnSceneStop()
+	{
+		mSceneState = SceneState::Edit;
+
 	}
 }

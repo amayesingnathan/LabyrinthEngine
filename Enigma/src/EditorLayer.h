@@ -3,10 +3,9 @@
 #include "Labyrinth.h"
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/SpriteSheetPanel.h"
 
 #include "Labyrinth/Renderer/EditorCamera.h"
-
-#include <optional>
 
 namespace Labyrinth {
 
@@ -33,18 +32,20 @@ namespace Labyrinth {
 		void SaveScene();
 		void SaveSceneAs();
 
-	private:
-		Labyrinth::OrthographicCameraController mCameraController;
+		void OnScenePlay();
+		void OnSceneStop();
 
-		//Temp
-		Ref<VertexArray> mSquareVA;
-		Ref<Shader> mFlatColourShader;
+		// UI Panels
+		void UI_Toolbar();
+
+	private:
 		Ref<Framebuffer> mFramebuffer;
 
 		ScenePanel mScenePanel;
 		Ref<Scene> mCurrentScene;
 
 		ContentBrowserPanel mContentBrowserPanel;
+		SpriteSheetPanel mSpriteSheetPanel;
 
 		Entity mHoveredEntity;
 
@@ -53,8 +54,10 @@ namespace Labyrinth {
 		bool mPrimaryCamera = true;
 
 		EditorCamera mEditorCamera;
-
-		Ref<Texture2D> mCheckerboardTexture;
+		
+		// Editor resources
+		Ref<Texture2D> mIconPlay, mIconStop;
+		Ref<Texture2D> mHighlight;
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
@@ -62,6 +65,12 @@ namespace Labyrinth {
 
 		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
 		int mGizmoType = -1;
+
+		enum class SceneState
+		{
+			Edit = 0, Play = 1
+		};
+		SceneState mSceneState = SceneState::Edit;
 	};
 
 }

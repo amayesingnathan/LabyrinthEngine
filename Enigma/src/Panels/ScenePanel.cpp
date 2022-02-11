@@ -1,12 +1,13 @@
 #include "ScenePanel.h"
 
+#include "SpriteSheetPanel.h"
+
 #include <Labyrinth.h>
 
 #include <imgui/imgui.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
-#include "Labyrinth/Scene/Components.h"
 
 namespace Labyrinth {
 
@@ -27,12 +28,15 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		mContext->mRegistry.view<NodeComponent>().each([&](auto entityID, auto& nc)
+		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
-				Entity entity{ entityID , mContext.get() };
-				if (!entity.hasParent())
-					DrawEntityNode(entity);
+				Entity entity{ entityID , mContext };
+				DrawEntityNode(entity);
 			});
+
+		for (auto& entity : mToRemove)
+			mContext->DestroyEntity(entity);
+		mToRemove.clear();
 
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
@@ -58,11 +62,11 @@ namespace Labyrinth {
 	{
 		if (!entity) return;
 
-		if (entity.getScene() == mContext.get())
+		if (entity.getScene() == mContext)
 		{
 			mSelectedEntity = entity;
 		}
-		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getID());
+		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getUUID());
 	}
 
 	void ScenePanel::DrawEntityNode(Entity entity)
@@ -78,10 +82,34 @@ namespace Labyrinth {
 		{
 			mSelectedEntity = entity;
 		}
+		if (ImGui::BeginDragDropSource())
+		{
+			Entity* dragEntity = &entity;
+			ImGui::SetDragDropPayload("ENTITY_ITEM", dragEntity, sizeof(Entity));
+			ImGui::EndDragDropSource();
+		}
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ITEM"))
+			{
+				Entity* dragEntity = Cast<Entity>(payload->Data);
+				if (*dragEntity != entity)
+				{
+					dragEntity->setParent(entity);
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
 
+		bool childCreated = false;
+		bool cloneEntity = false;
 		bool entityDeleted = false;
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Create Child"))
+				childCreated = true;
+			if (ImGui::MenuItem("Clone Entity"))
+				cloneEntity = true;
 			if (ImGui::MenuItem("Delete Entity"))
 				entityDeleted = true;
 
@@ -90,15 +118,24 @@ namespace Labyrinth {
 
 		if (opened)
 		{
-			for (auto& child : node.children)
-				DrawEntityNode(child);
+			// Range for loop iterators may become invalidated if a new entity is added
+			// to this node's children during looping, so ignore new additions for now
+			// and they'll be drawn next render.
+			size_t fixedSize = node.children.size();
+			for (size_t i = 0; i < fixedSize; i++)
+				DrawEntityNode(node.children[i]);
 			ImGui::TreePop();
 		}
+		if (childCreated)
+			mContext->CreateEntity("Empty Entity", entity);
+
+		if (cloneEntity)
+			mContext->CloneEntity(entity);
+
 		if (entityDeleted)
 		{
-			mContext->DestroyEntity(entity);
-			if (mSelectedEntity == entity)
-				mSelectedEntity = {};
+			mToRemove.emplace_back(entity); // Queue up to delete after range for loop so it isn't invalidated.
+			mSelectedEntity = {};
 		}
 	}
 
@@ -236,7 +273,9 @@ namespace Labyrinth {
 			if (ImGui::MenuItem("Camera"))
 			{
 				if (!mSelectedEntity.hasComponent<CameraComponent>())
-					mSelectedEntity.addComponent<CameraComponent>();
+				{
+					auto& cam = mSelectedEntity.addComponent<CameraComponent>();
+				}
 				else
 					LAB_CORE_WARN("This entity already has the Camera Component!");
 				ImGui::CloseCurrentPopup();
@@ -258,33 +297,37 @@ namespace Labyrinth {
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
-			std::unordered_map<const char*, Entity> entityStrings;
-			entityStrings.emplace("None", Entity());
+			std::string noParent = "None";
+			std::unordered_map<std::string, Entity> possibleParents;
 
-			mContext->mRegistry.view<TagComponent>().each([&](auto entityID, auto& tc) {
+			// Create map of possible 
+			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) {
 				if (mSelectedEntity != entityID)
 				{
-					Entity parentEnts{ entityID , mContext.get() };
-					entityStrings.emplace(tc.tag.c_str(), parentEnts);
+					possibleParents.emplace(tc.tag + "    (ID = " + idc.id.to_string() + ")", Entity{entityID, mContext});
 				}
 			});
 
-			const char* currentEntityString = "None";
+			std::string currentParentString = "None";
 			auto& parent = mSelectedEntity.getParent();
 			if (parent)
-				currentEntityString = parent.getComponent<TagComponent>().tag.c_str();
+				currentParentString = parent.getComponent<TagComponent>().tag + "    (ID =" + parent.getUUID().to_string() + ")";
 
-			if (ImGui::BeginCombo("Parent", currentEntityString))
+			if (ImGui::BeginCombo("Parent", currentParentString.c_str()))
 			{
-				for (auto [name, parentEnt] : entityStrings)
-				{
-					bool isSelected = (std::string(currentEntityString) == name);
+				// Display "None" at the top of the list
+				bool clear = currentParentString == noParent;
+				if (ImGui::Selectable(noParent.c_str(), clear))
+					if (mSelectedEntity.setParent(Entity()))
+						currentParentString = noParent;
 
-					if (ImGui::Selectable(name, isSelected))
-					{
+				for (auto [name, parentEnt] : possibleParents)
+				{
+					bool isSelected = currentParentString == name;
+
+					if (ImGui::Selectable(name.c_str(), isSelected))
 						if (mSelectedEntity.setParent(parentEnt))
-							currentEntityString = name;
-					}
+							currentParentString = name;
 
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();
@@ -365,6 +408,10 @@ namespace Labyrinth {
 				if (ImGui::DragFloat("Size", &orthoSize))
 					camera.setOrthographicSize(orthoSize);
 
+				float orthoNear = camera.getOrthographicNearClip();
+				if (ImGui::DragFloat("Near", &orthoNear))
+					camera.setOrthographicNearClip(orthoNear);
+
 				float orthoFar = camera.getOrthographicFarClip();
 				if (ImGui::DragFloat("Far", &orthoFar))
 					camera.setOrthographicFarClip(orthoFar);
@@ -373,8 +420,21 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [](auto& component)
+		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
 		{
+			int layerVal = component.layer;
+			if (ImGui::InputInt("Layer", &layerVal))
+			{
+				if (layerVal < 0) layerVal = 0;
+				if (layerVal > component.MaxLayers) layerVal = component.MaxLayers;
+
+				if (layerVal != component.layer)
+				{
+					component.layer = layerVal;
+					mSelectedEntity.getComponent<TransformComponent>().translation.z = component.getNLayer();
+				}
+			}
+
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
 
 			ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
@@ -384,8 +444,23 @@ namespace Labyrinth {
 				{
 					const wchar_t* path = (const wchar_t*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
-					component.texture = Texture2D::Create(texturePath.string());
-					component.type = SpriteRendererComponent::TexType::Texture;
+
+					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
+					{
+						component.type = SpriteRendererComponent::TexType::Texture;
+						component.texture.tex = Texture2D::Create(texturePath.string());
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_SHEET_ITEM"))
+				{
+					SubTexPayload& data = *Cast<SubTexPayload>(payload->Data);
+
+					component.type = SpriteRendererComponent::TexType::Tile;
+					component.texture = data.mSelectedSubTex;
 				}
 				ImGui::EndDragDropTarget();
 			}

@@ -28,6 +28,8 @@ namespace Labyrinth {
 	private:
 		Ref<Scene> mContext;
 		Entity mSelectedEntity;
+
+		std::vector<Entity> mToRemove;
 	};
 
 }
