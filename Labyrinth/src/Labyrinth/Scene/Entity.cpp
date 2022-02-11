@@ -31,13 +31,9 @@ namespace Labyrinth {
 		else { addComponent<RootComponent>(); };
 
 		if (node.parent)
-		{
 			node.parent.removeChild(*this);
-		}
 		else
-		{
-			removeComponent<RootComponent>(); //No longer root entity (has parent)
-		}
+			removeComponent<RootComponent>(); //No longer root entity (will have parent)
 
 		node.parent = newParent;
 		return true;

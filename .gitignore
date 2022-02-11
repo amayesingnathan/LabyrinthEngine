@@ -15,8 +15,5 @@
 #Profiling files
 **.json
 
-#Labyrinth scene files
-**.labr
-
 #Python cache files
 __pycache__/

@@ -143,7 +143,7 @@ namespace Labyrinth {
 		if ((mWidthCount * mHeightCount) != mPressedSquares.size()) return false;
 
 		//Get the grid position of bottom right corner of this quad
-		Position lastSquare = std::make_pair(firstSquare.pos.first + mWidthCount, firstSquare.pos.second + mHeightCount);
+		Position lastSquare = std::make_pair(firstSquare.pos.first + (mWidthCount - 1), firstSquare.pos.second + (mHeightCount - 1));
 		
 		// Check that all selections are within this quad
 		for (const auto& selectedSquare : mPressedSquares)
@@ -154,8 +154,8 @@ namespace Labyrinth {
 			if (!IsInSquare(firstSquare.pos, lastSquare, selectedSquare.pos)) return false;
 		}
 
-		float width = Cast<float>(lastSquare.first - firstSquare.pos.first);
-		float height = Cast<float>(lastSquare.second - firstSquare.pos.second);
+		float width = Cast<float>(lastSquare.first - firstSquare.pos.first + 1);
+		float height = Cast<float>(lastSquare.second - firstSquare.pos.second + 1);
 
 		sheet->createSubTex(mName,
 			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) }, 
