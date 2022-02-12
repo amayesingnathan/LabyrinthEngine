@@ -24,6 +24,9 @@ namespace Labyrinth {
 			std::string tag = rows[i].getComponent<TagComponent>();
 			BuildRow(i, squares);
 		}
+
+		BuildWhitePieces();
+		BuildBlackPieces();
 	}
 
 	bool Board::LoadBoard(const std::string& filepath)
@@ -68,6 +71,137 @@ namespace Labyrinth {
 
 	}
 
+	void Board::BuildWhitePieces()
+	{
+		auto& whitePieces = mWhite.getChildren();
+		auto& whitePawns = whitePieces[0].getChildren();
+		auto& whiteRooks = whitePieces[1].getChildren();
+		auto& whiteKnights = whitePieces[2].getChildren();
+		auto& whiteBishops = whitePieces[3].getChildren();
+		auto& whiteQueen = whitePieces[4];
+		auto& whiteKing = whitePieces[5];
+
+		int pieceCount = 0;
+		for (auto& pawn : whitePawns)
+		{
+			auto& piece = pawn.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::Pawn;
+			piece.position = { 1, pieceCount };
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& rook : whiteRooks)
+		{
+			auto& piece = rook.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::Rook;
+			piece.position = { 0, (pieceCount == 0) ? 0 : 7};
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& knight : whiteKnights)
+		{
+			auto& piece = knight.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::Knight;
+			piece.position = { 0, (pieceCount == 0) ? 1 : 6 };
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& bishop : whiteBishops)
+		{
+			auto& piece = bishop.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::Bishop;
+			piece.position = { 0, (pieceCount == 0) ? 2 : 5 };
+			pieceCount++;
+		}
+
+		{
+			auto& piece = whiteQueen.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::Queen;
+			piece.position = { 0, 3 };
+		}
+
+		{
+			auto& piece = whiteKing.addComponent<PieceComponent>();
+			piece.colour = Colour::White;
+			piece.type = PieceType::King;
+			piece.position = { 0, 4 };
+		}
+
+	}
+
+	void Board::BuildBlackPieces()
+	{
+		auto& blackPieces = mBlack.getChildren();
+		auto& blackPawns = blackPieces[0].getChildren();
+		auto& blackRooks = blackPieces[1].getChildren();
+		auto& blackKnights = blackPieces[2].getChildren();
+		auto& blackBishops = blackPieces[3].getChildren();
+		auto& blackQueen = blackPieces[4];
+		auto& blackKing = blackPieces[5];
+
+		int pieceCount = 0;
+		for (auto& pawn : blackPawns)
+		{
+			auto& piece = pawn.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::Pawn;
+			piece.position = { 6, pieceCount };
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& rook : blackRooks)
+		{
+			auto& piece = rook.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::Rook;
+			piece.position = { 7, (pieceCount == 0) ? 0 : 7 };
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& knight : blackKnights)
+		{
+			auto& piece = knight.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::Knight;
+			piece.position = { 7, (pieceCount == 0) ? 1 : 6 };
+			pieceCount++;
+		}
+
+		pieceCount = 0;
+		for (auto& bishop : blackBishops)
+		{
+			auto& piece = bishop.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::Bishop;
+			piece.position = { 7, (pieceCount == 0) ? 2 : 5 };
+			pieceCount++;
+		}
+
+		{
+			auto& piece = blackQueen.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::Queen;
+			piece.position = { 7, 3 };
+		}
+
+		{
+			auto& piece = blackKing.addComponent<PieceComponent>();
+			piece.colour = Colour::Black;
+			piece.type = PieceType::King;
+			piece.position = { 7, 4 };
+		}
+	}
+
 	void Board::BuildRow(int row, std::vector<Entity>& squares)
 	{
 		for (int j = 0; j < squares.size(); j++)
@@ -75,6 +209,8 @@ namespace Labyrinth {
 			Entity* pieceInSquare = nullptr;
 			auto& square = squares[j];
 			auto& squareComp = square.addComponent<SquareComponent>();
+			if (square.hasComponent<SquareComponent>())
+				int test = 0;
 			squareComp.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
 			squareComp.position = { row, j };
 
@@ -84,7 +220,7 @@ namespace Labyrinth {
 			if ((row == 6) || (row == 7))
 				side = mBlack;
 
-			if (!side) return;
+			if (!side) continue;
 
 			if ((row == 1) || (row == 6))
 			{

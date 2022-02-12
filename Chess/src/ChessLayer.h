@@ -21,6 +21,9 @@ namespace Labyrinth {
 		void onEvent(Labyrinth::Event & e) override;
 
 	private:
+		void DrawFramebuffers();
+
+	private:
 		bool OnMouseMoved(MouseMovedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
@@ -29,6 +32,8 @@ namespace Labyrinth {
 		Ref<Scene> mCurrentScene;
 
 		Ref<Framebuffer> mFramebuffer;
+		Ref<Framebuffer> mPiecesFramebuffer;
+		Ref<Framebuffer> mBoardFramebuffer;
 
 		Board mBoard;
 
@@ -36,8 +41,9 @@ namespace Labyrinth {
 		float mBoardHeight;
 		glm::vec2 mBoardSquareSize;
 
-		Entity mSelectedEntity;
-		Entity mHoveredEntity;
+		Entity mSelectedPiece;
+		Entity mHoveredPiece;
+		Entity mHoveredSquare;
 		glm::vec2 mLastMousePos = { 0.0f, 0.0f };
 
 		bool mViewportFocused =  false;
