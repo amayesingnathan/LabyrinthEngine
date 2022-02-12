@@ -139,7 +139,10 @@ namespace Labyrinth {
 		{
 			if (mViewportHovered && !Input::IsKeyPressed(LAB_KEY_LALT))
 				if (mHoveredEntity)
-					mSelectedEntity = mHoveredEntity;
+				{
+					if (!mHoveredEntity.hasComponent<SquareComponent>())
+						mSelectedEntity = mHoveredEntity;
+				}
 		}
 		break;
 		}

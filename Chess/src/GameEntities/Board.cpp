@@ -17,12 +17,13 @@ namespace Labyrinth {
 	{
 		if (!LoadBoard(BoardPath)) return;
 
-		//auto& rows = mBoard.getChildren();
-		//for (size_t i = 0; i < mBoard.getChildCount(); i++)
-		//{
-		//	auto squares = rows[i].getChildren();
-		//	BuildRow(i, squares);
-		//}
+		auto& rows = mBoard.getChildren();
+		for (size_t i = 0; i < mBoard.getChildCount(); i++)
+		{
+			auto squares = rows[i].getChildren();
+			std::string tag = rows[i].getComponent<TagComponent>();
+			BuildRow(i, squares);
+		}
 	}
 
 	bool Board::LoadBoard(const std::string& filepath)
@@ -48,11 +49,20 @@ namespace Labyrinth {
 			});
 
 		if (!mBoard)
-			LAB_ERROR("Could not load board from file"); return false;
+		{
+			LAB_ERROR("Could not load board from file"); 
+			return false;
+		}
 		if (!mWhite)
-			LAB_ERROR("Could not load white pieces from file"); return false;
+		{
+			LAB_ERROR("Could not load white pieces from file"); 
+			return false;
+		}
 		if (!mBlack)
-			LAB_ERROR("Could not load black pieces from file"); return false;
+		{
+			LAB_ERROR("Could not load black pieces from file"); 
+			return false;
+		}
 
 		return true;
 
@@ -63,9 +73,10 @@ namespace Labyrinth {
 		for (int j = 0; j < squares.size(); j++)
 		{
 			Entity* pieceInSquare = nullptr;
-			auto& square = squares[j].addComponent<SquareComponent>();
-			square.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
-			square.position = { row, j };
+			auto& square = squares[j];
+			auto& squareComp = square.addComponent<SquareComponent>();
+			squareComp.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
+			squareComp.position = { row, j };
 
 			Entity side;
 			if ((row == 0) || (row == 1))
@@ -78,24 +89,24 @@ namespace Labyrinth {
 			if ((row == 1) || (row == 6))
 			{
 				auto& pieces = side.getChildren()[0].getChildren();
-				square.currentPiece = &pieces[j];
+				squareComp.currentPiece = &pieces[j];
 			}
 			else if ((row == 0) || (row == 7))
 			{
 				if (j < 3)
 				{
 					Entity& piece = side.getChildren()[j + 1].getChildren()[0];
-					square.currentPiece = &piece;
+					squareComp.currentPiece = &piece;
 				}
 				else if ((4 < j) && (j < 8))
 				{
 					Entity& piece = side.getChildren()[8 - j].getChildren()[1];
-					square.currentPiece = &piece;
+					squareComp.currentPiece = &piece;
 				}
 				else
 				{
 					Entity& piece = side.getChildren()[j + 1];
-					square.currentPiece = &piece;
+					squareComp.currentPiece = &piece;
 				}
 			}
 		}
