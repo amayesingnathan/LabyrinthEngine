@@ -1,16 +1,67 @@
 #include "Board.h"
 
-#include "GameComponents.h"
+#include "../ChessEngine.h"
 
 namespace Labyrinth {
 
 	constexpr char* BoardPath = "assets/scenes/Chess.laby";
 
-	void Board::create(Ref<Scene> scene)
+
+	void Board::create(Ref<Scene> scene, const glm::vec2& viewportSize)
 	{
 		mContext = scene;
+		mViewportSize = viewportSize;
+
+		FramebufferSpec fbSpec;
+		fbSpec.width = Cast<uint32_t>(viewportSize.x);
+		fbSpec.height = Cast<uint32_t>(viewportSize.y);
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+
+		mBoardFramebuffer = Framebuffer::Create(fbSpec);
+		mPiecesFramebuffer = Framebuffer::Create(fbSpec);
 
 		ResetPieces();
+	}
+
+	void Board::onUpdate(Timestep ts)
+	{
+		mViewportFocused = Input::IsWindowFocused();
+		mViewportHovered = Input::IsWindowHovered();
+
+		auto mousePos = Input::GetMousePosition();
+		mousePos.y = mViewportSize.y - mousePos.y;
+		int mouseX = (int)mousePos.x;
+		int mouseY = (int)mousePos.y;
+
+		DrawFramebuffers();
+		if (mousePos.x >= 0.0f && mousePos.y >= 0.0f && mousePos.x < mViewportSize.x && mousePos.y < mViewportSize.y)
+		{
+			// Check for hovered board square
+			mBoardFramebuffer->bind();
+			int boardPixelData = mBoardFramebuffer->readPixel(1, mouseX, mouseY);
+			mHoveredSquare = (boardPixelData == -1) ? Entity() : Entity((entt::entity)boardPixelData, mContext);
+
+			// Check for hovered piece
+			mPiecesFramebuffer->bind();
+			int piecePixelData = mPiecesFramebuffer->readPixel(1, mouseX, mouseY);
+			mHoveredPiece = (piecePixelData == -1) ? Entity() : Entity((entt::entity)piecePixelData, mContext);
+		}
+	}
+
+	void Board::onEvent(Event& e)
+	{
+		EventDispatcher dispatcher(e);
+		dispatcher.dispatch<MouseMovedEvent>(LAB_BIND_EVENT_FUNC(Board::OnMouseMoved));
+		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(Board::OnMouseButtonPressed));
+		dispatcher.dispatch<MouseButtonReleasedEvent>(LAB_BIND_EVENT_FUNC(Board::OnMouseButtonReleased));
+	}
+
+	void Board::onViewportResize(const glm::vec2& newSize)
+	{
+		mViewportSize = newSize;
+		mBoardFramebuffer->resize((uint32_t)newSize.x, (uint32_t)newSize.y);
+		mPiecesFramebuffer->resize((uint32_t)newSize.x, (uint32_t)newSize.y);
 	}
 
 	void Board::ResetPieces()
@@ -87,7 +138,7 @@ namespace Labyrinth {
 			auto& piece = pawn.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Pawn;
-			piece.position = { 1, pieceCount };
+			piece.position = { pieceCount, 1 };
 			pieceCount++;
 		}
 
@@ -97,7 +148,7 @@ namespace Labyrinth {
 			auto& piece = rook.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Rook;
-			piece.position = { 0, (pieceCount == 0) ? 0 : 7};
+			piece.position = { (pieceCount == 0) ? 0 : 7, 0};
 			pieceCount++;
 		}
 
@@ -107,7 +158,7 @@ namespace Labyrinth {
 			auto& piece = knight.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Knight;
-			piece.position = { 0, (pieceCount == 0) ? 1 : 6 };
+			piece.position = { (pieceCount == 0) ? 1 : 6, 0 };
 			pieceCount++;
 		}
 
@@ -117,7 +168,7 @@ namespace Labyrinth {
 			auto& piece = bishop.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Bishop;
-			piece.position = { 0, (pieceCount == 0) ? 2 : 5 };
+			piece.position = { (pieceCount == 0) ? 2 : 5, 0 };
 			pieceCount++;
 		}
 
@@ -125,14 +176,14 @@ namespace Labyrinth {
 			auto& piece = whiteQueen.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Queen;
-			piece.position = { 0, 3 };
+			piece.position = { 3, 0 };
 		}
 
 		{
 			auto& piece = whiteKing.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::King;
-			piece.position = { 0, 4 };
+			piece.position = { 4, 0 };
 		}
 
 	}
@@ -144,8 +195,8 @@ namespace Labyrinth {
 		auto& blackRooks = blackPieces[1].getChildren();
 		auto& blackKnights = blackPieces[2].getChildren();
 		auto& blackBishops = blackPieces[3].getChildren();
-		auto& blackQueen = blackPieces[4];
-		auto& blackKing = blackPieces[5];
+		auto& blackQueen = blackPieces[4].getChildren();
+		auto& blackKing = blackPieces[5].getChildren();
 
 		int pieceCount = 0;
 		for (auto& pawn : blackPawns)
@@ -153,7 +204,7 @@ namespace Labyrinth {
 			auto& piece = pawn.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Pawn;
-			piece.position = { 6, pieceCount };
+			piece.position = { pieceCount, 6 };
 			pieceCount++;
 		}
 
@@ -163,7 +214,7 @@ namespace Labyrinth {
 			auto& piece = rook.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Rook;
-			piece.position = { 7, (pieceCount == 0) ? 0 : 7 };
+			piece.position = { (pieceCount == 0) ? 0 : 7, 7 };
 			pieceCount++;
 		}
 
@@ -173,7 +224,7 @@ namespace Labyrinth {
 			auto& piece = knight.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Knight;
-			piece.position = { 7, (pieceCount == 0) ? 1 : 6 };
+			piece.position = { (pieceCount == 0) ? 1 : 6, 7 };
 			pieceCount++;
 		}
 
@@ -183,22 +234,26 @@ namespace Labyrinth {
 			auto& piece = bishop.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Bishop;
-			piece.position = { 7, (pieceCount == 0) ? 2 : 5 };
+			piece.position = { (pieceCount == 0) ? 2 : 5, 7 };
 			pieceCount++;
 		}
 
+		pieceCount = 0;
+		for (auto& queen : blackQueen)
 		{
-			auto& piece = blackQueen.addComponent<PieceComponent>();
+			auto& piece = queen.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Queen;
-			piece.position = { 7, 3 };
+			piece.position = { 3, 7 };
 		}
 
+		pieceCount = 0;
+		for (auto& king : blackKing)
 		{
-			auto& piece = blackKing.addComponent<PieceComponent>();
+			auto& piece = king.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::King;
-			piece.position = { 7, 4 };
+			piece.position = { 4, 7 };
 		}
 	}
 
@@ -246,6 +301,147 @@ namespace Labyrinth {
 				}
 			}
 		}
+	}
+
+	void Board::ResolveMove()
+	{
+		if (!mHoveredSquare) return;
+
+		auto& piece = mSelectedPiece.getComponent<PieceComponent>();
+		auto& square = mHoveredSquare.getComponent<SquareComponent>();
+
+		auto& trans = mSelectedPiece.getComponent<TransformComponent>().translation;
+
+		if (IsValidSquare(piece, square))
+		{
+			const auto& squareTrans = mHoveredSquare.getComponent<TransformComponent>().translation;
+			trans = { squareTrans.x, squareTrans.y, trans.z };
+
+			if (piece.unmoved) piece.unmoved = false;
+		}
+		else { trans = mLastPiecePos; }
+	}
+
+	bool Board::IsValidSquare(const PieceComponent& piece, const SquareComponent& square)
+	{
+		std::vector<BoardPosition> validMoves;
+		Chess::GetValidMoves(piece, validMoves);
+
+		if (validMoves.empty()) return false;
+
+		if (std::find(validMoves.begin(), validMoves.end(), square.position) == validMoves.end()) return false;
+
+		return true;
+	}
+
+	void Board::DrawFramebuffers()
+	{
+		Camera* mainCamera = nullptr;
+		glm::mat4 cameraTransform;
+		{
+			auto view = mContext->view<TransformComponent, CameraComponent>();
+			for (auto entity : view)
+			{
+				auto& [trans, cam] = view.get<TransformComponent, CameraComponent>(entity);
+
+				if (cam.primary)
+				{
+					mainCamera = &cam.camera;
+					cameraTransform = trans;
+				}
+			}
+		}
+
+		if (mainCamera)
+		{
+			mBoardFramebuffer->bind();
+			Renderer2D::BeginState(*mainCamera, cameraTransform);
+
+			RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
+			RenderCommand::Clear();
+
+			// Clear our entity ID attachment to -1
+			mBoardFramebuffer->clearAttachment(1, -1);
+
+			auto boardView = mContext->view<TransformComponent, SpriteRendererComponent, SquareComponent>();
+			for (auto entity : boardView)
+			{
+				auto& [transform, sprite] = boardView.get<TransformComponent, SpriteRendererComponent>(entity);
+
+				Renderer2D::DrawSprite(transform, sprite, (int)entity);
+			}
+
+			Renderer2D::EndState();
+
+			mPiecesFramebuffer->bind();
+			Renderer2D::BeginState(*mainCamera, cameraTransform);
+
+			RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
+			RenderCommand::Clear();
+
+			// Clear our entity ID attachment to -1
+			mPiecesFramebuffer->clearAttachment(1, -1);
+
+			auto piecesView = mContext->view<TransformComponent, SpriteRendererComponent, PieceComponent>();
+			for (auto entity : piecesView)
+			{
+				auto& [transform, sprite] = piecesView.get<TransformComponent, SpriteRendererComponent>(entity);
+
+				Renderer2D::DrawSprite(transform, sprite, (int)entity);
+			}
+
+			Renderer2D::EndState();
+		}
+	}
+
+
+	bool Board::OnMouseMoved(MouseMovedEvent& e)
+	{
+		if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT) && mSelectedPiece)
+		{
+			glm::vec2 delta = e.getPos() - mLastMousePos;
+			auto& trans = mSelectedPiece.getComponent<TransformComponent>();
+			trans.translation += (0.01f * glm::vec3(delta.x, -delta.y, 0));
+		}
+
+		mLastMousePos = e.getPos();
+		return false;
+	}
+
+	bool Board::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		switch (e.getMouseButton())
+		{
+		case LAB_MOUSE_BUTTON_LEFT:
+		{
+			if (mViewportHovered && !Input::IsKeyPressed(LAB_KEY_LALT))
+				if (mHoveredPiece)
+				{
+					mSelectedPiece = mHoveredPiece;
+					mLastPiecePos = mSelectedPiece.getComponent<TransformComponent>().translation;
+				}
+		}
+		break;
+		}
+
+		return false;
+	}
+
+	bool Board::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
+	{
+		switch (e.getMouseButton())
+		{
+		case LAB_MOUSE_BUTTON_LEFT:
+		{
+			if (mSelectedPiece)
+			{
+				ResolveMove();
+				mSelectedPiece = {};
+			}
+		}
+		}
+
+		return false;
 	}
 
 	template<>

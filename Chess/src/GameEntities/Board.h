@@ -2,6 +2,8 @@
 
 #include <Labyrinth.h>
 
+#include "GameComponents.h"
+
 namespace Labyrinth {
 
 	class Board 
@@ -9,7 +11,12 @@ namespace Labyrinth {
 	public:
 		Board() = default;
 
-		void create(Ref<Scene> inScene);
+		void onUpdate(Timestep ts);
+		void onEvent(Event& e);
+
+		void create(Ref<Scene> inScene, const glm::vec2& viewportSize);
+
+		void onViewportResize(const glm::vec2& newSize);
 
 	private:
 		void ResetPieces();
@@ -20,12 +27,36 @@ namespace Labyrinth {
 		void BuildBlackPieces();
 		void BuildRow(int row, std::vector<Entity>& squares);
 
+		void ResolveMove();
+		bool IsValidSquare(const PieceComponent& piece, const SquareComponent& square);
+
+		void DrawFramebuffers();
+
+	private:
+		bool OnMouseMoved(MouseMovedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+
 	private:
 		Ref<Scene> mContext = nullptr;
 
-		Entity mBoard = {};
-		Entity mWhite = {};
-		Entity mBlack = {};
+		Ref<Framebuffer> mPiecesFramebuffer;
+		Ref<Framebuffer> mBoardFramebuffer;
+
+		Entity mSelectedPiece;
+		glm::vec3 mLastPiecePos;
+		Entity mHoveredPiece;
+		Entity mHoveredSquare;
+
+		Entity mBoard;
+		Entity mWhite;
+		Entity mBlack;
+
+		bool mViewportFocused = false;
+		bool mViewportHovered = false;
+
+		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+		glm::vec2 mLastMousePos = { 0.0f, 0.0f };
 
 		const uint32_t MaxPawnCount = 8;
 		const uint32_t MaxRookCount = 2;

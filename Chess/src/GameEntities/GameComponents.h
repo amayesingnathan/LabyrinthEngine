@@ -8,7 +8,8 @@ namespace Labyrinth {
 	{
 		None = -1,
 		White,
-		Black
+		Black,
+		End
 	};
 
 	enum class PieceType
@@ -19,7 +20,8 @@ namespace Labyrinth {
 		Knight,
 		Bishop,
 		Queen,
-		King
+		King,
+		End
 	};
 
 	struct BoardPosition
@@ -61,11 +63,12 @@ namespace Labyrinth {
 		Colour colour = Colour::None;
 		PieceType type = PieceType::None;
 		BoardPosition position;
+		bool unmoved = true;
 		bool active = true;
 
 		PieceComponent() = default;
 		PieceComponent(Colour c, PieceType t, const BoardPosition& pos)
-			: colour(c), type(t), position(pos), active(true) {}
+			: colour(c), type(t), position(pos) {}
 		PieceComponent(const PieceComponent&) = default;
 
 		std::string getString()

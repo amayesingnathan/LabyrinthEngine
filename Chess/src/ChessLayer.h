@@ -16,35 +16,25 @@ namespace Labyrinth {
 		virtual void onAttach() override;
 		virtual void onDetach() override;
 
-		void onUpdate(Labyrinth::Timestep ts) override;
+		void onUpdate(Timestep ts) override;
 		virtual void onImGuiRender() override;
-		void onEvent(Labyrinth::Event & e) override;
+		void onEvent(Event & e) override;
 
 	private:
 		void DrawFramebuffers();
 
 	private:
-		bool OnMouseMoved(MouseMovedEvent& e);
-		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
 	private:
 		Ref<Scene> mCurrentScene;
 
 		Ref<Framebuffer> mFramebuffer;
-		Ref<Framebuffer> mPiecesFramebuffer;
-		Ref<Framebuffer> mBoardFramebuffer;
 
 		Board mBoard;
 
 		float mBoardWidth;
 		float mBoardHeight;
 		glm::vec2 mBoardSquareSize;
-
-		Entity mSelectedPiece;
-		Entity mHoveredPiece;
-		Entity mHoveredSquare;
-		glm::vec2 mLastMousePos = { 0.0f, 0.0f };
 
 		bool mViewportFocused =  false;
 		bool mViewportHovered = false;
