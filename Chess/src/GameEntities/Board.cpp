@@ -261,13 +261,12 @@ namespace Labyrinth {
 	{
 		for (int j = 0; j < squares.size(); j++)
 		{
-			Entity* pieceInSquare = nullptr;
 			auto& square = squares[j];
 			auto& squareComp = square.addComponent<SquareComponent>();
 			if (square.hasComponent<SquareComponent>())
 				int test = 0;
 			squareComp.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
-			squareComp.position = { row, j };
+			squareComp.position = { j, row };
 
 			Entity side;
 			if ((row == 0) || (row == 1))
@@ -280,24 +279,24 @@ namespace Labyrinth {
 			if ((row == 1) || (row == 6))
 			{
 				auto& pieces = side.getChildren()[0].getChildren();
-				squareComp.currentPiece = &pieces[j];
+				squareComp.currentPiece = pieces[j];
 			}
 			else if ((row == 0) || (row == 7))
 			{
 				if (j < 3)
 				{
 					Entity& piece = side.getChildren()[j + 1].getChildren()[0];
-					squareComp.currentPiece = &piece;
+					squareComp.currentPiece = piece;
 				}
 				else if ((4 < j) && (j < 8))
 				{
 					Entity& piece = side.getChildren()[8 - j].getChildren()[1];
-					squareComp.currentPiece = &piece;
+					squareComp.currentPiece = piece;
 				}
 				else
 				{
 					Entity& piece = side.getChildren()[j + 1];
-					squareComp.currentPiece = &piece;
+					squareComp.currentPiece = piece;
 				}
 			}
 		}
@@ -312,25 +311,38 @@ namespace Labyrinth {
 
 		auto& trans = mSelectedPiece.getComponent<TransformComponent>().translation;
 
-		if (IsValidSquare(piece, square))
+		if (IsValidTarget(piece, square))
 		{
 			const auto& squareTrans = mHoveredSquare.getComponent<TransformComponent>().translation;
 			trans = { squareTrans.x, squareTrans.y, trans.z };
+			piece.position = square.position;
+
+			auto& prevSquare = mLastPieceSquare.getComponent<SquareComponent>();
+			prevSquare.currentPiece = {};
+			square.currentPiece = mSelectedPiece;
 
 			if (piece.unmoved) piece.unmoved = false;
 		}
-		else { trans = mLastPiecePos; }
+		else 
+		{ 
+			const auto& squareTrans = mLastPieceSquare.getComponent<TransformComponent>().translation;
+			trans = { squareTrans.x, squareTrans.y, trans.z };
+		}
 	}
 
-	bool Board::IsValidSquare(const PieceComponent& piece, const SquareComponent& square)
+	bool Board::IsValidTarget(const PieceComponent& piece, SquareComponent& square)
 	{
 		std::vector<BoardPosition> validMoves;
 		Chess::GetValidMoves(piece, validMoves);
 
-		if (validMoves.empty()) return false;
+		if (validMoves.empty()) 
+			return false;
 
-		if (std::find(validMoves.begin(), validMoves.end(), square.position) == validMoves.end()) return false;
+		if (std::find(validMoves.begin(), validMoves.end(), square.position) == validMoves.end())
+			return false;
 
+		if (square.currentPiece)
+			mContext->DestroyEntity(square.currentPiece);
 		return true;
 	}
 
@@ -394,7 +406,6 @@ namespace Labyrinth {
 		}
 	}
 
-
 	bool Board::OnMouseMoved(MouseMovedEvent& e)
 	{
 		if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT) && mSelectedPiece)
@@ -418,7 +429,7 @@ namespace Labyrinth {
 				if (mHoveredPiece)
 				{
 					mSelectedPiece = mHoveredPiece;
-					mLastPiecePos = mSelectedPiece.getComponent<TransformComponent>().translation;
+					mLastPieceSquare = mHoveredSquare;
 				}
 		}
 		break;

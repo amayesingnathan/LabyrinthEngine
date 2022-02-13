@@ -28,7 +28,7 @@ namespace Labyrinth {
 		void BuildRow(int row, std::vector<Entity>& squares);
 
 		void ResolveMove();
-		bool IsValidSquare(const PieceComponent& piece, const SquareComponent& square);
+		bool IsValidTarget(const PieceComponent& piece, SquareComponent& square);
 
 		void DrawFramebuffers();
 
@@ -44,7 +44,8 @@ namespace Labyrinth {
 		Ref<Framebuffer> mBoardFramebuffer;
 
 		Entity mSelectedPiece;
-		glm::vec3 mLastPiecePos;
+		Entity mLastPieceSquare;
+
 		Entity mHoveredPiece;
 		Entity mHoveredSquare;
 

@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "Labyrinth/Scene/Entity.h"
+
 namespace Labyrinth {
 
 	enum class Colour
@@ -49,10 +51,10 @@ namespace Labyrinth {
 	{
 		Colour colour = Colour::None;
 		BoardPosition position;
-		class Entity* currentPiece = nullptr;
+		Entity currentPiece;
 
 		SquareComponent() = default;
-		SquareComponent(Colour c, const BoardPosition& pos, class Entity* piece = nullptr)
+		SquareComponent(Colour c, const BoardPosition& pos, Entity piece = {})
 			: colour(c), position(pos), currentPiece(piece) {}
 		SquareComponent(const SquareComponent&) = default;
 
@@ -71,29 +73,6 @@ namespace Labyrinth {
 			: colour(c), type(t), position(pos) {}
 		PieceComponent(const PieceComponent&) = default;
 
-		std::string getString()
-		{
-			std::string subtexKey;
-
-			switch (colour)
-			{
-			case Colour::White:	subtexKey = "White"; break;
-			case Colour::Black:	subtexKey = "Black"; break;
-			}
-			enum Pieces { Pawn = 0, King, Queen, Rook, Knight, Bishop };
-
-			switch (type)
-			{
-			case PieceType::Pawn:	subtexKey += "Pawn"; break;
-			case PieceType::King:	subtexKey += "King"; break;
-			case PieceType::Queen:	subtexKey += "Queen"; break;
-			case PieceType::Rook:	subtexKey += "Rook"; break;
-			case PieceType::Knight:	subtexKey += "Knight"; break;
-			case PieceType::Bishop:	subtexKey += "Bishop"; break;
-			}
-
-			return subtexKey;
-		}
 
 	};
 
