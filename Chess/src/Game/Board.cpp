@@ -6,7 +6,6 @@ namespace Labyrinth {
 
 	constexpr char* BoardPath = "assets/scenes/Chess.laby";
 
-
 	void Board::create(Ref<Scene> scene, const glm::vec2& viewportSize)
 	{
 		mContext = scene;
@@ -94,8 +93,8 @@ namespace Labyrinth {
 					const auto& children = currEnt.getChildren();
 					if (children.size() == 2)
 					{
-						mWhite = children[0];
-						mBlack = children[1];
+						mWhitePieces = children[0];
+						mBlackPieces = children[1];
 					}
 				}
 				else if (tag == "Chessboard")
@@ -107,12 +106,12 @@ namespace Labyrinth {
 			LAB_ERROR("Could not load board from file"); 
 			return false;
 		}
-		if (!mWhite)
+		if (!mWhitePieces)
 		{
 			LAB_ERROR("Could not load white pieces from file"); 
 			return false;
 		}
-		if (!mBlack)
+		if (!mBlackPieces)
 		{
 			LAB_ERROR("Could not load black pieces from file"); 
 			return false;
@@ -124,7 +123,7 @@ namespace Labyrinth {
 
 	void Board::BuildWhitePieces()
 	{
-		auto& whitePieces = mWhite.getChildren();
+		auto& whitePieces = mWhitePieces.getChildren();
 		auto& whitePawns = whitePieces[0].getChildren();
 		auto& whiteRooks = whitePieces[1].getChildren();
 		auto& whiteKnights = whitePieces[2].getChildren();
@@ -190,7 +189,7 @@ namespace Labyrinth {
 
 	void Board::BuildBlackPieces()
 	{
-		auto& blackPieces = mBlack.getChildren();
+		auto& blackPieces = mBlackPieces.getChildren();
 		auto& blackPawns = blackPieces[0].getChildren();
 		auto& blackRooks = blackPieces[1].getChildren();
 		auto& blackKnights = blackPieces[2].getChildren();
@@ -270,9 +269,9 @@ namespace Labyrinth {
 
 			Entity side;
 			if ((row == 0) || (row == 1))
-				side = mWhite;
+				side = mWhitePieces;
 			if ((row == 6) || (row == 7))
-				side = mBlack;
+				side = mBlackPieces;
 
 			if (!side) continue;
 
@@ -304,46 +303,10 @@ namespace Labyrinth {
 
 	void Board::ResolveMove()
 	{
-		if (!mHoveredSquare) return;
+		nextMove = Move(mSelectedPiece, mLastSquare, mHoveredSquare);
+		nextMove.resolve();
 
-		auto& piece = mSelectedPiece.getComponent<PieceComponent>();
-		auto& square = mHoveredSquare.getComponent<SquareComponent>();
-
-		auto& trans = mSelectedPiece.getComponent<TransformComponent>().translation;
-
-		if (IsValidTarget(piece, square))
-		{
-			const auto& squareTrans = mHoveredSquare.getComponent<TransformComponent>().translation;
-			trans = { squareTrans.x, squareTrans.y, trans.z };
-			piece.position = square.position;
-
-			auto& prevSquare = mLastPieceSquare.getComponent<SquareComponent>();
-			prevSquare.currentPiece = {};
-			square.currentPiece = mSelectedPiece;
-
-			if (piece.unmoved) piece.unmoved = false;
-		}
-		else 
-		{ 
-			const auto& squareTrans = mLastPieceSquare.getComponent<TransformComponent>().translation;
-			trans = { squareTrans.x, squareTrans.y, trans.z };
-		}
-	}
-
-	bool Board::IsValidTarget(const PieceComponent& piece, SquareComponent& square)
-	{
-		std::vector<BoardPosition> validMoves;
-		Chess::GetValidMoves(piece, validMoves);
-
-		if (validMoves.empty()) 
-			return false;
-
-		if (std::find(validMoves.begin(), validMoves.end(), square.position) == validMoves.end())
-			return false;
-
-		if (square.currentPiece)
-			mContext->DestroyEntity(square.currentPiece);
-		return true;
+		mSelectedPiece = {};
 	}
 
 	void Board::DrawFramebuffers()
@@ -429,7 +392,7 @@ namespace Labyrinth {
 				if (mHoveredPiece)
 				{
 					mSelectedPiece = mHoveredPiece;
-					mLastPieceSquare = mHoveredSquare;
+					mLastSquare = mHoveredSquare;
 				}
 		}
 		break;
@@ -445,10 +408,8 @@ namespace Labyrinth {
 		case LAB_MOUSE_BUTTON_LEFT:
 		{
 			if (mSelectedPiece)
-			{
 				ResolveMove();
-				mSelectedPiece = {};
-			}
+			break;
 		}
 		}
 

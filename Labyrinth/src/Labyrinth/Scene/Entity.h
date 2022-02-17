@@ -117,6 +117,7 @@ namespace Labyrinth {
 			return !(*this == other);
 		}
 
+		void destroy() { mScene->DestroyEntity(*this); }
 		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();

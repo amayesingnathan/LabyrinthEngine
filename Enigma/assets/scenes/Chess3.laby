@@ -272,15 +272,15 @@ Entities:
                 NodeComponent:
                   ChildCount: 2
                   Children:
-                    - Entity: 8777791301490820561
+                    - Entity: 2752049450001582390
                       TagComponent:
-                        Tag: 2
+                        Tag: 1
                       NodeComponent:
                         ChildCount: 0
                         Children:
                           []
                       TransformComponent:
-                        Translation: [1, 0, 0]
+                        Translation: [6, 0, 0]
                         Rotation: [0, 0, 0]
                         Scale: [1, 1, 1]
                       SpriteRendererComponent:
@@ -295,15 +295,15 @@ Entities:
                             - 1: [0.5, 0.5]
                             - 2: [0.5, 1]
                             - 3: [0.333333343, 1]
-                    - Entity: 2752049450001582390
+                    - Entity: 8777791301490820561
                       TagComponent:
-                        Tag: 1
+                        Tag: 2
                       NodeComponent:
                         ChildCount: 0
                         Children:
                           []
                       TransformComponent:
-                        Translation: [6, 0, 0]
+                        Translation: [1, 0, 0]
                         Rotation: [0, 0, 0]
                         Scale: [1, 1, 1]
                       SpriteRendererComponent:

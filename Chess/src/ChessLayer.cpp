@@ -1,6 +1,6 @@
 #include "ChessLayer.h"
 
-#include "GameEntities/GameComponents.h"
+#include "Game/GameComponents.h"
 
 #include "Labyrinth/Maths/Maths.h"
 

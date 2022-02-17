@@ -2,8 +2,8 @@
 
 #include <Labyrinth.h>
 
-#include "GameEntities/Board.h"
-#include "GameEntities/GameComponents.h"
+#include "Game/Board.h"
+#include "Game/GameComponents.h"
 
 namespace Labyrinth {
 
@@ -19,9 +19,6 @@ namespace Labyrinth {
 		void onUpdate(Timestep ts) override;
 		virtual void onImGuiRender() override;
 		void onEvent(Event & e) override;
-
-	private:
-		void DrawFramebuffers();
 
 	private:
 

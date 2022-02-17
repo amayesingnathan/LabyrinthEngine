@@ -80,6 +80,9 @@ void main()
 		case 30: texColour *= texture(uTextures[30], vTexCoord * vTilingFactor); break;
 		case 31: texColour *= texture(uTextures[31], vTexCoord * vTilingFactor); break;
 	}
+	
+	if (texColour.a < 0.5)
+		discard;
 
 	color = texColour;
 

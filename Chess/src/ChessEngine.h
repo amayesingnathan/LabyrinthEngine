@@ -2,7 +2,7 @@
 
 #include "Labyrinth.h"
 
-#include "GameEntities/GameComponents.h"
+#include "Game/GameComponents.h"
 
 namespace Labyrinth {
 

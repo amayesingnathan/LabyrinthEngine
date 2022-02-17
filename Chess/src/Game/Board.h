@@ -3,6 +3,8 @@
 #include <Labyrinth.h>
 
 #include "GameComponents.h"
+#include "Player.h"
+#include "Move.h"
 
 namespace Labyrinth {
 
@@ -28,7 +30,6 @@ namespace Labyrinth {
 		void BuildRow(int row, std::vector<Entity>& squares);
 
 		void ResolveMove();
-		bool IsValidTarget(const PieceComponent& piece, SquareComponent& square);
 
 		void DrawFramebuffers();
 
@@ -40,18 +41,23 @@ namespace Labyrinth {
 	private:
 		Ref<Scene> mContext = nullptr;
 
-		Ref<Framebuffer> mPiecesFramebuffer;
-		Ref<Framebuffer> mBoardFramebuffer;
+		Ref<Framebuffer> mPiecesFramebuffer = nullptr;
+		Ref<Framebuffer> mBoardFramebuffer = nullptr;
 
-		Entity mSelectedPiece;
-		Entity mLastPieceSquare;
+		Entity mSelectedPiece = {};
+		Entity mLastSquare = {};
 
-		Entity mHoveredPiece;
-		Entity mHoveredSquare;
+		Entity mHoveredPiece = {};
+		Entity mHoveredSquare = {};
 
-		Entity mBoard;
-		Entity mWhite;
-		Entity mBlack;
+		Entity mBoard = {};
+		Entity mWhitePieces = {};
+		Entity mBlackPieces = {};
+
+		Player mWhitePlayer = { Colour::White };
+		Player mBlackPlayer = { Colour::Black };
+		Player mCurrPlayer = mWhitePlayer;
+		Move nextMove = {};
 
 		bool mViewportFocused = false;
 		bool mViewportHovered = false;
@@ -59,26 +65,6 @@ namespace Labyrinth {
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 		glm::vec2 mLastMousePos = { 0.0f, 0.0f };
 
-		const uint32_t MaxPawnCount = 8;
-		const uint32_t MaxRookCount = 2;
-		const uint32_t MaxKnightCount = 2;
-		const uint32_t MaxBishopCount = 2;
-		const uint32_t MaxQueenCount = 1;
-		const uint32_t MaxKingCount = 1;
-
-		uint32_t wPawnCount = 0;
-		uint32_t wRookCount = 0;
-		uint32_t wKnightCount = 0;
-		uint32_t wBishopCount = 0;
-		uint32_t wQueenCount = 0;
-		uint32_t wKingCount = 0;
-
-		uint32_t bPawnCount = 0;
-		uint32_t bRookCount = 0;
-		uint32_t bKnightCount = 0;
-		uint32_t bBishopCount = 0;
-		uint32_t bQueenCount = 0;
-		uint32_t bKingCount = 0;
 	};
 
 }
