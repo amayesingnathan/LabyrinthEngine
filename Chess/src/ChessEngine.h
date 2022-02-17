@@ -8,7 +8,7 @@ namespace Labyrinth {
 
 	namespace Chess
 	{
-		static void GetValidMoves(const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+		static void GetValidMoves(const Board& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 		{
 			const BoardPosition& startPos = piece.position;
 			outMoves.clear();

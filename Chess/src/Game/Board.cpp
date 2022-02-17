@@ -18,7 +18,6 @@ namespace Labyrinth {
 		fbSpec.samples = 1;
 
 		mBoardFramebuffer = Framebuffer::Create(fbSpec);
-		mPiecesFramebuffer = Framebuffer::Create(fbSpec);
 
 		ResetPieces();
 	}
@@ -40,11 +39,6 @@ namespace Labyrinth {
 			mBoardFramebuffer->bind();
 			int boardPixelData = mBoardFramebuffer->readPixel(1, mouseX, mouseY);
 			mHoveredSquare = (boardPixelData == -1) ? Entity() : Entity((entt::entity)boardPixelData, mContext);
-
-			// Check for hovered piece
-			mPiecesFramebuffer->bind();
-			int piecePixelData = mPiecesFramebuffer->readPixel(1, mouseX, mouseY);
-			mHoveredPiece = (piecePixelData == -1) ? Entity() : Entity((entt::entity)piecePixelData, mContext);
 		}
 	}
 
@@ -60,7 +54,6 @@ namespace Labyrinth {
 	{
 		mViewportSize = newSize;
 		mBoardFramebuffer->resize((uint32_t)newSize.x, (uint32_t)newSize.y);
-		mPiecesFramebuffer->resize((uint32_t)newSize.x, (uint32_t)newSize.y);
 	}
 
 	void Board::ResetPieces()
@@ -128,8 +121,8 @@ namespace Labyrinth {
 		auto& whiteRooks = whitePieces[1].getChildren();
 		auto& whiteKnights = whitePieces[2].getChildren();
 		auto& whiteBishops = whitePieces[3].getChildren();
-		auto& whiteQueen = whitePieces[4];
-		auto& whiteKing = whitePieces[5];
+		auto& whiteQueen = whitePieces[4].getChildren();
+		auto& whiteKing = whitePieces[5].getChildren();
 
 		int pieceCount = 0;
 		for (auto& pawn : whitePawns)
@@ -171,15 +164,19 @@ namespace Labyrinth {
 			pieceCount++;
 		}
 
+		pieceCount = 0;
+		for (auto& queen : whiteQueen)
 		{
-			auto& piece = whiteQueen.addComponent<PieceComponent>();
+			auto& piece = queen.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Queen;
 			piece.position = { 3, 0 };
 		}
 
+		pieceCount = 0;
+		for (auto& king : whiteKing)
 		{
-			auto& piece = whiteKing.addComponent<PieceComponent>();
+			auto& piece = king.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::King;
 			piece.position = { 4, 0 };
@@ -244,6 +241,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Queen;
 			piece.position = { 3, 7 };
+			pieceCount++;
 		}
 
 		pieceCount = 0;
@@ -253,6 +251,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::King;
 			piece.position = { 4, 7 };
+			pieceCount++;
 		}
 	}
 
@@ -294,7 +293,7 @@ namespace Labyrinth {
 				}
 				else
 				{
-					Entity& piece = side.getChildren()[j + 1];
+					Entity& piece = side.getChildren()[j + 1].getChildren()[0];
 					squareComp.currentPiece = piece;
 				}
 			}
@@ -303,9 +302,10 @@ namespace Labyrinth {
 
 	void Board::ResolveMove()
 	{
-		nextMove = Move(mSelectedPiece, mLastSquare, mHoveredSquare);
-		nextMove.resolve();
+		nextMove = Move(*this, mSelectedPiece, mLastSquare, mHoveredSquare);
+		nextMove.resolve(mCurrPlayer);
 
+		mSelectedPiece.getComponent<SpriteRendererComponent>().layer--;
 		mSelectedPiece = {};
 	}
 
@@ -347,25 +347,6 @@ namespace Labyrinth {
 			}
 
 			Renderer2D::EndState();
-
-			mPiecesFramebuffer->bind();
-			Renderer2D::BeginState(*mainCamera, cameraTransform);
-
-			RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
-			RenderCommand::Clear();
-
-			// Clear our entity ID attachment to -1
-			mPiecesFramebuffer->clearAttachment(1, -1);
-
-			auto piecesView = mContext->view<TransformComponent, SpriteRendererComponent, PieceComponent>();
-			for (auto entity : piecesView)
-			{
-				auto& [transform, sprite] = piecesView.get<TransformComponent, SpriteRendererComponent>(entity);
-
-				Renderer2D::DrawSprite(transform, sprite, (int)entity);
-			}
-
-			Renderer2D::EndState();
 		}
 	}
 
@@ -388,14 +369,19 @@ namespace Labyrinth {
 		{
 		case LAB_MOUSE_BUTTON_LEFT:
 		{
-			if (mViewportHovered && !Input::IsKeyPressed(LAB_KEY_LALT))
-				if (mHoveredPiece)
-				{
-					mSelectedPiece = mHoveredPiece;
-					mLastSquare = mHoveredSquare;
-				}
+			if (!mViewportHovered || Input::IsKeyPressed(LAB_KEY_LALT)) break;
+			
+			if (!mHoveredSquare) break;
+			
+			Entity inSquare = mHoveredSquare.getComponent<SquareComponent>().currentPiece;
+
+			if (mCurrPlayer != inSquare.getComponent<PieceComponent>().colour) break;
+
+			mSelectedPiece = inSquare;
+			mSelectedPiece.getComponent<SpriteRendererComponent>().layer++;
+			mLastSquare = mHoveredSquare;
+			break;
 		}
-		break;
 		}
 
 		return false;

@@ -1,22 +1,23 @@
 #include "Move.h"
 
+#include "Board.h"
 #include "../ChessEngine.h"
 
 namespace Labyrinth {
 
-	Move::Move(Entity& piece, Entity& src, Entity& dest)
+	Move::Move(const Board& boardState, Entity& piece, Entity& src, Entity& dest)
 		: mPiece(&piece), mPieceComp(&piece.getComponent<PieceComponent>()), 
 		mSource(&src), mSourceSquare(&src.getComponent<SquareComponent>()),
 		mTarget(&dest), mTargetSquare((dest) ? &dest.getComponent<SquareComponent>() : nullptr)
 	{
-		if (!dest)
+		if (!mTargetSquare)
 		{
 			mValidMove = false;
 			return;
 		}
 
 		std::vector<BoardPosition> validMoves;
-		Chess::GetValidMoves(*mPieceComp, validMoves);
+		Chess::GetValidMoves(boardState, *mPieceComp, validMoves);
 
 		if (validMoves.empty())
 			mValidMove = false;
@@ -27,8 +28,10 @@ namespace Labyrinth {
 			mValidMove = true;
 	}
 
-	void Move::resolve()
+	void Move::resolve(Player& currTurn)
 	{
+		if (currTurn != mPieceComp->colour) mValidMove = false;
+
 		auto& trans = mPiece->getComponent<TransformComponent>().translation;
 
 		if (mValidMove)
@@ -44,6 +47,11 @@ namespace Labyrinth {
 			mTargetSquare->currentPiece = *mPiece;
 
 			if (mPieceComp->unmoved) mPieceComp->unmoved = false;
+
+			if (currTurn == Colour::White)
+				currTurn = Colour::Black;
+			else
+				currTurn = Colour::White;
 		}
 		else
 		{

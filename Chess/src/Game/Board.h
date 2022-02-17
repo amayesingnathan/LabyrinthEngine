@@ -41,22 +41,18 @@ namespace Labyrinth {
 	private:
 		Ref<Scene> mContext = nullptr;
 
-		Ref<Framebuffer> mPiecesFramebuffer = nullptr;
 		Ref<Framebuffer> mBoardFramebuffer = nullptr;
 
 		Entity mSelectedPiece = {};
 		Entity mLastSquare = {};
 
-		Entity mHoveredPiece = {};
 		Entity mHoveredSquare = {};
 
 		Entity mBoard = {};
 		Entity mWhitePieces = {};
 		Entity mBlackPieces = {};
 
-		Player mWhitePlayer = { Colour::White };
-		Player mBlackPlayer = { Colour::Black };
-		Player mCurrPlayer = mWhitePlayer;
+		Player mCurrPlayer = Colour::White;
 		Move nextMove = {};
 
 		bool mViewportFocused = false;

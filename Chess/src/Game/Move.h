@@ -2,6 +2,7 @@
 
 #include <Labyrinth.h>
 #include "GameComponents.h"
+#include "Player.h"
 
 namespace Labyrinth {
 
@@ -9,15 +10,13 @@ namespace Labyrinth {
 	{
 	public:
 		Move() = default;
-		Move(Entity& piece, Entity& src, Entity& dest);
+		Move(const class Board& boardState, Entity& piece, Entity& src, Entity& dest);
 				
 		bool isValidMove() const { return mValidMove; }
 
-		void resolve();
+		void resolve(Player& currTurn);
 
 	private:
-		Player mPlayer = {};
-
 		Entity* mPiece = nullptr;
 		PieceComponent* mPieceComp = nullptr;
 
