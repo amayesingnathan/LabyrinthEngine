@@ -229,12 +229,6 @@ namespace Labyrinth {
 				{
 					Renderer2D::DrawSprite(trComponent, srComponent, (int)entity);
 				});
-			//auto view = mRegistry.view<TransformComponent, SpriteRendererComponent>();
-			//for (auto entity : view)
-			//{
-			//	auto& [transform, sprite] = view.get<TransformComponent, SpriteRendererComponent>(entity);
-
-			//}
 
 			Renderer2D::EndState();
 

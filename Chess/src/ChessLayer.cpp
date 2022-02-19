@@ -52,7 +52,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mBoard.onUpdate(ts);
+		mBoard.onUpdate();
 
 		mViewportFocused = Input::IsWindowFocused();
 		mViewportHovered = Input::IsWindowHovered();
@@ -89,9 +89,6 @@ namespace Labyrinth {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-		//ImGui::Text("Hovered Piece: %d", mHoveredPiece.getEntID());
-		//ImGui::Text("Held Piece: %d", mSelectedPiece.getEntID());
-		//ImGui::Text("Hovered Square: %d", mHoveredSquare.getEntID());
 
 		ImGui::End();
 		Labyrinth::Renderer2D::ResetStats();

@@ -13,7 +13,7 @@ namespace Labyrinth {
 	public:
 		Board() = default;
 
-		void onUpdate(Timestep ts);
+		void onUpdate();
 		void onEvent(Event& e);
 
 		void create(Ref<Scene> inScene, const glm::vec2& viewportSize);
@@ -31,7 +31,7 @@ namespace Labyrinth {
 
 		void ResolveMove();
 
-		void DrawFramebuffers();
+		void DrawBoardFramebuffer();
 
 	private:
 		bool OnMouseMoved(MouseMovedEvent& e);
@@ -46,9 +46,16 @@ namespace Labyrinth {
 		Entity mSelectedPiece = {};
 		Entity mLastSquare = {};
 
+		std::vector<BoardPosition> mPieceMoves;
+
 		Entity mHoveredSquare = {};
 
+		const glm::vec4 mWhiteColour = { 0.800000012f, 0.529411793f, 0.125490203f, 1.0f };
+		const glm::vec4 mBlackColour = { 0.250980407f, 0.0313725509f, 0.0352941193f, 1.0f };
+		const glm::vec4 mValidMoveColour = { 0.211f, 0.988f, 0.937f, 1.0f };
+
 		Entity mBoard = {};
+		BoardState* mBoardState = nullptr;
 		Entity mWhitePieces = {};
 		Entity mBlackPieces = {};
 

@@ -10,7 +10,7 @@ namespace Labyrinth {
 	{
 	public:
 		Move() = default;
-		Move(const class Board& boardState, Entity& piece, Entity& src, Entity& dest);
+		Move(const BoardState& boardState, Entity& piece, Entity& src, Entity& dest);
 				
 		bool isValidMove() const { return mValidMove; }
 

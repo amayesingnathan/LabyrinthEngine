@@ -22,7 +22,7 @@ namespace Labyrinth {
 		ResetPieces();
 	}
 
-	void Board::onUpdate(Timestep ts)
+	void Board::onUpdate()
 	{
 		mViewportFocused = Input::IsWindowFocused();
 		mViewportHovered = Input::IsWindowHovered();
@@ -32,13 +32,14 @@ namespace Labyrinth {
 		int mouseX = (int)mousePos.x;
 		int mouseY = (int)mousePos.y;
 
-		DrawFramebuffers();
+		DrawBoardFramebuffer();
 		if (mousePos.x >= 0.0f && mousePos.y >= 0.0f && mousePos.x < mViewportSize.x && mousePos.y < mViewportSize.y)
 		{
 			// Check for hovered board square
 			mBoardFramebuffer->bind();
 			int boardPixelData = mBoardFramebuffer->readPixel(1, mouseX, mouseY);
-			mHoveredSquare = (boardPixelData == -1) ? Entity() : Entity((entt::entity)boardPixelData, mContext);
+
+			mHoveredSquare = (boardPixelData == -1) ? Entity() : Entity((entt::entity)boardPixelData, mContext);		
 		}
 	}
 
@@ -110,8 +111,10 @@ namespace Labyrinth {
 			return false;
 		}
 
-		return true;
+		if (!mBoard.hasComponent<BoardComponent>())
+			mBoardState = &mBoard.addComponent<BoardComponent>().boardState;
 
+		return true;
 	}
 
 	void Board::BuildWhitePieces()
@@ -260,9 +263,9 @@ namespace Labyrinth {
 		for (int j = 0; j < squares.size(); j++)
 		{
 			auto& square = squares[j];
+			(*mBoardState)[j][row] = square;
+
 			auto& squareComp = square.addComponent<SquareComponent>();
-			if (square.hasComponent<SquareComponent>())
-				int test = 0;
 			squareComp.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
 			squareComp.position = { j, row };
 
@@ -302,14 +305,18 @@ namespace Labyrinth {
 
 	void Board::ResolveMove()
 	{
-		nextMove = Move(*this, mSelectedPiece, mLastSquare, mHoveredSquare);
+		nextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare);
 		nextMove.resolve(mCurrPlayer);
+
+		for (const auto& move : mPieceMoves)
+			(*mBoardState)[move.x][move.y].getComponent<SpriteRendererComponent>().colour = ((move.x + move.y) % 2 == 0) ? mWhiteColour : mBlackColour;
+		mPieceMoves.clear();
 
 		mSelectedPiece.getComponent<SpriteRendererComponent>().layer--;
 		mSelectedPiece = {};
 	}
 
-	void Board::DrawFramebuffers()
+	void Board::DrawBoardFramebuffer()
 	{
 		Camera* mainCamera = nullptr;
 		glm::mat4 cameraTransform;
@@ -380,6 +387,13 @@ namespace Labyrinth {
 			mSelectedPiece = inSquare;
 			mSelectedPiece.getComponent<SpriteRendererComponent>().layer++;
 			mLastSquare = mHoveredSquare;
+
+			mPieceMoves.clear();
+			Chess::GetValidMoves(*mBoardState, mSelectedPiece.getComponent<PieceComponent>(), mPieceMoves);
+
+			for (const auto& move : mPieceMoves)
+				(*mBoardState)[move.x][move.y].getComponent<SpriteRendererComponent>().colour = mValidMoveColour;
+
 			break;
 		}
 		}
@@ -400,6 +414,11 @@ namespace Labyrinth {
 		}
 
 		return false;
+	}
+
+	template<>
+	void Scene::onComponentAdded<BoardComponent>(Entity entity, BoardComponent& component)
+	{
 	}
 
 	template<>

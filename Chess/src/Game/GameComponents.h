@@ -47,6 +47,15 @@ namespace Labyrinth {
 		}
 	};
 
+	using BoardState = std::array<std::array<Entity, 8>, 8>;
+
+	struct BoardComponent
+	{
+		BoardState boardState = {};
+
+		BoardComponent() = default;
+	};
+
 	struct SquareComponent
 	{
 		Colour colour = Colour::None;

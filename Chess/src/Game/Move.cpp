@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	Move::Move(const Board& boardState, Entity& piece, Entity& src, Entity& dest)
+	Move::Move(const BoardState& boardState, Entity& piece, Entity& src, Entity& dest)
 		: mPiece(&piece), mPieceComp(&piece.getComponent<PieceComponent>()), 
 		mSource(&src), mSourceSquare(&src.getComponent<SquareComponent>()),
 		mTarget(&dest), mTargetSquare((dest) ? &dest.getComponent<SquareComponent>() : nullptr)
