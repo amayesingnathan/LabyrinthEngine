@@ -156,7 +156,7 @@ namespace Labyrinth {
 	{
 		// Seem to need some actual data to be able to use as template parameter in addComponent
 		// so just added a random zero byte.
-		uint8_t data = 0;
+		uint8_t data = 0x0;
 		RootComponent() = default;
 	};
 

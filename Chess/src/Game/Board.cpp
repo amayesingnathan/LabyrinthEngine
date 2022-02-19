@@ -2,15 +2,15 @@
 
 #include "../ChessEngine.h"
 
+#include <imgui/imgui.h>
+
 namespace Labyrinth {
 
 	constexpr char* BoardPath = "assets/scenes/Chess.laby";
 
-	void Board::create(Ref<Scene> scene, const glm::vec2& viewportSize)
+	Board::Board(Ref<Scene> scene, const glm::vec2& viewportSize)
+		: mContext(scene), mViewportSize(viewportSize)
 	{
-		mContext = scene;
-		mViewportSize = viewportSize;
-
 		FramebufferSpec fbSpec;
 		fbSpec.width = Cast<uint32_t>(viewportSize.x);
 		fbSpec.height = Cast<uint32_t>(viewportSize.y);
@@ -51,6 +51,18 @@ namespace Labyrinth {
 		dispatcher.dispatch<MouseButtonReleasedEvent>(LAB_BIND_EVENT_FUNC(Board::OnMouseButtonReleased));
 	}
 
+	void Board::onImGuiRender()
+	{
+		ImGui::Text("Held Piece: %d", mSelectedPiece.getEntID());
+		ImGui::Text("Hovered Square: %d", mHoveredSquare.getEntID());
+
+		ImGui::NewLine();
+
+		ImGui::Text(mWhiteChecked ? "White Checked: Yes" : "White Checked: No");
+		ImGui::Text(mBlackChecked ? "Black Checked: Yes" : "Black Checked: No");
+
+	}
+
 	void Board::onViewportResize(const glm::vec2& newSize)
 	{
 		mViewportSize = newSize;
@@ -87,8 +99,8 @@ namespace Labyrinth {
 					const auto& children = currEnt.getChildren();
 					if (children.size() == 2)
 					{
-						mWhitePieces = children[0];
-						mBlackPieces = children[1];
+						mWhitePiecesRoot = children[0];
+						mBlackPiecesRoot = children[1];
 					}
 				}
 				else if (tag == "Chessboard")
@@ -100,12 +112,12 @@ namespace Labyrinth {
 			LAB_ERROR("Could not load board from file"); 
 			return false;
 		}
-		if (!mWhitePieces)
+		if (!mWhitePiecesRoot)
 		{
 			LAB_ERROR("Could not load white pieces from file"); 
 			return false;
 		}
-		if (!mBlackPieces)
+		if (!mBlackPiecesRoot)
 		{
 			LAB_ERROR("Could not load black pieces from file"); 
 			return false;
@@ -119,7 +131,8 @@ namespace Labyrinth {
 
 	void Board::BuildWhitePieces()
 	{
-		auto& whitePieces = mWhitePieces.getChildren();
+		mWhitePieces.reserve(16);
+		auto& whitePieces = mWhitePiecesRoot.getChildren();
 		auto& whitePawns = whitePieces[0].getChildren();
 		auto& whiteRooks = whitePieces[1].getChildren();
 		auto& whiteKnights = whitePieces[2].getChildren();
@@ -134,6 +147,7 @@ namespace Labyrinth {
 			piece.colour = Colour::White;
 			piece.type = PieceType::Pawn;
 			piece.position = { pieceCount, 1 };
+			mWhitePieces.push_back(pawn);
 			pieceCount++;
 		}
 
@@ -143,7 +157,9 @@ namespace Labyrinth {
 			auto& piece = rook.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Rook;
-			piece.position = { (pieceCount == 0) ? 0 : 7, 0};
+			int row = (pieceCount == 0) ? 0 : 7;
+			piece.position = { row , 0 };
+			mWhitePieces.push_back(rook);
 			pieceCount++;
 		}
 
@@ -153,7 +169,9 @@ namespace Labyrinth {
 			auto& piece = knight.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Knight;
-			piece.position = { (pieceCount == 0) ? 1 : 6, 0 };
+			int row = (pieceCount == 0) ? 1 : 6;
+			piece.position = { row, 0 };
+			mWhitePieces.push_back(knight);
 			pieceCount++;
 		}
 
@@ -163,33 +181,37 @@ namespace Labyrinth {
 			auto& piece = bishop.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Bishop;
-			piece.position = { (pieceCount == 0) ? 2 : 5, 0 };
+			int row = (pieceCount == 0) ? 2 : 5;
+			piece.position = { row, 0 };
+			mWhitePieces.push_back(bishop);
 			pieceCount++;
 		}
 
-		pieceCount = 0;
 		for (auto& queen : whiteQueen)
 		{
 			auto& piece = queen.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::Queen;
 			piece.position = { 3, 0 };
+			mWhitePieces.push_back(queen);
 		}
 
-		pieceCount = 0;
 		for (auto& king : whiteKing)
 		{
+			mWhiteKing = king;
 			auto& piece = king.addComponent<PieceComponent>();
 			piece.colour = Colour::White;
 			piece.type = PieceType::King;
 			piece.position = { 4, 0 };
+			mWhitePieces.push_back(king);
 		}
 
 	}
 
 	void Board::BuildBlackPieces()
 	{
-		auto& blackPieces = mBlackPieces.getChildren();
+		mBlackPieces.reserve(16);
+		auto& blackPieces = mBlackPiecesRoot.getChildren();
 		auto& blackPawns = blackPieces[0].getChildren();
 		auto& blackRooks = blackPieces[1].getChildren();
 		auto& blackKnights = blackPieces[2].getChildren();
@@ -204,6 +226,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Pawn;
 			piece.position = { pieceCount, 6 };
+			mWhitePieces.push_back(pawn);
 			pieceCount++;
 		}
 
@@ -213,7 +236,9 @@ namespace Labyrinth {
 			auto& piece = rook.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Rook;
-			piece.position = { (pieceCount == 0) ? 0 : 7, 7 };
+			int row = (pieceCount == 0) ? 0 : 7;
+			piece.position = { row, 7 };
+			mWhitePieces.push_back(rook);
 			pieceCount++;
 		}
 
@@ -223,7 +248,9 @@ namespace Labyrinth {
 			auto& piece = knight.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Knight;
-			piece.position = { (pieceCount == 0) ? 1 : 6, 7 };
+			int row = (pieceCount == 0) ? 1 : 6;
+			piece.position = { row, 0 };
+			mWhitePieces.push_back(knight);
 			pieceCount++;
 		}
 
@@ -233,7 +260,9 @@ namespace Labyrinth {
 			auto& piece = bishop.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Bishop;
-			piece.position = { (pieceCount == 0) ? 2 : 5, 7 };
+			int row = (pieceCount == 0) ? 2 : 5;
+			piece.position = { row, 0 };
+			mWhitePieces.push_back(bishop);
 			pieceCount++;
 		}
 
@@ -244,16 +273,19 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Queen;
 			piece.position = { 3, 7 };
+			mWhitePieces.push_back(queen);
 			pieceCount++;
 		}
 
 		pieceCount = 0;
 		for (auto& king : blackKing)
 		{
+			mBlackKing = king;
 			auto& piece = king.addComponent<PieceComponent>();
 			piece.colour = Colour::Black;
 			piece.type = PieceType::King;
 			piece.position = { 4, 7 };
+			mWhitePieces.push_back(king);
 			pieceCount++;
 		}
 	}
@@ -263,7 +295,7 @@ namespace Labyrinth {
 		for (int j = 0; j < squares.size(); j++)
 		{
 			auto& square = squares[j];
-			(*mBoardState)[j][row] = square;
+			(*mBoardState)(j, row) = square;
 
 			auto& squareComp = square.addComponent<SquareComponent>();
 			squareComp.colour = ((row + j) % 2 == 0) ? Colour::White : Colour::Black;
@@ -271,9 +303,9 @@ namespace Labyrinth {
 
 			Entity side;
 			if ((row == 0) || (row == 1))
-				side = mWhitePieces;
+				side = mWhitePiecesRoot;
 			if ((row == 6) || (row == 7))
-				side = mBlackPieces;
+				side = mBlackPiecesRoot;
 
 			if (!side) continue;
 
@@ -305,11 +337,33 @@ namespace Labyrinth {
 
 	void Board::ResolveMove()
 	{
-		nextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare);
-		nextMove.resolve(mCurrPlayer);
+		auto& moveAttackingPieces = (mCurrPlayer == Colour::White) ? mBlackPieces : mWhitePieces;
+		bool& moveInCheck = (mCurrPlayer == Colour::White) ? mWhiteChecked : mBlackChecked;
+		mNextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare, moveInCheck, moveAttackingPieces);
+		mNextMove.resolve(mCurrPlayer);
+
+		std::vector<BoardPosition> checkCheck;
+		Chess::GetValidMoves(*mBoardState, mSelectedPiece, checkCheck);
+
+		if (!checkCheck.empty())
+		{
+			bool inCheck = false;
+			for (const auto& move : checkCheck)
+			{
+				const Entity& pieceInSquare = (*mBoardState)(move.x, move.y).getComponent<SquareComponent>().currentPiece;
+				const Entity& king = (mCurrPlayer == Colour::White) ? mWhiteKing : mBlackKing;
+				if (pieceInSquare == king)
+					inCheck = true;
+			}
+
+			if (mCurrPlayer == Colour::White)
+				mWhiteChecked = inCheck;
+			else
+				mBlackChecked = inCheck;
+		}
 
 		for (const auto& move : mPieceMoves)
-			(*mBoardState)[move.x][move.y].getComponent<SpriteRendererComponent>().colour = ((move.x + move.y) % 2 == 0) ? mWhiteColour : mBlackColour;
+			(*mBoardState)(move.x, move.y).getComponent<SpriteRendererComponent>().colour = ((move.x + move.y) % 2 == 0) ? mWhiteColour : mBlackColour;
 		mPieceMoves.clear();
 
 		mSelectedPiece.getComponent<SpriteRendererComponent>().layer--;
@@ -380,19 +434,20 @@ namespace Labyrinth {
 			
 			if (!mHoveredSquare) break;
 			
-			Entity inSquare = mHoveredSquare.getComponent<SquareComponent>().currentPiece;
+			Entity pieceInSquare = mHoveredSquare.getComponent<SquareComponent>().currentPiece;
 
-			if (mCurrPlayer != inSquare.getComponent<PieceComponent>().colour) break;
+			if (!pieceInSquare) break;
+			if (mCurrPlayer != pieceInSquare.getComponent<PieceComponent>().colour) break;
 
-			mSelectedPiece = inSquare;
+			mSelectedPiece = pieceInSquare;
 			mSelectedPiece.getComponent<SpriteRendererComponent>().layer++;
 			mLastSquare = mHoveredSquare;
 
 			mPieceMoves.clear();
-			Chess::GetValidMoves(*mBoardState, mSelectedPiece.getComponent<PieceComponent>(), mPieceMoves);
+			Chess::GetValidMoves(*mBoardState, mSelectedPiece.getComponent<PieceComponent>(), mPieceMoves, (mCurrPlayer == Colour::White) ? mWhiteChecked : mBlackChecked);
 
 			for (const auto& move : mPieceMoves)
-				(*mBoardState)[move.x][move.y].getComponent<SpriteRendererComponent>().colour = mValidMoveColour;
+				(*mBoardState)(move.x, move.y).getComponent<SpriteRendererComponent>().colour = mValidMoveColour;
 
 			break;
 		}

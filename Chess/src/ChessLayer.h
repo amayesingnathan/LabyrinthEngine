@@ -27,15 +27,15 @@ namespace Labyrinth {
 
 		Ref<Framebuffer> mFramebuffer;
 
+		bool mViewportFocused = false;
+		bool mViewportHovered = false;
+		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+		std::array<glm::vec2, 2> mViewportBounds = {};
+
 		Board mBoard;
 
 		float mBoardWidth;
 		float mBoardHeight;
 		glm::vec2 mBoardSquareSize;
-
-		bool mViewportFocused =  false;
-		bool mViewportHovered = false;
-		glm::vec2 mViewportSize = { 0.0f, 0.0f };
-		std::array<glm::vec2, 2> mViewportBounds = {};
 	};
 }

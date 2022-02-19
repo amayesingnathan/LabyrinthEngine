@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	void Chess::GetValidMoves(const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidMoves(const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 		const BoardPosition& startPos = piece.position;
 		outMoves.clear();
@@ -12,28 +12,28 @@ namespace Labyrinth {
 		case PieceType::Pawn:
 		{
 			outMoves.reserve(4);
-			GetValidPawnMoves(startPos, boardState, piece, outMoves);
+			GetValidPawnMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
 		case PieceType::Rook:
 		{
 			outMoves.reserve(14);
-			GetValidLineMoves(startPos, boardState, piece, outMoves);
+			GetValidLineMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
 		case PieceType::Knight:
 		{
 			outMoves.reserve(8);
-			GetValidKnightMoves(startPos, boardState, piece, outMoves);
+			GetValidKnightMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
 		case PieceType::Bishop:
 		{
 			outMoves.reserve(13);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
@@ -41,15 +41,15 @@ namespace Labyrinth {
 		{
 			outMoves.reserve(28);
 
-			GetValidLineMoves(startPos, boardState, piece, outMoves);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves);
+			GetValidLineMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
 		case PieceType::King:
 		{
 			outMoves.reserve(8);
-			GetValidKingMoves(startPos, boardState, piece, outMoves);
+			GetValidKingMoves(startPos, boardState, piece, outMoves, checked);
 
 			break;
 		}
@@ -57,28 +57,33 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidPawnMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidMoves(const BoardState& boardState, const Entity& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	{
+		GetValidMoves(boardState, piece.getComponent<PieceComponent>(), outMoves, checked);
+	}
+
+	void Chess::GetValidPawnMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 		int moveDir = (piece.colour == Colour::White) ? 1 : -1;
 
-		if (startPos.y + moveDir >= 0 && startPos.y + moveDir < 8)
+		if ((startPos.y + moveDir) >= 0 && (startPos.y + moveDir) < 8)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x][startPos.y + moveDir].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + moveDir).getComponent<SquareComponent>().currentPiece;
 			if (!pieceInTarget)
 				outMoves.emplace_back(startPos.x, startPos.y + moveDir);
 		}
 
-		if (startPos.y + moveDir >= 0 && startPos.y + moveDir < 8)
+		if ((startPos.y + moveDir) >= 0 && (startPos.y + moveDir) < 8)
 		{
 			if (startPos.x != 0)
 			{
-				const Entity& leftCapture = boardState[startPos.x - 1][startPos.y + moveDir];
+				const Entity& leftCapture = boardState(startPos.x - 1, startPos.y + moveDir);
 				if (leftCapture.getComponent<SquareComponent>().currentPiece)
 					outMoves.emplace_back(startPos.x - 1, startPos.y + moveDir);
 			}
 			if (startPos.x != 7)
 			{
-				const Entity& rightCapture = boardState[startPos.x + 1][startPos.y + moveDir];
+				const Entity& rightCapture = boardState(startPos.x + 1,startPos.y + moveDir);
 				if (rightCapture.getComponent<SquareComponent>().currentPiece)
 					outMoves.emplace_back(startPos.x + 1, startPos.y + moveDir);
 			}
@@ -86,13 +91,13 @@ namespace Labyrinth {
 
 		if (piece.unmoved)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x][startPos.y + 2 * moveDir].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + 2 * moveDir).getComponent<SquareComponent>().currentPiece;
 			if (!pieceInTarget)
 				outMoves.emplace_back(startPos.x, startPos.y + (2 * moveDir));
 		}
 	}
 
-	void Chess::GetValidLineMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidLineMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 
 		int xOffset = 1;
@@ -105,9 +110,9 @@ namespace Labyrinth {
 
 		while ((startPos.x - xOffset >= 0) || (startPos.x + xOffset < 8) || (startPos.y - yOffset >= 0) || (startPos.y + yOffset < 8))
 		{
-			if (startPos.x - xOffset >= 0 && !xBlockedLeft)
+			if ((startPos.x - xOffset >= 0) && !xBlockedLeft)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - xOffset][startPos.y].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					xBlockedLeft = true;
@@ -117,9 +122,9 @@ namespace Labyrinth {
 				else
 					outMoves.emplace_back(startPos.x - xOffset, startPos.y);
 			}
-			if (startPos.x + xOffset < 8 && !xBlockedRight)
+			if ((startPos.x + xOffset) < 8 && !xBlockedRight)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + xOffset][startPos.y].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					xBlockedRight = true;
@@ -131,9 +136,9 @@ namespace Labyrinth {
 			}
 			xOffset++;
 
-			if (startPos.y - yOffset >= 0 && !yBlockedLeft)
+			if ((startPos.y - yOffset) >= 0 && !yBlockedLeft)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x][startPos.y - yOffset].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					yBlockedLeft = true;
@@ -143,9 +148,9 @@ namespace Labyrinth {
 				else
 					outMoves.emplace_back(startPos.x, startPos.y - yOffset);
 			}
-			if (startPos.y + yOffset < 8 && !yBlockedRight)
+			if ((startPos.y + yOffset) < 8 && !yBlockedRight)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x][startPos.y + yOffset].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					yBlockedRight = true;
@@ -160,7 +165,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidDiagMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidDiagMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 		bool pnBlocked = false;
 		bool ppBlocked = false;
@@ -169,9 +174,9 @@ namespace Labyrinth {
 
 		for (int i = 1; i <= 4; i++)
 		{
-			if (startPos.x - i >= 0 && startPos.y - i >= 0 && !nnBlocked)
+			if ((startPos.x - i) >= 0 && (startPos.y - i) >= 0 && !nnBlocked)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - i][startPos.y - i].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					nnBlocked = true;
@@ -181,9 +186,9 @@ namespace Labyrinth {
 				else
 					outMoves.emplace_back(startPos.x - i, startPos.y - i);
 			}
-			if (startPos.x - i >= 0 && startPos.y + i < 8 && !npBlocked)
+			if ((startPos.x - i) >= 0 && (startPos.y + i) < 8 && !npBlocked)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - i][startPos.y + i].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					npBlocked = true;
@@ -193,9 +198,9 @@ namespace Labyrinth {
 				else
 					outMoves.emplace_back(startPos.x - i, startPos.y + i);
 			}
-			if (startPos.x + i < 8 && startPos.y - i >= 0 && !pnBlocked)
+			if ((startPos.x + i < 8) && (startPos.y - i >= 0) && !pnBlocked)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + i][startPos.y - i].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					pnBlocked = true;
@@ -205,9 +210,9 @@ namespace Labyrinth {
 				else
 					outMoves.emplace_back(startPos.x + i, startPos.y - i);
 			}
-			if (startPos.x + i < 8 && startPos.y + i < 8 && !ppBlocked)
+			if ((startPos.x + i) < 8 && (startPos.y + i) < 8 && !ppBlocked)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - i][startPos.y - i].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					ppBlocked = true;
@@ -220,13 +225,13 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidKnightMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidKnightMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 		if (startPos.x < 6)
 		{
 			if (startPos.y < 7)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + 2][startPos.y + 1].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -237,7 +242,7 @@ namespace Labyrinth {
 			}
 			if (startPos.y > 0)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + 2][startPos.y - 1].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -251,7 +256,7 @@ namespace Labyrinth {
 		{
 			if (startPos.y < 7)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - 2][startPos.y + 1].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -262,7 +267,7 @@ namespace Labyrinth {
 			}
 			if (startPos.y > 0)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - 2][startPos.y - 1].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -276,7 +281,7 @@ namespace Labyrinth {
 		{
 			if (startPos.y < 6)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + 1][startPos.y + 2].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -287,7 +292,7 @@ namespace Labyrinth {
 			}
 			if (startPos.y > 1)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x + 1][startPos.y - 2].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -301,7 +306,7 @@ namespace Labyrinth {
 		{
 			if (startPos.y < 6)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - 1][startPos.y + 2].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -312,7 +317,7 @@ namespace Labyrinth {
 			}
 			if (startPos.y > 1)
 			{
-				const Entity& pieceInTarget = boardState[startPos.x - 1][startPos.y - 2].getComponent<SquareComponent>().currentPiece;
+				const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
 				if (pieceInTarget)
 				{
 					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -324,14 +329,14 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidKingMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidKingMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
 	{
 		int xOffset = 1;
 		int yOffset = 1;
 
-		if (startPos.x - xOffset >= 0)
+		if ((startPos.x - xOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x - xOffset][startPos.y].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -340,9 +345,9 @@ namespace Labyrinth {
 			else
 				outMoves.emplace_back(startPos.x - xOffset, startPos.y);
 		}
-		if (startPos.x + xOffset < 8)
+		if ((startPos.x + xOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x + xOffset][startPos.y].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -352,9 +357,9 @@ namespace Labyrinth {
 				outMoves.emplace_back(startPos.x + xOffset, startPos.y);
 		}
 
-		if (startPos.y - yOffset >= 0)
+		if ((startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x][startPos.y - yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -363,9 +368,9 @@ namespace Labyrinth {
 			else
 				outMoves.emplace_back(startPos.x, startPos.y - yOffset);
 		}
-		if (startPos.y + yOffset < 8)
+		if ((startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x][startPos.y + yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -375,9 +380,9 @@ namespace Labyrinth {
 				outMoves.emplace_back(startPos.x, startPos.y + yOffset);
 		}
 
-		if (startPos.x - xOffset >= 0 && startPos.y - yOffset >= 0)
+		if ((startPos.x - xOffset) >= 0 && (startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x - xOffset][startPos.y - yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -386,9 +391,9 @@ namespace Labyrinth {
 			else
 				outMoves.emplace_back(startPos.x - xOffset, startPos.y - yOffset);
 		}
-		if (startPos.x - xOffset >= 0 && startPos.y + yOffset < 8)
+		if ((startPos.x - xOffset) >= 0 && (startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x - xOffset][startPos.y + yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -397,9 +402,9 @@ namespace Labyrinth {
 			else
 				outMoves.emplace_back(startPos.x - xOffset, startPos.y + yOffset);
 		}
-		if (startPos.x + xOffset < 8 && startPos.y - yOffset >= 0)
+		if ((startPos.x + xOffset) < 8 && (startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x + xOffset][startPos.y - yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
@@ -408,9 +413,9 @@ namespace Labyrinth {
 			else
 				outMoves.emplace_back(startPos.x + xOffset, startPos.y - yOffset);
 		}
-		if (startPos.x + xOffset < 8 && startPos.y + yOffset < 8)
+		if ((startPos.x + xOffset) < 8 && (startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState[startPos.x + xOffset][startPos.y + yOffset].getComponent<SquareComponent>().currentPiece;
+			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
 			if (pieceInTarget)
 			{
 				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)

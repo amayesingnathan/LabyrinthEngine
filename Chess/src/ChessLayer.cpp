@@ -16,15 +16,17 @@ namespace Labyrinth {
 	extern const std::filesystem::path gAssetPath;
 
 	ChessLayer::ChessLayer()
-		: Layer("ChessLayer")
+		: Layer("ChessLayer"), 
+		mCurrentScene(CreateRef<Scene>()), mViewportSize(Application::Get().getWindow().getSize()), 
+		mBoard(mCurrentScene, mViewportSize)
 	{
+		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 	}
 
 	void ChessLayer::onAttach()
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mViewportSize = Application::Get().getWindow().getSize();
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = Cast<uint32_t>(mViewportSize.x);
@@ -37,10 +39,7 @@ namespace Labyrinth {
 		mViewportBounds[0] = { 0, 0 };
 		mViewportBounds[1] = { fbSpec.width, fbSpec.height };
 
-		mCurrentScene = CreateRef<Scene>();
-		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 
-		mBoard.create(mCurrentScene, mViewportSize);
 	}
 
 	void ChessLayer::onDetach()
@@ -89,6 +88,8 @@ namespace Labyrinth {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+
+		mBoard.onImGuiRender();
 
 		ImGui::End();
 		Labyrinth::Renderer2D::ResetStats();

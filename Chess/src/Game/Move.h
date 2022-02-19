@@ -10,11 +10,14 @@ namespace Labyrinth {
 	{
 	public:
 		Move() = default;
-		Move(const BoardState& boardState, Entity& piece, Entity& src, Entity& dest);
+		Move(const BoardState& boardState, Entity& piece, Entity& src, Entity& dest, bool checked, const std::vector<Entity>& attackingPieces);
 				
 		bool isValidMove() const { return mValidMove; }
 
 		void resolve(Player& currTurn);
+
+	private:
+		bool WillCauseCheck();
 
 	private:
 		Entity* mPiece = nullptr;

@@ -11,12 +11,11 @@ namespace Labyrinth {
 	class Board 
 	{
 	public:
-		Board() = default;
+		Board(Ref<Scene> inScene, const glm::vec2& viewportSize);
 
 		void onUpdate();
 		void onEvent(Event& e);
-
-		void create(Ref<Scene> inScene, const glm::vec2& viewportSize);
+		void onImGuiRender();
 
 		void onViewportResize(const glm::vec2& newSize);
 
@@ -54,13 +53,28 @@ namespace Labyrinth {
 		const glm::vec4 mBlackColour = { 0.250980407f, 0.0313725509f, 0.0352941193f, 1.0f };
 		const glm::vec4 mValidMoveColour = { 0.211f, 0.988f, 0.937f, 1.0f };
 
+		const std::unordered_map<PieceType, int> mPieceScores = {	
+			{PieceType::Pawn, 1},
+			{PieceType::Rook, 5},
+			{PieceType::Bishop, 3},
+			{PieceType::Knight, 3},
+			{PieceType::Queen, 9} };
+
 		Entity mBoard = {};
 		BoardState* mBoardState = nullptr;
-		Entity mWhitePieces = {};
-		Entity mBlackPieces = {};
+
+		Entity mWhitePiecesRoot = {};
+		std::vector<Entity> mWhitePieces;
+		Entity mWhiteKing = {};
+
+		Entity mBlackPiecesRoot = {};
+		std::vector<Entity> mBlackPieces;
+		Entity mBlackKing = {};
 
 		Player mCurrPlayer = Colour::White;
-		Move nextMove = {};
+		Move mNextMove = {};
+		bool mWhiteChecked = false;
+		bool mBlackChecked = false;
 
 		bool mViewportFocused = false;
 		bool mViewportHovered = false;

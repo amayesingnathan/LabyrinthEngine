@@ -47,11 +47,29 @@ namespace Labyrinth {
 		}
 	};
 
-	using BoardState = std::array<std::array<Entity, 8>, 8>;
+	class BoardState
+	{
+	public:
+		BoardState() = default;
+
+		Entity& operator()(size_t row, size_t column)
+		{
+			return mBoard[(column * 8) + row];
+		}
+
+		const Entity& operator()(size_t row, size_t column) const
+		{
+			return mBoard[(column * 8) + row];
+		}
+
+
+	private:
+		std::array<Entity, 64> mBoard;
+	};
 
 	struct BoardComponent
 	{
-		BoardState boardState = {};
+		BoardState boardState;
 
 		BoardComponent() = default;
 	};
