@@ -125,6 +125,8 @@ namespace Labyrinth {
 
 		if (!mBoard.hasComponent<BoardComponent>())
 			mBoardState = &mBoard.addComponent<BoardComponent>().boardState;
+		else
+			mBoardState = &mBoard.getComponent<BoardComponent>().boardState;
 
 		return true;
 	}

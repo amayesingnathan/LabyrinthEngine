@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	void Chess::GetValidMoves(const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidMoves(const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 		const BoardPosition& startPos = piece.position;
 		outMoves.clear();
@@ -12,28 +12,28 @@ namespace Labyrinth {
 		case PieceType::Pawn:
 		{
 			outMoves.reserve(4);
-			GetValidPawnMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidPawnMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
 		case PieceType::Rook:
 		{
 			outMoves.reserve(14);
-			GetValidLineMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidLineMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
 		case PieceType::Knight:
 		{
 			outMoves.reserve(8);
-			GetValidKnightMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidKnightMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
 		case PieceType::Bishop:
 		{
 			outMoves.reserve(13);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
@@ -41,15 +41,15 @@ namespace Labyrinth {
 		{
 			outMoves.reserve(28);
 
-			GetValidLineMoves(startPos, boardState, piece, outMoves, checked);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidLineMoves(startPos, boardState, piece, outMoves);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
 		case PieceType::King:
 		{
 			outMoves.reserve(8);
-			GetValidKingMoves(startPos, boardState, piece, outMoves, checked);
+			GetValidKingMoves(startPos, boardState, piece, outMoves);
 
 			break;
 		}
@@ -57,12 +57,12 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidMoves(const BoardState& boardState, const Entity& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidMoves(const BoardState& boardState, const Entity& piece, std::vector<BoardPosition>& outMoves)
 	{
-		GetValidMoves(boardState, piece.getComponent<PieceComponent>(), outMoves, checked);
+		GetValidMoves(boardState, piece.getComponent<PieceComponent>(), outMoves);
 	}
 
-	void Chess::GetValidPawnMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidPawnMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 		int moveDir = (piece.colour == Colour::White) ? 1 : -1;
 
@@ -97,7 +97,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidLineMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidLineMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 
 		int xOffset = 1;
@@ -165,7 +165,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidDiagMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidDiagMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 		bool pnBlocked = false;
 		bool ppBlocked = false;
@@ -225,7 +225,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidKnightMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidKnightMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 		if (startPos.x < 6)
 		{
@@ -329,7 +329,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidKingMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves, bool checked)
+	void Chess::GetValidKingMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
 	{
 		int xOffset = 1;
 		int yOffset = 1;
