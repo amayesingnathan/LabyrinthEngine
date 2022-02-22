@@ -6,39 +6,30 @@
 
 namespace Labyrinth {
 
-	class Move
+	struct Move
 	{
-	public:
+		BoardState* boardState = nullptr;
+		std::vector<Entity>* oppPieces = nullptr;
+
+		Entity* piece = nullptr;
+		PieceComponent* pieceComp = nullptr;
+
+		Entity* source = nullptr;
+		SquareComponent* sourceSquare = nullptr;
+
+		Entity* target = nullptr;
+		SquareComponent* targetSquare = nullptr;
+
+		Entity capturedPiece;
+
+		bool pieceFirstMove = false;
+		bool valid = true;
+
+		bool resolve(Player& currTurn);
+
 		Move() = default;
-		Move(BoardState& boardState, Entity& piece, Entity& src, Entity& dest, bool checked, const std::vector<Entity>& attackingPieces);
+		Move(BoardState& boardState, Entity& piece, Entity& src, Entity& dest, std::vector<Entity>& attackingPieces);
 		~Move();
-				
-		bool isValidMove() const { return mValidMove; }
-
-		void resolve(Player& currTurn);
-
-	private:
-		bool ExecuteMove();
-		void UndoMove();
-
-		bool WillCauseCheck(const std::vector<Entity>& attackingPieces);
-
-	private:
-		BoardState* mBoardState = nullptr;
-
-		Entity* mPiece = nullptr;
-		PieceComponent* mPieceComp = nullptr;
-
-		Entity* mSource = nullptr;
-		SquareComponent* mSourceSquare = nullptr;
-
-		Entity* mTarget = nullptr;
-		SquareComponent* mTargetSquare = nullptr;
-
-		Entity mCaptured;
-
-		bool mPieceFirstMove = false;
-		bool mValidMove = false;
 	};
 
 }

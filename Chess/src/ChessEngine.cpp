@@ -1,39 +1,42 @@
 #include "ChessEngine.h"
 
+#pragma warning(disable:26451)
+
 namespace Labyrinth {
 
-	void Chess::GetValidMoves(const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidMoves(BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
 	{
-		const BoardPosition& startPos = piece.position;
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
+		const BoardPosition& startPos = pieceComp.position;
 		outMoves.clear();
 
-		switch (piece.type)
+		switch (pieceComp.type)
 		{
 		case PieceType::Pawn:
 		{
 			outMoves.reserve(4);
-			GetValidPawnMoves(startPos, boardState, piece, outMoves);
+			GetValidPawnMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
 		case PieceType::Rook:
 		{
 			outMoves.reserve(14);
-			GetValidLineMoves(startPos, boardState, piece, outMoves);
+			GetValidLineMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
 		case PieceType::Knight:
 		{
 			outMoves.reserve(8);
-			GetValidKnightMoves(startPos, boardState, piece, outMoves);
+			GetValidKnightMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
 		case PieceType::Bishop:
 		{
 			outMoves.reserve(13);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
@@ -41,15 +44,15 @@ namespace Labyrinth {
 		{
 			outMoves.reserve(28);
 
-			GetValidLineMoves(startPos, boardState, piece, outMoves);
-			GetValidDiagMoves(startPos, boardState, piece, outMoves);
+			GetValidLineMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
+			GetValidDiagMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
 		case PieceType::King:
 		{
 			outMoves.reserve(8);
-			GetValidKingMoves(startPos, boardState, piece, outMoves);
+			GetValidKingMoves(startPos, boardState, piece, outMoves, oppPieces, check4check);
 
 			break;
 		}
@@ -57,20 +60,111 @@ namespace Labyrinth {
 		}
 	}
 
-	void Chess::GetValidMoves(const BoardState& boardState, const Entity& piece, std::vector<BoardPosition>& outMoves)
+	bool Chess::WillMoveCauseCheck(Move& move, std::vector<Entity>& oppPieces)
 	{
-		GetValidMoves(boardState, piece.getComponent<PieceComponent>(), outMoves);
+		bool causesCheck = false;
+
+		ExecuteMove(move);
+
+		for (auto& piece : oppPieces)
+		{
+			if (piece == move.capturedPiece) continue;
+
+ 			auto& pieceComp = piece.getComponent<PieceComponent>();
+			if (pieceComp.type == PieceType::Pawn) continue;
+
+			std::vector<Move> checkCheck;
+			GetValidMoves(*(move.boardState), piece, checkCheck, oppPieces, false);
+
+			if (checkCheck.empty()) continue;
+
+			for (const auto& checkMove : checkCheck)
+			{
+				if (!checkMove.targetSquare->currentPiece) continue;
+
+				const auto& pieceInSquare = checkMove.targetSquare->currentPiece.getComponent<PieceComponent>();
+				if (pieceInSquare.type == PieceType::King && pieceInSquare.colour != pieceComp.colour)
+				{
+					causesCheck = true;
+					break;
+				}
+			}
+
+			if (causesCheck)
+				break;
+		}
+
+		UndoMove(move);
+
+		return causesCheck;
 	}
 
-	void Chess::GetValidPawnMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::ExecuteMove(Move& move)
 	{
-		int moveDir = (piece.colour == Colour::White) ? 1 : -1;
+		auto& trans = move.piece->getComponent<TransformComponent>().translation;
+
+		const auto& squareTrans = move.target->getComponent<TransformComponent>().translation;
+		trans = { squareTrans.x, squareTrans.y, trans.z };
+		move.pieceComp->position = move.targetSquare->position;
+
+		if (move.targetSquare->currentPiece)
+			move.capturedPiece = move.targetSquare->currentPiece;
+
+		move.sourceSquare->currentPiece = {};
+		move.targetSquare->currentPiece = *(move.piece);
+
+		if (move.pieceComp->unmoved)
+		{
+			move.pieceComp->unmoved = false;
+			move.pieceFirstMove = true;
+		}
+	}
+
+	void Chess::ResetPiece(Move& move)
+	{
+		auto& trans = move.piece->getComponent<TransformComponent>().translation;
+		const auto& squareTrans = move.source->getComponent<TransformComponent>().translation;
+		trans = { squareTrans.x, squareTrans.y, trans.z };
+	}
+
+	void Chess::UndoMove(Move& move)
+	{
+		//Reset piece transform
+		auto& trans = move.piece->getComponent<TransformComponent>().translation;
+		const auto& squareTrans = move.source->getComponent<TransformComponent>().translation;
+		trans.x = squareTrans.x;
+		trans.y = squareTrans.y;
+
+		// Reset board position
+		move.pieceComp->position = move.sourceSquare->position;
+		move.sourceSquare->currentPiece = *(move.piece);
+
+		// Restore piece if one was captured
+		if (move.capturedPiece)
+			move.targetSquare->currentPiece = move.capturedPiece;
+		else
+			move.targetSquare->currentPiece = {};
+
+		if (move.pieceFirstMove) // Reset unmoved flag if this piece was previously unmoved
+			move.pieceComp->unmoved = true;
+
+		move.capturedPiece = {};
+	}
+
+	void Chess::GetValidPawnMoves(const BoardPosition startPos, BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
+	{
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
+		int moveDir = (pieceComp.colour == Colour::White) ? 1 : -1;
 
 		if ((startPos.y + moveDir) >= 0 && (startPos.y + moveDir) < 8)
 		{
 			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + moveDir).getComponent<SquareComponent>().currentPiece;
 			if (!pieceInTarget)
-				outMoves.emplace_back(startPos.x, startPos.y + moveDir);
+			{
+				Move testMove(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y + moveDir), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(testMove, oppPieces))
+					outMoves.push_back(std::move(testMove));
+			}
 		}
 
 		if ((startPos.y + moveDir) >= 0 && (startPos.y + moveDir) < 8)
@@ -79,94 +173,125 @@ namespace Labyrinth {
 			{
 				const Entity& leftCapture = boardState(startPos.x - 1, startPos.y + moveDir);
 				if (leftCapture.getComponent<SquareComponent>().currentPiece)
-					outMoves.emplace_back(startPos.x - 1, startPos.y + moveDir);
+				{
+					Move testMove(boardState, piece, boardState(startPos), boardState(startPos.x - 1, startPos.y + moveDir), oppPieces);
+					if (!check4check || !WillMoveCauseCheck(testMove, oppPieces))
+						outMoves.push_back(std::move(testMove));
+				}
 			}
 			if (startPos.x != 7)
 			{
 				const Entity& rightCapture = boardState(startPos.x + 1,startPos.y + moveDir);
 				if (rightCapture.getComponent<SquareComponent>().currentPiece)
-					outMoves.emplace_back(startPos.x + 1, startPos.y + moveDir);
+				{
+					Move testMove(boardState, piece, boardState(startPos), boardState(startPos.x + 1, startPos.y + moveDir), oppPieces);
+					if (!check4check || !WillMoveCauseCheck(testMove, oppPieces))
+						outMoves.push_back(std::move(testMove));
+				}
 			}
 		}
 
-		if (piece.unmoved)
+		if (pieceComp.unmoved)
 		{
 			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + 2 * moveDir).getComponent<SquareComponent>().currentPiece;
 			if (!pieceInTarget)
-				outMoves.emplace_back(startPos.x, startPos.y + (2 * moveDir));
+			{
+				Move testMove(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y + (2 * moveDir)), oppPieces);
+				if (!check4check ||!WillMoveCauseCheck(testMove, oppPieces))
+					outMoves.push_back(std::move(testMove));
+			}
 		}
 	}
 
-	void Chess::GetValidLineMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidLineMoves(const BoardPosition startPos, BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
 	{
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
 
 		int xOffset = 1;
 		int yOffset = 1;
 
-		bool xBlockedLeft = false;
-		bool xBlockedRight = false;
-		bool yBlockedLeft = false;
-		bool yBlockedRight = false;
+		bool blockedLeft = false;
+		bool blockedRight = false;
+		bool blockedDown = false;
+		bool blockedUp = false;
 
 		while ((startPos.x - xOffset >= 0) || (startPos.x + xOffset < 8) || (startPos.y - yOffset >= 0) || (startPos.y + yOffset < 8))
 		{
-			if ((startPos.x - xOffset >= 0) && !xBlockedLeft)
+			if ((startPos.x - xOffset >= 0) && !blockedLeft)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move left(boardState, piece, boardState(startPos), boardState(startPos.x - xOffset, startPos.y), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(left, oppPieces))
 				{
-					xBlockedLeft = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - xOffset, startPos.y);
+					const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						blockedLeft = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(left));
+					}
+					else
+						outMoves.push_back(std::move(left));
 				}
-				else
-					outMoves.emplace_back(startPos.x - xOffset, startPos.y);
 			}
-			if ((startPos.x + xOffset) < 8 && !xBlockedRight)
+			if ((startPos.x + xOffset) < 8 && !blockedRight)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move right(boardState, piece, boardState(startPos), boardState(startPos.x + xOffset, startPos.y), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(right, oppPieces))
 				{
-					xBlockedRight = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + xOffset, startPos.y);
+					const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						blockedRight = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(right));
+					}
+					else
+						outMoves.push_back(std::move(right));
 				}
-				else
-					outMoves.emplace_back(startPos.x + xOffset, startPos.y);
 			}
 			xOffset++;
 
-			if ((startPos.y - yOffset) >= 0 && !yBlockedLeft)
+			if ((startPos.y - yOffset) >= 0 && !blockedDown)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move down(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y - yOffset), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(down, oppPieces))
 				{
-					yBlockedLeft = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x, startPos.y - yOffset);
+					const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						blockedDown = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(down));
+					}
+					else
+						outMoves.push_back(std::move(down));
 				}
-				else
-					outMoves.emplace_back(startPos.x, startPos.y - yOffset);
 			}
-			if ((startPos.y + yOffset) < 8 && !yBlockedRight)
+			if ((startPos.y + yOffset) < 8 && !blockedUp)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move up(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y + yOffset), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(up, oppPieces))
 				{
-					yBlockedRight = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x, startPos.y + yOffset);
+					const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						blockedUp = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(up));
+					}
+					else
+						outMoves.push_back(std::move(up));
 				}
-				else
-					outMoves.emplace_back(startPos.x, startPos.y + yOffset);
 			}
 			yOffset++;
 
 		}
 	}
 
-	void Chess::GetValidDiagMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidDiagMoves(const BoardPosition startPos, BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
 	{
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
+
 		bool pnBlocked = false;
 		bool ppBlocked = false;
 		bool npBlocked = false;
@@ -176,253 +301,337 @@ namespace Labyrinth {
 		{
 			if ((startPos.x - i) >= 0 && (startPos.y - i) >= 0 && !nnBlocked)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move downLeft(boardState, piece, boardState(startPos), boardState(startPos.x - i, startPos.y - i), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(downLeft, oppPieces))
 				{
-					nnBlocked = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - i, startPos.y - i);
+					const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						nnBlocked = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(downLeft));
+					}
+					else
+						outMoves.push_back(std::move(downLeft));
 				}
-				else
-					outMoves.emplace_back(startPos.x - i, startPos.y - i);
 			}
 			if ((startPos.x - i) >= 0 && (startPos.y + i) < 8 && !npBlocked)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move upLeft(boardState, piece, boardState(startPos), boardState(startPos.x - i, startPos.y + i), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(upLeft, oppPieces))
 				{
-					npBlocked = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - i, startPos.y + i);
+					const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						npBlocked = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(upLeft));
+					}
+					else
+						outMoves.push_back(std::move(upLeft));
 				}
-				else
-					outMoves.emplace_back(startPos.x - i, startPos.y + i);
 			}
 			if ((startPos.x + i < 8) && (startPos.y - i >= 0) && !pnBlocked)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move downRight(boardState, piece, boardState(startPos), boardState(startPos.x + i, startPos.y - i), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(downRight, oppPieces))
 				{
-					pnBlocked = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + i, startPos.y - i);
+					const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						pnBlocked = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(downRight));
+					}
+					else
+						outMoves.push_back(std::move(downRight));
 				}
-				else
-					outMoves.emplace_back(startPos.x + i, startPos.y - i);
 			}
 			if ((startPos.x + i) < 8 && (startPos.y + i) < 8 && !ppBlocked)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move upRight(boardState, piece, boardState(startPos), boardState(startPos.x + i, startPos.y + i), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(upRight, oppPieces))
 				{
-					ppBlocked = true;
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + i, startPos.y + i);
+					const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						ppBlocked = true;
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(upRight));
+					}
+					else
+						outMoves.push_back(std::move(upRight));
 				}
-				else
-					outMoves.emplace_back(startPos.x + i, startPos.y + i);
 			}
 		}
 	}
 
-	void Chess::GetValidKnightMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidKnightMoves(const BoardPosition startPos, BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
 	{
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
+
 		if (startPos.x < 6)
 		{
 			if (startPos.y < 7)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x + 2, startPos.y + 1), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + 2, startPos.y + 1);
+					const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x + 2, startPos.y + 1);
 			}
 			if (startPos.y > 0)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x + 2, startPos.y - 1), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + 2, startPos.y - 1);
+					const Entity& pieceInTarget = boardState(startPos.x + 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x + 2, startPos.y - 1);
 			}
 		}
 		if (startPos.x > 1)
 		{
 			if (startPos.y < 7)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x - 2, startPos.y + 1), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - 2, startPos.y + 1);
+					const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y + 1).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x - 2, startPos.y + 1);
 			}
 			if (startPos.y > 0)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x - 2, startPos.y - 1), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - 2, startPos.y - 1);
+					const Entity& pieceInTarget = boardState(startPos.x - 2, startPos.y - 1).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x - 2, startPos.y - 1);
 			}
 		}
 		if (startPos.x < 7)
 		{
 			if (startPos.y < 6)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x + 1, startPos.y + 2), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + 1, startPos.y + 2);
+					const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x + 1, startPos.y + 2);
 			}
 			if (startPos.y > 1)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x + 1, startPos.y - 2), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x + 1, startPos.y - 2);
+					const Entity& pieceInTarget = boardState(startPos.x + 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x + 1, startPos.y - 2);
 			}
 		}
 		if (startPos.x > 0)
 		{
 			if (startPos.y < 6)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x - 1, startPos.y + 2), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - 1, startPos.y + 2);
+					const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y + 2).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x - 1, startPos.y + 2);
 			}
 			if (startPos.y > 1)
 			{
-				const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
-				if (pieceInTarget)
+				Move knightMove(boardState, piece, boardState(startPos), boardState(startPos.x - 1, startPos.y - 2), oppPieces);
+				if (!check4check || !WillMoveCauseCheck(knightMove, oppPieces))
 				{
-					if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-						outMoves.emplace_back(startPos.x - 1, startPos.y - 2);
+					const Entity& pieceInTarget = boardState(startPos.x - 1, startPos.y - 2).getComponent<SquareComponent>().currentPiece;
+					if (pieceInTarget)
+					{
+						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+							outMoves.push_back(std::move(knightMove));
+					}
+					else
+						outMoves.push_back(std::move(knightMove));
 				}
-				else
-					outMoves.emplace_back(startPos.x - 1, startPos.y - 2);
 			}
 		}
 	}
 
-	void Chess::GetValidKingMoves(const BoardPosition startPos, const BoardState& boardState, const PieceComponent& piece, std::vector<BoardPosition>& outMoves)
+	void Chess::GetValidKingMoves(const BoardPosition startPos, BoardState& boardState, Entity& piece, std::vector<Move>& outMoves, std::vector<Entity>& oppPieces, bool check4check)
 	{
+		const auto& pieceComp = piece.getComponent<PieceComponent>();
+
 		int xOffset = 1;
 		int yOffset = 1;
 
 		if ((startPos.x - xOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x - xOffset, startPos.y), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x - xOffset, startPos.y);
+				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x - xOffset, startPos.y);
 		}
 		if ((startPos.x + xOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x + xOffset, startPos.y), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x + xOffset, startPos.y);
+				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x + xOffset, startPos.y);
 		}
 
 		if ((startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y - yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x, startPos.y - yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x, startPos.y - yOffset);
 		}
 		if ((startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y + yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x, startPos.y + yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x, startPos.y + yOffset);
 		}
 
 		if ((startPos.x - xOffset) >= 0 && (startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x - xOffset, startPos.y - yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x - xOffset, startPos.y - yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x - xOffset, startPos.y - yOffset);
 		}
 		if ((startPos.x - xOffset) >= 0 && (startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x - xOffset, startPos.y + yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x - xOffset, startPos.y + yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x - xOffset, startPos.y + yOffset);
 		}
 		if ((startPos.x + xOffset) < 8 && (startPos.y - yOffset) >= 0)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x + xOffset, startPos.y - yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x + xOffset, startPos.y - yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x + xOffset, startPos.y - yOffset);
 		}
 		if ((startPos.x + xOffset) < 8 && (startPos.y + yOffset) < 8)
 		{
-			const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
-			if (pieceInTarget)
+			Move kingMove(boardState, piece, boardState(startPos), boardState(startPos.x + xOffset, startPos.y + yOffset), oppPieces);
+			if (!check4check || !WillMoveCauseCheck(kingMove, oppPieces))
 			{
-				if (pieceInTarget.getComponent<PieceComponent>().colour != piece.colour)
-					outMoves.emplace_back(startPos.x + xOffset, startPos.y + yOffset);
+				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+				{
+					if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
+						outMoves.push_back(std::move(kingMove));
+				}
+				else
+					outMoves.push_back(std::move(kingMove));
 			}
-			else
-				outMoves.emplace_back(startPos.x + xOffset, startPos.y + yOffset);
 		}
 	}
 

@@ -228,7 +228,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Pawn;
 			piece.position = { pieceCount, 6 };
-			mWhitePieces.push_back(pawn);
+			mBlackPieces.push_back(pawn);
 			pieceCount++;
 		}
 
@@ -240,7 +240,7 @@ namespace Labyrinth {
 			piece.type = PieceType::Rook;
 			int row = (pieceCount == 0) ? 0 : 7;
 			piece.position = { row, 7 };
-			mWhitePieces.push_back(rook);
+			mBlackPieces.push_back(rook);
 			pieceCount++;
 		}
 
@@ -251,8 +251,8 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Knight;
 			int row = (pieceCount == 0) ? 1 : 6;
-			piece.position = { row, 0 };
-			mWhitePieces.push_back(knight);
+			piece.position = { row, 7 };
+			mBlackPieces.push_back(knight);
 			pieceCount++;
 		}
 
@@ -263,8 +263,8 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Bishop;
 			int row = (pieceCount == 0) ? 2 : 5;
-			piece.position = { row, 0 };
-			mWhitePieces.push_back(bishop);
+			piece.position = { row, 7 };
+			mBlackPieces.push_back(bishop);
 			pieceCount++;
 		}
 
@@ -275,7 +275,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::Queen;
 			piece.position = { 3, 7 };
-			mWhitePieces.push_back(queen);
+			mBlackPieces.push_back(queen);
 			pieceCount++;
 		}
 
@@ -287,7 +287,7 @@ namespace Labyrinth {
 			piece.colour = Colour::Black;
 			piece.type = PieceType::King;
 			piece.position = { 4, 7 };
-			mWhitePieces.push_back(king);
+			mBlackPieces.push_back(king);
 			pieceCount++;
 		}
 	}
@@ -339,33 +339,37 @@ namespace Labyrinth {
 
 	void Board::ResolveMove()
 	{
-		auto& moveAttackingPieces = (mCurrPlayer == Colour::White) ? mBlackPieces : mWhitePieces;
-		bool& moveInCheck = (mCurrPlayer == Colour::White) ? mWhiteChecked : mBlackChecked;
-		mNextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare, moveInCheck, moveAttackingPieces);
-		mNextMove.resolve(mCurrPlayer);
+		auto& moveDefendingPieces = (mCurrPlayer == Colour::White) ? mBlackPieces : mWhitePieces;
+		mNextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare, moveDefendingPieces);
 
-		std::vector<BoardPosition> checkCheck;
-		Chess::GetValidMoves(*mBoardState, mSelectedPiece, checkCheck);
-
-		if (!checkCheck.empty())
+		if (mNextMove.resolve(mCurrPlayer))
 		{
-			bool inCheck = false;
-			for (const auto& move : checkCheck)
-			{
-				const Entity& pieceInSquare = (*mBoardState)(move.x, move.y).getComponent<SquareComponent>().currentPiece;
-				const Entity& king = (mCurrPlayer == Colour::White) ? mWhiteKing : mBlackKing;
-				if (pieceInSquare == king)
-					inCheck = true;
-			}
+			std::vector<Move> checkCheck;
+			Chess::GetValidMoves(*mBoardState, mSelectedPiece, checkCheck, moveDefendingPieces, false);
 
-			if (mCurrPlayer == Colour::White)
-				mWhiteChecked = inCheck;
-			else
-				mBlackChecked = inCheck;
+			if (!checkCheck.empty())
+			{
+				bool inCheck = false;
+				for (const auto& move : checkCheck)
+				{
+					const Entity& pieceInSquare = move.targetSquare->currentPiece;
+					const Entity& king = (mCurrPlayer == Colour::White) ? mWhiteKing : mBlackKing;
+					if (pieceInSquare == king)
+						inCheck = true;
+				}
+
+				if (mCurrPlayer == Colour::White)
+					mWhiteChecked = inCheck;
+				else
+					mBlackChecked = inCheck;
+			}
 		}
 
 		for (const auto& move : mPieceMoves)
-			(*mBoardState)(move.x, move.y).getComponent<SpriteRendererComponent>().colour = ((move.x + move.y) % 2 == 0) ? mWhiteColour : mBlackColour;
+		{
+			const auto& squarePos = move.targetSquare->position;
+			move.target->getComponent<SpriteRendererComponent>().colour = ((squarePos.x + squarePos.y) % 2 == 0) ? mWhiteColour : mBlackColour;
+		}
 		mPieceMoves.clear();
 
 		mSelectedPiece.getComponent<SpriteRendererComponent>().layer--;
@@ -446,10 +450,10 @@ namespace Labyrinth {
 			mLastSquare = mHoveredSquare;
 
 			mPieceMoves.clear();
-			Chess::GetValidMoves(*mBoardState, mSelectedPiece.getComponent<PieceComponent>(), mPieceMoves, (mCurrPlayer == Colour::White) ? mWhiteChecked : mBlackChecked);
+			Chess::GetValidMoves(*mBoardState, mSelectedPiece, mPieceMoves, (mCurrPlayer == Colour::White) ? mBlackPieces : mWhitePieces);
 
 			for (const auto& move : mPieceMoves)
-				(*mBoardState)(move.x, move.y).getComponent<SpriteRendererComponent>().colour = mValidMoveColour;
+				move.target->getComponent<SpriteRendererComponent>().colour = mValidMoveColour;
 
 			break;
 		}

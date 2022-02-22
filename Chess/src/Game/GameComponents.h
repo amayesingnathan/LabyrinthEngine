@@ -62,6 +62,16 @@ namespace Labyrinth {
 			return mBoard[(column * 8) + row];
 		}
 
+		Entity& operator()(const BoardPosition& pos)
+		{
+			return mBoard[(pos.y * 8) + pos.x];
+		}
+
+		const Entity& operator()(const BoardPosition& pos) const
+		{
+			return mBoard[(pos.y * 8) + pos.x];
+		}
+
 
 	private:
 		std::array<Entity, 64> mBoard;
@@ -84,6 +94,11 @@ namespace Labyrinth {
 		SquareComponent(Colour c, const BoardPosition& pos, Entity piece = {})
 			: colour(c), position(pos), currentPiece(piece) {}
 		SquareComponent(const SquareComponent&) = default;
+
+		bool operator== (const SquareComponent& other)
+		{
+			return position == other.position;
+		}
 
 	};
 

@@ -45,7 +45,7 @@ namespace Labyrinth {
 		Entity mSelectedPiece = {};
 		Entity mLastSquare = {};
 
-		std::vector<BoardPosition> mPieceMoves;
+		std::vector<Move> mPieceMoves;
 
 		Entity mHoveredSquare = {};
 
