@@ -6,6 +6,14 @@
 
 namespace Labyrinth {
 
+	using MoveResolveFlags = int;
+
+	enum MoveResolveFlags_
+	{
+		MoveResolveFlags_Fail = 0,
+		MoveResolveFlags_Success = 1 << 0
+	};
+
 	struct Move
 	{
 		BoardState* boardState = nullptr;
@@ -25,10 +33,10 @@ namespace Labyrinth {
 		bool pieceFirstMove = false;
 		bool valid = true;
 
-		bool resolve(Player& currTurn);
+		MoveResolveFlags resolve(Player& currTurn);
 
 		Move() = default;
-		Move(BoardState& boardState, Entity& piece, Entity& src, Entity& dest, std::vector<Entity>& attackingPieces);
+		Move(BoardState& boardState, Entity& piece, Entity& src, Entity& dest, std::vector<Entity>& _oppPieces);
 		~Move();
 	};
 

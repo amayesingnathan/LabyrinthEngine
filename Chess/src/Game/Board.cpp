@@ -347,28 +347,23 @@ namespace Labyrinth {
 	void Board::ResolveMove()
 	{
 		auto& moveDefendingPieces = (mCurrPlayer == Colour::White) ? mBlackPieces : mWhitePieces;
+		auto& moveAttackingPieces = (mCurrPlayer == Colour::White) ? mWhitePieces : mBlackPieces;
 		mNextMove = Move(*mBoardState, mSelectedPiece, mLastSquare, mHoveredSquare, moveDefendingPieces);
 
-		if (mNextMove.resolve(mCurrPlayer))
+		if (mNextMove.resolve(mCurrPlayer) & MoveResolveFlags_Success)
 		{
-			std::vector<Move> checkCheck;
-			Chess::GetValidMoves(*mBoardState, mSelectedPiece, checkCheck, moveDefendingPieces, false);
-
-			if (!checkCheck.empty())
+			if (Chess::CausedCheckmate(mNextMove, moveAttackingPieces, moveDefendingPieces))
 			{
-				bool inCheck = false;
-				for (const auto& move : checkCheck)
-				{
-					const Entity& pieceInSquare = move.targetSquare->currentPiece;
-					const Entity& king = (mCurrPlayer == Colour::White) ? mWhiteKing : mBlackKing;
-					if (pieceInSquare == king)
-						inCheck = true;
-				}
+				ResolveCheckmate();
+				return;
+			}
 
+			if (Chess::CausedCheck(mNextMove, moveDefendingPieces))
+			{
 				if (mCurrPlayer == Colour::White)
-					mWhiteChecked = inCheck;
+					mWhiteChecked = true;
 				else
-					mBlackChecked = inCheck;
+					mBlackChecked = true;
 			}
 		}
 
@@ -381,6 +376,10 @@ namespace Labyrinth {
 
 		mSelectedPiece.getComponent<SpriteRendererComponent>().layer--;
 		mSelectedPiece = {};
+	}
+
+	void Board::ResolveCheckmate()
+	{
 	}
 
 	void Board::DrawBoardFramebuffer()

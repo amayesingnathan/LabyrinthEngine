@@ -99,6 +99,47 @@ namespace Labyrinth {
 		return causesCheck;
 	}
 
+	bool Chess::CausedCheck(Move& move, std::vector<Entity>& oppPieces)
+	{
+		Entity oppKing;
+		for (const auto& piece : oppPieces)
+		{
+			if (piece.getComponent<PieceComponent>().type == PieceType::King)
+				oppKing = piece;
+		}
+
+		std::vector<Move> checkCheck;
+		Chess::GetValidMoves(*(move.boardState), *(move.piece), checkCheck, oppPieces, false);
+
+		if (!checkCheck.empty())
+		{
+			for (const auto& move : checkCheck)
+			{
+				const Entity& pieceInSquare = move.targetSquare->currentPiece;
+				if (pieceInSquare == oppKing)
+					return true;
+			}
+		}
+		return false;
+	}
+
+	bool Chess::CausedCheckmate(Move& move, std::vector<Entity>& playerPieces, std::vector<Entity>& oppPieces)
+	{
+		Entity oppKing;
+		for (const auto& piece : oppPieces)
+		{
+			if (piece.getComponent<PieceComponent>().type == PieceType::King)
+				oppKing = piece;
+		}
+
+		std::vector<Move> checkCheckmate;
+		GetValidMoves(*(move.boardState), oppKing, checkCheckmate, playerPieces, true);
+
+		if (checkCheckmate.empty()) return true;
+
+		return false;
+	}
+
 	void Chess::ExecuteMove(Move& move)
 	{
 		auto& trans = move.piece->getComponent<TransformComponent>().translation;

@@ -29,6 +29,7 @@ namespace Labyrinth {
 		void BuildRow(int row, std::vector<Entity>& squares);
 
 		void ResolveMove();
+		void ResolveCheckmate();
 
 		void DrawBoardFramebuffer();
 

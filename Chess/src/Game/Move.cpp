@@ -21,12 +21,12 @@ namespace Labyrinth {
 			capturedPiece.destroy();
 	}
 
-	bool Move::resolve(Player& currTurn)
+	MoveResolveFlags Move::resolve(Player& currTurn)
 	{
 		if (!valid) 
 		{
 			Chess::ResetPiece(*this);
-			return false;
+			return MoveResolveFlags_Fail;
 		}
 
 		std::vector<Move> validMoves;
@@ -35,7 +35,7 @@ namespace Labyrinth {
 		if (validMoves.empty())
 		{
 			Chess::ResetPiece(*this);
-			return false;
+			return MoveResolveFlags_Fail;
 		}
 
 		if (std::find_if(validMoves.begin(), validMoves.end(), [&](Move& move)
@@ -44,19 +44,13 @@ namespace Labyrinth {
 			}) == validMoves.end())
 		{
 			Chess::ResetPiece(*this);
-			return false;
-		}
-
-		if (Chess::WillMoveCauseCheck(*this, *oppPieces))
-		{
-			Chess::ResetPiece(*this);
-			return false;
+			return MoveResolveFlags_Fail;
 		}
 
 		if (currTurn != pieceComp->colour)
 		{
 			Chess::ResetPiece(*this);
-			return false;
+			return MoveResolveFlags_Fail;
 		}
 
 		Chess::ExecuteMove(*this);
@@ -79,7 +73,7 @@ namespace Labyrinth {
 			capturedPiece = {};
 		}
 
-		return true;
+		return MoveResolveFlags_Success;
 	}
 
 }
