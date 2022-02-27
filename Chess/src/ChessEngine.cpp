@@ -219,13 +219,15 @@ namespace Labyrinth {
 		{
 			if ((startPos.x - xOffset >= 0) && !blockedLeft)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					blockedLeft = true;
+
 				Move left(boardState, piece, boardState(startPos), boardState(startPos.x - xOffset, startPos.y), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(left, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x - xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						blockedLeft = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(left));
 					}
@@ -235,13 +237,15 @@ namespace Labyrinth {
 			}
 			if ((startPos.x + xOffset) < 8 && !blockedRight)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					blockedRight = true;
+
 				Move right(boardState, piece, boardState(startPos), boardState(startPos.x + xOffset, startPos.y), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(right, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x + xOffset, startPos.y).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						blockedRight = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(right));
 					}
@@ -253,13 +257,15 @@ namespace Labyrinth {
 
 			if ((startPos.y - yOffset) >= 0 && !blockedDown)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					blockedDown = true;
+
 				Move down(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y - yOffset), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(down, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x, startPos.y - yOffset).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						blockedDown = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(down));
 					}
@@ -269,13 +275,15 @@ namespace Labyrinth {
 			}
 			if ((startPos.y + yOffset) < 8 && !blockedUp)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					blockedUp = true;
+
 				Move up(boardState, piece, boardState(startPos), boardState(startPos.x, startPos.y + yOffset), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(up, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x, startPos.y + yOffset).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						blockedUp = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(up));
 					}
@@ -301,13 +309,15 @@ namespace Labyrinth {
 		{
 			if ((startPos.x - i) >= 0 && (startPos.y - i) >= 0 && !nnBlocked)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					nnBlocked = true;
+
 				Move downLeft(boardState, piece, boardState(startPos), boardState(startPos.x - i, startPos.y - i), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(downLeft, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						nnBlocked = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(downLeft));
 					}
@@ -317,13 +327,15 @@ namespace Labyrinth {
 			}
 			if ((startPos.x - i) >= 0 && (startPos.y + i) < 8 && !npBlocked)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					npBlocked = true;
+				
 				Move upLeft(boardState, piece, boardState(startPos), boardState(startPos.x - i, startPos.y + i), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(upLeft, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x - i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						npBlocked = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(upLeft));
 					}
@@ -333,13 +345,15 @@ namespace Labyrinth {
 			}
 			if ((startPos.x + i < 8) && (startPos.y - i >= 0) && !pnBlocked)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					pnBlocked = true;
+
 				Move downRight(boardState, piece, boardState(startPos), boardState(startPos.x + i, startPos.y - i), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(downRight, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y - i).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						pnBlocked = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(downRight));
 					}
@@ -349,13 +363,15 @@ namespace Labyrinth {
 			}
 			if ((startPos.x + i) < 8 && (startPos.y + i) < 8 && !ppBlocked)
 			{
+				const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
+				if (pieceInTarget)
+					ppBlocked = true;
+
 				Move upRight(boardState, piece, boardState(startPos), boardState(startPos.x + i, startPos.y + i), oppPieces);
 				if (!check4check || !WillMoveCauseCheck(upRight, oppPieces))
 				{
-					const Entity& pieceInTarget = boardState(startPos.x + i, startPos.y + i).getComponent<SquareComponent>().currentPiece;
 					if (pieceInTarget)
 					{
-						ppBlocked = true;
 						if (pieceInTarget.getComponent<PieceComponent>().colour != pieceComp.colour)
 							outMoves.push_back(std::move(upRight));
 					}

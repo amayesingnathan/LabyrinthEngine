@@ -103,13 +103,20 @@ namespace Labyrinth {
 						mBlackPiecesRoot = children[1];
 					}
 				}
-				else if (tag == "Chessboard")
+				if (tag == "Chessboard")
 					mBoard = currEnt;
+				if (tag == "Camera")
+					mCamera = currEnt;
 			});
 
 		if (!mBoard)
 		{
 			LAB_ERROR("Could not load board from file"); 
+			return false;
+		}
+		if (!mCamera)
+		{
+			LAB_ERROR("Could not load camera from file");
 			return false;
 		}
 		if (!mWhitePiecesRoot)
@@ -421,9 +428,15 @@ namespace Labyrinth {
 	{
 		if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT) && mSelectedPiece)
 		{
-			glm::vec2 delta = e.getPos() - mLastMousePos;
-			auto& trans = mSelectedPiece.getComponent<TransformComponent>();
-			trans.translation += (0.01f * glm::vec3(delta.x, -delta.y, 0));
+			const auto& camera = mCamera.getComponent<CameraComponent>().camera;
+			const glm::mat4& transform = mCamera.getComponent<TransformComponent>();
+			const glm::mat4 invViewProj = glm::inverse(camera.getProjection() * glm::inverse(transform));
+
+			glm::vec4 mousePos = glm::vec4(((e.getPos() / mViewportSize) * 2.0f) - 1.0f, 0.0f, 1.0f);
+			mousePos = invViewProj * mousePos;
+
+			auto& trans = mSelectedPiece.getComponent<TransformComponent>().translation;
+			trans = glm::vec3(mousePos.x, 7.0f - mousePos.y, trans.z);
 		}
 
 		mLastMousePos = e.getPos();

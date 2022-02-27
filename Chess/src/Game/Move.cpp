@@ -68,6 +68,13 @@ namespace Labyrinth {
 
 		if (capturedPiece)
 		{
+			auto it = std::find_if(oppPieces->begin(), oppPieces->end(), [&](const Entity& piece)
+				{
+					return capturedPiece.getEntID() == piece.getEntID();
+				});
+			if (it != oppPieces->end())
+				oppPieces->erase(it);
+
 			capturedPiece.destroy();
 			capturedPiece = {};
 		}

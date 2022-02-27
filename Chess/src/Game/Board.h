@@ -63,6 +63,8 @@ namespace Labyrinth {
 		Entity mBoard = {};
 		BoardState* mBoardState = nullptr;
 
+		Entity mCamera;
+
 		Entity mWhitePiecesRoot = {};
 		std::vector<Entity> mWhitePieces;
 		Entity mWhiteKing = {};
