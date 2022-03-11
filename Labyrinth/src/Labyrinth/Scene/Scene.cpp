@@ -143,36 +143,6 @@ namespace Labyrinth {
 		return Entity();
 	}
 
-	//void Scene::onUpdateRuntime(Timestep ts, OrthographicCamera& mainCamera)
-	//{
-	//	{	// Update Scripts
-	//		mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-	//			if (!nsc.instance)
-	//			{
-	//				nsc.instantiateScript();
-	//			}
-
-	//			nsc.instance->onNativeScript(nsc);
-
-	//			});
-	//	}
-
-	//	{
-	//		Renderer2D::BeginState(mainCamera);
-
-	//		auto view = mRegistry.view<SpriteRendererComponent, TransformComponent>();
-	//		for (auto entity : view)
-	//		{
-	//			auto& [sprite, transform] = view.get<SpriteRendererComponent, TransformComponent>(entity);
-
-	//			Renderer2D::DrawSprite(transform, sprite, (int)entity);
-	//		}
-
-	//		Renderer2D::EndState();
-	//	}
-	//	
-	//}
-
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
 	{
 		sheets.clear();
@@ -222,32 +192,31 @@ namespace Labyrinth {
 		
 		if (mainCamera)
 		{
-
-			Renderer2D::BeginState(*mainCamera, cameraTransform);
-
 			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& trComponent, auto& srComponent)
 				{
-					Renderer2D::DrawSprite(trComponent, srComponent, (int)entity);
+					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 				});
 
+			Renderer2D::BeginState(*mainCamera, cameraTransform);
+			mRenderStack.draw();
 			Renderer2D::EndState();
 
+			mRenderStack.clear();
 		}
 
 	}
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
+
+		RenderStack layerStack;
+		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& trComponent, auto& srComponent)
+			{
+				layerStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+			});
+
 		Renderer2D::BeginState(camera);
-
-		auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
-		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-			Renderer2D::DrawSprite(transform.getTransform(), sprite, (int)entity);
-		}
-
+		layerStack.draw();
 		Renderer2D::EndState();
 	}
 

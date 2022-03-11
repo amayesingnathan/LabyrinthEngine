@@ -392,7 +392,7 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID)
 	{
 		if (src.hasTex())
 			switch (src.type)

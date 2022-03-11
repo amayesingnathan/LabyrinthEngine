@@ -28,6 +28,7 @@ namespace Labyrinth {
 			MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
 		};
 
+#if 0
 		LAB_PROFILE_FUNCTION();
 		mScene->mRegistry.view<ScriptTriggerComponent>().each([&](auto entityID, auto& stc)
 		{
@@ -39,6 +40,7 @@ namespace Labyrinth {
 				}
 			}
 		});
+#endif
 	}
 
 }

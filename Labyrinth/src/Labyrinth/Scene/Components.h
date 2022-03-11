@@ -93,6 +93,7 @@ namespace Labyrinth {
 		ScriptComponent(const ScriptComponent&) = default;
 	};
 
+#if 0
 	struct ScriptTriggerComponent
 	{	
 		struct TriggerSpec
@@ -109,7 +110,6 @@ namespace Labyrinth {
 		ScriptTriggerComponent(const ScriptTriggerComponent&) = default;
 	};
 
-#if 0
 	struct SpriteComponent 
 	{
 
