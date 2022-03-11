@@ -9,6 +9,19 @@
 
 namespace Labyrinth {
 
+	bool Input::IsWindowFocused()
+	{
+		auto flags = SDL_GetWindowFlags(Cast<SDL_Window>(Application::Get().getWindow().getNativeWindow()));
+		return flags & SDL_WINDOW_MOUSE_FOCUS;
+	}
+
+	bool Input::IsWindowHovered()
+	{
+		auto winSize = Application::Get().getWindow().getSize();
+		auto pos = GetMousePosition();
+		return ((pos.x > 0) && (pos.y > 0) && (pos.x < winSize.x) && (pos.y < winSize.y));
+	}
+
 	bool Input::IsKeyPressed(int keycode)
 	{
 		auto keys = SDL_GetKeyboardState(NULL);

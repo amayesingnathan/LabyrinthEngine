@@ -62,6 +62,7 @@ namespace Labyrinth {
 
 		virtual void clearAttachment(uint32_t attachmentIndex, int value) = 0;
 
+		virtual void bindColourAttachment(uint32_t index = 0) = 0;
 		virtual uint32_t getColourAttachmentRendererID(uint32_t index = 0) const = 0;
 
 		virtual const FramebufferSpec& getSpecification() const = 0;

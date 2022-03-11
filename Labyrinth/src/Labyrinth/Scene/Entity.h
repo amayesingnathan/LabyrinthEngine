@@ -117,10 +117,10 @@ namespace Labyrinth {
 			return !(*this == other);
 		}
 
+		void destroy() { mScene->DestroyEntity(*this); }
 		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();
-		const Entity& getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity& newParent, NodeComponent& node);
@@ -128,6 +128,7 @@ namespace Labyrinth {
 
 		std::vector<Entity>& getChildren();
 		const std::vector<Entity>& getChildren() const;
+		const size_t getChildCount() const { return getChildren().size(); }
 		bool hasChild(const Entity& child) const;
 
 		bool isRelated(const Entity& filter) const;
@@ -155,7 +156,7 @@ namespace Labyrinth {
 	{
 		// Seem to need some actual data to be able to use as template parameter in addComponent
 		// so just added a random zero byte.
-		uint8_t data = 0;
+		uint8_t data = 0x0;
 		RootComponent() = default;
 	};
 

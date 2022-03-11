@@ -2,6 +2,8 @@
 
 #include "Event.h"
 
+#include "glm/glm.hpp"
+
 namespace Labyrinth {
 
 	class MouseMovedEvent : public Event
@@ -10,6 +12,7 @@ namespace Labyrinth {
 		MouseMovedEvent(const float x, const float y)
 			: mMouseX(x), mMouseY(y) {}
 
+		glm::vec2 getPos() const { return { mMouseX, mMouseY }; }
 		float getX() const { return mMouseX; }
 		float getY() const { return mMouseY; }
 

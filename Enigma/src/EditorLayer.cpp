@@ -79,7 +79,8 @@ namespace Labyrinth {
 		{
 		case SceneState::Edit:
 		{
-			mEditorCamera.onUpdate(ts);
+			if (mViewportHovered)
+				mEditorCamera.onUpdate(ts);
 
 			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
 			break;

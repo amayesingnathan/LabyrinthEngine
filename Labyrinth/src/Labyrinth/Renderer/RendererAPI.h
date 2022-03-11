@@ -27,6 +27,11 @@ namespace Labyrinth {
 
 		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 
+		virtual void enableDepth() {}
+		virtual void disableDepth() {}
+		virtual void enableBlend() {}
+		virtual void disableBlend() {}
+
 		static API GetAPI() { return sAPI; }
 
 	private:

@@ -4,6 +4,8 @@
 
 #include "Labyrinth/Events/Event.h"
 
+#include "glm/glm.hpp"
+
 namespace Labyrinth {
 
 	struct WindowProps {
@@ -29,6 +31,7 @@ namespace Labyrinth {
 
 		virtual void onUpdate() = 0;
 
+		virtual glm::vec2 getSize() const = 0;
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
 

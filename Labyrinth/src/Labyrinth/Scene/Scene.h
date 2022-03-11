@@ -55,7 +55,6 @@ namespace Labyrinth {
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;
 
 		friend Entity;
-		friend class SceneSerialiser;
 		friend class ScenePanel;
 		friend class ScriptEngine;
 		friend class YAMLParser;

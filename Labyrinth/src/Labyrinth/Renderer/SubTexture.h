@@ -36,7 +36,9 @@ namespace Labyrinth {
 
 		std::string& getName() { return mName; }
 		Ref<Texture2D> getTex() const { return mTexture; }
-		Ref<SubTexture2D> getSubTex(const std::string& name) const;
+
+		bool hasSubTex(const std::string& name) const;
+		Ref<SubTexture2D> getSubTex(const std::string& name);
 
 		std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() { return mSubTextures; }
 		const std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() const { return mSubTextures; }

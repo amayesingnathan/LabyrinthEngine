@@ -192,7 +192,6 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
-
 		{	// Update Scripts
 			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 				if (!nsc.instance)
@@ -200,7 +199,7 @@ namespace Labyrinth {
 					nsc.instantiateScript();
 				}
 
-				nsc.instance->onNativeScript(nsc);
+				//nsc.instance->onNativeScript(nsc);
 
 			});
 		}
@@ -226,13 +225,10 @@ namespace Labyrinth {
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
 
-			auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (auto entity : group)
-			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-				Renderer2D::DrawSprite(transform, sprite, (int)entity);
-			}
+			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([&](auto entity, auto& trComponent, auto& srComponent)
+				{
+					Renderer2D::DrawSprite(trComponent, srComponent, (int)entity);
+				});
 
 			Renderer2D::EndState();
 
