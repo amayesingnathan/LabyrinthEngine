@@ -24,7 +24,8 @@ project "Labyrinth"
 	
 	defines
 	{
-		"_CRT_SECURE_NO_WARNINGS"
+		"_CRT_SECURE_NO_WARNINGS",
+		"LAB_TANGLE"
 	}
 
     includedirs
@@ -32,6 +33,7 @@ project "Labyrinth"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
         "%{IncludeDir.RenderAPI}",
+        "%{IncludeDir.Tangle}",
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
