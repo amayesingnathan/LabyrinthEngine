@@ -19,3 +19,6 @@
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
+[submodule "Tangle"]
+	path = Tangle
+	url = https://github.com/amayesingnathan/Tangle
