@@ -65,6 +65,9 @@ project "Labyrinth"
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
+		
+	filter "files:src/Labyrinth/Tangle/**.cpp"
+		flags { "NoPCH" }
 	
     filter "system:windows"
         systemversion "latest"

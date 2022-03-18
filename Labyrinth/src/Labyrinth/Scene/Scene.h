@@ -30,8 +30,10 @@ namespace Labyrinth {
 
 		Entity FindEntity(UUID id);
 
+		entt::registry* get() { return &mRegistry; }
+
 		template<typename Component, typename... Other, typename... Exclude>
-		entt::basic_view<entt::entity, entt::get_t<Component, Other...>, entt::exclude_t<Exclude...>> view(entt::exclude_t<Exclude...> = {})
+		auto view(entt::exclude_t<Exclude...> = {})
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
