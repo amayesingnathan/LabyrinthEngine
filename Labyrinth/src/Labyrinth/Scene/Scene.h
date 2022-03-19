@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Labyrinth/Core/UUID.h"
-#include "Labyrinth/Core/Timestep.h"
+#include "Labyrinth/Common/UUID.h"
+#include "Labyrinth/Common/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/RenderStack.h"
 

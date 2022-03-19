@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Core/Window.h>
+#include <Labyrinth/Common/Window.h>
 #include "Labyrinth/Renderer/GraphicsContext.h"
 
 #include "SDL.h"

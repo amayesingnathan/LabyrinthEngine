@@ -1,10 +1,10 @@
 #pragma once
 
 //Labyrinth Core Includes
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Core/System/Assert.h"
-#include "Labyrinth/Core/System/Cast.h"
+#include "Labyrinth/Common/Core/Base.h"
+#include "Labyrinth/Common/Core/Log.h"
+#include "Labyrinth/Common/Core/Assert.h"
+#include "Labyrinth/Common/Core/Cast.h"
 
 #include "Labyrinth/Tools/Profiling.h"
 

@@ -2,7 +2,7 @@
 
 #include "../Modals/SubTexModal.h"
 
-#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Common/Core/Base.h"
 #include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Renderer/Framebuffer.h"
 

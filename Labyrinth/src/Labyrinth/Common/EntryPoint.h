@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Common/Core/Base.h"
+#include "Labyrinth/Common/Application.h"
 
 #ifdef LAB_PLATFORM_WINDOWS
 

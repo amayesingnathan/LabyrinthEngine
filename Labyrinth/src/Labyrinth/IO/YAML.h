@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Common/Core/Base.h"
 
 #include <yaml-cpp/yaml.h>
 

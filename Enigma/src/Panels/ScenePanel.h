@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Common/Core/Base.h"
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 

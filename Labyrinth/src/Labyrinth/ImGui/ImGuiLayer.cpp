@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "ImGuiLayer.h"
 
-#include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Common/Application.h"
 #include "Labyrinth/IO/Input.h"
 
 #include "imgui.h"

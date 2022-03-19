@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "Application.h"
 
-#include "Labyrinth/Core/System/Log.h"
+#include "Labyrinth/Common/Core/Log.h"
 #include "Platforms/Windows/WindowsWindow.h"
 
 #include "Labyrinth/Renderer/Renderer.h"

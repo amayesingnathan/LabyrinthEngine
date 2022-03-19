@@ -24,7 +24,7 @@ outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["Labyrinth"] = "%{wks.location}/Labyrinth/src"
-IncludeDir["LabCore"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Core"
+IncludeDir["LabCore"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Common"
 IncludeDir["RenderAPI"] = "%{wks.location}/Labyrinth/src/Labyrinth/Renderer/APIs"
 IncludeDir["LabWin"]	= "%{wks.location}/Labyrinth/src/Platforms/Windows"
 IncludeDir["Tangle"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Tangle/inc"

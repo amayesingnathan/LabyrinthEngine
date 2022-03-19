@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Labyrinth/Renderer/Camera.h"
-#include "Labyrinth/Core/Timestep.h"
+#include "Labyrinth/Common/Timestep.h"
 
 #include "Labyrinth/Events/ApplicationEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"

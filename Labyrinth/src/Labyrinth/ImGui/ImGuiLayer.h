@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Layer.h"
+#include "Labyrinth/Common/Layer.h"
 
 #include "Labyrinth/Events/ApplicationEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"

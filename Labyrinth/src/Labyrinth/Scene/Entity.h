@@ -2,10 +2,10 @@
 
 #include "Scene.h"
 
-#include "Labyrinth/Core/System/Cast.h"
-#include "Labyrinth/Core/System/Assert.h"
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Core/UUID.h"
+#include "Labyrinth/Common/Core/Cast.h"
+#include "Labyrinth/Common/Core/Assert.h"
+#include "Labyrinth/Common/Core/Log.h"
+#include "Labyrinth/Common/UUID.h"
 
 namespace Labyrinth {
 

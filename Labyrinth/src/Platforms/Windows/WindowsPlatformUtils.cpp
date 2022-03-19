@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
 
-#include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Common/Application.h"
 
 #include <commdlg.h>
 #include "SDL.h"

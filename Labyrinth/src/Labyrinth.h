@@ -2,16 +2,16 @@
 
 //For use by Labyrinth applications
 
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Core/System/Assert.h"
-#include "Labyrinth/Core/System/Cast.h"
+#include "Labyrinth/Common/Core/Base.h"
+#include "Labyrinth/Common/Core/Log.h"
+#include "Labyrinth/Common/Core/Assert.h"
+#include "Labyrinth/Common/Core/Cast.h"
 
-#include "Labyrinth/Core/Application.h"
-#include "Labyrinth/Core/Layer.h"
+#include "Labyrinth/Common/Application.h"
+#include "Labyrinth/Common/Layer.h"
 
-#include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Core/CameraController.h"
+#include "Labyrinth/Common/Timestep.h"
+#include "Labyrinth/Common/CameraController.h"
 
 #include "Labyrinth/IO/Input.h"
 #include "Labyrinth/IO/KeyCodes.h"
@@ -44,3 +44,6 @@
 
 #include "Labyrinth/Renderer/Camera.h"
 // -----------------------------------
+
+// Commented to avoid constant recompiles
+//#include "Labyrinth/Tangle/inc/Tangle.h"

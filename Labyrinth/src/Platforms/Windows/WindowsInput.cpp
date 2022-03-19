@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "Labyrinth/IO/Input.h"
 
-#include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Common/Application.h"
 
 #include "SDL.h"
 

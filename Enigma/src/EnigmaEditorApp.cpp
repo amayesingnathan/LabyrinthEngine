@@ -1,5 +1,5 @@
 #include <Labyrinth.h>
-#include "Labyrinth/Core/EntryPoint.h"
+#include "Labyrinth/Common/EntryPoint.h"
 
 #include "EditorLayer.h"
 

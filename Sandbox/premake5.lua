@@ -17,6 +17,7 @@ project "Sandbox"
     {
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
+        "%{IncludeDir.Tangle}",
 		"%{wks.location}/Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",

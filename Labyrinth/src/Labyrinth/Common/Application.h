@@ -1,9 +1,9 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Base.h>
-#include <Labyrinth/Core/Window.h>
-#include <Labyrinth/Core/Timestep.h>
-#include <Labyrinth/Core/LayerStack.h>
+#include <Labyrinth/Common/Core/Base.h>
+#include <Labyrinth/Common/Window.h>
+#include <Labyrinth/Common/Timestep.h>
+#include <Labyrinth/Common/LayerStack.h>
 
 
 #include <Labyrinth/Events/ApplicationEvent.h>

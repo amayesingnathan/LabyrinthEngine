@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/Timestep.h"
+#include "Labyrinth/Common/Core/Base.h"
+#include "Labyrinth/Common/Timestep.h"
 #include "Labyrinth/Events/Event.h"
 
 namespace Labyrinth {
