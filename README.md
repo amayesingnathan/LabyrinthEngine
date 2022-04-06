@@ -2,7 +2,11 @@
 Labyrinth is a game engine built for designing and creating 2D games.
 **It was created as a learning experiment** for me to gain understanding about the many aspects of game and game engine development. It is still early in development. It comes with a work-in-progress editor called *Enigma*.
 
-So far during development, I have learned a great deal, including but not limited to:
+  ### Getting Started ###
+  To use Labyrinth clone the repo using git or download it as a zip. Once downloaded run scripts/Setup.bat, or scripts/SetupVS22 if you have Visual Studio 2022 to generate visual studio files on Windows. 
+  From there build and run and the Enigma editor should launch.
+
+## What I've Learned ##
   
   ### Project Management ###
   
