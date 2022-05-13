@@ -2,12 +2,9 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/System/Log.h"
-
 #include "Labyrinth/Renderer/Renderer.h"
-
 #include "Labyrinth/IO/Input.h"
-
-#include <GLFW/glfw3.h>
+#include "Labyrinth/Tools/PlatformUtils.h"
 
 namespace Labyrinth {
 
@@ -52,7 +49,7 @@ namespace Labyrinth {
 		{
 			LAB_PROFILE_SCOPE("RunLoop");
 
-			float time = (float)glfwGetTime();
+			float time = Stopwatch::GetTime();
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
 

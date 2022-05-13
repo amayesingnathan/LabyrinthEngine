@@ -58,5 +58,11 @@ namespace Labyrinth {
 		}
 		return std::string();
 	}
+
+	float Stopwatch::GetTime()
+	{
+		return (float)glfwGetTime();
+	}
+
 #endif
 }
