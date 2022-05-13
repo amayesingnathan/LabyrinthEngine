@@ -32,7 +32,6 @@ project "Labyrinth"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
         "%{IncludeDir.RenderAPI}",
-        "%{IncludeDir.SDL2}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
         "%{IncludeDir.glfw}",
@@ -48,13 +47,11 @@ project "Labyrinth"
 	
 	libdirs
 	{
-		"%{LibDir.SDL2}",
 		"%{LibDir.lua}"
 	}
 
 	links
 	{
-		"SDL2.lib",
 		"glad",
 		"glfw",
 		"ImGui",
@@ -69,7 +66,6 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
-
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }

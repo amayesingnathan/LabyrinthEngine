@@ -4,8 +4,9 @@
 #include "Labyrinth/Core/Application.h"
 
 #include <commdlg.h>
-#include "SDL.h"
-#include "SDL_syswm.h"
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 
 namespace Labyrinth {

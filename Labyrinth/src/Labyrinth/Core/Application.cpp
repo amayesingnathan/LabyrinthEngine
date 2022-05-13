@@ -2,11 +2,12 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/System/Log.h"
-#include "Platforms/Windows/WindowsWindow.h"
 
 #include "Labyrinth/Renderer/Renderer.h"
 
 #include "Labyrinth/IO/Input.h"
+
+#include <GLFW/glfw3.h>
 
 namespace Labyrinth {
 
@@ -51,7 +52,7 @@ namespace Labyrinth {
 		{
 			LAB_PROFILE_SCOPE("RunLoop");
 
-			float time = (float)SDL_GetTicks();
+			float time = (float)glfwGetTime();
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
 
@@ -129,7 +130,7 @@ namespace Labyrinth {
 	}
 	bool Application::OnKeyPressed(KeyPressedEvent& e)
 	{
-		if (e.getKeyCode() == LAB_KEY_ESCAPE)
+		if (e.getKeyCode() == Key::Escape)
 		{
 			Close();
 		}

@@ -3,7 +3,7 @@
 #include <Labyrinth/Core/Window.h>
 #include "Labyrinth/Renderer/GraphicsContext.h"
 
-#include "SDL.h"
+struct GLFWwindow;
 
 namespace Labyrinth {
 
@@ -12,7 +12,7 @@ namespace Labyrinth {
 	public:
 		WindowsWindow(const WindowProps& props);
 		virtual ~WindowsWindow();
-
+			
 		void onUpdate() override;
 
 		inline glm::vec2 getSize() const override { return { mData.width, mData.height }; }
@@ -37,9 +37,8 @@ namespace Labyrinth {
 		void DispatchMouseEvent();
 
 	private:
-		SDL_Window* mWindow;
+		GLFWwindow* mWindow;
 		Single<GraphicsContext> mContext;
-		SDL_Event mEvent;
 
 		struct WindowData
 		{

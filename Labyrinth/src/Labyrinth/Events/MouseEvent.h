@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Event.h"
+#include "Labyrinth/IO/MouseButtonCodes.h"
 
 #include "glm/glm.hpp"
 
@@ -54,20 +55,20 @@ namespace Labyrinth {
 	class MouseButtonEvent : public Event
 	{
 	public:
-		int getMouseButton() const { return mButton; }
+		MouseCode getMouseButton() const { return mButton; }
 
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput | EventCategoryMouseButton)
 	protected:
-		MouseButtonEvent(int button)
+		MouseButtonEvent(const MouseCode button)
 			: mButton(button) {}
 
-		int mButton;
+		MouseCode mButton;
 	};
 
 	class MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonPressedEvent(int button)
+		MouseButtonPressedEvent(const MouseCode button)
 			: MouseButtonEvent(button) {}
 
 		std::string toString() const override
@@ -83,7 +84,7 @@ namespace Labyrinth {
 	class MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
-		MouseButtonReleasedEvent(int button)
+		MouseButtonReleasedEvent(const MouseCode button)
 			: MouseButtonEvent(button) {}
 
 		std::string toString() const override

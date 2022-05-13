@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Texture.h"
-#include "Labyrinth/Maths/Quad.h"
 
 #include <glm/glm.hpp>
 

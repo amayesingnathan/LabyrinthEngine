@@ -1,14 +1,27 @@
 #pragma once
 
-// From SDL_mouse.h
-#define LAB_MOUSE_BUTTON(X)       (1 << ((X)-1))
-#define LAB_MOUSE_BUTTON_1	      1
-#define LAB_MOUSE_BUTTON_2		  2
-#define LAB_MOUSE_BUTTON_3        3
-#define LAB_MOUSE_BUTTON_4        4
-#define LAB_MOUSE_BUTTON_5        5
-#define LAB_MOUSE_BUTTON_LAST     LAB_MOUSE_BUTTON_5
-#define LAB_MOUSE_BUTTON_LEFT     LAB_MOUSE_BUTTON_1
-#define LAB_MOUSE_BUTTON_RIGHT    LAB_MOUSE_BUTTON_3
-#define LAB_MOUSE_BUTTON_MIDDLE   LAB_MOUSE_BUTTON_2 
+namespace Labyrinth
+{
+	using MouseCode = uint16_t;
 
+	namespace Mouse
+	{
+		enum : MouseCode
+		{
+			// From glfw3.h
+			Button0 = 0,
+			Button1 = 1,
+			Button2 = 2,
+			Button3 = 3,
+			Button4 = 4,
+			Button5 = 5,
+			Button6 = 6,
+			Button7 = 7,
+
+			ButtonLast = Button7,
+			ButtonLeft = Button0,
+			ButtonRight = Button1,
+			ButtonMiddle = Button2
+		};
+	}
+}
