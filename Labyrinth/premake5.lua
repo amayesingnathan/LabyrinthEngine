@@ -35,6 +35,7 @@ project "Labyrinth"
         "%{IncludeDir.SDL2}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
+        "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.ImGuizmo}",
@@ -55,6 +56,7 @@ project "Labyrinth"
 	{
 		"SDL2.lib",
 		"glad",
+		"glfw",
 		"ImGui",
 		"yaml-cpp",
 		"lua54",
