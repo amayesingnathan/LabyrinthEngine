@@ -49,12 +49,6 @@ namespace Labyrinth {
 	};
 #endif
 
-	struct KeyboardController
-	{
-		KeyboardController() = default;
-		KeyboardController(class Entity* entt);
-	};
-
 	struct NativeScriptComponent
 	{
 		class ScriptableEntity* instance = nullptr;
@@ -155,6 +149,20 @@ namespace Labyrinth {
 
 		operator const char* () { return tag.c_str(); }
 	};
+
+	struct TileComponent 
+	{
+		Vector2D position;
+		struct SpriteComponent* sprite;
+
+		TileComponent() = default;
+
+		TileComponent(class Entity* entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
+
+		void remove();
+
+	};
+
 
 	struct TransformComponent
 	{
