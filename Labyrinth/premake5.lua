@@ -38,6 +38,7 @@ project "Labyrinth"
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.ImGuizmo}",
+        "%{IncludeDir.mContainers}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
@@ -55,6 +56,7 @@ project "Labyrinth"
 		"glad",
 		"glfw",
 		"ImGui",
+		"mContainers",
 		"yaml-cpp",
 		"lua54",
 		"opengl32.lib"

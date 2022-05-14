@@ -26,3 +26,7 @@
 	path = Labyrinth/dependencies/RapidXML
 	url = git@github.com:amayesingnathan/rapidxml.git
 	branch = master
+[submodule "Labyrinth/dependencies/mContainers"]
+	path = Labyrinth/dependencies/mContainers
+	url = git@github.com:amayesingnathan/mContainers.git
+	branch = submodule
