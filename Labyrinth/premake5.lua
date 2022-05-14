@@ -4,8 +4,8 @@ project "Labyrinth"
     cppdialect "C++17"
     staticruntime "on"
 		
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/%{prj.name}")
-    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/%{prj.name}")
+    targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
+    objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
 	
 	pchheader "Lpch.h"
 	pchsource "src/Lpch.cpp"
@@ -32,9 +32,9 @@ project "Labyrinth"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
         "%{IncludeDir.RenderAPI}",
-        "%{IncludeDir.SDL2}",
         "%{IncludeDir.stb_image}",
         "%{IncludeDir.glad}",
+        "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.ImGuizmo}",
@@ -47,14 +47,13 @@ project "Labyrinth"
 	
 	libdirs
 	{
-		"%{LibDir.SDL2}",
 		"%{LibDir.lua}"
 	}
 
 	links
 	{
-		"SDL2.lib",
 		"glad",
+		"glfw",
 		"ImGui",
 		"yaml-cpp",
 		"lua54",
@@ -67,7 +66,6 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
-
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }

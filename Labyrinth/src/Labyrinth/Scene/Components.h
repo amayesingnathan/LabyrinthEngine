@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Labyrinth/Maths/Vector2D.h"
-#include "Labyrinth/Maths/Quad.h"
 
 #include "SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"
@@ -11,9 +10,6 @@
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
-
-struct SDL_Texture;
-struct SDL_Rect;
 
 namespace Labyrinth {
 
@@ -35,6 +31,7 @@ namespace Labyrinth {
 
 	};
 
+#if 0
 	struct ColliderComponent 
 	{
 		//THIS MUST MIRROR ENUM "Type" IN XMLParser.h
@@ -50,7 +47,7 @@ namespace Labyrinth {
 		ColliderComponent(class Entity* entt, ColliderComponent::Type = Type::Solid, void (*fcnPtr)() = nullptr);
 		ColliderComponent(class Entity* entt, const SDL_Rect& rect, ColliderComponent::Type = Type::Solid, void (*fcnPtr)() = nullptr);
 	};
-
+#endif
 
 	struct KeyboardController
 	{
@@ -92,55 +89,6 @@ namespace Labyrinth {
 			: filepath(scriptPath), input(in), output(out){}
 		ScriptComponent(const ScriptComponent&) = default;
 	};
-
-#if 0
-	struct ScriptTriggerComponent
-	{	
-		struct TriggerSpec
-		{
-			Labyrinth::EventType type = EventType::None;
-		};
-
-		TriggerSpec trigger;
-		ScriptComponent startScript;
-
-		ScriptTriggerComponent() = default;
-		ScriptTriggerComponent(const TriggerSpec& triggerSpec, const ScriptComponent& script)
-			: trigger(triggerSpec), startScript(script) {}
-		ScriptTriggerComponent(const ScriptTriggerComponent&) = default;
-	};
-
-	struct SpriteComponent 
-	{
-
-		SDL_Texture* texture;
-		SDL_Rect srcRect, destRect;
-
-		bool animated;
-		int frames;
-		int speed;
-
-		Animation currAnimation;
-		std::map<std::string, Animation> animations;
-
-		SDL_RendererFlip spriteFlip;
-
-		SpriteComponent(class Entity* entt, const char* path, const SDL_Rect& src, bool mAnimated = false);
-		SpriteComponent(class Entity* entt, SDL_Texture& tex, const SDL_Rect& src, bool mAnimated = false);
-
-		SpriteComponent& operator=(const SpriteComponent&) = default;
-
-		void setTex(const char* path);
-
-		void setSubTex(int x, int y, int w, int h);
-
-		void addAnimation(std::string anim, int i, int f, int s)
-		{
-			animations.emplace(anim, Animation(i, f, s));
-		}
-	};
-
-#endif
 
 	struct SpriteRendererComponent
 	{
@@ -207,21 +155,6 @@ namespace Labyrinth {
 
 		operator const char* () { return tag.c_str(); }
 	};
-
-
-	struct TileComponent 
-	{
-		Vector2D position;
-		struct SpriteComponent* sprite;
-
-		TileComponent() = default;
-
-		TileComponent(class Entity* entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
-
-		void remove();
-
-	};
-
 
 	struct TransformComponent
 	{

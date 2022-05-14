@@ -6,7 +6,7 @@
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)
 		#define LAB_DEBUGBREAK() __debugbreak()
-	#elif defined(HZ_PLATFORM_LINUX)
+	#elif defined(LAB_PLATFORM_LINUX)
 		#include <signal.h>
 		#define LAB_DEBUGBREAK() raise(SIGTRAP)
 	#else

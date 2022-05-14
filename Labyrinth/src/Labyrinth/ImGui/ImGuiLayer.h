@@ -23,19 +23,6 @@ namespace Labyrinth {
 
 		void blockEvents(bool block) { mBlockEvents = block; }
 
-	private:
-		bool OnMouseButtonPressedEvent(MouseButtonPressedEvent& e);
-		bool OnMouseButtonReleasedEvent(MouseButtonReleasedEvent& e);
-		bool OnMouseMovedEvent(MouseMovedEvent& e);
-		bool OnMouseScrolledEvent(MouseScrolledEvent& e);
-		bool OnKeyPressedEvent(KeyPressedEvent& e);
-		bool OnKeyReleasedEvent(KeyReleasedEvent& e);
-		bool OnKeyTypedEvent(KeyTypedEvent& e);
-		bool OnWindowResizeEvent(WindowResizeEvent& e);
-		bool OnWindowCloseEvent(WindowCloseEvent& e);
-		bool OnWindowFocusEvent(WindowFocusEvent& e);
-		bool OnWindowFocusLostEvent(WindowFocusLostEvent& e);
-
 		void SetDarkThemeColours();
 
 	private:

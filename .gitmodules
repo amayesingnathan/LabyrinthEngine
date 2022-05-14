@@ -19,3 +19,6 @@
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
+[submodule "Labyrinth/dependencies/glfw"]
+	path = Labyrinth/dependencies/glfw
+	url = git@github.com:amayesingnathan/glfw.git

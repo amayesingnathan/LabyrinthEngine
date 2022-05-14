@@ -57,17 +57,17 @@ namespace Labyrinth {
 
 	void EditorCamera::onUpdate(Timestep ts)
 	{
-		if (Input::IsKeyPressed(LAB_KEY_LSHIFT))
+		if (Input::IsKeyPressed(Key::LeftShift))
 		{
 			const glm::vec2& mouse{ Input::GetMouseX(), Input::GetMouseY() };
 			glm::vec2 delta = (mouse - mInitialMousePosition) * 0.003f;
 			mInitialMousePosition = mouse;
 
-			if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_LEFT))
+			if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
 				MousePan(delta);
-			else if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_MIDDLE))
+			else if (Input::IsMouseButtonPressed(Mouse::ButtonMiddle))
 				MouseRotate(delta);
-			else if (Input::IsMouseButtonPressed(LAB_MOUSE_BUTTON_RIGHT))
+			else if (Input::IsMouseButtonPressed(Mouse::ButtonRight))
 				MouseZoom(delta.y);
 		}
 

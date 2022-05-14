@@ -34,9 +34,9 @@ namespace Labyrinth {
 
 		if (mRotation)
 		{
-			if (Input::IsKeyPressed(LAB_KEY_Q))
+			if (Input::IsKeyPressed(Key::Q))
 				mCameraRotation += mCameraRotationSpeed * ts;
-			if (Input::IsKeyPressed(LAB_KEY_E))
+			if (Input::IsKeyPressed(Key::E))
 				mCameraRotation -= mCameraRotationSpeed * ts;
 
 			if (mCameraRotation > 180.0f)
@@ -48,11 +48,11 @@ namespace Labyrinth {
 		}
 
 		//Lock movement to world axis if holding shift
-		mLockCam = (Input::IsKeyPressed(LAB_KEY_LSHIFT)) ? true : false;
+		mLockCam = (Input::IsKeyPressed(Key::LeftShift)) ? true : false;
 
 		//Move the camera depending on it's current rotation for more intuitive movement.
 		//Similarly scale camera move speed by zoom factor.
-		if (Input::IsKeyPressed(LAB_KEY_A))
+		if (Input::IsKeyPressed(Key::A))
 		{
 			if (!mLockCam)
 			{
@@ -61,7 +61,7 @@ namespace Labyrinth {
 			}
 			else mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts;
 		}
-		else if (Input::IsKeyPressed(LAB_KEY_D))
+		else if (Input::IsKeyPressed(Key::D))
 		{
 			if (!mLockCam)
 			{
@@ -71,7 +71,7 @@ namespace Labyrinth {
 			else mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts;
 		}
 
-		if (Input::IsKeyPressed(LAB_KEY_W))
+		if (Input::IsKeyPressed(Key::W))
 		{
 			if (!mLockCam)
 			{
@@ -80,7 +80,7 @@ namespace Labyrinth {
 			}
 			else mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts;
 		}
-		else if (Input::IsKeyPressed(LAB_KEY_S))
+		else if (Input::IsKeyPressed(Key::S))
 		{
 			if (!mLockCam)
 			{
@@ -135,7 +135,7 @@ namespace Labyrinth {
 
 	bool OrthographicCameraController::onMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (e.getMouseButton() == LAB_MOUSE_BUTTON_LEFT)
+		if (e.getMouseButton() == Mouse::ButtonLeft)
 			if (mDraggable)
 				mDragging = true;
 		return false;
@@ -143,7 +143,7 @@ namespace Labyrinth {
 
 	bool OrthographicCameraController::onMouseButtonReleased(MouseButtonReleasedEvent& e)
 	{
-		if (e.getMouseButton() == LAB_MOUSE_BUTTON_LEFT)
+		if (e.getMouseButton() == Mouse::ButtonLeft)
 			mDragging = false;
 		return false;
 	}

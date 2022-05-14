@@ -9,12 +9,16 @@
 
 #include "OpenGL/OpenGLContext.h"
 
-#include <Glad/glad.h>
-#include <SDL_opengl.h>
+#include "GLFW//glfw3.h"
 
 namespace Labyrinth {
 
-	static bool sSDLInitialised = false;
+	static uint8_t sGLFWWindowCount = 0;
+
+	static void GLFWErrorCallback(int error, const char* description)
+	{
+		LAB_CORE_ERROR("GLFW Error ({0}): {1}", error, description);
+	}
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
@@ -45,54 +49,134 @@ namespace Labyrinth {
 
 		LAB_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
 
-		if (!sSDLInitialised)
+		if (sGLFWWindowCount == 0)
 		{
 			LAB_PROFILE_SCOPE("SDLInit");
 
-			int success = SDL_Init(SDL_INIT_EVERYTHING);
-			LAB_CORE_ASSERT(!success, "Could not initialise SDL!");
-
-			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-			//SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-			sSDLInitialised = true;	
+			int success = glfwInit(); 
+			LAB_CORE_ASSERT(success, "Could not initialize GLFW!");
+			glfwSetErrorCallback(GLFWErrorCallback);
 		}
-
-		SDL_GL_LoadLibrary(NULL);
-		SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
-		SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-		SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-		SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
 
 		{
 			LAB_PROFILE_SCOPE("glfwCreateWindow");
-
 #if defined(LAB_DEBUG)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
-				SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_DEBUG_FLAG);
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
-
-			mWindow = SDL_CreateWindow(props.title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, props.width, props.height, props.flags);
+			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), nullptr, nullptr);
+			++sGLFWWindowCount;
 		}
 		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
 
-		mContext = CreateSingle<OpenGLContext>(mWindow);
+		mContext = GraphicsContext::Create(mWindow);
 		mContext->init();
 
-		SDL_SetWindowData(mWindow, "WindowData", &mData);
+		glfwSetWindowUserPointer(mWindow, &mData);
 		setVSync(true);
 
+		// Set GLFW callbacks
+		glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				data.width = width;
+				data.height = height;
+
+				WindowResizeEvent event(width, height);
+				data.eventCallback(event);
+			});
+
+		glfwSetWindowCloseCallback(mWindow, [](GLFWwindow* window)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				WindowCloseEvent event;
+				data.eventCallback(event);
+			});
+
+		glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(key, 0);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(key);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_REPEAT:
+				{
+					KeyPressedEvent event(key, 1);
+					data.eventCallback(event);
+					break;
+				}
+				}
+			});
+
+		glfwSetCharCallback(mWindow, [](GLFWwindow* window, unsigned int keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				KeyTypedEvent event(keycode);
+				data.eventCallback(event);
+			});
+
+		glfwSetMouseButtonCallback(mWindow, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(button);
+					data.eventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(button);
+					data.eventCallback(event);
+					break;
+				}
+				}
+			});
+
+		glfwSetScrollCallback(mWindow, [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				MouseScrolledEvent event((float)xOffset, (float)yOffset);
+				data.eventCallback(event);
+			});
+
+		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, double xPos, double yPos)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				MouseMovedEvent event((float)xPos, (float)yPos);
+				data.eventCallback(event);
+			});
 	}
 
 	void WindowsWindow::shutdown()
 	{
 		LAB_PROFILE_FUNCTION();
 
-		SDL_DestroyWindow(mWindow);
-		SDL_Quit();
+		glfwDestroyWindow(mWindow);
+		--sGLFWWindowCount;
+
+		if (sGLFWWindowCount == 0)
+		{
+			glfwTerminate();
+		}
 		LAB_CORE_TRACE("Shutdown complete");
 	}
 
@@ -101,8 +185,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		SDL_PollEvent(&mEvent);
-		DispatchEvent();
+		glfwPollEvents();
 		mContext->swapBuffers();
 	}
 
@@ -111,9 +194,9 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		if (enabled)
-			SDL_GL_SetSwapInterval(1);
+			glfwSwapInterval(1);
 		else
-			SDL_GL_SetSwapInterval(0);
+			glfwSwapInterval(0);
 
 		mData.vSync = enabled;
 	}
@@ -121,161 +204,5 @@ namespace Labyrinth {
 	bool WindowsWindow::isVSync() const
 	{
 		return mData.vSync;
-	}
-
-	void WindowsWindow::DispatchEvent()
-	{
-		/*
-			Currently all events extract window data from the SDL_Window* in the WindowsWindow object,
-			as opposed to using the SDL Window ID that the event happened in to find the SDL_Window* for the event.
-			This is because if an event happens outside the main window (i.e. Dear ImGui viewport) it will have a 
-			different Window ID, and fail to find the relevant window data for the event callback.
-		*/
-		switch (mEvent.type)
-		{
-		case SDL_WINDOWEVENT:
-			DispatchWindowEvent();
-			break;
-
-		case SDL_KEYUP:
-			DispatchKeyEvent();
-			break;
-
-		case SDL_KEYDOWN:
-			DispatchKeyEvent();
-			break;
-
-		case SDL_TEXTINPUT:
-			DispatchTextEvent();
-			break;
-
-		case SDL_MOUSEMOTION:
-			DispatchMouseEvent();
-			break;
-
-		case SDL_MOUSEBUTTONDOWN:
-			DispatchMouseEvent();
-			break;
-
-		case SDL_MOUSEBUTTONUP:
-			DispatchMouseEvent();
-			break;
-
-		case SDL_MOUSEWHEEL:
-			DispatchMouseEvent();
-			break;
-		}
-	}
-
-	void WindowsWindow::DispatchWindowEvent() {
-
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-		if (mEvent.window.event == SDL_WINDOWEVENT_RESIZED) {
-			int w, h;
-			SDL_GetWindowSize(mWindow, &w, &h);
-
-			winData.width = w;
-			winData.height = h;
-
-			WindowResizeEvent event(mEvent.window.windowID, winData.width, winData.height);
-			winData.eventCallback(event);
-		}
-
-		if (mEvent.window.event == SDL_WINDOWEVENT_CLOSE) {
-			WindowCloseEvent event(mEvent.window.windowID);
-			winData.eventCallback(event);
-		}
-
-		if (mEvent.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-			WindowFocusEvent event(mEvent.window.windowID);
-			winData.eventCallback(event);
-		}
-
-		if (mEvent.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-			WindowFocusLostEvent event(mEvent.window.windowID);
-			winData.eventCallback(event);
-		}
-	}
-
-	void WindowsWindow::DispatchKeyEvent()
-	{
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-		int keycode = mEvent.key.keysym.scancode;
-		switch (mEvent.type)
-		{
-		case SDL_KEYUP:
-		{
-			KeyReleasedEvent event(keycode);
-			winData.eventCallback(event);
-			break;
-		}
-		case SDL_KEYDOWN:
-		{
-			int repeat = mEvent.key.repeat;
-			KeyPressedEvent event(keycode, repeat);
-			winData.eventCallback(event);
-			break;
-		}
-		}
-	
-	}
-
-	void WindowsWindow::DispatchTextEvent()
-	{
-		WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-		KeyTypedEvent event(mEvent.text.text);
-		winData.eventCallback(event);
-	}
-
-	void WindowsWindow::DispatchMouseEvent()
-	{
-
-		switch (mEvent.type)
-		{
-		case SDL_MOUSEMOTION:
-		{
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-			float x = static_cast<float>(mEvent.motion.x);
-			float y = static_cast<float>(mEvent.motion.y);
-
-			MouseMovedEvent event(x, y);
-			winData.eventCallback(event);
-			break;
-		}
-		case SDL_MOUSEBUTTONDOWN:
-		{
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-			int button = mEvent.button.button;
-
-			MouseButtonPressedEvent event(button);
-			winData.eventCallback(event);
-			break;	
-		}
-		case SDL_MOUSEBUTTONUP:
-		{
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-			int button = mEvent.button.button;
-
-			MouseButtonReleasedEvent event(button);
-			winData.eventCallback(event);
-			break;
-		}
-		case SDL_MOUSEWHEEL:
-		{
-			WindowData& winData = *(WindowData*)SDL_GetWindowData(mWindow, "WindowData");
-
-			float x = static_cast<float>(mEvent.wheel.x);
-			float y = static_cast<float>(mEvent.wheel.y);
-
-			MouseScrolledEvent event(x, y);
-			winData.eventCallback(event);
-			break;
-		}
-		}
 	}
 }

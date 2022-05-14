@@ -4,8 +4,8 @@ project "Sandbox"
     cppdialect "C++17"
     staticruntime "on"
 	
-    targetdir ("%{wks.location}/bin/" .. outputdir .. "/")
-    objdir ("%{wks.location}/bin/int/" .. outputdir .. "/")
+    targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
+    objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
 	
     files 
     { 

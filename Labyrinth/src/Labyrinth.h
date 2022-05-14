@@ -18,7 +18,6 @@
 #include "Labyrinth/IO/MouseButtonCodes.h"
 
 #include "Labyrinth/Maths/Constant.h"
-#include "Labyrinth/Maths/Quad.h"
 
 #include "Labyrinth/ImGui/ImGuiLayer.h"
 
