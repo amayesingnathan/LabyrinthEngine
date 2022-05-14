@@ -19,8 +19,17 @@ namespace Labyrinth {
 		void onEvent(Event& e) override;
 
 	private:
+		void UpdateGrid();
+
+	private:
 		Ref<Scene> mScene;
 		Ref<Fluid> mFluid;
+
+		Ref<Framebuffer> mFramebuffer;
+
+		bool mViewportHovered = false;
+		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+		std::array<glm::vec2, 2> mViewportBounds = {};
 	};
 
 }

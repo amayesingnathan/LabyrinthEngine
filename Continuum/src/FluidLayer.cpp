@@ -2,21 +2,33 @@
 
 #include "FluidComponents.h"
 
+#include "Labyrinth/Tools/PlatformUtils.h"
+
 namespace Labyrinth {
 
 	FluidLayer::FluidLayer()
-		: Layer("FluidLayer")
+		: Layer("FluidLayer"), mScene(CreateRef<Scene>()), mViewportSize(Application::Get().getWindow().getSize())
 	{
+		mScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 	}
 
 	void FluidLayer::onAttach()
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mScene = CreateRef<Scene>();
+		FramebufferSpec fbSpec;
+		fbSpec.width = Cast<uint32_t>(mViewportSize.x);
+		fbSpec.height = Cast<uint32_t>(mViewportSize.y);
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+
+		mFramebuffer = Framebuffer::Create(fbSpec);
+
+		mViewportBounds[0] = { 0, 0 };
+		mViewportBounds[1] = { fbSpec.width, fbSpec.height };
 
 		FluidSpec spec;
-		spec.diff = 1.f; spec.visc = 1.f; spec.size = 100;
+		spec.diff = 0.001f; spec.visc = 1.f; spec.size = 100;
 		mFluid = CreateRef<Fluid>(mScene, spec);
 
 		for (uint i = 0; i < spec.size; i++) {
@@ -30,6 +42,22 @@ namespace Labyrinth {
 				cellEnt.addComponent<SpriteRendererComponent>(glm::vec4{ 0.f, 0.f, 0.f, 1.f });
 			}
 		}
+
+		Entity camera = mScene->CreateEntity("Camera");
+		auto& trans = camera.getComponent<TransformComponent>().translation;
+		trans.x = Cast<float>(spec.size) / 2.f;
+		trans.y = Cast<float>(spec.size) / 2.f;
+		trans.z = 1.f;
+
+		auto& cc = camera.addComponent<CameraComponent>();
+		cc.camera.setProjectionType(SceneCamera::ProjectionType::Orthographic);
+
+		cc.camera.setOrthographicSize(100.f);
+		cc.camera.setOrthographicNearClip(-1.f);
+		cc.camera.setOrthographicFarClip(2.f);
+
+		cc.primary = true;
+		cc.fixedAspectRatio = false;
 	}
 
 	void FluidLayer::onDetach()
@@ -44,14 +72,38 @@ namespace Labyrinth {
 		if (Input::IsMouseButtonPressed(Mouse::ButtonLeft))
 		{
 			glm::vec2 mousePos = Input::GetMousePosition();
-			glm::vec2 cellSize = Application::Get().getWindow().getSize();
+			glm::vec2 screenSize = Application::Get().getWindow().getSize();
 			uint meshSize = mFluid->getSize();
-			uint x = Cast<uint>(floorf((mousePos.x / cellSize.x) * meshSize));
-			uint y = Cast<uint>(floorf((mousePos.y / cellSize.y) * meshSize));
-			mFluid->addDensity(x, y, 1.f);
+			uint x = Cast<uint>(floorf((mousePos.x / screenSize.x) * meshSize));
+			uint y = Cast<uint>(floorf(((screenSize.y - mousePos.y) / screenSize.y) * meshSize));
+			mFluid->addDensity(x, y, 100.f);
+			mFluid->addVelocity(x, y, 100.f, -100.f);
 		}
 
+		;
+		//mFluid->addDensity(Cast<int>(floorf(Stopwatch::GetTime() * 10.f)) % mFluid->getSize(), mFluid->getSize() / 2, 200.f);
+
 		mFluid->onUpdate(ts);
+
+		mViewportHovered = Input::IsWindowHovered();
+
+		if (FramebufferSpec spec = mFramebuffer->getSpecification();
+			mViewportSize.x > 0.0f && mViewportSize.y > 0.0f && // zero sized framebuffer is invalid
+			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
+		{
+			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+		}
+
+		Renderer2D::ResetStats();
+
+		mFramebuffer->bind();
+		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
+		RenderCommand::Clear();
+
+		mScene->onUpdateRuntime(ts);
+
+		Renderer2D::DrawFramebuffer(mFramebuffer);
 	}
 
 	void FluidLayer::onImGuiRender()
