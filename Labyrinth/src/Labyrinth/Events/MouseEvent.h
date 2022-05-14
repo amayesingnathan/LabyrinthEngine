@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Event.h"
+#include "Labyrinth/Events/Event.h"
 #include "Labyrinth/IO/MouseButtonCodes.h"
 
 #include "glm/glm.hpp"

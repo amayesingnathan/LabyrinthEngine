@@ -1,8 +1,9 @@
 #Binaries
-**/bin/
+bin/
+obj/
 !dependencies/premake/bin/
 
-#VS temp files
+#VS files
 .vs/
 **.sln
 **.vcxproj
