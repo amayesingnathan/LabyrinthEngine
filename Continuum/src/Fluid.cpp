@@ -4,13 +4,40 @@
 
 namespace Labyrinth {
 
+	static const glm::vec4 Black = { 0.f, 0.f, 0.f, 1.f };
+
+	static std::map<float, glm::vec4> ColourMap =
+	{
+		{0.0001f,	{ 0.321f, 0.f, 0.066f, 1.0f } },
+		{0.0800f,	{ 0.454f, 0.f, 0.027f, 1.0f } },
+		{0.1600f,	{ 0.592f, 0.023f, 0.f, 1.0f } },
+		{0.2400f,	{ 0.729f, 0.145f, 0.f, 1.0f } },
+		{0.3200f,	{ 0.862f, 0.301f, 0.f, 1.0f } },
+		{0.4000f,	{ 0.996f, 0.498f, 0.f, 1.0f } },
+		{0.4800f,	{ 1.f, 0.513f, 0.090f, 1.0f } },
+		{0.5600f,	{ 1.f, 0.533f, 0.184f, 1.0f } },
+		{0.6400f,	{ 1.f, 0.556f, 0.274f, 1.0f } },
+		{0.7200f,	{ 1.f, 0.584f, 0.368f, 1.0f } },
+		{0.8000f,	{ 1.f, 0.619f, 0.458f, 1.0f } },
+		{0.8800f,	{ 1.f, 0.662f, 0.549f, 1.0f } }
+	};
+
+	static void DensityToColour(const float density, glm::vec4& colourOut)
+	{
+		if (density == 0.f) { colourOut = Black; return; }
+		auto it = std::find_if(ColourMap.rbegin(), ColourMap.rend(), [density](const auto& colMapEntry) {
+			return density > colMapEntry.first;
+		});
+		if (it == ColourMap.rend()) { colourOut = Black; return; }
+
+		colourOut = it->second;
+	}
+
 	void Fluid::onUpdate(Timestep ts)
 	{
-		uint N = mSize;
 		auto& fluid = mEntity.getComponent<FluidComponent>();
 		float visc = fluid.visc;
 		float diff = fluid.diff;
-		float dt = ts;
 		float* Vx = fluid.vX;
 		float* Vy = fluid.vY;
 		float* Vx0 = fluid.vX0;
@@ -18,18 +45,20 @@ namespace Labyrinth {
 		float* s = fluid.s;
 		float* dens = fluid.density;
 
-		Diffuse(1, Vx0, Vx, visc, dt);
-		Diffuse(2, Vy0, Vy, visc, dt);
+		Diffuse(1, Vx0, Vx, visc, ts);
+		Diffuse(2, Vy0, Vy, visc, ts);
 
 		Project(Vx0, Vy0, Vx, Vy);
 
-		Advect(1, Vx, Vx0, Vx0, Vy0, dt);
-		Advect(2, Vy, Vy0, Vx0, Vy0, dt);
+		Advect(1, Vx, Vx0, Vx0, Vy0, ts);
+		Advect(2, Vy, Vy0, Vx0, Vy0, ts);
 
 		Project(Vx, Vy, Vx0, Vy0);
 
-		Diffuse(0, s, dens, diff, dt);
-		Advect(0, dens, s, Vx, Vy, dt);
+		Diffuse(0, s, dens, diff, ts);
+		Advect(0, dens, s, Vx, Vy, ts);
+
+		UpdateGrid();
 	}
 
 	void Fluid::addDensity(uint x, uint y, float amount)
@@ -162,5 +191,16 @@ namespace Labyrinth {
 		x[IX(0, mSize - 1)] = 0.5f * (x[IX(1, mSize - 1)] + x[IX(0, mSize - 2)]);
 		x[IX(mSize - 1, 0)] = 0.5f * (x[IX(mSize - 2, 0)] + x[IX(mSize - 1, 1)]);
 		x[IX(mSize - 1, mSize - 1)] = 0.5f * (x[IX(mSize - 2, mSize - 1)] + x[IX(mSize - 1, mSize - 2)]);
+	}
+
+
+	void Fluid::UpdateGrid()
+	{
+		auto& fluid = mEntity.getComponent<FluidComponent>();
+		mCurrentScene->view<CellComponent, SpriteRendererComponent>().each([this, &fluid](const CellComponent& cell, SpriteRendererComponent& tile) {
+			float cellDens = fluid.s[IX(cell.x, cell.y)];
+			DensityToColour(cellDens, tile.colour);
+		});
+
 	}
 }

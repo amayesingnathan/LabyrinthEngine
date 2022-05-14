@@ -62,6 +62,8 @@ namespace Labyrinth {
 		void LinSolve(int b, float* x, float* x0, float a, float c);
 		void SetBound(int b, float* x);
 
+		void UpdateGrid();
+
 		inline uint IX(uint x, uint y) { return (x + y * mSize); }
 	};
 }
