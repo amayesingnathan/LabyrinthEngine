@@ -9,10 +9,15 @@ NetTest/
 
 #VS files
 .vs/
+.vscode/
 **.sln
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+
+#Makefiles
+Makefile
+Makefile.in
 
 #Log files
 *.log

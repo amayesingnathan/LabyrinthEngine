@@ -68,6 +68,10 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
+		
+	filter "system:linux"
+        systemversion "latest"
+        includedirs "%{IncludeDir.LabLinux}"
         
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }

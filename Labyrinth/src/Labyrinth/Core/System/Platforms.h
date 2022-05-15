@@ -33,8 +33,14 @@
 	#error "Android is not supported!"
 #elif defined(__linux__)
 	#define LAB_PLATFORM_LINUX
-	#error "Linux is not supported!"
 #else
 	/* Unknown compiler/platform */
 	#error "Unknown platform!"
 #endif // End of platform detection
+
+// Platform Define Macros
+#ifdef LAB_PLATFORM_WINDOWS
+	#define STR_COPY(x, y) strcpy_s(x, sizeof(x), y.c_str());
+#else   
+	#define STR_COPY(x, y) strcpy(x, y.c_str());
+#endif
