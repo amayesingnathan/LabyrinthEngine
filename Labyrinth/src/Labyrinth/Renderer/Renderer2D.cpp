@@ -185,16 +185,6 @@ namespace Labyrinth {
 		StartBatch();
 	}
 
-	void Renderer2D::BeginState()
-	{
-		LAB_PROFILE_FUNCTION();
-
-		sData.textureShader->bind();
-		sData.textureShader->setMat4("uViewProjection", glm::mat4(1.0f));
-
-		StartBatch();
-	}
-
 	void Renderer2D::BeginState(const Camera& camera, const glm::mat4 transform)
 	{
 		LAB_PROFILE_FUNCTION();
