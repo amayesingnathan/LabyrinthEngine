@@ -8,18 +8,18 @@ namespace Labyrinth {
 
 	static std::map<float, glm::vec4> ColourMap =
 	{
-		{0.0001f,	{ 0.321f, 0.f, 0.066f, 1.0f } },
-		{0.0800f,	{ 0.454f, 0.f, 0.027f, 1.0f } },
-		{0.1600f,	{ 0.592f, 0.023f, 0.f, 1.0f } },
-		{0.2400f,	{ 0.729f, 0.145f, 0.f, 1.0f } },
-		{0.3200f,	{ 0.862f, 0.301f, 0.f, 1.0f } },
-		{0.4000f,	{ 0.996f, 0.498f, 0.f, 1.0f } },
-		{0.4800f,	{ 1.f, 0.513f, 0.090f, 1.0f } },
-		{0.5600f,	{ 1.f, 0.533f, 0.184f, 1.0f } },
-		{0.6400f,	{ 1.f, 0.556f, 0.274f, 1.0f } },
-		{0.7200f,	{ 1.f, 0.584f, 0.368f, 1.0f } },
-		{0.8000f,	{ 1.f, 0.619f, 0.458f, 1.0f } },
-		{0.8800f,	{ 1.f, 0.662f, 0.549f, 1.0f } }
+		{0.0000001f,	{ 0.321f, 0.f, 0.066f, 1.0f } },
+		{0.0200000f,	{ 0.454f, 0.f, 0.027f, 1.0f } },
+		{0.0400000f,	{ 0.592f, 0.023f, 0.f, 1.0f } },
+		{0.0600000f,	{ 0.729f, 0.145f, 0.f, 1.0f } },
+		{0.0800000f,	{ 0.862f, 0.301f, 0.f, 1.0f } },
+		{0.1000000f,	{ 0.996f, 0.498f, 0.f, 1.0f } },
+		{0.2000000f,	{ 1.f, 0.513f, 0.090f, 1.0f } },
+		{0.3000000f,	{ 1.f, 0.533f, 0.184f, 1.0f } },
+		{0.5000000f,	{ 1.f, 0.556f, 0.274f, 1.0f } },
+		{0.7500000f,	{ 1.f, 0.584f, 0.368f, 1.0f } },
+		{1.0000000f,	{ 1.f, 0.619f, 0.458f, 1.0f } },
+		{5.0000000f,	{ 1.f, 0.662f, 0.549f, 1.0f } }
 	};
 
 	static void DensityToColour(const float density, glm::vec4& colourOut)
@@ -197,9 +197,10 @@ namespace Labyrinth {
 	void Fluid::UpdateGrid()
 	{
 		auto& fluid = mEntity.getComponent<FluidComponent>();
-		mCurrentScene->view<CellComponent, SpriteRendererComponent>().each([this, &fluid](const CellComponent& cell, SpriteRendererComponent& tile) {
+		mCurrentScene->getEntitiesWith<CellComponent, SpriteRendererComponent>().each([this, &fluid](const CellComponent& cell, SpriteRendererComponent& tile) {
 			float cellDens = fluid.s[IX(cell.x, cell.y)];
-			DensityToColour(cellDens, tile.colour);
+			if (cellDens > 0.000000000001f)
+				DensityToColour(cellDens, tile.colour);
 		});
 
 	}

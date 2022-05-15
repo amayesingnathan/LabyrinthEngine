@@ -7,7 +7,8 @@ namespace Labyrinth {
 	class Continuum : public Application
 	{
 	public:
-		Continuum()
+		Continuum(const ApplicationSpec& spec)
+			: Application(spec)
 		{
 			pushLayer(new FluidLayer());
 		}
@@ -17,8 +18,14 @@ namespace Labyrinth {
 		}
 	};
 
-	Application* CreateApplication(ApplicationCommandLineArgs args)
+	Application* CreateApplication(int argc, char** argv)
 	{
-		return new Continuum();
+		ApplicationSpec spec;
+		spec.name = "Sandbox";
+
+		Application::ReadSettings("sandbox.ini", spec);
+		spec.workingDir = "../Enigma";
+
+		return new Continuum(spec);
 	}
 }

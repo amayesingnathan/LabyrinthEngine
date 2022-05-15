@@ -7,7 +7,7 @@
 namespace Labyrinth {
 
 	FluidLayer::FluidLayer()
-		: Layer("FluidLayer"), mScene(CreateRef<Scene>()), mViewportSize(Application::Get().getWindow().getSize())
+		: Layer("FluidLayer"), mScene(Ref<Scene>::Create()), mViewportSize(Application::Get().getWindow().getSize())
 	{
 		mScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 	}
@@ -28,8 +28,8 @@ namespace Labyrinth {
 		mViewportBounds[1] = { fbSpec.width, fbSpec.height };
 
 		FluidSpec spec;
-		spec.diff = 0.001f; spec.visc = 1.f; spec.size = 100;
-		mFluid = CreateRef<Fluid>(mScene, spec);
+		spec.diff = 0.0001f; spec.visc = 0.0001f; spec.size = 100;
+		mFluid = Ref<Fluid>::Create(mScene, spec);
 
 		for (uint i = 0; i < spec.size; i++) {
 			for (uint j = 0; j < spec.size; j++) {
@@ -74,14 +74,22 @@ namespace Labyrinth {
 			glm::vec2 mousePos = Input::GetMousePosition();
 			glm::vec2 screenSize = Application::Get().getWindow().getSize();
 			uint meshSize = mFluid->getSize();
-			uint x = Cast<uint>(floorf((mousePos.x / screenSize.x) * meshSize));
-			uint y = Cast<uint>(floorf(((screenSize.y - mousePos.y) / screenSize.y) * meshSize));
-			mFluid->addDensity(x, y, 100.f);
-			mFluid->addVelocity(x, y, 100.f, -100.f);
+			float padding = Cast<float>(screenSize.x - screenSize.y);
+			if ((mousePos.x > (padding * 0.5f)) && (mousePos.x < (screenSize.y + padding * 0.5f)))
+			{
+				uint x = Cast<uint>(floorf(((mousePos.x - 0.5f * padding) / screenSize.y) * meshSize));
+				uint y = Cast<uint>(floorf(((screenSize.y - mousePos.y) / screenSize.y) * meshSize));
+				mFluid->addDensity(x, y, 10.f);
+
+				glm::vec2 amount = { 20.f, 20.f };
+				float tick = Stopwatch::GetTime() * 0.5f;
+				amount.x *= cosf(tick);
+				amount.y *= sinf(tick);
+				mFluid->addVelocity(x, y, amount.x, amount.y);
+			}
 		}
 
-		;
-		//mFluid->addDensity(Cast<int>(floorf(Stopwatch::GetTime() * 10.f)) % mFluid->getSize(), mFluid->getSize() / 2, 200.f);
+		mPrevMousePos = Input::GetMousePosition();
 
 		mFluid->onUpdate(ts);
 
@@ -104,6 +112,7 @@ namespace Labyrinth {
 		mScene->onUpdateRuntime(ts);
 
 		Renderer2D::DrawFramebuffer(mFramebuffer);
+
 	}
 
 	void FluidLayer::onImGuiRender()

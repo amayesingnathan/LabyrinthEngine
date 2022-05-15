@@ -19,7 +19,7 @@ namespace Labyrinth {
 		float visc;
 	};
 
-	class Fluid
+	class Fluid : public RefCounted
 	{
 	private:
 		Entity mEntity;

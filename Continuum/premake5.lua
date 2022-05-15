@@ -2,7 +2,7 @@ project "Continuum"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
-    staticruntime "on"
+    staticruntime "off"
 	
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
@@ -23,7 +23,8 @@ project "Continuum"
 		"%{IncludeDir.entt}",
         "%{IncludeDir.mContainers}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.lua}"
+		"%{IncludeDir.lua}",
+		"%{IncludeDir.json}",
     }
 	
     links
