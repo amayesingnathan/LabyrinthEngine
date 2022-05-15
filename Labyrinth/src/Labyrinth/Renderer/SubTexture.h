@@ -42,9 +42,6 @@ namespace Labyrinth {
 		std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() { return mSubTextures; }
 		const std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() const { return mSubTextures; }
 
-		std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() { return mSubTextures; }
-		const std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() const { return mSubTextures; }
-
 		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f });
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);

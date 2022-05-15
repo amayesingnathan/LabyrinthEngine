@@ -150,20 +150,6 @@ namespace Labyrinth {
 		operator const char* () { return tag.c_str(); }
 	};
 
-	struct TileComponent 
-	{
-		Vector2D position;
-		struct SpriteComponent* sprite;
-
-		TileComponent() = default;
-
-		TileComponent(class Entity* entt, const SDL_Rect& src, const SDL_Rect& dest, SDL_Texture& tex);
-
-		void remove();
-
-	};
-
-
 	struct TransformComponent
 	{
 		glm::vec3 translation = glm::vec3{ 0.0f };
