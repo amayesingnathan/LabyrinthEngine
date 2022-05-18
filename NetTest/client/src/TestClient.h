@@ -7,15 +7,6 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		enum class MessageTypes : uint32_t
-		{
-			ServerAccept,
-			ServerDeny,
-			ServerPing,
-			MessageAll,
-			ServerMessage,
-		};
-
 		class TestClientLayer : public ClientLayer<MessageTypes>
 		{
 		public:

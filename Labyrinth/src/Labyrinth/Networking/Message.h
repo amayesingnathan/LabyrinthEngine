@@ -1,6 +1,7 @@
 #pragma once
 
 #include "NetCommon.h"
+#include "MessageTypes.h"
 
 namespace Labyrinth {
 

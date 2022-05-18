@@ -6,61 +6,36 @@ namespace Labyrinth
 
 		void TestClientLayer::onUpdate(Timestep ts)
 		{
-			bool key[3] = { false, false, false };
-			bool old_key[3] = { false, false, false };
-
-			bool bQuit = false;
-			while (!bQuit)
+			if (isConnected())
 			{
-				if (GetForegroundWindow() == GetConsoleWindow())
+				if (!incoming().empty())
 				{
-					key[0] = GetAsyncKeyState('1') & 0x8000;
-					key[1] = GetAsyncKeyState('2') & 0x8000;
-					key[2] = GetAsyncKeyState('3') & 0x8000;
-				}
+					auto msg = incoming().pop_front().msg;
 
-				if (key[0] && !old_key[0])
-					PingServer();
-				if (key[1] && !old_key[1])
-					MessageAll();
-				if (key[2] && !old_key[2]) bQuit = true;
-
-				for (int i = 0; i < 3; i++) old_key[i] = key[i];
-
-				if (isConnected())
-				{
-					if (!incoming().empty())
+					switch (msg.header.id)
 					{
-						auto msg = incoming().pop_front().msg;
+					case MessageTypes::ServerAccept:
+					{
+						LAB_INFO("Server Accepted Connection");
+					}
+					break;
 
-						switch (msg.header.id)
-						{
-						case MessageTypes::ServerAccept:
-						{
-							LAB_INFO("Server Accepted Connection");
-						}
-						break;
+					case MessageTypes::ServerPing:
+					{
+						LAB_INFO("Pinged Server: {0}ms", mTimer.elapsedMillis());
+					}
+					break;
 
-						case MessageTypes::ServerPing:
-						{
-							LAB_INFO("Pinged Server: {0}ms", mTimer.elapsedMillis());
-						}
-						break;
-
-						case MessageTypes::ServerMessage:
-						{
-							uint32_t clientID;
-							msg >> clientID;
-							LAB_INFO("Hello from [{0}]", clientID);
-						}
-						break;
-
-						}
+					case MessageTypes::ServerMessage:
+					{
+						uint32_t clientID;
+						msg >> clientID;
+						LAB_INFO("Hello from [{0}]", clientID);
+					}
+					break;
 					}
 				}
 			}
-
-
 		}
 
 		void TestClientLayer::onEvent(Event& e)

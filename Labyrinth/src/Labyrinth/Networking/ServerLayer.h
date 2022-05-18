@@ -26,10 +26,7 @@ namespace Labyrinth {
 
 			virtual void onUpdate(Timestep ts) override
 			{
-				while (1)
-				{
-					update(-1, true);
-				}
+				update(-1, true);
 			}
 
 		public:

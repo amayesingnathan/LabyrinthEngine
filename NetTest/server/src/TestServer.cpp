@@ -35,11 +35,10 @@ namespace Labyrinth
 				LAB_INFO("[{0}]: Message All", client->getID());
 
 				// Construct a new message and send it to all clients
-				Message<MessageTypes> msg;
-				msg.header.id = MessageTypes::ServerMessage;
-				msg << client->getID();
-				BroadcastToClients(msg, client);
-
+				Message<MessageTypes> responseMsg;
+				responseMsg.header.id = MessageTypes::ServerMessage;
+				responseMsg << client->getID();
+				BroadcastToClients(responseMsg, client);
 			}
 			break;
 			}
