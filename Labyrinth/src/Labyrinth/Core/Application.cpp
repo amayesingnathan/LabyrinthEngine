@@ -43,7 +43,7 @@ namespace Labyrinth {
 
 	void Application::run()
 	{
-		LAB_PROFILE_FUNCTION();
+		LAB_PROFILE_FUNCTION(); 
 
 		while (mRunning)
 		{
@@ -97,6 +97,12 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 		mLayerStack.pushLayer(layer);
+	}
+
+	void Application::pushNetLayer(NetworkLayer* netlayer)
+	{
+		LAB_PROFILE_FUNCTION();
+		mLayerStack.pushLayer(netlayer);
 	}
 
 	void Application::pushOverlay(Layer* overlay)

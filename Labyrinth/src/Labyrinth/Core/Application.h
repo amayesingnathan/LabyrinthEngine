@@ -11,6 +11,7 @@
 #include <Labyrinth/Events/MouseEvent.h>
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
+#include <Labyrinth/Networking/NetworkLayer.h>
 
 int main(int argc, char** argv);
 
@@ -39,6 +40,7 @@ namespace Labyrinth {
 
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);
+		void pushNetLayer(NetworkLayer* netlayer);
 
 		Window& getWindow() { return *mWindow; }
 

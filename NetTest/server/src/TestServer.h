@@ -7,10 +7,10 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		class TestServerLayer : public ServerLayer<MessageTypes>
+		class TestServerLayer : public ServerLayer<MessageType>
 		{
 		public:
-			TestServerLayer(uint16_t port) : ServerLayer<MessageTypes>(port) {}
+			TestServerLayer(uint16_t port) : ServerLayer<MessageType>(port) {}
 
 		protected:  //Layer overrides
 
@@ -18,14 +18,14 @@ namespace Labyrinth {
 			virtual void onEvent(Labyrinth::Event& e) override {}
 
 		protected: //Server Interface overrides
-			virtual bool onClientConnect(Ref<Connection<MessageTypes>> client) override;
+			virtual bool onClientConnect(Ref<Connection<MessageType>> client) override;
 
-			virtual void onClientDisconnect(Ref<Connection<MessageTypes>> client) override
+			virtual void onClientDisconnect(Ref<Connection<MessageType>> client) override
 			{
 				LAB_INFO("Removing client [{0}]", client->getID());
 			}
 
-			virtual void onMessage(Ref<Connection<MessageTypes>> client, Message<MessageTypes>& msg) override;
+			virtual void onMessage(Ref<Connection<MessageType>> client, Message<MessageType>& msg) override;
 		};
 	}
 }

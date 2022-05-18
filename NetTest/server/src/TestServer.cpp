@@ -9,15 +9,15 @@ namespace Labyrinth
 			update(-1, true);
 		}
 
-		bool TestServerLayer::onClientConnect(Ref<Connection<MessageTypes>> client)
+		bool TestServerLayer::onClientConnect(Ref<Connection<MessageType>> client)
 		{
-			Message<MessageTypes> msg;
+			Message<MessageType> msg;
 			msg.header.id = MessageTypes::ServerAccept;
 			client->send(msg);
 			return true;
 		}
 
-		void TestServerLayer::onMessage(Ref<Connection<MessageTypes>> client, Message<MessageTypes>& msg)
+		void TestServerLayer::onMessage(Ref<Connection<MessageType>> client, Message<MessageType>& msg)
 		{
 			switch (msg.header.id)
 			{
@@ -35,7 +35,7 @@ namespace Labyrinth
 				LAB_INFO("[{0}]: Message All", client->getID());
 
 				// Construct a new message and send it to all clients
-				Message<MessageTypes> responseMsg;
+				Message<MessageType> responseMsg;
 				responseMsg.header.id = MessageTypes::ServerMessage;
 				responseMsg << client->getID();
 				BroadcastToClients(responseMsg, client);

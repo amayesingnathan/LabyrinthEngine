@@ -7,7 +7,7 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		class TestClientLayer : public ClientLayer<MessageTypes>
+		class TestClientLayer : public ClientLayer<MessageType>
 		{
 		public:
 

@@ -4,13 +4,14 @@
 #include "Message.h"
 #include "TSQueue.h"
 #include "Connection.h"
+#include "NetworkLayer.h"
 
 namespace Labyrinth {
 
 	namespace Net {
 
 		template<typename T>
-		class ServerLayer : public Layer
+		class ServerLayer : public NetworkLayer
 		{
 		public:
 			ServerLayer(uint16_t port)

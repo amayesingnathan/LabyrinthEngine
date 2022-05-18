@@ -6,13 +6,17 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		enum class MessageTypes : uint32_t
-		{
-			ServerAccept,
-			ServerDeny,
-			ServerPing,
-			MessageAll,
-			ServerMessage,
-		};
+		using MessageType = uint32_t;
+
+		namespace MessageTypes {
+
+			enum : MessageType {
+				ServerAccept,
+				ServerDeny,
+				ServerPing,
+				MessageAll,
+				ServerMessage,
+			};
+		}
 	}
 }
