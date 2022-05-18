@@ -3,13 +3,17 @@
 #include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Core/Application.h"
 
+#ifndef LAB_APP_NAME
+	#define LAB_APP_NAME "APP"
+#endif
+
 #ifdef LAB_PLATFORM_WINDOWS
 
 extern Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {	
-	Labyrinth::Log::Init();
+	Labyrinth::Log::Init(LAB_APP_NAME);
 
 	LAB_PROFILE_BEGIN_SESSION("Startup", "LabyrinthProfile-Startup.json");
 	auto app = Labyrinth::CreateApplication({ argc, argv });

@@ -9,7 +9,7 @@ namespace Labyrinth {
 	Ref<spdlog::logger> Log::sCoreLogger;
 	Ref<spdlog::logger> Log::sClientLogger;
 
-	void Log::Init()
+	void Log::Init(const std::string& appName)
 	{
 		std::vector<spdlog::sink_ptr> logSinks;
 		logSinks.emplace_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
@@ -23,7 +23,7 @@ namespace Labyrinth {
 		sCoreLogger->set_level(spdlog::level::trace);
 		sCoreLogger->flush_on(spdlog::level::trace);
 
-		sClientLogger = std::make_shared<spdlog::logger>("APP", begin(logSinks), end(logSinks));
+		sClientLogger = std::make_shared<spdlog::logger>(appName, begin(logSinks), end(logSinks));
 		spdlog::register_logger(sClientLogger);
 		sClientLogger->set_level(spdlog::level::trace);
 		sClientLogger->flush_on(spdlog::level::trace);

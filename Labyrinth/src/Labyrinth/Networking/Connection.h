@@ -12,7 +12,7 @@ namespace Labyrinth {
 		class ServerLayer;
 
 		template<typename T>
-		class Connection : public RefFromThis<Connection<T>>
+		class Connection : public AllowRefFromThis<Connection<T>>
 		{
 		public:
 			enum class Owner

@@ -43,3 +43,5 @@
 
 #include "Labyrinth/Renderer/Camera.h"
 // -----------------------------------
+
+#include "Labyrinth/Tools/Timer.h"
