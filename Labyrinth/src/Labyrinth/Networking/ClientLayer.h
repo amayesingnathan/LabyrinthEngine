@@ -10,7 +10,6 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		template<typename T>
 		class ClientLayer : public NetworkLayer
 		{
 		public:
@@ -19,28 +18,28 @@ namespace Labyrinth {
 			virtual ~ClientLayer()
 			{
 				if (isConnected())
-					disconnect();
+					Disconnect();
 			}
 
 		public: //Layer overrides
 			virtual void onAttach() override
 			{
-				connect("127.0.0.1", 60000);
+				Connect("127.0.0.1", 60000);
 			}
 			virtual void onDetach() override
 			{
-				disconnect();
+				Disconnect();
 			}
 
-		public:
-			bool connect(const std::string& host, const uint16_t port)
+		protected:
+			bool Connect(const std::string& host, const uint16_t port)
 			{
 				try
 				{
 					asio::ip::tcp::resolver resolver(mIOContext);
 					asio::ip::tcp::resolver::results_type endpoints = resolver.resolve(host, std::to_string(port));
 
-					mConnection = CreateSingle<Connection<T>>(Connection<T>::Owner::Client, mIOContext, asio::ip::tcp::socket(mIOContext), mQMessagesIn);
+					mConnection = CreateSingle<Connection>(Connection::Owner::Client, mIOContext, asio::ip::tcp::socket(mIOContext), mQMessagesIn);
 
 					mConnection->connectToServer(endpoints);
 
@@ -55,12 +54,10 @@ namespace Labyrinth {
 				return false;
 			}
 
-			void disconnect()
+			void Disconnect()
 			{
 				if (isConnected())
-				{
 					mConnection->disconnect();
-				}
 
 				mIOContext.stop();
 
@@ -70,6 +67,13 @@ namespace Labyrinth {
 				mConnection.release();
 			}
 
+			void Send(const Message& msg)
+			{
+				if (isConnected())
+					mConnection->send(msg);
+			}
+
+		public:
 			bool isConnected() const
 			{
 				if (mConnection)
@@ -78,26 +82,19 @@ namespace Labyrinth {
 				return false;
 			}
 
-			TSQueue<OwnedMessage<T>>& incoming()
+			TSQueue<OwnedMessage>& incoming()
 			{
 				return mQMessagesIn;
-			}
-
-		public:
-			void Send(const Message<T>& msg)
-			{
-				if (isConnected())
-					mConnection->send(msg);
 			}
 
 		protected:
 			asio::io_context mIOContext;
 			std::thread mIOContextThread;
 
-			Single<Connection<T>> mConnection;
+			Single<Connection> mConnection;
 
 		private:
-			TSQueue<OwnedMessage<T>> mQMessagesIn;
+			TSQueue<OwnedMessage> mQMessagesIn;
 		};
 
 	}

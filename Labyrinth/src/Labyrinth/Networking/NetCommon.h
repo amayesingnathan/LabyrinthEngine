@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/System/Cast.h"
+#include "Labyrinth/Core/System/Log.h"
 
 #include <deque>
 

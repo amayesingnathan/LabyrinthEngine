@@ -4,20 +4,15 @@ namespace Labyrinth
 {
 	namespace Net {
 
-		void TestServerLayer::onUpdate(Timestep ts)
+		bool TestServerLayer::onClientConnect(Ref<Connection> client)
 		{
-			update(-1, true);
-		}
-
-		bool TestServerLayer::onClientConnect(Ref<Connection<MessageType>> client)
-		{
-			Message<MessageType> msg;
+			Message msg;
 			msg.header.id = MessageTypes::ServerAccept;
 			client->send(msg);
 			return true;
 		}
 
-		void TestServerLayer::onMessage(Ref<Connection<MessageType>> client, Message<MessageType>& msg)
+		void TestServerLayer::onMessage(Ref<Connection> client, Message& msg)
 		{
 			switch (msg.header.id)
 			{
@@ -35,7 +30,7 @@ namespace Labyrinth
 				LAB_INFO("[{0}]: Message All", client->getID());
 
 				// Construct a new message and send it to all clients
-				Message<MessageType> responseMsg;
+				Message responseMsg;
 				responseMsg.header.id = MessageTypes::ServerMessage;
 				responseMsg << client->getID();
 				BroadcastToClients(responseMsg, client);

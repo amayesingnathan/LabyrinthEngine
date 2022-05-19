@@ -4,5 +4,10 @@
 
 namespace Labyrinth {
 
-	class NetworkLayer : public Layer { };
+	namespace Net {
+
+		class NetworkLayer : public Layer {};
+
+	}
+
 }

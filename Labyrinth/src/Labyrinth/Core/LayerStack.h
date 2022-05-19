@@ -3,8 +3,6 @@
 #include "Labyrinth/Core/System/Base.h"
 #include "Layer.h"
 
-#include "Labyrinth/Networking/NetworkLayer.h"
-
 namespace Labyrinth {
 
 	class LayerStack
@@ -14,7 +12,6 @@ namespace Labyrinth {
 		~LayerStack();
 
 		void pushLayer(Layer* layer);
-		void pushLayer(NetworkLayer* layer);
 		void pushOverlay(Layer* overlay);
 		void popLayer(Layer* layer);
 		void popOverlay(Layer* overlay);
@@ -31,7 +28,6 @@ namespace Labyrinth {
 
 	private:
 		std::vector<Layer*> mLayers;
-		std::vector<NetworkLayer*> mNetLayers;
 		unsigned int mLayerInsertIndex = 0;
 	};
 

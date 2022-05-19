@@ -19,12 +19,6 @@ namespace Labyrinth {
 		layer->onAttach();
 	}
 
-	void LayerStack::pushLayer(NetworkLayer* netlayer)
-	{
-		mNetLayers.emplace_back(netlayer);
-		netlayer->onAttach();
-	}
-
 	void LayerStack::pushOverlay(Layer* overlay)
 	{
 		mLayers.emplace_back(overlay);	

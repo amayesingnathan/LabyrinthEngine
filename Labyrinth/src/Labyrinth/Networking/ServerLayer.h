@@ -10,7 +10,6 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		template<typename T>
 		class ServerLayer : public NetworkLayer
 		{
 		public:
@@ -22,16 +21,14 @@ namespace Labyrinth {
 			virtual ~ServerLayer() = default;
 
 		public: //Layer overrides
-			virtual void onAttach() override { start(); }
-			virtual void onDetach() override { stop(); }
+			virtual void onAttach() override { Start(); }
+			virtual void onDetach() override { Stop(); }
 
-			virtual void onUpdate(Timestep ts) override
-			{
-				update(-1, true);
-			}
+			// The default onUpdate override for the ServerLayer reads all queued messages and calls onMessage for each.
+			virtual void onUpdate(Timestep ts) override { Update(); }
 
-		public:
-			bool start()
+		protected:
+			bool Start()
 			{
 				try
 				{
@@ -50,7 +47,7 @@ namespace Labyrinth {
 
 			}
 
-			void stop()
+			void Stop()
 			{
 				mIOContext.stop();
 
@@ -59,7 +56,21 @@ namespace Labyrinth {
 				LAB_CORE_TRACE("Server Stopped!");
 			}
 
-			// ASYNC
+			// Generic update function. Reads all waiting messages and calls onMessage for each message.
+			void Update(size_t maxMessages = std::numeric_limits<size_t>::max())
+			{
+				size_t messageCount = 0;
+				while (messageCount < maxMessages && !mQMessagesIn.empty())
+				{
+					auto msg = mQMessagesIn.pop_front();
+
+					onMessage(msg.remote, msg.msg);
+
+					messageCount++;
+				}
+			}
+
+		public: // ASYNC
 			void WaitForClientConnection()
 			{
 				mAsioAcceptor.async_accept(
@@ -69,7 +80,7 @@ namespace Labyrinth {
 						{
 							LAB_CORE_TRACE("New Connection {0}", socket.remote_endpoint());
 
-							Ref<Connection<T>> newConn = CreateRef<Connection<T>>(Connection<T>::Owner::Server, mIOContext, std::move(socket), mQMessagesIn);
+							Ref<Connection> newConn = CreateRef<Connection>(Connection::Owner::Server, mIOContext, std::move(socket), mQMessagesIn);
 
 							if (onClientConnect(newConn))
 							{
@@ -93,7 +104,7 @@ namespace Labyrinth {
 				);
 			}
 
-			void MessageClient(Ref<Connection<T>> client, const Message<T>& msg)
+			void MessageClient(Ref<Connection> client, const Message& msg)
 			{
 				if (client && client->isConnected())
 				{
@@ -107,7 +118,7 @@ namespace Labyrinth {
 				}
 			}
 
-			void BroadcastToClients(const Message<T>& msg, Ref<Connection<T>> ignoreClient = nullptr)
+			void BroadcastToClients(const Message& msg, Ref<Connection> ignoreClient = nullptr)
 			{
 				bool invalidClientExists = false;
 
@@ -134,47 +145,31 @@ namespace Labyrinth {
 				}
 			}
 
-			void update(size_t maxMessages = std::numeric_limits<size_t>::max(), bool wait = false)
-			{
-				if (wait) mQMessagesIn.wait();
-
-				size_t messageCount = 0;
-				while (messageCount < maxMessages && !mQMessagesIn.empty())
-				{
-					auto msg = mQMessagesIn.pop_front();
-
-					onMessage(msg.remote, msg.msg);
-
-					messageCount++;
-				}
-			}
-
-		protected: // To be overriden by child classes.
-			virtual bool onClientConnect(Ref<Connection<T>> client)
+		public: // To be overriden by child classes.
+			virtual bool onClientConnect(Ref<Connection> client)
 			{
 				return false;
 			}
 
-			virtual void onClientDisconnect(Ref<Connection<T>> client)
+			virtual void onClientDisconnect(Ref<Connection> client)
 			{
 				LAB_CORE_TRACE("Removing client [{0}]", client->getID());
 			}
 
-			virtual void onMessage(Ref<Connection<T>> client, Message<T>& msg)
+			virtual void onMessage(Ref<Connection> client, Message& msg)
 			{
 
 			}
 
-		public:
-			virtual void onClientValidated(Ref<Connection<T>> client)
+			virtual void onClientValidated(Ref<Connection> client)
 			{
 
 			}
 
 		protected:
-			TSQueue<OwnedMessage<T>> mQMessagesIn;
+			TSQueue<OwnedMessage> mQMessagesIn;
 
-			std::deque<Ref<Connection<T>>> mConnections;
+			std::deque<Ref<Connection>> mConnections;
 
 			asio::io_context mIOContext;
 			std::thread mIOContextThread;

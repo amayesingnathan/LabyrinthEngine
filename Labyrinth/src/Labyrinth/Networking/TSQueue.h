@@ -47,18 +47,12 @@ namespace Labyrinth {
 			{
 				std::scoped_lock lock(mQueueMutex);
 				mQueue.emplace_back(std::move(item));
-
-				std::unique_lock<std::mutex> loc(mBlockingMutex);
-				mBlocking.notify_one();
 			}
 
 			void push_front(const T& item)
 			{
 				std::scoped_lock lock(mQueueMutex);
 				mQueue.emplace_front(std::move(item));
-
-				std::unique_lock<std::mutex> loc(mBlockingMutex);
-				mBlocking.notify_one();
 			}
 
 			bool empty()
@@ -79,21 +73,9 @@ namespace Labyrinth {
 				return mQueue.clear();
 			}
 
-			void wait()
-			{
-				while (empty())
-				{
-					std::unique_lock<std::mutex> ul(mBlockingMutex);
-					mBlocking.wait(ul);
-				}
-			}
-
 		protected:
 			std::deque<T> mQueue;
 			std::mutex mQueueMutex;
-
-			std::condition_variable mBlocking;
-			std::mutex mBlockingMutex;
 		};
 
 	}

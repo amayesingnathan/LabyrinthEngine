@@ -7,17 +7,15 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		template<typename T>
 		struct MessageHeader
 		{
-			T id{};
+			MessageType id{};
 			uint32_t size = 0;
 		};
 
-		template<typename T>
 		struct Message
 		{
-			MessageHeader<T> header{};
+			MessageHeader header{};
 			std::vector<uint8_t> body;
 
 			size_t size() const
@@ -25,14 +23,14 @@ namespace Labyrinth {
 				return body.size();
 			}
 
-			friend std::ostream& operator << (std::ostream& os, const Message<T>& msg)
+			friend std::ostream& operator << (std::ostream& os, const Message& msg)
 			{
 				os << "ID:" << int(msg.header.id) << " Size:" << msg.header.size;
 				return os;
 			}
 
 			template<typename DataType>
-			friend Message<T>& operator<< (Message<T>& msg, const DataType& data)
+			friend Message& operator<< (Message& msg, const DataType& data)
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
 
@@ -48,7 +46,7 @@ namespace Labyrinth {
 			}
 
 			template<typename DataType>
-			friend Message<T>& operator>> (Message<T>& msg, DataType& data)
+			friend Message& operator>> (Message& msg, DataType& data)
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
 
@@ -65,16 +63,14 @@ namespace Labyrinth {
 
 		};
 
-		template<typename T>
 		class Connection;
 
-		template<typename T>
 		struct OwnedMessage
 		{
-			Ref<Connection<T>> remote = nullptr;
-			Message<T> msg;
+			Ref<Connection> remote = nullptr;
+			Message msg;
 
-			friend std::ostream& operator << (std::ostream& os, const OwnedMessage<T>& msg)
+			friend std::ostream& operator << (std::ostream& os, const OwnedMessage& msg)
 			{
 				os << msg.msg;
 				return os;

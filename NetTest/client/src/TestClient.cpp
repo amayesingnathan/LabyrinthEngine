@@ -62,7 +62,7 @@ namespace Labyrinth
 
 		void TestClientLayer::PingServer()
 		{
-			Message<MessageType> msg;
+			Message msg;
 			msg.header.id = MessageTypes::ServerPing;
 
 			mTimer.reset();
@@ -71,7 +71,7 @@ namespace Labyrinth
 
 		void TestClientLayer::MessageAll()
 		{
-			Message<MessageType> msg;
+			Message msg;
 			msg.header.id = MessageTypes::MessageAll;
 
 			Send(msg);

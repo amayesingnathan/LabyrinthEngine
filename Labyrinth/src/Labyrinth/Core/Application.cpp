@@ -99,12 +99,6 @@ namespace Labyrinth {
 		mLayerStack.pushLayer(layer);
 	}
 
-	void Application::pushNetLayer(NetworkLayer* netlayer)
-	{
-		LAB_PROFILE_FUNCTION();
-		mLayerStack.pushLayer(netlayer);
-	}
-
 	void Application::pushOverlay(Layer* overlay)
 	{
 		LAB_PROFILE_FUNCTION();
