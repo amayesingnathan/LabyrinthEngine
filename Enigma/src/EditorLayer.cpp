@@ -79,7 +79,8 @@ namespace Labyrinth {
 		{
 		case SceneState::Edit:
 		{
-			mEditorCamera.onUpdate(ts);
+			if (mViewportHovered)
+				mEditorCamera.onUpdate(ts);
 
 			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
 			break;
@@ -257,7 +258,7 @@ namespace Labyrinth {
 			glm::mat4 transform = tc.getTransform();
 
 			// Snapping
-			bool snap = Input::IsKeyPressed(LAB_KEY_LCTRL);
+			bool snap = Input::IsKeyPressed(Key::LeftControl);
 			float snapValue = 1.0f; // Snap to 0.5m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
@@ -333,56 +334,53 @@ namespace Labyrinth {
 		if (e.getRepeatCount() > 0)
 			return false;
 
-		bool control = Input::IsKeyPressed(LAB_KEY_LCTRL) || Input::IsKeyPressed(LAB_KEY_RCTRL);
-		bool shift = Input::IsKeyPressed(LAB_KEY_LSHIFT) || Input::IsKeyPressed(LAB_KEY_RSHIFT);
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
 
 		switch (e.getKeyCode())
 		{
-			case LAB_KEY_N:
+			case Key::N:
 			{
 				if (control)
 					NewScene();
-
-				break;
 			}
-			case LAB_KEY_O:
+			break;
+			case Key::O:
 			{
 				if (control)
 					OpenScene();
 
-				break;
 			}
-			case LAB_KEY_S:
+			break;
+			case Key::S:
 			{
 				if (control && shift)
 					SaveSceneAs();
 				else if (control)
 					SaveScene();
-
-				break;
 			}
-
+			break;
 
 			// Gizmos
-			case LAB_KEY_Q:
+			case Key::Q:
 			{
 				if (!ImGuizmo::IsUsing())
 					mGizmoType = -1;
-				break;
 			}
-			case LAB_KEY_W:
+			break;
+			case Key::W:
 			{
 				if (!ImGuizmo::IsUsing())
 					mGizmoType = ImGuizmo::OPERATION::TRANSLATE;
 				break;
 			}
-			case LAB_KEY_E:
+			case Key::E:
 			{
 				if (!ImGuizmo::IsUsing())
 					mGizmoType = ImGuizmo::OPERATION::ROTATE;
 				break;
 			}
-			case LAB_KEY_R:
+			case Key::R:
 			{
 				if (!ImGuizmo::IsUsing())
 					mGizmoType = ImGuizmo::OPERATION::SCALE;
@@ -398,9 +396,9 @@ namespace Labyrinth {
 	{
 		switch (e.getMouseButton())
 		{
-			case LAB_MOUSE_BUTTON_LEFT:
+		case Mouse::ButtonLeft:
 			{
-				if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(LAB_KEY_LALT))
+				if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 					mScenePanel.setSelectedEntity(mHoveredEntity);
 			}
 		}

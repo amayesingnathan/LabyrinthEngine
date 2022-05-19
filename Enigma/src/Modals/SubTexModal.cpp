@@ -77,7 +77,7 @@ namespace Labyrinth {
 
 		ImGui::PopStyleColor(2);
 
-		if (ImGui::IsKeyPressed(LAB_KEY_ESCAPE))
+		if (ImGui::IsKeyPressed(Key::Escape))
 		{
 			Close();
 			mWidthCount = 1; mHeightCount = 1;

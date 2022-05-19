@@ -12,4 +12,9 @@ namespace Labyrinth {
 		static std::string SaveFile(const char* filter);
 	};
 
+	class Stopwatch
+	{
+	public:
+		static float GetTime();
+	};
 }

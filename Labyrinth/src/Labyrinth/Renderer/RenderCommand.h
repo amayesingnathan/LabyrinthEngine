@@ -26,6 +26,26 @@ namespace Labyrinth {
 		{
 			sRendererAPI->clear();
 		}
+		
+		static void EnableDepth()
+		{
+			sRendererAPI->enableDepth();
+		}
+
+		static void DisableDepth()
+		{
+			sRendererAPI->disableDepth();
+		}
+
+		static void EnableBlend()
+		{
+			sRendererAPI->enableBlend();
+		}
+
+		static void DisableBlend()
+		{
+			sRendererAPI->disableBlend();
+		}
 
 		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
 		{

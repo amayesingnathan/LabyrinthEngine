@@ -4,20 +4,19 @@
 
 #include "Labyrinth/Events/Event.h"
 
+#include "glm/glm.hpp"
+
 namespace Labyrinth {
 
 	struct WindowProps {
 		std::string title;
 		uint32_t width;
 		uint32_t height;
-		uint32_t flags;
 
 		WindowProps(const std::string& t = "Labyrinth Engine",
 			uint32_t w = 1600,
-			uint32_t h = 900,
-			//SDL not included here so use hex values that correspond to SDL_WINDOW_RESIZABLE and SDL_WINDOW_OPENGL
-			uint32_t f = 0x00000020 | 0x00000002)
-			: title(t), width(w), height(h), flags(f) {}
+			uint32_t h = 900)
+			: title(t), width(w), height(h) {}
 	};
 
 	class Window
@@ -29,6 +28,7 @@ namespace Labyrinth {
 
 		virtual void onUpdate() = 0;
 
+		virtual glm::vec2 getSize() const = 0;
 		virtual uint32_t getWidth() const = 0;
 		virtual uint32_t getHeight() const = 0;
 

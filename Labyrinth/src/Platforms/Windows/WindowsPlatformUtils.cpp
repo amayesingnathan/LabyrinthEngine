@@ -4,15 +4,16 @@
 #include "Labyrinth/Core/Application.h"
 
 #include <commdlg.h>
-#include "SDL.h"
-#include "SDL_syswm.h"
+#include <GLFW/glfw3.h>
+#define GLFW_EXPOSE_NATIVE_WIN32
+#include <GLFW/glfw3native.h>
 
 
 namespace Labyrinth {
 
-	//Windows File Dialog Definition
 #ifdef LAB_PLATFORM_WINDOWS
 
+	//Windows File Dialog Definition
 	std::string FileDialogs::OpenFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;
@@ -57,5 +58,11 @@ namespace Labyrinth {
 		}
 		return std::string();
 	}
+
+	float Stopwatch::GetTime()
+	{
+		return (float)glfwGetTime();
+	}
+
 #endif
 }

@@ -1,267 +1,144 @@
 #pragma once
 
-// From SDL_keyboard.h
-#define LAB_KEY_A 4
-#define LAB_KEY_B 5
-#define LAB_KEY_C 6
-#define LAB_KEY_D 7
-#define LAB_KEY_E 8
-#define LAB_KEY_F 9
-#define LAB_KEY_G 10
-#define LAB_KEY_H 11
-#define LAB_KEY_I 12
-#define LAB_KEY_J 13
-#define LAB_KEY_K 14
-#define LAB_KEY_L 15
-#define LAB_KEY_M 16
-#define LAB_KEY_N 17
-#define LAB_KEY_O 18
-#define LAB_KEY_P 19
-#define LAB_KEY_Q 20
-#define LAB_KEY_R 21
-#define LAB_KEY_S 22
-#define LAB_KEY_T 23
-#define LAB_KEY_U 24
-#define LAB_KEY_V 25
-#define LAB_KEY_W 26
-#define LAB_KEY_X 27
-#define LAB_KEY_Y 28
-#define LAB_KEY_Z 29
+namespace Labyrinth
+{
+	using KeyCode = uint16_t;
 
-#define LAB_KEY_1 30
-#define LAB_KEY_2 31
-#define LAB_KEY_3 32
-#define LAB_KEY_4 33
-#define LAB_KEY_5 34
-#define LAB_KEY_6 35
-#define LAB_KEY_7 36
-#define LAB_KEY_8 37
-#define LAB_KEY_9 38
-#define LAB_KEY_0 39
+	namespace Key
+	{
+		enum : KeyCode
+		{
+			// From glfw3.h
+			Space = 32,
+			Apostrophe = 39, /* ' */
+			Comma = 44, /* , */
+			Minus = 45, /* - */
+			Period = 46, /* . */
+			Slash = 47, /* / */
 
-#define LAB_KEY_RETURN 40
-#define LAB_KEY_ESCAPE 41
-#define LAB_KEY_BACKSPACE 42
-#define LAB_KEY_TAB 43
-#define LAB_KEY_SPACE 44
+			D0 = 48, /* 0 */
+			D1 = 49, /* 1 */
+			D2 = 50, /* 2 */
+			D3 = 51, /* 3 */
+			D4 = 52, /* 4 */
+			D5 = 53, /* 5 */
+			D6 = 54, /* 6 */
+			D7 = 55, /* 7 */
+			D8 = 56, /* 8 */
+			D9 = 57, /* 9 */
 
-#define LAB_KEY_MINUS 45
-#define LAB_KEY_EQUALS 46
-#define LAB_KEY_LEFTBRACKET 47
-#define LAB_KEY_RIGHTBRACKET 48
-#define LAB_KEY_BACKSLASH 49
-#define LAB_KEY_NONUSHASH 50
-#define LAB_KEY_SEMICOLON 51
-#define LAB_KEY_APOSTROPHE 52
-#define LAB_KEY_GRAVE 53
-#define LAB_KEY_PERIOD 55
-#define LAB_KEY_SLASH 56
+			Semicolon = 59, /* ; */
+			Equal = 61, /* = */
 
-#define LAB_KEY_CAPSLOCK 57
+			A = 65,
+			B = 66,
+			C = 67,
+			D = 68,
+			E = 69,
+			F = 70,
+			G = 71,
+			H = 72,
+			I = 73,
+			J = 74,
+			K = 75,
+			L = 76,
+			M = 77,
+			N = 78,
+			O = 79,
+			P = 80,
+			Q = 81,
+			R = 82,
+			S = 83,
+			T = 84,
+			U = 85,
+			V = 86,
+			W = 87,
+			X = 88,
+			Y = 89,
+			Z = 90,
 
-#define LAB_KEY_F1 58
-#define LAB_KEY_F2 59
-#define LAB_KEY_F3 60
-#define LAB_KEY_F4 61
-#define LAB_KEY_F5 62
-#define LAB_KEY_F6 63
-#define LAB_KEY_F7 64
-#define LAB_KEY_F8 65
-#define LAB_KEY_F9 66
-#define LAB_KEY_F10 67
-#define LAB_KEY_F11 68
-#define LAB_KEY_F12 69
+			LeftBracket = 91,  /* [ */
+			Backslash = 92,  /* \ */
+			RightBracket = 93,  /* ] */
+			GraveAccent = 96,  /* ` */
 
-#define LAB_KEY_PRINTSCREEN 70
-#define LAB_KEY_SCROLLLOCK 71
-#define LAB_KEY_PAUSE 72
-#define LAB_KEY_INSERT 73
-#define LAB_KEY_HOME 74
-#define LAB_KEY_PAGEUP 75
-#define LAB_KEY_DELETE 76
-#define LAB_KEY_END 77
-#define LAB_KEY_PAGEDOWN 78
-#define LAB_KEY_RIGHT 79
-#define LAB_KEY_LEFT 80
-#define LAB_KEY_DOWN 81
-#define LAB_KEY_UP 82
+			World1 = 161, /* non-US #1 */
+			World2 = 162, /* non-US #2 */
 
-#define LAB_KEY_NUMLOCKCLEAR 83
-#define LAB_KEY_KP_DIVIDE 84
-#define LAB_KEY_KP_MULTIPLY 85
-#define LAB_KEY_KP_MINUS 86
-#define LAB_KEY_KP_PLUS 87
-#define LAB_KEY_KP_ENTER 88
-#define LAB_KEY_KP_1 89
-#define LAB_KEY_KP_2 90
-#define LAB_KEY_KP_3 91
-#define LAB_KEY_KP_4 92
-#define LAB_KEY_KP_5 93
-#define LAB_KEY_KP_6 94
-#define LAB_KEY_KP_7 95
-#define LAB_KEY_KP_8 96
-#define LAB_KEY_KP_9 97
-#define LAB_KEY_KP_0 98
-#define LAB_KEY_KP_PERIOD 99
+			/* Function keys */
+			Escape = 256,
+			Enter = 257,
+			Tab = 258,
+			Backspace = 259,
+			Insert = 260,
+			Delete = 261,
+			Right = 262,
+			Left = 263,
+			Down = 264,
+			Up = 265,
+			PageUp = 266,
+			PageDown = 267,
+			Home = 268,
+			End = 269,
+			CapsLock = 280,
+			ScrollLock = 281,
+			NumLock = 282,
+			PrintScreen = 283,
+			Pause = 284,
+			F1 = 290,
+			F2 = 291,
+			F3 = 292,
+			F4 = 293,
+			F5 = 294,
+			F6 = 295,
+			F7 = 296,
+			F8 = 297,
+			F9 = 298,
+			F10 = 299,
+			F11 = 300,
+			F12 = 301,
+			F13 = 302,
+			F14 = 303,
+			F15 = 304,
+			F16 = 305,
+			F17 = 306,
+			F18 = 307,
+			F19 = 308,
+			F20 = 309,
+			F21 = 310,
+			F22 = 311,
+			F23 = 312,
+			F24 = 313,
+			F25 = 314,
 
-#define LAB_KEY_NONUSBACKSLASH 100
-#define LAB_KEY_APPLICATION 101
-#define LAB_KEY_POWER 102
-#define LAB_KEY_KP_EQUALS 103
-#define LAB_KEY_F13 104
-#define LAB_KEY_F14 105
-#define LAB_KEY_F15 106
-#define LAB_KEY_F16 107
-#define LAB_KEY_F17 108
-#define LAB_KEY_F18 109
-#define LAB_KEY_F19 110
-#define LAB_KEY_F20 111
-#define LAB_KEY_F21 112
-#define LAB_KEY_F22 113
-#define LAB_KEY_F23 114
-#define LAB_KEY_F24 115
-#define LAB_KEY_EXECUTE 116
-#define LAB_KEY_HELP 117
-#define LAB_KEY_MENU 118
-#define LAB_KEY_SELECT 119
-#define LAB_KEY_STOP 120
-#define LAB_KEY_AGAIN 121
-#define LAB_KEY_UNDO 122
-#define LAB_KEY_CUT 123
-#define LAB_KEY_COPY 124
-#define LAB_KEY_PASTE 125
-#define LAB_KEY_FIND 126
-#define LAB_KEY_MUTE 127
-#define LAB_KEY_VOLUMEUP 128
-#define LAB_KEY_VOLUMEDOWN 129
+			/* Keypad */
+			KP0 = 320,
+			KP1 = 321,
+			KP2 = 322,
+			KP3 = 323,
+			KP4 = 324,
+			KP5 = 325,
+			KP6 = 326,
+			KP7 = 327,
+			KP8 = 328,
+			KP9 = 329,
+			KPDecimal = 330,
+			KPDivide = 331,
+			KPMultiply = 332,
+			KPSubtract = 333,
+			KPAdd = 334,
+			KPEnter = 335,
+			KPEqual = 336,
 
-#define LAB_KEY_KP_COMMA 133
-#define LAB_KEY_KP_EQUALSAS400 134
-
-#define LAB_KEY_INTERNATIONAL1 135
-#define LAB_KEY_INTERNATIONAL2 136
-#define LAB_KEY_INTERNATIONAL3 137
-#define LAB_KEY_INTERNATIONAL4 138
-#define LAB_KEY_INTERNATIONAL5 139
-#define LAB_KEY_INTERNATIONAL6 140
-#define LAB_KEY_INTERNATIONAL7 141
-#define LAB_KEY_INTERNATIONAL8 142
-#define LAB_KEY_INTERNATIONAL9 143
-#define LAB_KEY_LANG1 144 /**< Hangul/English toggle */
-#define LAB_KEY_LANG2 145 /**< Hanja conversion */
-#define LAB_KEY_LANG3 146 /**< Katakana */
-#define LAB_KEY_LANG4 147 /**< Hiragana */
-#define LAB_KEY_LANG5 148 /**< Zenkaku/Hankaku */
-#define LAB_KEY_LANG6 149 /**< reserved */
-#define LAB_KEY_LANG7 150 /**< reserved */
-#define LAB_KEY_LANG8 151 /**< reserved */
-#define LAB_KEY_LANG9 152 /**< reserved */
-
-#define LAB_KEY_ALTERASE 153 /**< Erase-Eaze */
-#define LAB_KEY_SYSREQ 154
-#define LAB_KEY_CANCEL 155
-#define LAB_KEY_CLEAR 156
-#define LAB_KEY_PRIOR 157
-#define LAB_KEY_RETURN2 158
-#define LAB_KEY_SEPARATOR 159
-#define LAB_KEY_OUT 160
-#define LAB_KEY_OPER 161
-#define LAB_KEY_CLEARAGAIN 162
-#define LAB_KEY_CRSEL 163
-#define LAB_KEY_EXSEL 164
-
-#define LAB_KEY_KP_00 176
-#define LAB_KEY_KP_000 177
-#define LAB_KEY_THOUSANDSSEPARATOR 178
-#define LAB_KEY_DECIMALSEPARATOR 179
-#define LAB_KEY_CURRENCYUNIT 180
-#define LAB_KEY_CURRENCYSUBUNIT 181
-#define LAB_KEY_KP_LEFTPAREN 182
-#define LAB_KEY_KP_RIGHTPAREN 183
-#define LAB_KEY_KP_LEFTBRACE 184
-#define LAB_KEY_KP_RIGHTBRACE 185
-#define LAB_KEY_KP_TAB 186
-#define LAB_KEY_KP_BACKSPACE 187
-#define LAB_KEY_KP_A 188
-#define LAB_KEY_KP_B 189
-#define LAB_KEY_KP_C 190
-#define LAB_KEY_KP_D 191
-#define LAB_KEY_KP_E 192
-#define LAB_KEY_KP_F 193
-#define LAB_KEY_KP_XOR 194
-#define LAB_KEY_KP_POWER 195
-#define LAB_KEY_KP_PERCENT 196
-#define LAB_KEY_KP_LESS 197
-#define LAB_KEY_KP_GREATER 198
-#define LAB_KEY_KP_AMPERSAND 199
-#define LAB_KEY_KP_DBLAMPERSAND 200
-#define LAB_KEY_KP_VERTICALBAR 201
-#define LAB_KEY_KP_DBLVERTICALBAR 202
-#define LAB_KEY_KP_COLON 203
-#define LAB_KEY_KP_HASH 204
-#define LAB_KEY_KP_SPACE 205
-#define LAB_KEY_KP_AT 206
-#define LAB_KEY_KP_EXCLAM 207
-#define LAB_KEY_KP_MEMSTORE 208
-#define LAB_KEY_KP_MEMRECALL 209
-#define LAB_KEY_KP_MEMCLEAR 210
-#define LAB_KEY_KP_MEMADD 211
-#define LAB_KEY_KP_MEMSUBTRACT 212
-#define LAB_KEY_KP_MEMMULTIPLY 213
-#define LAB_KEY_KP_MEMDIVIDE 214
-#define LAB_KEY_KP_PLUSMINUS 215
-#define LAB_KEY_KP_CLEAR 216
-#define LAB_KEY_KP_CLEARENTRY 217
-#define LAB_KEY_KP_BINARY 218
-#define LAB_KEY_KP_OCTAL 219
-#define LAB_KEY_KP_DECIMAL 220
-#define LAB_KEY_KP_HEXADECIMAL 221
-#define LAB_KEY_LCTRL 224
-#define LAB_KEY_LSHIFT 225
-#define LAB_KEY_LALT 226 /**< alt option */
-#define LAB_KEY_LGUI 227 /**< windows command (apple) meta */
-#define LAB_KEY_RCTRL 228
-#define LAB_KEY_RSHIFT 229
-#define LAB_KEY_RALT 230 /**< alt gr option */
-#define LAB_KEY_RGUI 231 /**< windows command (apple) meta */
-
-#define LAB_KEY_MODE 257
-
-#define LAB_KEY_AUDIONEXT 258
-#define LAB_KEY_AUDIOPREV 259
-#define LAB_KEY_AUDIOSTOP 260
-#define LAB_KEY_AUDIOPLAY 261
-#define LAB_KEY_AUDIOMUTE 262
-#define LAB_KEY_MEDIASELECT 263
-#define LAB_KEY_WWW 264
-#define LAB_KEY_MAIL 265
-#define LAB_KEY_CALCULATOR 266
-#define LAB_KEY_COMPUTER 267
-#define LAB_KEY_AC_SEARCH 268
-#define LAB_KEY_AC_HOME 269
-#define LAB_KEY_AC_BACK 270
-#define LAB_KEY_AC_FORWARD 271
-#define LAB_KEY_AC_STOP 272
-#define LAB_KEY_AC_REFRESH 273
-#define LAB_KEY_AC_BOOKMARKS 274
-
-
-#define LAB_KEY_BRIGHTNESSDOWN 275
-#define LAB_KEY_BRIGHTNESSUP 276
-#define LAB_KEY_DISPLAYSWITCH 277
-#define LAB_KEY_KBDILLUMTOGGLE 278
-#define LAB_KEY_KBDILLUMDOWN 279
-#define LAB_KEY_KBDILLUMUP 280
-#define LAB_KEY_EJECT 281
-#define LAB_KEY_SLEEP 282
-
-#define LAB_KEY_APP1 283
-#define LAB_KEY_APP2 284
-
-
-#define LAB_KEY_AUDIOREWIND 285
-#define LAB_KEY_AUDIOFASTFORWARD 286
-
-
-#define LAB_NUM_KEYS 512
-#define LAB_NUM_KEYS 512
+			LeftShift = 340,
+			LeftControl = 341,
+			LeftAlt = 342,
+			LeftSuper = 343,
+			RightShift = 344,
+			RightControl = 345,
+			RightAlt = 346,
+			RightSuper = 347,
+			Menu = 348
+		};
+	}
+}

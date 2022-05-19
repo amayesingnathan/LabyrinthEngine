@@ -243,7 +243,10 @@ namespace Labyrinth {
 			}
 
 			if (removeComponent)
+			{
 				entity.removeComponent<T>();
+				removeComponent = false;
+			}
 		}
 	}
 

@@ -3,46 +3,39 @@
 
 #include "Labyrinth/Core/Application.h"
 
-#include "SDL.h"
+#include <GLFW/glfw3.h>
 
 #ifdef	LAB_PLATFORM_WINDOWS  //Input redefine for Windows!
 
 namespace Labyrinth {
 
-	bool Input::IsKeyPressed(int keycode)
+	bool Input::IsWindowHovered()
 	{
-		auto keys = SDL_GetKeyboardState(NULL);
-		return keys[keycode];
+		auto winSize = Application::Get().getWindow().getSize();
+		auto pos = GetMousePosition();
+		return ((pos.x > 0) && (pos.y > 0) && (pos.x < winSize.x) && (pos.y < winSize.y));
 	}
 
-	bool Input::IsMouseButtonPressed(int button)
+	bool Input::IsKeyPressed(KeyCode keycode)
 	{
-		auto buttons = SDL_GetMouseState(NULL, NULL);
-		return LAB_MOUSE_BUTTON(button) & buttons;
+		auto* window = static_cast<GLFWwindow*>(Application::Get().getWindow().getNativeWindow());
+		auto state = glfwGetKey(window, static_cast<int32_t>(keycode));
+		return state == GLFW_PRESS || state == GLFW_REPEAT;
 	}
 
-	glm::vec2 Input::GetGlobalMousePosition()
+	bool Input::IsMouseButtonPressed(KeyCode button)
 	{
-		int x, y;
-		SDL_GetGlobalMouseState(&x, &y);
-		return { static_cast<float>(x), static_cast<float>(y) };
-	}
-
-	float Input::GetGlobalMouseX()
-	{
-		return GetGlobalMousePosition().x;
-	}
-
-	float Input::GetGlobalMouseY()
-	{
-		return GetGlobalMousePosition().y;
+		auto* window = static_cast<GLFWwindow*>(Application::Get().getWindow().getNativeWindow());
+		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));
+		return state == GLFW_PRESS;
 	}
 
 	glm::vec2 Input::GetMousePosition()
 	{
-		int x, y;
-		SDL_GetMouseState(&x, &y);
-		return { static_cast<float>(x), static_cast<float>(y) };
+		auto* window = static_cast<GLFWwindow*>(Application::Get().getWindow().getNativeWindow());
+		double xpos, ypos;
+		glfwGetCursorPos(window, &xpos, &ypos);
+		return { static_cast<float>(xpos), static_cast<float>(ypos) };
 	}
 
 	float Input::GetMouseX()

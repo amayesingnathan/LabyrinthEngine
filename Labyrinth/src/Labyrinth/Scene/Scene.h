@@ -3,6 +3,7 @@
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
+#include "Labyrinth/Renderer/RenderStack.h"
 
 #include "entt.hpp"
 
@@ -52,10 +53,11 @@ namespace Labyrinth {
 
 	private:
 		entt::registry mRegistry;
+		RenderStack mRenderStack;
+
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;
 
 		friend Entity;
-		friend class SceneSerialiser;
 		friend class ScenePanel;
 		friend class ScriptEngine;
 		friend class YAMLParser;

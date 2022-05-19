@@ -198,7 +198,7 @@ namespace Labyrinth {
 		BeginObject("SpriteRendererComponent");
 
 		ObjectProperty("Type", Cast<int>(srComponent.type));
-		ObjectProperty("Layer", srComponent.layer);
+		ObjectProperty("Layer", Cast<int>(srComponent.layer)); //Cast to int so it is encoded as number not char
 
 		ObjectProperty("Colour", srComponent.colour);
 
@@ -465,6 +465,7 @@ namespace Labyrinth {
 
 			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<int>();
 			src.layer = spriteRendererComponent["Layer"].as<uint8_t>();
+			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 
 			src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
 
@@ -500,7 +501,10 @@ namespace Labyrinth {
 						}
 					}
 
-					src.texture.subtex = (*it)->createSubTex(subTexName, subtexCoords);
+					if (!(*it)->hasSubTex(subTexName))
+						src.texture.subtex = (*it)->createSubTex(subTexName, subtexCoords);
+					else
+						src.texture.subtex = (*it)->getSubTex(subTexName);
 				}
 
 				break;
@@ -562,6 +566,7 @@ namespace Labyrinth {
 		if (!mIn["Scene"]) return nullptr;
 
 		// Load spritesheets
+		SpriteSheets.clear();
 		DecodeObject(SpriteSheets);
 
 		// Initialise current parent entity to null entity as first entity

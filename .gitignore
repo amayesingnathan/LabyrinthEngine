@@ -1,8 +1,13 @@
 #Binaries
-**/bin/
+bin/
+obj/
 !dependencies/premake/bin/
 
-#VS temp files
+#Branch Test Spaces
+Chess/
+NetTest/
+
+#VS files
 .vs/
 **.sln
 **.vcxproj

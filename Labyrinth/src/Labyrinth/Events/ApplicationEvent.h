@@ -1,27 +1,14 @@
 #pragma once
 
-#include "Event.h"
+#include "Labyrinth/Events/Event.h"
 
 namespace Labyrinth {
 
-	class WindowEvent : public Event
+	class WindowResizeEvent : public Event
 	{
 	public:
-		uint32_t getID() const { return mWindowID; }
-
-	protected:
-		WindowEvent(uint32_t id)
-			: mWindowID(id) {}
-
-	private:
-		uint32_t mWindowID;
-	};
-
-	class WindowResizeEvent : public WindowEvent
-	{
-	public:
-		WindowResizeEvent(uint32_t id, uint32_t width, uint32_t height)
-			: WindowEvent(id), mWidth(width), mHeight(height) {}
+		WindowResizeEvent(uint32_t width, uint32_t height)
+			: mWidth(width), mHeight(height) {}
 
 		uint32_t getWidth() const { return mWidth; }
 		uint32_t getHeight() const { return mHeight; }
@@ -39,35 +26,32 @@ namespace Labyrinth {
 		uint32_t mWidth, mHeight;
 	};
 
-	class WindowCloseEvent : public WindowEvent
+	class WindowCloseEvent : public Event
 	{
 	public:
-		WindowCloseEvent(uint32_t id) 
-			: WindowEvent(id) {}
+		WindowCloseEvent() {}
 
 		EVENT_CLASS_TYPE(WindowClose)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 
 	};
 
-	class WindowFocusEvent : public WindowEvent
+	class WindowFocusEvent : public Event
 	{
 	public:
-		WindowFocusEvent(uint32_t id)
-			: WindowEvent(id) {}
+		WindowFocusEvent() {}
 
 		EVENT_CLASS_TYPE(WindowFocus)
-			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class WindowFocusLostEvent : public WindowEvent
+	class WindowFocusLostEvent : public Event
 	{
 	public:
-		WindowFocusLostEvent(uint32_t id)
-			: WindowEvent(id) {}
+		WindowFocusLostEvent() {}
 
 		EVENT_CLASS_TYPE(WindowLostFoucus)
-			EVENT_CLASS_CATEGORY(EventCategoryApplication)
+		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
 	class AppTickEvent : public Event

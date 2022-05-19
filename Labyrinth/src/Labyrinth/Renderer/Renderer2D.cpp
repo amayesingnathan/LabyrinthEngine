@@ -9,6 +9,12 @@
 
 namespace Labyrinth {
 
+	struct displayVertex
+	{
+		glm::vec3 position;
+		glm::vec2 texCoord;
+	};
+
 	struct quadVertex
 	{
 		glm::vec3 position;
@@ -29,18 +35,25 @@ namespace Labyrinth {
 		static const uint32_t MaxIndices = Maxquads * 6;
 		static const uint32_t MaxTextureSlots = 32; //ToDo: RenderCaps
 
+		Ref<VertexArray> displayVertexArray;
+		Ref<VertexBuffer> displayVertexBuffer;
+		Ref<Shader> displayShader;
+
 		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> quadVertexBuffer;
-		Ref<Shader> textureShader;
+		Ref<Shader> framebufferShader;
 		Ref<Texture2D> whiteTexture;
 
 		uint32_t quadIndexCount = 0;
 		quadVertex* quadVertexBufferBase = nullptr;
 		quadVertex* quadVertexBufferPtr = nullptr;
+		displayVertex* displayVertexBufferBase = nullptr;
+		displayVertex* displayVertexBufferPtr = nullptr;
 
 		std::array<Ref<Texture2D>, MaxTextureSlots> textureSlots;
 		uint32_t textureSlotIndex;
 
+		glm::vec4 displayVertexPositions[4];
 		glm::vec4 quadVertexPositions[4]; 
 
 		Renderer2D::Statistics stats;
@@ -51,6 +64,53 @@ namespace Labyrinth {
 	void Renderer2D::Init()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		sData.displayVertexPositions[0] = { -1.0f, -1.0f, 0.0f, 1.0f };
+		sData.displayVertexPositions[1] = { 1.0f, -1.0f, 0.0f, 1.0f };
+		sData.displayVertexPositions[2] = { 1.0f,  1.0f, 0.0f, 1.0f };
+		sData.displayVertexPositions[3] = { -1.0f,  1.0f, 0.0f, 1.0f };
+
+		sData.displayVertexArray = VertexArray::Create();
+		sData.displayVertexBuffer = VertexBuffer::Create(4 * sizeof(displayVertex));
+		sData.displayVertexBuffer->setLayout({
+			{ ShaderDataType::Float3, "aPosition" },
+			{ ShaderDataType::Float2, "aTexCoord" }
+			});
+		sData.displayVertexArray->addVertexBuffer(sData.displayVertexBuffer);
+
+		sData.displayVertexBufferBase = new displayVertex[4];
+		sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
+
+		const glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		constexpr size_t vertexCount = 4;
+
+		for (size_t i = 0; i < vertexCount; i++)
+		{
+			sData.displayVertexBufferPtr->position = sData.displayVertexPositions[i];
+			sData.displayVertexBufferPtr->texCoord = textureCoords[i];
+			sData.displayVertexBufferPtr++;
+		}
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
+		sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
+
+		uint32_t* displayIndices = new uint32_t[6];
+
+		displayIndices[0] = 0;
+		displayIndices[1] = 1;
+		displayIndices[2] = 2;
+		displayIndices[3] = 2;
+		displayIndices[4] = 3;
+		displayIndices[5] = 0;
+
+		Ref<IndexBuffer> displayIB = IndexBuffer::Create(displayIndices, 6);
+
+		sData.displayVertexArray->setIndexBuffer(displayIB);
+
+		sData.displayShader = Shader::Create("assets/shaders/default.glsl");
+		sData.displayShader->bind();
+		sData.displayShader->setInt("screenTex", 0);
+
 
 		sData.quadVertexArray = VertexArray::Create();
 
@@ -95,9 +155,9 @@ namespace Labyrinth {
 		for (uint32_t i = 0; i < sData.MaxTextureSlots; i++)
 			samplers[i] = i;
 
-		sData.textureShader = Shader::Create("assets/shaders/texture.glsl");
-		sData.textureShader->bind();
-		sData.textureShader->setIntArray("uTextures", samplers, sData.MaxTextureSlots);
+		sData.framebufferShader = Shader::Create("assets/shaders/framebuffer.glsl");
+		sData.framebufferShader->bind();
+		sData.framebufferShader->setIntArray("uTextures", samplers, sData.MaxTextureSlots);
 
 		sData.textureSlots[0] = sData.whiteTexture;
 
@@ -112,14 +172,15 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		delete[] sData.quadVertexBufferBase;
+		delete[] sData.displayVertexBufferBase;
 	}
 
 	void Renderer2D::BeginState()
 	{
 		LAB_PROFILE_FUNCTION();
 
-		sData.textureShader->bind();
-		sData.textureShader->setMat4("uViewProjection", glm::mat4(1.0f));
+		sData.framebufferShader->bind();
+		sData.framebufferShader->setMat4("uViewProjection", glm::mat4(1.0f));
 
 		StartBatch();
 	}
@@ -130,8 +191,8 @@ namespace Labyrinth {
 
 		glm::mat4 viewProj = camera.getProjection() * glm::inverse(transform);
 
-		sData.textureShader->bind();
-		sData.textureShader->setMat4("uViewProjection", viewProj);
+		sData.framebufferShader->bind();
+		sData.framebufferShader->setMat4("uViewProjection", viewProj);
 
 		StartBatch();
 	}
@@ -140,8 +201,8 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		sData.textureShader->bind();
-		sData.textureShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
+		sData.framebufferShader->bind();
+		sData.framebufferShader->setMat4("uViewProjection", camera.getViewProjectionMatrix());
 
 		StartBatch();
 	}
@@ -152,8 +213,8 @@ namespace Labyrinth {
 
 		glm::mat4 viewProj = camera.getViewProjection();
 
-		sData.textureShader->bind();
-		sData.textureShader->setMat4("uViewProjection", viewProj);
+		sData.framebufferShader->bind();
+		sData.framebufferShader->setMat4("uViewProjection", viewProj);
 
 		StartBatch();
 	}
@@ -195,6 +256,28 @@ namespace Labyrinth {
 	{
 		Flush();
 		StartBatch();
+	}
+
+	void Renderer2D::DrawFramebuffer(Ref<Framebuffer> framebuffer)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		framebuffer->unbind(); // Rendering to framebuffer complete so switch to default;
+		RenderCommand::Clear();
+		RenderCommand::DisableDepth();
+
+		sData.displayVertexArray->bind();
+		sData.displayShader->bind();
+
+		framebuffer->bindColourAttachment();
+
+		RenderCommand::DrawIndexed(sData.displayVertexArray, 6);
+		sData.stats.drawCalls++;
+
+		// Reset back to framebuffer rendering.
+		RenderCommand::EnableDepth();
+		sData.quadVertexArray->bind();
+		sData.framebufferShader->bind();
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)
@@ -309,7 +392,7 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, SpriteRendererComponent& src, int entityID)
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID)
 	{
 		if (src.hasTex())
 			switch (src.type)

@@ -143,36 +143,6 @@ namespace Labyrinth {
 		return Entity();
 	}
 
-	//void Scene::onUpdateRuntime(Timestep ts, OrthographicCamera& mainCamera)
-	//{
-	//	{	// Update Scripts
-	//		mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-	//			if (!nsc.instance)
-	//			{
-	//				nsc.instantiateScript();
-	//			}
-
-	//			nsc.instance->onNativeScript(nsc);
-
-	//			});
-	//	}
-
-	//	{
-	//		Renderer2D::BeginState(mainCamera);
-
-	//		auto view = mRegistry.view<SpriteRendererComponent, TransformComponent>();
-	//		for (auto entity : view)
-	//		{
-	//			auto& [sprite, transform] = view.get<SpriteRendererComponent, TransformComponent>(entity);
-
-	//			Renderer2D::DrawSprite(transform, sprite, (int)entity);
-	//		}
-
-	//		Renderer2D::EndState();
-	//	}
-	//	
-	//}
-
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
 	{
 		sheets.clear();
@@ -192,7 +162,6 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
-
 		{	// Update Scripts
 			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
 				if (!nsc.instance)
@@ -200,7 +169,7 @@ namespace Labyrinth {
 					nsc.instantiateScript();
 				}
 
-				nsc.instance->onNativeScript(nsc);
+				//nsc.instance->onNativeScript(nsc);
 
 			});
 		}
@@ -223,36 +192,32 @@ namespace Labyrinth {
 		
 		if (mainCamera)
 		{
+			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
+				{
+					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+				});
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
-
-			auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-			for (auto entity : group)
-			{
-				auto& [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-				Renderer2D::DrawSprite(transform, sprite, (int)entity);
-			}
-
+			mRenderStack.draw();
 			Renderer2D::EndState();
 
+			mRenderStack.clear();
 		}
 
 	}
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
+		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
+			{
+				mLayerStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+			});
+
 		Renderer2D::BeginState(camera);
-
-		auto group = mRegistry.group<TransformComponent>(entt::get<SpriteRendererComponent>);
-		for (auto entity : group)
-		{
-			auto [transform, sprite] = group.get<TransformComponent, SpriteRendererComponent>(entity);
-
-			Renderer2D::DrawSprite(transform.getTransform(), sprite, (int)entity);
-		}
-
+		mRenderStack.draw();
 		Renderer2D::EndState();
+
+		mRenderStack.clear();
 	}
 
 	void Scene::onViewportResize(uint32_t width, uint32_t height)

@@ -195,6 +195,7 @@ namespace Labyrinth {
 
 		Invalidate();
 	}
+
 	int OpenGLFramebuffer::readPixel(uint32_t attachmentIndex, int x, int y)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
@@ -212,5 +213,13 @@ namespace Labyrinth {
 		auto& spec = mColourAttachmentSpecs[attachmentIndex];
 		glClearTexImage(mColourAttachments[attachmentIndex], 0,
 			Utils::LabyrinthFBTextureFormatToGL(spec.textureFormat), GL_INT, &value);
+	}
+
+	void OpenGLFramebuffer::bindColourAttachment(uint32_t index)
+	{
+		LAB_CORE_ASSERT(index < mColourAttachments.size(), "Binding attachment out of range!");
+
+		bool multisample = mSpecification.samples > 1;
+		Utils::BindTexture(multisample, mColourAttachments[index]);
 	}
 }

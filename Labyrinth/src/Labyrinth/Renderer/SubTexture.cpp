@@ -23,9 +23,16 @@ namespace Labyrinth {
 		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::getSubTex(const std::string& name) const
+	bool Texture2DSheet::hasSubTex(const std::string& name) const
 	{
 		if (mSubTextures.find(name) == mSubTextures.end())
+			return false;
+		else return true;
+	}
+
+	Ref<SubTexture2D> Texture2DSheet::getSubTex(const std::string& name)
+	{
+		if (!hasSubTex(name))
 		{
 			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", name);
 			return nullptr;
@@ -36,7 +43,7 @@ namespace Labyrinth {
 
 	void Texture2DSheet::addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex)
 	{
-		if (mSubTextures.find(name) != mSubTextures.end())
+		if (hasSubTex(name))
 		{
 			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
 			return;
@@ -47,7 +54,7 @@ namespace Labyrinth {
 
 	Ref<SubTexture2D> Texture2DSheet::createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
 	{
-		if (mSubTextures.find(name) != mSubTextures.end())
+		if (hasSubTex(name))
 		{
 			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
 			return nullptr;
@@ -60,7 +67,7 @@ namespace Labyrinth {
 
 	Ref<SubTexture2D> Texture2DSheet::createSubTex(const std::string& name, const glm::vec2 coords[4])
 	{
-		if (mSubTextures.find(name) != mSubTextures.end())
+		if (hasSubTex(name))
 		{
 			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
 			return nullptr;
@@ -73,7 +80,7 @@ namespace Labyrinth {
 
 	void Texture2DSheet::deleteSubTex(const std::string& name)
 	{
-		if (mSubTextures.find(name) == mSubTextures.end())
+		if (!hasSubTex(name))
 		{
 			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", name);
 			return;
