@@ -11,9 +11,9 @@
 
 namespace Labyrinth {
 
-	//Windows File Dialog Definition
 #ifdef LAB_PLATFORM_WINDOWS
 
+	//Windows File Dialog Definition
 	std::string FileDialogs::OpenFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;

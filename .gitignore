@@ -3,6 +3,10 @@ bin/
 obj/
 !dependencies/premake/bin/
 
+#Branch Test Spaces
+Chess/
+NetTest/
+
 #VS files
 .vs/
 **.sln

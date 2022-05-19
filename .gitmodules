@@ -26,3 +26,7 @@
 	path = Labyrinth/dependencies/RapidXML
 	url = git@github.com:amayesingnathan/rapidxml.git
 	branch = master
+[submodule "Labyrinth/dependencies/asio"]
+	path = Labyrinth/dependencies/asio
+	url = git@github.com:amayesingnathan/asio.git
+	branch = master

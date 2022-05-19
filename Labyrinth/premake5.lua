@@ -42,7 +42,8 @@ project "Labyrinth"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.lua}"
+        "%{IncludeDir.lua}",
+        "%{IncludeDir.asio}"
     }
 	
 	libdirs
@@ -52,6 +53,7 @@ project "Labyrinth"
 
 	links
 	{
+		"asio",
 		"glad",
 		"glfw",
 		"ImGui",
