@@ -7,8 +7,6 @@
 	#define LAB_APP_NAME "APP"
 #endif
 
-#ifdef LAB_PLATFORM_WINDOWS
-
 extern Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
@@ -27,7 +25,3 @@ int main(int argc, char** argv)
 	delete app;
 	LAB_PROFILE_END_SESSION();
 }
-
-#else
-	#error Labyrinth only supports Windows!
-#endif // LAB_PLATFORM_WINDOWS

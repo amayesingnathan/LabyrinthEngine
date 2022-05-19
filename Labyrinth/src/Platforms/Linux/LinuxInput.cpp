@@ -5,7 +5,7 @@
 
 #include <GLFW/glfw3.h>
 
-##ifdef	LAB_PLATFORM_LINUX  //Input redefine for Linux!
+#ifdef	LAB_PLATFORM_LINUX  //Input redefine for Linux!
 
 namespace Labyrinth {
 
