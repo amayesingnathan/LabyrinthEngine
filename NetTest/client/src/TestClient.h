@@ -11,10 +11,11 @@ namespace Labyrinth {
 		{
 		public:
 
-		protected:  //Layer overrides
-			virtual void onUpdate(Timestep ts) override;
+		protected: 
 			virtual void onImGuiRender() override {}
 			virtual void onEvent(Event& e) override;
+
+			virtual void onMessage(Ref<Connection> server, Message& msg) override;
 
 		private:
 			bool OnKeyPressed(KeyPressedEvent& e);

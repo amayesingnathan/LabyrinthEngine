@@ -24,8 +24,9 @@ namespace Labyrinth {
 			virtual void onAttach() override { Start(); }
 			virtual void onDetach() override { Stop(); }
 
-			// The default onUpdate override for the ServerLayer reads all queued messages and calls onMessage for each.
-			virtual void onUpdate(Timestep ts) override { Update(); }
+		private:
+			// onUpdate should not be overriden, only onMessage. onUpdate will call onMessage for each message in the incoming queue.
+			virtual void onUpdate(Timestep ts) override { Update(); } 
 
 		protected:
 			bool Start()
@@ -146,25 +147,10 @@ namespace Labyrinth {
 			}
 
 		public: // To be overriden by child classes.
-			virtual bool onClientConnect(Ref<Connection> client)
-			{
-				return false;
-			}
+			virtual bool onClientConnect(Ref<Connection> client) = 0;
+			virtual void onClientDisconnect(Ref<Connection> client) = 0;
 
-			virtual void onClientDisconnect(Ref<Connection> client)
-			{
-				LAB_CORE_TRACE("Removing client [{0}]", client->getID());
-			}
-
-			virtual void onMessage(Ref<Connection> client, Message& msg)
-			{
-
-			}
-
-			virtual void onClientValidated(Ref<Connection> client)
-			{
-
-			}
+			virtual void onClientValidated(Ref<Connection> client) {} // Not a mandatory override but recommended.
 
 		protected:
 			TSQueue<OwnedMessage> mQMessagesIn;

@@ -18,9 +18,9 @@ namespace Labyrinth {
 			MessageHeader header{};
 			std::vector<uint8_t> body;
 
-			size_t size() const
+			uint32_t size() const
 			{
-				return body.size();
+				return Cast<uint32_t>(body.size());
 			}
 
 			friend std::ostream& operator << (std::ostream& os, const Message& msg)

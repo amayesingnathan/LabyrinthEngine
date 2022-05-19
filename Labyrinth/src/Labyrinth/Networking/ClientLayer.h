@@ -21,15 +21,13 @@ namespace Labyrinth {
 					Disconnect();
 			}
 
-		public: //Layer overrides
-			virtual void onAttach() override
-			{
-				Connect("127.0.0.1", 60000);
-			}
-			virtual void onDetach() override
-			{
-				Disconnect();
-			}
+			// Override and call Connect() to use different connection than localhost:60000.
+			virtual void onAttach() override { Connect("127.0.0.1", 60000); }
+			virtual void onDetach() override { Disconnect(); }
+
+		private:
+			// onUpdate() should not be overriden, only onMessage(). onUpdate() will call onMessage() for each message in the incoming queue.
+			virtual void onUpdate(Timestep ts) override { Update(); }
 
 		protected:
 			bool Connect(const std::string& host, const uint16_t port)
@@ -71,6 +69,23 @@ namespace Labyrinth {
 			{
 				if (isConnected())
 					mConnection->send(msg);
+			}
+
+		private:
+			// Generic update function. Reads all waiting messages and calls onMessage for each message.
+			void Update(size_t maxMessages = std::numeric_limits<size_t>::max())
+			{
+				if (!isConnected()) return;
+
+				size_t messageCount = 0;
+				while (messageCount < maxMessages && !mQMessagesIn.empty())
+				{
+					auto msg = mQMessagesIn.pop_front();
+
+					onMessage(msg.remote, msg.msg);
+
+					messageCount++;
+				}
 			}
 
 		public:

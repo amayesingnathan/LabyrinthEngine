@@ -4,44 +4,36 @@ namespace Labyrinth
 {
 	namespace Net {
 
-		void TestClientLayer::onUpdate(Timestep ts)
-		{
-			if (isConnected())
-			{
-				if (!incoming().empty())
-				{
-					auto msg = incoming().pop_front().msg;
-
-					switch (msg.header.id)
-					{
-					case MessageTypes::ServerAccept:
-					{
-						LAB_INFO("Server Accepted Connection");
-					}
-					break;
-
-					case MessageTypes::ServerPing:
-					{
-						LAB_INFO("Pinged Server: {0}ms", mTimer.elapsedMillis());
-					}
-					break;
-
-					case MessageTypes::ServerMessage:
-					{
-						uint32_t clientID;
-						msg >> clientID;
-						LAB_INFO("Hello from [{0}]", clientID);
-					}
-					break;
-					}
-				}
-			}
-		}
-
 		void TestClientLayer::onEvent(Event& e)
 		{
 			EventDispatcher dispatcher(e);
 			dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(TestClientLayer::OnKeyPressed));
+		}
+
+		void TestClientLayer::onMessage(Ref<Connection> server, Message& msg)
+		{
+			switch (msg.header.id)
+			{
+			case MessageTypes::ServerAccept:
+			{
+				LAB_INFO("Server Accepted Connection");
+			}
+			break;
+
+			case MessageTypes::ServerPing:
+			{
+				LAB_INFO("Pinged Server: {0}ms", mTimer.elapsedMillis());
+			}
+			break;
+
+			case MessageTypes::ServerMessage:
+			{
+				uint32_t clientID;
+				msg >> clientID;
+				LAB_INFO("Hello from [{0}]", clientID);
+			}
+			break;
+			}
 		}
 
 		bool TestClientLayer::OnKeyPressed(KeyPressedEvent& e)
@@ -57,8 +49,6 @@ namespace Labyrinth
 
 			return false;
 		}
-
-
 
 		void TestClientLayer::PingServer()
 		{

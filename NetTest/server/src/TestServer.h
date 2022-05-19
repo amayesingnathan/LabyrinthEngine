@@ -12,7 +12,6 @@ namespace Labyrinth {
 		public:
 			TestServerLayer(uint16_t port) : ServerLayer(port) {}
 
-		protected:  //Layer overrides
 			virtual void onEvent(Labyrinth::Event& e) override {}
 
 		protected: //Server Interface overrides
