@@ -2,7 +2,10 @@
 bin/
 obj/
 !dependencies/premake/bin/
-NetTest*.exe
+
+#Branch Test Spaces
+Chess/
+NetTest/
 
 #VS files
 .vs/

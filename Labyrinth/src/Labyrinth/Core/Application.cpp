@@ -43,7 +43,7 @@ namespace Labyrinth {
 
 	void Application::run()
 	{
-		LAB_PROFILE_FUNCTION(); 
+		LAB_PROFILE_FUNCTION();
 
 		while (mRunning)
 		{

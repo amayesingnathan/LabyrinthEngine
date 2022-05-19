@@ -25,8 +25,8 @@ namespace Labyrinth {
 			virtual void onAttach() override { Connect("127.0.0.1", 60000); }
 			virtual void onDetach() override { Disconnect(); }
 
-		private:
-			// onUpdate() should not be overriden, only onMessage(). onUpdate() will call onMessage() for each message in the incoming queue.
+			// onUpdate() should generally not be overriden, only onMessage(). onUpdate() will call onMessage() for each message in the incoming queue.
+			// onUpdate() can be override if you wish to limit the number of messages read from the queue per game tick. Just call Update(size_t maxMessages) within onUpdate().
 			virtual void onUpdate(Timestep ts) override { Update(); }
 
 		protected:
