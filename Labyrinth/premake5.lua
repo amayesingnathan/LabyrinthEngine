@@ -78,12 +78,27 @@ project "Labyrinth"
 		runtime "Debug"
         symbols "on"
 
+	filter "configurations:ARMd"
+        defines { "LAB_DEBUG" }
+		runtime "Debug"
+        symbols "on"
+
+	filter "configurations:ARM64d"
+        defines { "LAB_DEBUG" }
+		runtime "Debug"
+		symbols "on"
+
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
 		runtime "Release"
         optimize "on"
 
-    filter "configurations:Dist"
-        defines { "LAB_DIST" }
+	filter "configurations:ARM"
+        defines { "LAB_RELEASE" }
 		runtime "Release"
-        optimize "on"
+		optimize "on"
+
+	filter "configurations:ARM64"
+        defines { "LAB_RELEASE" }
+		runtime "Release"
+		optimize "on"

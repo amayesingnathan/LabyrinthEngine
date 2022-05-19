@@ -32,16 +32,27 @@ project "Sandbox"
 
     filter "system:windows"
         systemversion "latest"
-        
+    
     filter "configurations:Debug"
-        defines { "LAB_DEBUG" }
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:ARMd"
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:ARM64d"
+        runtime "Debug"
         symbols "on"
 
     filter "configurations:Release"
-        defines { "LAB_RELEASE" }
+        runtime "Release"
         optimize "on"
 
-    filter "configurations:Dist"
-        defines { "LAB_DIST" }
-		runtime "Release"
+    filter "configurations:ARM"
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:ARM64"
+        runtime "Release"
         optimize "on"

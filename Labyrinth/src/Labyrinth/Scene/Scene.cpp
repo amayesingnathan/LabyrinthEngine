@@ -210,7 +210,7 @@ namespace Labyrinth {
 	{
 		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
 			{
-				mLayerStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 			});
 
 		Renderer2D::BeginState(camera);

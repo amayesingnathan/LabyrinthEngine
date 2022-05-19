@@ -1,14 +1,34 @@
 include "./dependencies/premake/premake_customization/solution_items.lua"
 
 workspace "Labyrinth"
-    architecture "x86_64"
     startproject "Enigma"
 
     configurations { 
         "Debug", 
         "Release",
-        "Dist"
+        "ARMd",
+        "ARM",
+        "ARM64d",
+        "ARM64",
     }
+
+	filter "configurations:Debug"
+		architecture "x86_64"
+
+ 	filter "configurations:Release"
+		architecture "x86_64"
+
+	filter "configurations:ARMd"
+		architecture "ARM"
+
+ 	filter "configurations:ARM"
+		architecture "ARM"
+
+	filter "configurations:ARM64d"
+		architecture "ARM64"
+
+ 	filter "configurations:ARM64"
+		architecture "ARM64"
 	
 	solution_items
 	{
