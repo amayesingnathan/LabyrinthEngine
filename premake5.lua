@@ -4,18 +4,18 @@ workspace "Labyrinth"
     startproject "Enigma"
 
     configurations { 
-        "Debug", 
-        "Release",
+        "x64d",
+        "x64", 
         "ARMd",
         "ARM",
         "ARM64d",
-        "ARM64",
+        "ARM64"
     }
 
-	filter "configurations:Debug"
+	filter "configurations:x64d"
 		architecture "x86_64"
 
- 	filter "configurations:Release"
+ 	filter "configurations:x64"
 		architecture "x86_64"
 
 	filter "configurations:ARMd"

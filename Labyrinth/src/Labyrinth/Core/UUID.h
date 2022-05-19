@@ -1,6 +1,5 @@
 #pragma once
 
-#include <xhash>
 #include <string>
 
 namespace Labyrinth {

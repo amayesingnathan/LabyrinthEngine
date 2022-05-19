@@ -3,7 +3,7 @@
 
 #include "Labyrinth/Core/Application.h"
 
-#ifdef LAB_PLATFORM_WINDOWS
+#ifdef LAB_PLATFORM_LINUX
 
 #include <commdlg.h>
 #include <GLFW/glfw3.h>
@@ -12,7 +12,7 @@
 
 namespace Labyrinth {
 
-	//Windows File Dialog Definition
+	//Linux File Dialog Definition
 	std::string FileDialogs::OpenFile(const char* filter)
 	{
 		OPENFILENAMEA ofn;

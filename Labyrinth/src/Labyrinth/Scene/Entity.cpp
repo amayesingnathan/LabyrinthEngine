@@ -18,7 +18,7 @@ namespace Labyrinth {
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
-	bool Entity::setParent(Entity& newParent, NodeComponent& node)
+	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
 		if (node.parent == newParent) return false;
 
@@ -39,7 +39,7 @@ namespace Labyrinth {
 		return true;
 	}
 
-	bool Entity::setParent(Entity& newParent)
+	bool Entity::setParent(Entity newParent)
 	{
 		return setParent(newParent, getComponent<NodeComponent>());
 	}

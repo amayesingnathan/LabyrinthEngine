@@ -1,6 +1,6 @@
 #pragma once
 
-#ifdef LAB_PLATFORM_WINDOWS
+#ifdef LAB_PLATFORM_LINUX
 
 #include <Labyrinth/Core/Window.h>
 #include "Labyrinth/Renderer/GraphicsContext.h"
@@ -9,11 +9,11 @@ struct GLFWwindow;
 
 namespace Labyrinth {
 
-	class WindowsWindow : public Window
+	class LinuxWindow : public Window
 	{
 	public:
-		WindowsWindow(const WindowProps& props);
-		virtual ~WindowsWindow();
+		LinuxWindow(const WindowProps& props);
+		virtual ~LinuxWindow();
 			
 		void onUpdate() override;
 

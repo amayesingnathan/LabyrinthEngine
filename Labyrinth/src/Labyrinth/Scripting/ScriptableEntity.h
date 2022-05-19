@@ -14,14 +14,6 @@ namespace Labyrinth {
 			return mEntity.getComponent<T>();
 		}
 
-		virtual void onNativeScript(NativeScriptComponent& nsc)
-		{
-			for (auto& script : nsc.runScripts)
-			{
-				script();
-			}
-		}
-
 	private:
 		Entity mEntity;
 		friend class Scene;

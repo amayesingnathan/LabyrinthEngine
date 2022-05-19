@@ -31,59 +31,6 @@ namespace Labyrinth {
 
 	};
 
-#if 0
-	struct ColliderComponent 
-	{
-		//THIS MUST MIRROR ENUM "Type" IN XMLParser.h
-		enum class Type { Solid = 0, Trigger };
-
-		Quad collider;
-		Type type;
-		void(*triggerFunc)();
-
-		ColliderComponent& operator=(const ColliderComponent&) = default;
-
-		ColliderComponent() = default;
-		ColliderComponent(class Entity* entt, ColliderComponent::Type = Type::Solid, void (*fcnPtr)() = nullptr);
-		ColliderComponent(class Entity* entt, const SDL_Rect& rect, ColliderComponent::Type = Type::Solid, void (*fcnPtr)() = nullptr);
-	};
-#endif
-
-	struct NativeScriptComponent
-	{
-		class ScriptableEntity* instance = nullptr;
-
-		std::function<void()> instantiateScript;
-		std::function<void()> destroyScript;
-
-		std::vector<std::function<void()>> runScripts;
-
-		template<typename T>
-		void bind(std::vector<std::function<void()>> scripts)
-		{
-			LAB_CORE_ASSERT(std::is_base_of<ScriptableEntity, T>::value);
-			instantiateScript = [&]() { instance = new T(); };
-			destroyScript = [&]() { delete dynamic_cast<T*>(instance); instance = nullptr; };
-
-			runScripts.reserve(scripts.size());
-			
-			for (auto script : scripts)
-				runScripts.emplace_back(script);
-		}
-	};
-
-	struct ScriptComponent
-	{
-		std::string filepath = "";
-		void* input = nullptr;
-		mutable void* output = nullptr;
-
-		ScriptComponent() = default;
-		ScriptComponent(const std::string& scriptPath, void* in, void* out)
-			: filepath(scriptPath), input(in), output(out){}
-		ScriptComponent(const ScriptComponent&) = default;
-	};
-
 	struct SpriteRendererComponent
 	{
 		enum class TexType { None = -1, Texture, Tile };
@@ -195,20 +142,5 @@ namespace Labyrinth {
 				* rot
 				* glm::scale(glm::mat4(1.0f), scale);
 		}
-
-
 	};
-
-
-	struct VelocityComponent 
-	{
-		Vector2D vel;
-
-		VelocityComponent& operator=(const VelocityComponent&) = default;
-
-		template<typename T>
-		VelocityComponent(class Entity* entt, T velocity) :
-			Component(entt, Types::Velocity), vel(velocity) {}
-	};
-
 }

@@ -1,7 +1,7 @@
 #include "Lpch.h"
-#include "WindowsWindow.h"
+#include "LinuxWindow.h"
 
-#ifdef LAB_PLATFORM_WINDOWS
+#ifdef LAB_PLATFORM_LINUX
 
 #include "Labyrinth/Events/ApplicationEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"
@@ -24,24 +24,24 @@ namespace Labyrinth {
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
-		return CreateSingle<WindowsWindow>(props);
+		return CreateSingle<LinuxWindow>(props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	LinuxWindow::LinuxWindow(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		init(props);
 	}
 
-	WindowsWindow::~WindowsWindow()
+	LinuxWindow::~LinuxWindow()
 	{
 		LAB_PROFILE_FUNCTION();
 
 		shutdown();
 	}
 
-	void WindowsWindow::init(const WindowProps& props)
+	void LinuxWindow::init(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -168,7 +168,7 @@ namespace Labyrinth {
 			});
 	}
 
-	void WindowsWindow::shutdown()
+	void LinuxWindow::shutdown()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -183,7 +183,7 @@ namespace Labyrinth {
 	}
 
 
-	void WindowsWindow::onUpdate()
+	void LinuxWindow::onUpdate()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -191,7 +191,7 @@ namespace Labyrinth {
 		mContext->swapBuffers();
 	}
 
-	void WindowsWindow::setVSync(bool enabled)
+	void LinuxWindow::setVSync(bool enabled)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -203,7 +203,7 @@ namespace Labyrinth {
 		mData.vSync = enabled;
 	}
 
-	bool WindowsWindow::isVSync() const
+	bool LinuxWindow::isVSync() const
 	{
 		return mData.vSync;
 	}

@@ -124,8 +124,8 @@ namespace Labyrinth {
 		const Entity& getParent() const;
 		bool hasParent();
 
-		bool setParent(Entity& newParent, NodeComponent& node);
-		bool setParent(Entity& newParent);
+		bool setParent(Entity newParent, NodeComponent& node);
+		bool setParent(Entity newParent);
 
 		std::vector<Entity>& getChildren();
 		const std::vector<Entity>& getChildren() const;
