@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "lua.hpp"
+#include "lua.h"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), mCameraController(1280.0f / 720.0f, true)
@@ -44,7 +44,7 @@ void Sandbox2D::onAttach()
 		return 1;
 	};
 
-	lua_State* L = luaL_newstate();
+	lua_State* L = lua_newstate();
 	lua_pushcfunction(L, CreateSprite);
 	lua_setglobal(L, "CreateSprite");
 	lua_pushcfunction(L, MoveSprite);

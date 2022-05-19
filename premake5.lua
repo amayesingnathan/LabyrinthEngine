@@ -44,9 +44,10 @@ outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
 
 IncludeDir = {}
 IncludeDir["Labyrinth"] = "%{wks.location}/Labyrinth/src"
-IncludeDir["LabCore"] = "%{wks.location}/Labyrinth/src/Labyrinth/Core"
+IncludeDir["LabCore"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Core"
 IncludeDir["RenderAPI"] = "%{wks.location}/Labyrinth/src/Labyrinth/Renderer/APIs"
-IncludeDir["LabWin"] = "%{wks.location}/Labyrinth/src/Platforms/Windows"
+IncludeDir["LabWin"] 	= "%{wks.location}/Labyrinth/src/Platforms/Windows"
+IncludeDir["LabLinux"] 	= "%{wks.location}/Labyrinth/src/Platforms/Linux"
 IncludeDir["stb_image"] = "%{wks.location}/Labyrinth/dependencies/stb_image"
 IncludeDir["glad"] 		= "%{wks.location}/Labyrinth/dependencies/glad/include"
 IncludeDir["glfw"] 		= "%{wks.location}/Labyrinth/dependencies/glfw/include"
@@ -57,11 +58,8 @@ IncludeDir["entt"] 		= "%{wks.location}/Labyrinth/dependencies/entt/include"
 IncludeDir["spdlog"] 	= "%{wks.location}/Labyrinth/dependencies/spdlog/include"
 IncludeDir["rapidxml"] 	= "%{wks.location}/Labyrinth/dependencies/rapidxml"
 IncludeDir["yaml_cpp"] 	= "%{wks.location}/Labyrinth/dependencies/yaml-cpp/include"
-IncludeDir["lua"] 		= "%{wks.location}/Labyrinth/dependencies/lua/include"
+IncludeDir["lua"] 		= "%{wks.location}/Labyrinth/dependencies/lua"
 IncludeDir["asio"] 		= "%{wks.location}/Labyrinth/dependencies/asio/include"
-
-LibDir = {}
-LibDir["lua"] = "%{wks.location}/Labyrinth/dependencies/lua"
 
 group "Dependencies"
 	include "dependencies/premake"
@@ -69,6 +67,7 @@ group "Dependencies"
 	include "Labyrinth/dependencies/glfw"
 	include "Labyrinth/dependencies/glad"
 	include "Labyrinth/dependencies/imgui"
+	include "Labyrinth/dependencies/lua"
 	include "Labyrinth/dependencies/yaml-cpp"
 group ""
 

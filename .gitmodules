@@ -30,3 +30,7 @@
 	path = Labyrinth/dependencies/asio
 	url = git@github.com:amayesingnathan/asio.git
 	branch = master
+[submodule "Labyrinth/dependencies/lua"]
+	path = Labyrinth/dependencies/lua
+	url = git@github.com:amayesingnathan/lua.git
+	branch = master

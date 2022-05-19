@@ -45,11 +45,6 @@ project "Labyrinth"
         "%{IncludeDir.lua}",
         "%{IncludeDir.asio}"
     }
-	
-	libdirs
-	{
-		"%{LibDir.lua}"
-	}
 
 	links
 	{
@@ -58,7 +53,7 @@ project "Labyrinth"
 		"glfw",
 		"ImGui",
 		"yaml-cpp",
-		"lua54",
+		"lua",
 		"opengl32.lib"
 	}
 	
