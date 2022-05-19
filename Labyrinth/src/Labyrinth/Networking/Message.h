@@ -22,7 +22,7 @@ namespace Labyrinth {
 
 			size_t size() const
 			{
-				return sizeof(MessageHeader<T>) + body.size();
+				return body.size();
 			}
 
 			friend std::ostream& operator << (std::ostream& os, const Message<T>& msg)
@@ -71,7 +71,7 @@ namespace Labyrinth {
 		template<typename T>
 		struct OwnedMessage
 		{
-			Ref<Connection<T>> remote;
+			Ref<Connection<T>> remote = nullptr;
 			Message<T> msg;
 
 			friend std::ostream& operator << (std::ostream& os, const OwnedMessage<T>& msg)
