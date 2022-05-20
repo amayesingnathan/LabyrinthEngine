@@ -17,7 +17,7 @@ namespace Labyrinth {
 	//    General object data components	//
 	//////////////////////////////////////////
 
-	struct CameraComponent
+	struct LAB_API CameraComponent
 	{
 		SceneCamera camera;
 		bool primary = true; //ToDo: Maybe move to Scene
@@ -31,7 +31,7 @@ namespace Labyrinth {
 
 	};
 
-	struct SpriteRendererComponent
+	struct LAB_API SpriteRendererComponent
 	{
 		enum class TexType { None = -1, Texture, Tile };
 
@@ -83,7 +83,7 @@ namespace Labyrinth {
 		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
 	};
 
-	struct TagComponent
+	struct LAB_API TagComponent
 	{
 		std::string tag;
 
@@ -97,7 +97,7 @@ namespace Labyrinth {
 		operator const char* () { return tag.c_str(); }
 	};
 
-	struct TransformComponent
+	struct LAB_API TransformComponent
 	{
 		glm::vec3 translation = glm::vec3{ 0.0f };
 		glm::vec3 rotation = glm::vec3{ 0.0f };

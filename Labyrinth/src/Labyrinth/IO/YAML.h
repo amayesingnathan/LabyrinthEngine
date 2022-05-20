@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	class Scene;
 
-	class YAMLParser
+	class LAB_API YAMLParser
 	{
 	public:
 		enum class Type {Both = 0, Input, Output};

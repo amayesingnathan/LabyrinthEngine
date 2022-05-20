@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class RenderStack
+	class LAB_API RenderStack
 	{
 	public:
 		RenderStack() = default;

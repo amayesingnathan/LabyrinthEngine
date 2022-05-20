@@ -30,7 +30,7 @@ namespace Labyrinth {
 		mViewMatrix = glm::inverse(mViewMatrix);
 	}
 
-	std::pair<float, float> EditorCamera::PanSpeed() const
+	glm::vec2 EditorCamera::PanSpeed() const
 	{
 		float x = std::min(mViewportWidth / 1000.0f, 2.4f); // max = 2.4f
 		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
@@ -90,9 +90,9 @@ namespace Labyrinth {
 
 	void EditorCamera::MousePan(const glm::vec2& delta)
 	{
-		auto [xSpeed, ySpeed] = PanSpeed();
-		mFocalPoint += -getRightDirection() * delta.x * xSpeed * mDistance;
-		mFocalPoint += getUpDirection() * delta.y * ySpeed * mDistance;
+		glm::vec2 speed = PanSpeed();
+		mFocalPoint += -getRightDirection() * delta.x * speed.x * mDistance;
+		mFocalPoint += getUpDirection() * delta.y * speed.y * mDistance;
 	}
 
 	void EditorCamera::MouseRotate(const glm::vec2& delta)

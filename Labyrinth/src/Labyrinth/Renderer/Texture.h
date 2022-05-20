@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class Texture
+	class LAB_API Texture
 	{
 	public:
 		virtual ~Texture() = default;

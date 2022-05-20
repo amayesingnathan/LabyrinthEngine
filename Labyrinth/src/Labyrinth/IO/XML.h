@@ -8,7 +8,7 @@
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"
 
-struct Collider
+struct LAB_API Collider
 {
 	//THIS MUST MIRROR ENUM "Type" IN ColliderComponent.h
 	enum class Type { Solid = 0, Trigger };
@@ -17,7 +17,7 @@ struct Collider
 	Type type;
 };
 
-struct tilesetData
+struct LAB_API tilesetData
 {
 	SDL_Texture* tilesetTex;
 	int tileWidth;
@@ -28,7 +28,7 @@ struct tilesetData
 using ColliderList = std::vector<Collider>;
 using Layer = std::vector<std::vector<int>>;
 
-class TiledIO
+class LAB_API TiledIO
 {
 public:
 	static void openLevel(int lvl, std::vector<Layer>& layerList, std::map<int, tilesetData>& tilesets, std::map<int, ColliderList>& tilesetColliders);

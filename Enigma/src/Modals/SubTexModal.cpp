@@ -20,7 +20,7 @@ namespace Labyrinth {
 
 		char buffer[256];
 		memset(buffer, 0, sizeof(buffer));
-		strcpy_s(buffer, sizeof(buffer), mName.c_str());
+		STR_COPY(buffer, mName);
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
 		{
 			mName = std::string(buffer);
@@ -64,7 +64,7 @@ namespace Labyrinth {
 					mPressedSquares.emplace_back(square);
 				else
 				{
-					auto& eraseIt = std::find_if(mPressedSquares.begin(), mPressedSquares.end(), [&](SquareData& toDelete)
+					auto eraseIt = std::find_if(mPressedSquares.begin(), mPressedSquares.end(), [&](SquareData& toDelete)
 						{
 							return square.pos == toDelete.pos;
 						});

@@ -11,7 +11,7 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class Scene : public AllowRefFromThis<Scene>
+	class LAB_API Scene : public AllowRefFromThis<Scene>
 	{
 	public:
 		Scene();

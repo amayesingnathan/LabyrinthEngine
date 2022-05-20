@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class SubTexture2D;
+	class LAB_API SubTexture2D;
 
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
 	//IT also provides an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.

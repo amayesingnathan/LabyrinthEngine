@@ -31,7 +31,7 @@ namespace Labyrinth {
 
 #define EVENT_CLASS_CATEGORY(category) virtual int getCategoryFlags() const override { return category; }
 
-	class Event
+	class LAB_API Event
 	{
 		friend class EventDispatcher;
 
@@ -54,7 +54,7 @@ namespace Labyrinth {
 	private:
 	};
 
-	class EventDispatcher
+	class LAB_API EventDispatcher
 	{
 	public:
 		EventDispatcher(Event& event)

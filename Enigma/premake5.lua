@@ -34,6 +34,9 @@ project "Enigma"
     filter "system:windows"
         systemversion "latest"
         
+    filter "system:linux"
+        links { "pthread", "dl", "yaml-cpp" }
+        
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
         runtime "Debug"

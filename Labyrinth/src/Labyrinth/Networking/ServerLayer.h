@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		class ServerLayer : public NetworkLayer
+		class LAB_API ServerLayer : public NetworkLayer
 		{
 		public:
 			ServerLayer(uint16_t port)

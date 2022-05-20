@@ -16,7 +16,7 @@ namespace Labyrinth {
 		QuadData(const TransformComponent& trans, const SpriteRendererComponent& sr, int id = -1) : transform(trans), sprite(sr), entID(id) {}
 	};
 
-	class RenderLayer
+	class LAB_API RenderLayer
 	{
 	public:
 		RenderLayer(uint8_t layer) : mDepth(layer) {}

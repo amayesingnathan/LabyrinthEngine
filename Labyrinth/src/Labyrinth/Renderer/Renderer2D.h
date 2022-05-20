@@ -11,7 +11,7 @@
 
 namespace Labyrinth {
 
-	class Renderer2D
+	class LAB_API Renderer2D
 	{
 	public:
 		static void Init();

@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	class Timestep
+	class LAB_API Timestep
 	{
 	public:
 		Timestep(float time = 0.0f)

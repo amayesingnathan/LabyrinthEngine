@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-	class Layer
+	class LAB_API Layer
 	{
 	public:
 		Layer(const std::string& name = "Layer");

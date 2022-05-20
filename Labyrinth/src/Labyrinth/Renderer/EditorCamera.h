@@ -9,7 +9,7 @@
 
 namespace Labyrinth {
 
-	class EditorCamera : public Camera
+	class LAB_API EditorCamera : public Camera
 	{
 	public:
 		EditorCamera() = default;
@@ -46,7 +46,7 @@ namespace Labyrinth {
 
 		glm::vec3 CalculatePosition() const;
 
-		std::pair<float, float> PanSpeed() const;
+		glm::vec2 PanSpeed() const;
 		float RotationSpeed() const;
 		float ZoomSpeed() const;
 	private:

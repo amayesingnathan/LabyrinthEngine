@@ -1,8 +1,7 @@
 project "Labyrinth"
-    kind "StaticLib"
+    kind "SharedLib"
     language "C++"
     cppdialect "C++17"
-    staticruntime "on"
 		
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
@@ -53,8 +52,7 @@ project "Labyrinth"
 		"glfw",
 		"ImGui",
 		"yaml-cpp",
-		"lua",
-		"opengl32.lib"
+		"lua"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
@@ -63,11 +61,13 @@ project "Labyrinth"
     filter "system:windows"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
+        links "opengl32.lib"
 		
 	filter "system:linux"
+        pic "On"
         systemversion "latest"
         includedirs "%{IncludeDir.LabLinux}"
-        
+
     filter "configurations:Debug"
         defines { "LAB_DEBUG" }
 		runtime "Debug"

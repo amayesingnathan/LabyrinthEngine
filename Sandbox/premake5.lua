@@ -32,7 +32,10 @@ project "Sandbox"
 
     filter "system:windows"
         systemversion "latest"
-    
+
+    filter "system:linux"
+        links { "pthread", "dl" }
+
     filter "configurations:Debug"
         runtime "Debug"
         symbols "on"

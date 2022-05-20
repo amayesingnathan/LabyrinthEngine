@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-	enum class FramebufferTextureFormat
+	enum class LAB_API FramebufferTextureFormat
 	{
 		None = 0,
 
@@ -21,7 +21,7 @@ namespace Labyrinth {
 		Depth = DEPTH24STENCIL8
 	};
 
-	struct FramebufferTextureSpec
+	struct LAB_API FramebufferTextureSpec
 	{
 		FramebufferTextureSpec() = default;
 		FramebufferTextureSpec(FramebufferTextureFormat format)
@@ -31,7 +31,7 @@ namespace Labyrinth {
 		// TODO: filtering/wrap
 	};
 
-	struct FramebufferAttachmentSpec
+	struct LAB_API FramebufferAttachmentSpec
 	{
 		FramebufferAttachmentSpec() = default;
 		FramebufferAttachmentSpec(std::initializer_list<FramebufferTextureSpec> attachment_list)
@@ -40,7 +40,7 @@ namespace Labyrinth {
 		std::vector<FramebufferTextureSpec> attachments;
 	};
 
-	struct FramebufferSpec
+	struct LAB_API FramebufferSpec
 	{
 		uint32_t width, height;
 		FramebufferAttachmentSpec attachments;
@@ -49,7 +49,7 @@ namespace Labyrinth {
 		bool swapChainTarget = true;
 	};
 
-	class Framebuffer
+	class LAB_API Framebuffer
 	{
 	public:
 		virtual ~Framebuffer() = default;

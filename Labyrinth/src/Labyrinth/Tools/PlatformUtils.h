@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class FileDialogs
+	class LAB_API FileDialogs
 	{
 	public:
 		// These return empty strings if cancelled
@@ -12,7 +12,7 @@ namespace Labyrinth {
 		static std::string SaveFile(const char* filter);
 	};
 
-	class Stopwatch
+	class LAB_API Stopwatch
 	{
 	public:
 		static float GetTime();

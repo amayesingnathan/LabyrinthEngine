@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class OpenGLFramebuffer : public Framebuffer
+	class LAB_API OpenGLFramebuffer : public Framebuffer
 	{
 	public:
 		OpenGLFramebuffer(const FramebufferSpec& spec);

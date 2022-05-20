@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class ImGuiLayer : public Layer
+	class LAB_API ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();

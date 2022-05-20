@@ -6,7 +6,7 @@ struct GLFWwindow;
 
 namespace Labyrinth {
 
-	class OpenGLContext : public GraphicsContext
+	class LAB_API OpenGLContext : public GraphicsContext
 	{
 	public:
 		OpenGLContext(GLFWwindow* windowHandle);

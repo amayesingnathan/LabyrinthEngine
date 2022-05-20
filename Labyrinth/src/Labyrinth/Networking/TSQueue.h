@@ -7,7 +7,7 @@ namespace Labyrinth {
 	namespace Net
 	{
 		template<typename T>
-		class TSQueue
+		class LAB_API TSQueue
 		{
 		public:
 			TSQueue() = default;

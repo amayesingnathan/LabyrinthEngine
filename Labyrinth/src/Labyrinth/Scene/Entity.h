@@ -10,7 +10,7 @@
 namespace Labyrinth {
 
 	//Defined here so it can be used in body of Entity.
-	struct IDComponent
+	struct LAB_API IDComponent
 	{
 		UUID id;
 
@@ -24,7 +24,7 @@ namespace Labyrinth {
 	struct RootComponent;
 	struct NodeComponent;
 
-	class Entity
+	class LAB_API Entity
 	{
 	public:
 		Entity() : mEntID(entt::null), mScene(nullptr) {}

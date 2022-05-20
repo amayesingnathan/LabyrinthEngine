@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class UUID
+	class LAB_API UUID
 	{
 	public:
 		UUID();

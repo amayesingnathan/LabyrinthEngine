@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	struct WindowProps {
+	struct LAB_API WindowProps {
 		std::string title;
 		uint32_t width;
 		uint32_t height;
@@ -19,7 +19,7 @@ namespace Labyrinth {
 			: title(t), width(w), height(h) {}
 	};
 
-	class Window
+	class LAB_API Window
 	{
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;

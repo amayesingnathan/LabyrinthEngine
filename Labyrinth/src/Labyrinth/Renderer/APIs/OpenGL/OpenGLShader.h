@@ -10,7 +10,7 @@ typedef unsigned int GLenum;
 
 namespace Labyrinth {
 
-	class OpenGLShader : public Shader
+	class LAB_API OpenGLShader : public Shader
 	{
 	public:
 		OpenGLShader(const std::string& filepath);

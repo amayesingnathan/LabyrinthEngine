@@ -9,7 +9,7 @@ struct GLFWwindow;
 
 namespace Labyrinth {
 
-	class WindowsWindow : public Window
+	class LAB_API WindowsWindow : public Window
 	{
 	public:
 		WindowsWindow(const WindowProps& props);

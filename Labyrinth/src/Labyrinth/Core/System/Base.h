@@ -3,7 +3,7 @@
 #define LABYRINTH_VER 1.0
 
 #include <memory>
-#include "Labyrinth/Core/System/Platforms.h"
+#include "Labyrinth/Core/System/API.h"
 
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)

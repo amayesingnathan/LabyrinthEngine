@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "lua.h"
+#include "lua.hpp"
 
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), mCameraController(1280.0f / 720.0f, true)
@@ -15,54 +15,54 @@ void Sandbox2D::onAttach()
 {
 	LAB_PROFILE_FUNCTION();
 
-	struct TestComponent
-	{
-		float x;
-		float y;
+	// struct TestComponent
+	// {
+	// 	float x;
+	// 	float y;
 
-		void move(float newX, float newY)
-		{
-			x += newX;
-			y += newY;
-		}
-	};
+	// 	void move(float newX, float newY)
+	// 	{
+	// 		x += newX;
+	// 		y += newY;
+	// 	}
+	// };
 		
-	auto CreateSprite = [](lua_State* L) -> int
-	{
-		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_newuserdata(L, sizeof(TestComponent)));
-		comp->x = 0.0f;
-		comp->y = 0.0f;
-		return 1;
-	};
+	// auto CreateSprite = [](lua_State* L) -> int
+	// {
+	// 	TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_newuserdata(L, sizeof(TestComponent)));
+	// 	comp->x = 0.0f;
+	// 	comp->y = 0.0f;
+	// 	return 1;
+	// };
 
-	auto MoveSprite = [](lua_State* L) -> int
-	{
-		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, 1));
-		float velX = (float)lua_tonumber(L, -2);
-		float velY = (float)lua_tonumber(L, -1);
-		comp->move(velX, velY);
-		return 1;
-	};
+	// auto MoveSprite = [](lua_State* L) -> int
+	// {
+	// 	TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, 1));
+	// 	float velX = (float)lua_tonumber(L, -2);
+	// 	float velY = (float)lua_tonumber(L, -1);
+	// 	comp->move(velX, velY);
+	// 	return 1;
+	// };
 
-	lua_State* L = lua_newstate();
-	lua_pushcfunction(L, CreateSprite);
-	lua_setglobal(L, "CreateSprite");
-	lua_pushcfunction(L, MoveSprite);
-	lua_setglobal(L, "MoveSprite");
-	luaL_dofile(L, "assets/scripts/example.lua");
-	lua_getglobal(L, "sprite");
-	if (lua_isuserdata(L, -1))
-	{
-		TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, -1));
-		LAB_TRACE("X: {0}; Y: {1}", comp->x, comp->y);
-	}
-	lua_close(L);
+	// lua_State* L = luaL_newstate();
+	// lua_pushcfunction(L, CreateSprite);
+	// lua_setglobal(L, "CreateSprite");
+	// lua_pushcfunction(L, MoveSprite);
+	// lua_setglobal(L, "MoveSprite");
+	// luaL_dofile(L, "assets/scripts/example.lua");
+	// lua_getglobal(L, "sprite");
+	// if (lua_isuserdata(L, -1))
+	// {
+	// 	TestComponent* comp = Labyrinth::Cast<TestComponent>(lua_touserdata(L, -1));
+	// 	LAB_TRACE("X: {0}; Y: {1}", comp->x, comp->y);
+	// }
+	// lua_close(L);
 
-	mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
+	// mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
 
-	mSpriteSheet = Labyrinth::Texture2DSheet::CreateFromPath("assets/textures/minecraft.png", { 64.0f, 64.0f });
-	//mTNT = Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 8.0f, 0.0f }, { 1.0f, 1.0f });
-	mSpriteSheet->createSubTex("TNT", { 8.0f, 0.0f }, {1.0f, 1.0f});
+	// mSpriteSheet = Labyrinth::Texture2DSheet::CreateFromPath("assets/textures/minecraft.png", { 64.0f, 64.0f });
+	// //mTNT = Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 8.0f, 0.0f }, { 1.0f, 1.0f });
+	// mSpriteSheet->createSubTex("TNT", { 8.0f, 0.0f }, {1.0f, 1.0f});
 }
 
 void Sandbox2D::onDetach()
@@ -124,8 +124,8 @@ void Sandbox2D::onImGuiRender()
 
 	ImGui::Begin("Settings");
 
-	static bool demo = true; //Enable demo
-	ImGui::ShowDemoWindow(&demo);
+	//static bool demo = true; //Enable demo
+	//ImGui::ShowDemoWindow(&demo);
 
 	auto stats = Labyrinth::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");
