@@ -53,7 +53,7 @@ namespace Labyrinth {
 
 		if (sGLFWWindowCount == 0)
 		{
-			LAB_PROFILE_SCOPE("SDLInit");
+			LAB_PROFILE_SCOPE("glfwInit");
 
 			int success = glfwInit(); 
 			LAB_CORE_ASSERT(success, "Could not initialize GLFW!");
@@ -69,7 +69,7 @@ namespace Labyrinth {
 			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), nullptr, nullptr);
 			++sGLFWWindowCount;
 		}
-		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
+		LAB_CORE_ASSERT(mWindow, "Could not create GLFW window!");
 
 		mContext = GraphicsContext::Create(mWindow);
 		mContext->init();

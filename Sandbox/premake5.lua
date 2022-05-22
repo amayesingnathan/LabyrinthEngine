@@ -36,7 +36,7 @@ project "Sandbox"
     filter "system:linux"
         links { "pthread", "dl" }
 
-    filter "configurations:Debug"
+    filter "configurations:x64d"
         runtime "Debug"
         symbols "on"
 
@@ -48,7 +48,7 @@ project "Sandbox"
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:Release"
+    filter "configurations:x64"
         runtime "Release"
         optimize "on"
 

@@ -34,3 +34,7 @@
 	path = Labyrinth/dependencies/lua
 	url = git@github.com:amayesingnathan/lua.git
 	branch = master
+[submodule "dependencies/premake-core"]
+	path = dependencies/premake-core
+	url = https://github.com/premake/premake-core.git
+	branch = master

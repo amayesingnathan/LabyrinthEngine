@@ -37,7 +37,7 @@ project "Enigma"
     filter "system:linux"
         links { "pthread", "dl", "yaml-cpp" }
         
-    filter "configurations:Debug"
+    filter "configurations:x64d"
         defines { "LAB_DEBUG" }
         runtime "Debug"
         symbols "on"
@@ -52,7 +52,7 @@ project "Enigma"
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:Release"
+    filter "configurations:x64"
         defines { "LAB_RELEASE" }
         runtime "Release"
         optimize "on"
