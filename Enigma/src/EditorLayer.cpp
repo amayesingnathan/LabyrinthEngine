@@ -415,7 +415,7 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		mFilepath = FileDialogs::OpenFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		mFilepath = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
 		if (!mFilepath.empty())
 		{
 			OpenScene(mFilepath);
@@ -444,7 +444,7 @@ namespace Labyrinth {
 
 	void EditorLayer::SaveSceneAs()
 	{
-		mFilepath = FileDialogs::SaveFile("Labyrinth Scene (*.laby)\0*.laby\0" "Labyrinth Entity(*.lbent)\0* .lbent\0");
+		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
 		if (!mFilepath.empty())
 		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);

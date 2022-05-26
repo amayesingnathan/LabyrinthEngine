@@ -1,7 +1,5 @@
 #include "Lpch.h"
-#include "LinuxWindow.h"
-
-#ifdef LAB_PLATFORM_LINUX
+#include "Window.h"
 
 #include "Labyrinth/Events/ApplicationEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"
@@ -24,24 +22,24 @@ namespace Labyrinth {
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
-		return CreateSingle<LinuxWindow>(props);
+		return CreateSingle<Window>(props);
 	}
 
-	LinuxWindow::LinuxWindow(const WindowProps& props)
+	Window::Window(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		init(props);
 	}
 
-	LinuxWindow::~LinuxWindow()
+	Window::~Window()
 	{
 		LAB_PROFILE_FUNCTION();
 
 		shutdown();
 	}
 
-	void LinuxWindow::init(const WindowProps& props)
+	void Window::init(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -55,7 +53,7 @@ namespace Labyrinth {
 		{
 			LAB_PROFILE_SCOPE("glfwInit");
 
-			int success = glfwInit(); 
+			int success = glfwInit();
 			LAB_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
@@ -168,7 +166,7 @@ namespace Labyrinth {
 			});
 	}
 
-	void LinuxWindow::shutdown()
+	void Window::shutdown()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -183,7 +181,7 @@ namespace Labyrinth {
 	}
 
 
-	void LinuxWindow::onUpdate()
+	void Window::onUpdate()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -191,7 +189,7 @@ namespace Labyrinth {
 		mContext->swapBuffers();
 	}
 
-	void LinuxWindow::setVSync(bool enabled)
+	void Window::setVSync(bool enabled)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -203,10 +201,8 @@ namespace Labyrinth {
 		mData.vSync = enabled;
 	}
 
-	bool LinuxWindow::isVSync() const
+	bool Window::isVSync() const
 	{
 		return mData.vSync;
 	}
 }
-
-#endif

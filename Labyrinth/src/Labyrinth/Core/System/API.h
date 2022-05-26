@@ -9,6 +9,7 @@
 				#define LAB_API __attribute__ ((dllexport))
 			#else
 				#define LAB_API __declspec(dllexport)
+				#pragma warning (disable : 4251)
 			#endif
 		#else
 			#ifdef __GNUC__

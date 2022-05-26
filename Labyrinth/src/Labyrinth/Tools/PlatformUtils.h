@@ -8,8 +8,8 @@ namespace Labyrinth {
 	{
 	public:
 		// These return empty strings if cancelled
-		static std::string OpenFile(const char* filter);
-		static std::string SaveFile(const char* filter);
+		static std::string OpenFile(const std::vector<std::string>& filter);
+		static std::string SaveFile(const std::vector<std::string>& filter);
 	};
 
 	class LAB_API Stopwatch

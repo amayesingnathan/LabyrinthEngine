@@ -1,5 +1,4 @@
 project "Labyrinth"
-    kind "SharedLib"
     language "C++"
     cppdialect "C++17"
 		
@@ -42,7 +41,8 @@ project "Labyrinth"
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
         "%{IncludeDir.lua}",
-        "%{IncludeDir.asio}"
+        "%{IncludeDir.asio}",
+        "%{IncludeDir.pfd}"
     }
 
 	links
@@ -59,11 +59,16 @@ project "Labyrinth"
 		flags { "NoPCH" }
 	
     filter "system:windows"
+        kind "StaticLib"
+        staticruntime "on"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
         links "opengl32.lib"
 		
 	filter "system:linux"
+        kind "SharedLib"
+        staticruntime "off"
+        defines "LAB_SHARED"
         pic "On"
         systemversion "latest"
         includedirs "%{IncludeDir.LabLinux}"

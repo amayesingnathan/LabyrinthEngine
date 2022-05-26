@@ -7,13 +7,20 @@ namespace Labyrinth {
 	struct TransformComponent;
 	struct SpriteRendererComponent;
 
-	struct QuadData
+	class QuadData
 	{
-		const TransformComponent& transform;
-		const SpriteRendererComponent& sprite;
+	public:
+		QuadData(const TransformComponent& trans, const SpriteRendererComponent& sr, int id = -1) : transform(&trans), sprite(&sr), entID(id) {}
+
+		const TransformComponent& getTrans() const { return *transform; }
+		const SpriteRendererComponent& getSprite() const { return *sprite; }
+		int getID() const { return entID; }
+
+	private:
+		const TransformComponent* transform;
+		const SpriteRendererComponent* sprite;
 		int entID;
 
-		QuadData(const TransformComponent& trans, const SpriteRendererComponent& sr, int id = -1) : transform(trans), sprite(sr), entID(id) {}
 	};
 
 	class LAB_API RenderLayer
@@ -27,9 +34,10 @@ namespace Labyrinth {
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }
 
-		void addQuad(const QuadData& quad)
+		template<typename... Args>
+		void addQuad(Args... args)
 		{
-			mQuads.emplace_back(quad);
+			mQuads.emplace_back(std::forward<Args>(args)...);
 		}
 
 	private:

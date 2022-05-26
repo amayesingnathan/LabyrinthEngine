@@ -38,3 +38,7 @@
 	path = dependencies/premake-core
 	url = https://github.com/premake/premake-core.git
 	branch = master
+[submodule "Labyrinth/dependencies/portable-file-dialogs"]
+	path = Labyrinth/dependencies/portable-file-dialogs
+	url = git@github.com:amayesingnathan/portable-file-dialogs.git
+	branch = main
