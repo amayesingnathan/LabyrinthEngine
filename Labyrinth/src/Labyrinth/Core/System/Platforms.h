@@ -38,11 +38,19 @@
 	#error "Unknown platform!"
 #endif // End of platform detection
 
-#define HASH #
 
-// Platform Define Macros
+// Platform Dependent Macros
 #ifdef LAB_PLATFORM_WINDOWS
-	#define STR_COPY(x, y) strcpy_s(x, sizeof(x), y.c_str());
+	#define STR_COPY(x, y) strcpy_s(x, sizeof(x), y.c_str())
+	#define FS_STR_LEN(...) wcslen(__VA_ARGS__)
 #elif defined(LAB_PLATFORM_LINUX)   
-	#define STR_COPY(x, y) strcpy(x, y.c_str());
+	#define STR_COPY(x, y) strcpy(x, y.c_str())
+	#define FS_STR_LEN(...) strlen(__VA_ARGS__)
+#endif
+
+// Platform Dependent Types
+#ifdef LAB_PLATFORM_WINDOWS
+	#define FS_CHAR_TYPE wchar_t
+#elif defined(LAB_PLATFORM_LINUX)   
+	#define FS_CHAR_TYPE char
 #endif

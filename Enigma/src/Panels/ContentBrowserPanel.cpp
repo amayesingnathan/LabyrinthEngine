@@ -49,8 +49,8 @@ namespace Labyrinth {
 			ImGui::ImageButton((ImTextureID)icon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource())
 			{
-				const char* itemPath = relativePath.string().c_str();
-				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (strlen(itemPath) + 1) * sizeof(char));
+				const FS_CHAR_TYPE* itemPath = relativePath.c_str();
+				ImGui::SetDragDropPayload("CONTENT_BROWSER_ITEM", itemPath, (FS_STR_LEN(itemPath) + 1) * sizeof(FS_CHAR_TYPE));
 				ImGui::EndDragDropSource();
 			}
 

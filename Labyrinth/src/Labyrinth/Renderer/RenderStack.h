@@ -13,6 +13,7 @@ namespace Labyrinth {
 		void pushLayer(RenderLayer* layer);
 		void popLayer(RenderLayer* layer);
 		void clear();
+		void clearQuads();
 
 		bool hasLayer(RenderLayer* layer);
 		bool hasLayer(uint8_t layer);

@@ -10,7 +10,11 @@ namespace Labyrinth {
 	class QuadData
 	{
 	public:
-		QuadData(const TransformComponent& trans, const SpriteRendererComponent& sr, int id = -1) : transform(&trans), sprite(&sr), entID(id) {}
+		QuadData(const TransformComponent& trans, const SpriteRendererComponent& sr, int id = -1) 
+			: transform(&trans), 
+			sprite(&sr), 
+			entID(id) 
+		{}
 
 		const TransformComponent& getTrans() const { return *transform; }
 		const SpriteRendererComponent& getSprite() const { return *sprite; }
@@ -30,14 +34,14 @@ namespace Labyrinth {
 		virtual ~RenderLayer() = default;
 
 		uint8_t getDepth() const { return mDepth; }
+		void clear() { mQuads.clear(); }
 
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }
 
-		template<typename... Args>
-		void addQuad(Args... args)
+		void addQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, int entID)
 		{
-			mQuads.emplace_back(std::forward<Args>(args)...);
+			mQuads.emplace_back(trans, sprite, entID);
 		}
 
 	private:

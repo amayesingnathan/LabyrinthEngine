@@ -53,7 +53,6 @@ namespace Labyrinth {
 
 	private:
 		entt::registry mRegistry;
-		RenderStack mRenderStack;
 
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;
 

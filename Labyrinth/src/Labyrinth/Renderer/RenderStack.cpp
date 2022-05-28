@@ -57,6 +57,12 @@ namespace Labyrinth {
 		mLayers.clear();
 	}
 
+	void RenderStack::clearQuads()
+	{
+		for (RenderLayer* layer : mLayers)
+			layer->clear();
+	}
+
 	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID)
 	{
 		RenderLayer* targetLayer = getLayer(srComp.layer);

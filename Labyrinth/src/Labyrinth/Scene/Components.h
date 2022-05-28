@@ -33,6 +33,8 @@ namespace Labyrinth {
 
 	struct LAB_API SpriteRendererComponent
 	{
+		static constexpr auto in_place_delete = true;
+
 		enum class TexType { None = -1, Texture, Tile };
 
 		union TextureComponent
@@ -77,7 +79,10 @@ namespace Labyrinth {
 		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf, uint8_t layer = 0)
 			: type(TexType::Tile), layer(layer), texture(subtex), tilingFactor(tf), tile(true) {}
 
-		bool hasTex() const { return type != TexType::None; }
+		bool hasTex() const 
+		{ 
+			return type != TexType::None; 
+		}
 
 		// Get normalised layer value
 		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
@@ -99,6 +104,8 @@ namespace Labyrinth {
 
 	struct LAB_API TransformComponent
 	{
+		static constexpr auto in_place_delete = true;
+
 		glm::vec3 translation = glm::vec3{ 0.0f };
 		glm::vec3 rotation = glm::vec3{ 0.0f };
 		glm::vec3 scale = glm::vec3{ 1.0f };

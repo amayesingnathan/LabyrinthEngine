@@ -12,9 +12,9 @@ namespace Labyrinth {
 		mSquares.reserve(mMaxWidthCount * mMaxHeightCount);
 		mPressedSquares.reserve(mMaxWidthCount * mMaxHeightCount);
 
-		for (int i = 0; i < mMaxHeightCount; i++)
+		for (size_t i = 0; i < mMaxHeightCount; i++)
 		{
-			for (int j = 0; j < mMaxWidthCount; j++)
+			for (size_t j = 0; j < mMaxWidthCount; j++)
 				mSquares.emplace_back(i, j);
 		}
 
