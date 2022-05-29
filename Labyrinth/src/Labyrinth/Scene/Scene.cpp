@@ -176,34 +176,32 @@ namespace Labyrinth {
 		
 		if (mainCamera)
 		{
-			RenderStack renderStack;
-
-			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([&renderStack](auto entity, auto& trComponent, auto& srComponent)
+			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
 				{
-					renderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 				});
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
-			renderStack.draw();
+			mRenderStack.draw();
 			Renderer2D::EndState();
 
-			renderStack.clear();
+			mRenderStack.clearQuads();
 		}
 
 	}
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		RenderStack renderStack;
-
-		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([&renderStack](auto entity, const auto& trComponent, const auto& srComponent)
+		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 			{
-				renderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 			});
 
 		Renderer2D::BeginState(camera);
-		renderStack.draw();
+		mRenderStack.draw();
 		Renderer2D::EndState();
+
+		mRenderStack.clearQuads();
 	}
 
 	void Scene::onViewportResize(uint32_t width, uint32_t height)
