@@ -2,38 +2,47 @@
 	path = Labyrinth/dependencies/spdlog
 	url = https://github.com/gabime/spdlog
 	branch = v1.x
+	update = rebase
 [submodule "Labyrinth/dependencies/imgui"]
 	path = Labyrinth/dependencies/imgui
 	url = https://github.com/amayesingnathan/imgui
 	branch = docking
+	update = rebase
 [submodule "Labyrinth/dependencies/glm"]
 	path = Labyrinth/dependencies/glm
 	url = https://github.com/g-truc/glm
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/yaml-cpp"]
 	path = Labyrinth/dependencies/yaml-cpp
 	url = git@github.com:amayesingnathan/yaml-cpp.git
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/glfw"]
 	path = Labyrinth/dependencies/glfw
 	url = git@github.com:amayesingnathan/glfw.git
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/RapidXML"]
 	path = Labyrinth/dependencies/RapidXML
 	url = git@github.com:amayesingnathan/rapidxml.git
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/asio"]
 	path = Labyrinth/dependencies/asio
 	url = git@github.com:amayesingnathan/asio.git
 	branch = master
+	update = rebase
 [submodule "Labyrinth/dependencies/lua"]
 	path = Labyrinth/dependencies/lua
 	url = git@github.com:amayesingnathan/lua.git
 	branch = master
+	update = rebase
 [submodule "dependencies/premake-core"]
 	path = dependencies/premake-core
 	url = https://github.com/premake/premake-core.git
@@ -42,7 +51,9 @@
 	path = Labyrinth/dependencies/portable-file-dialogs
 	url = git@github.com:amayesingnathan/portable-file-dialogs.git
 	branch = main
+	update = rebase
 [submodule "Labyrinth/dependencies/glad"]
 	path = Labyrinth/dependencies/glad
 	url = git@github.com:amayesingnathan/glad.git
 	branch = main
+	update = rebase
