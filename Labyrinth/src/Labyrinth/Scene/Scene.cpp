@@ -23,7 +23,7 @@ namespace Labyrinth {
 		return CreateEntityWithID(UUID(), name, Entity());
 	}
 
-	Entity Scene::CreateEntity(const std::string& name, Entity& parent)
+	Entity Scene::CreateEntity(const std::string& name, Entity parent)
 	{
 		return CreateEntityWithID(UUID(), name, parent);
 	}
@@ -33,7 +33,7 @@ namespace Labyrinth {
 		return CreateEntityWithID(id, name, Entity());
 	}
 
-	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity& parent)
+	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity parent)
 	{
 		Entity newEnt(mRegistry.create(), CreateRefFromThis(this));
 
@@ -50,7 +50,7 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	Entity Scene::CloneEntity(Entity& copy)
+	Entity Scene::CloneEntity(Entity copy)
 	{
 		auto& tag = copy.getComponent<TagComponent>();
 		Entity newEnt = CreateEntity(tag.tag);
@@ -74,7 +74,7 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	Entity Scene::CloneChild(Entity& copy, Entity& newParent)
+	Entity Scene::CloneChild(Entity copy, Entity newParent)
 	{
 		auto& tag = copy.getComponent<TagComponent>();
 		Entity newEnt = CreateEntity(tag.tag);
@@ -98,7 +98,7 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	void Scene::DestroyEntity(Entity& entity)
+	void Scene::DestroyEntity(Entity entity)
 	{
 		auto& parent = entity.getParent();
 
@@ -108,7 +108,7 @@ namespace Labyrinth {
 		DestroyEntityR(entity, parent);
 	}
 
-	void Scene::DestroyEntityR(Entity& entity, Entity& parent)
+	void Scene::DestroyEntityR(Entity entity, Entity parent)
 	{
 		//Set this to true to link parent of entity with children of entity 
 		//instead of destroying all child entities.
@@ -162,37 +162,21 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
-		{	// Update Scripts
-			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc) {
-				if (!nsc.instance)
-				{
-					nsc.instantiateScript();
-				}
-
-				//nsc.instance->onNativeScript(nsc);
-
-			});
-		}
-
 		Camera* mainCamera = nullptr;
 		glm::mat4 cameraTransform;
+		
+		mRegistry.view<TransformComponent, CameraComponent>().each([this, &mainCamera, &cameraTransform](auto entity, const auto& trComponent, auto& camComponent)
 		{
-			auto view = mRegistry.view<TransformComponent, CameraComponent>();
-			for (auto entity : view)
+			if (camComponent.primary)
 			{
-				auto& [trans, cam] = view.get<TransformComponent, CameraComponent>(entity);
-
-				if (cam.primary)
-				{
-					mainCamera = &cam.camera;
-					cameraTransform = trans;
-				}
+				mainCamera = &camComponent.camera;
+				cameraTransform = trComponent;
 			}
-		}
+		});
 		
 		if (mainCamera)
 		{
-			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
+			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 				{
 					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 				});
@@ -201,23 +185,23 @@ namespace Labyrinth {
 			mRenderStack.draw();
 			Renderer2D::EndState();
 
-			mRenderStack.clear();
+			mRenderStack.clearQuads();
 		}
 
 	}
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
+		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 			{
-				mLayerStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 			});
 
 		Renderer2D::BeginState(camera);
 		mRenderStack.draw();
 		Renderer2D::EndState();
 
-		mRenderStack.clear();
+		mRenderStack.clearQuads();
 	}
 
 	void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -226,32 +210,29 @@ namespace Labyrinth {
 		mViewportHeight = height;
 
 		// Resize our non-FixedAspectRatio cameras
-		auto view = mRegistry.view<CameraComponent>();
-		for (auto entity : view)
-		{
-			auto& cameraComponent = view.get<CameraComponent>(entity);
+		mRegistry.view<CameraComponent>().each([this](auto& cameraComponent){
 			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(width, height);
-		}
+				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+		});
 	}
 
 	Entity Scene::getPrimaryCameraEntity()
 	{
-		auto view = mRegistry.view<CameraComponent>();
-		for (auto entity : view)
-		{
-			const auto& camera = view.get<CameraComponent>(entity);
-			if (camera.primary)
-				return Entity{ entity,CreateRefFromThis(this) };
-		}
-		return {};
+		Entity primaryCam;
+		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent){
+			if (cameraComponent.primary)
+				primaryCam = { entity, CreateRefFromThis(this) };
+		});
+		return primaryCam;
 	}
 
+#ifdef LAB_PLATFORM_WINDOWS
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
 		static_assert(false);
 	}
+#endif
 
 	template<>
 	void Scene::onComponentAdded<RootComponent>(Entity entity, RootComponent& component)
@@ -290,11 +271,6 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
-	{
-	}
-
-	template<>
-	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
 	{
 	}
 

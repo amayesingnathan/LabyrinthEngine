@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class Camera
+	class LAB_API Camera
 	{
 	public:
 		Camera() = default;
@@ -24,7 +24,7 @@ namespace Labyrinth {
 
 
 
-	class OrthographicCamera
+	class LAB_API OrthographicCamera
 	{
 	public:
 		OrthographicCamera(float left, float right, float bottom, float top, float zoom = 1.0f);

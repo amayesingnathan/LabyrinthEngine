@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class Input
+	class LAB_API Input
 	{
 	public:
 		static bool IsWindowHovered();

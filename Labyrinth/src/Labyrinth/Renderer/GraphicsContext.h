@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	class GraphicsContext
+	class LAB_API GraphicsContext
 	{
 	public:
 		virtual ~GraphicsContext() = default;

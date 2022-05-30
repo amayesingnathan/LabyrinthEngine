@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-	class RendererAPI
+	class LAB_API RendererAPI
 	{
 	public:
 		enum class API

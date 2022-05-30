@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class Serialiser
+	class LAB_API Serialiser
 	{
 	public:
 		template<typename T>

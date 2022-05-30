@@ -400,7 +400,7 @@ namespace Labyrinth {
 	{
 		LAB_CORE_ASSERT(mIn["TransformComponent"], "File must contain a transform component!");
 
-		auto& transformComponent = mIn["TransformComponent"];
+		auto transformComponent = mIn["TransformComponent"];
 		return TransformComponent(
 			transformComponent["Translation"].as<glm::vec3>(), 
 			transformComponent["Rotation"].as<glm::vec3>(), 
@@ -411,10 +411,10 @@ namespace Labyrinth {
 	template<>
 	Ref<CameraComponent> YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
 	{
-		auto& cameraComponent = node["CameraComponent"];
+		auto cameraComponent = node["CameraComponent"];
 		if (cameraComponent)
 		{
-			auto& cameraProps = cameraComponent["Camera"];
+			auto cameraProps = cameraComponent["Camera"];
 			auto& cc = entity.addComponent<CameraComponent>();
 			cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
 
@@ -438,8 +438,8 @@ namespace Labyrinth {
 	{
 		LAB_CORE_ASSERT(mIn["CameraComponent"], "File must contain a camera component!");
 
-		auto& cameraComponent = mIn["CameraComponent"];
-		auto& cameraProps = cameraComponent["Camera"];
+		auto cameraComponent = mIn["CameraComponent"];
+		auto cameraProps = cameraComponent["Camera"];
 		SceneCamera camera;
 
 		camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
@@ -492,7 +492,7 @@ namespace Labyrinth {
 					if (coordsSeq)
 					{
 						int i = 0;
-						for (auto& coord : coordsSeq)
+						for (auto coord : coordsSeq)
 						{
 							if (i >= 4) break;
 
@@ -522,7 +522,7 @@ namespace Labyrinth {
 	SpriteRendererComponent YAMLParser::DecodeObject<SpriteRendererComponent>()
 	{
 		LAB_CORE_ASSERT(mIn["SpriteRendererComponent"], "File must contain a SpriteRenderer component!");
-		auto& spriteRendererComponent = mIn["SpriteRendererComponent"];
+		auto spriteRendererComponent = mIn["SpriteRendererComponent"];
 
 		return SpriteRendererComponent(spriteRendererComponent["Colour"].as<glm::vec4>());
 	}
@@ -554,7 +554,7 @@ namespace Labyrinth {
 	template<>
 	Ref<Entity> YAMLParser::DecodeObject<Entity>(Ref<Scene> scene)
 	{
-		if (!mIn["Entity"]) return false;
+		if (!mIn["Entity"]) return nullptr;
 
 		auto entity = mIn["Entity"];
 		return DecodeObject<Entity>(scene, entity);

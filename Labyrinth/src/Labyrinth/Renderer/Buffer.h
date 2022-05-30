@@ -110,7 +110,7 @@ namespace Labyrinth {
 		uint32_t mStride = 0;
 	};
 
-	class VertexBuffer
+	class LAB_API VertexBuffer
 	{
 	public:
 		virtual ~VertexBuffer() = default;

@@ -30,3 +30,19 @@
 	path = Labyrinth/dependencies/asio
 	url = git@github.com:amayesingnathan/asio.git
 	branch = master
+[submodule "Labyrinth/dependencies/lua"]
+	path = Labyrinth/dependencies/lua
+	url = git@github.com:amayesingnathan/lua.git
+	branch = master
+[submodule "dependencies/premake-core"]
+	path = dependencies/premake-core
+	url = https://github.com/premake/premake-core.git
+	branch = master
+[submodule "Labyrinth/dependencies/portable-file-dialogs"]
+	path = Labyrinth/dependencies/portable-file-dialogs
+	url = git@github.com:amayesingnathan/portable-file-dialogs.git
+	branch = main
+[submodule "Labyrinth/dependencies/glad"]
+	path = Labyrinth/dependencies/glad
+	url = git@github.com:amayesingnathan/glad.git
+	branch = main

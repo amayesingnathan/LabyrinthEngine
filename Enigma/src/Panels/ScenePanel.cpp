@@ -258,7 +258,7 @@ namespace Labyrinth {
 
 			char buffer[256];
 			memset(buffer, 0, sizeof(buffer));
-			strcpy_s(buffer, sizeof(buffer), tag.c_str());
+			STR_COPY(buffer, tag);
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			{
 				tag = std::string(buffer);
@@ -445,7 +445,7 @@ namespace Labyrinth {
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 				{
-					const wchar_t* path = (const wchar_t*)payload->Data;
+					const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
 
 					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))

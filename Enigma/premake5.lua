@@ -34,15 +34,35 @@ project "Enigma"
     filter "system:windows"
         systemversion "latest"
         
-    filter "configurations:Debug"
+    filter "system:linux"
+        links { "pthread", "dl", "yaml-cpp" }
+        
+    filter "configurations:x64d"
         defines { "LAB_DEBUG" }
+        runtime "Debug"
         symbols "on"
 
-    filter "configurations:Release"
+    filter "configurations:ARMd"
+        defines { "LAB_DEBUG" }
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:ARM64d"
+        defines { "LAB_DEBUG" }
+        runtime "Debug"
+        symbols "on"
+
+    filter "configurations:x64"
         defines { "LAB_RELEASE" }
+        runtime "Release"
         optimize "on"
 
-    filter "configurations:Dist"
-        defines { "LAB_DIST" }
-		runtime "Release"
+    filter "configurations:ARM"
+        defines { "LAB_RELEASE" }
+        runtime "Release"
+        optimize "on"
+
+    filter "configurations:ARM64"
+        defines { "LAB_RELEASE" }
+        runtime "Release"
         optimize "on"

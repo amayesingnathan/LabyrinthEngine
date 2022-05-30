@@ -10,7 +10,7 @@
 
 namespace Labyrinth {
 
-	class Log
+	class LAB_API Log
 	{
 	public:
 		static void Init(const std::string& appName);

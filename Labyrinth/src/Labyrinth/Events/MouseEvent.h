@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class MouseMovedEvent : public Event
+	class LAB_API MouseMovedEvent : public Event
 	{
 	public:
 		MouseMovedEvent(const float x, const float y)
@@ -30,7 +30,7 @@ namespace Labyrinth {
 		float mMouseX, mMouseY;
 	};
 
-	class MouseScrolledEvent : public Event
+	class LAB_API MouseScrolledEvent : public Event
 	{
 	public:
 		MouseScrolledEvent(const float xOffset, const float yOffset)
@@ -52,7 +52,7 @@ namespace Labyrinth {
 		float mXOffset, mYOffset;
 	};
 
-	class MouseButtonEvent : public Event
+	class LAB_API MouseButtonEvent : public Event
 	{
 	public:
 		MouseCode getMouseButton() const { return mButton; }
@@ -65,7 +65,7 @@ namespace Labyrinth {
 		MouseCode mButton;
 	};
 
-	class MouseButtonPressedEvent : public MouseButtonEvent
+	class LAB_API MouseButtonPressedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonPressedEvent(const MouseCode button)
@@ -81,7 +81,7 @@ namespace Labyrinth {
 		EVENT_CLASS_TYPE(MouseButtonPressed)
 	};
 
-	class MouseButtonReleasedEvent : public MouseButtonEvent
+	class LAB_API MouseButtonReleasedEvent : public MouseButtonEvent
 	{
 	public:
 		MouseButtonReleasedEvent(const MouseCode button)

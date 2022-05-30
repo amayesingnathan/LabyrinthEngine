@@ -16,7 +16,7 @@ int main(int argc, char** argv);
 
 namespace Labyrinth { 
 
-	struct ApplicationCommandLineArgs
+	struct LAB_API ApplicationCommandLineArgs
 	{
 		int count = 0;
 		char** args = nullptr;
@@ -28,7 +28,7 @@ namespace Labyrinth {
 		}
 	};
 
-	class Application
+	class LAB_API Application
 	{
 	//Methods
 	public:

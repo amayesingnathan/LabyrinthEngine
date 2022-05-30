@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class RenderStack
+	class LAB_API RenderStack
 	{
 	public:
 		RenderStack() = default;
@@ -13,13 +13,13 @@ namespace Labyrinth {
 		void pushLayer(RenderLayer* layer);
 		void popLayer(RenderLayer* layer);
 		void clear();
+		void clearQuads();
 
 		bool hasLayer(RenderLayer* layer);
 		bool hasLayer(uint8_t layer);
 		RenderLayer* getLayer(uint8_t layer);
 
 		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID = -1);
-		void addQuad(const QuadData& quad);
 
 		void draw();
 

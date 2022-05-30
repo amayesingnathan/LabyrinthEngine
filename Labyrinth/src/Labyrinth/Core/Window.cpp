@@ -1,5 +1,5 @@
 #include "Lpch.h"
-#include "WindowsWindow.h"
+#include "Window.h"
 
 #include "Labyrinth/Events/ApplicationEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"
@@ -22,24 +22,24 @@ namespace Labyrinth {
 
 	Single<Window> Window::Create(const WindowProps& props)
 	{
-		return CreateSingle<WindowsWindow>(props);
+		return CreateSingle<Window>(props);
 	}
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
+	Window::Window(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		init(props);
 	}
 
-	WindowsWindow::~WindowsWindow()
+	Window::~Window()
 	{
 		LAB_PROFILE_FUNCTION();
 
 		shutdown();
 	}
 
-	void WindowsWindow::init(const WindowProps& props)
+	void Window::init(const WindowProps& props)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -51,9 +51,9 @@ namespace Labyrinth {
 
 		if (sGLFWWindowCount == 0)
 		{
-			LAB_PROFILE_SCOPE("SDLInit");
+			LAB_PROFILE_SCOPE("glfwInit");
 
-			int success = glfwInit(); 
+			int success = glfwInit();
 			LAB_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
@@ -67,7 +67,7 @@ namespace Labyrinth {
 			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), nullptr, nullptr);
 			++sGLFWWindowCount;
 		}
-		LAB_CORE_ASSERT(mWindow, "Could not create SDL window!");
+		LAB_CORE_ASSERT(mWindow, "Could not create GLFW window!");
 
 		mContext = GraphicsContext::Create(mWindow);
 		mContext->init();
@@ -166,7 +166,7 @@ namespace Labyrinth {
 			});
 	}
 
-	void WindowsWindow::shutdown()
+	void Window::shutdown()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -181,7 +181,7 @@ namespace Labyrinth {
 	}
 
 
-	void WindowsWindow::onUpdate()
+	void Window::onUpdate()
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -189,7 +189,7 @@ namespace Labyrinth {
 		mContext->swapBuffers();
 	}
 
-	void WindowsWindow::setVSync(bool enabled)
+	void Window::setVSync(bool enabled)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -201,7 +201,7 @@ namespace Labyrinth {
 		mData.vSync = enabled;
 	}
 
-	bool WindowsWindow::isVSync() const
+	bool Window::isVSync() const
 	{
 		return mData.vSync;
 	}

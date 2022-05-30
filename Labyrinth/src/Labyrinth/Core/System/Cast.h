@@ -50,16 +50,14 @@ namespace Labyrinth {
 	template<typename To, typename From>
 	constexpr To* CastToRelative(From* targetPointer)
 	{
-		bool isRelated = std::is_base_of<From, To>::value || std::is_base_of<To, From>::value;
-		LAB_CORE_ASSERT(isRelated, "Cannot cast to type that is not a sub class!");
+		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
 		return dynamic_cast<To*>(targetPointer);
 	}
 
 	template<typename To, typename From>
 	constexpr To& CastToRelative(From& target)
 	{
-		bool isRelated = std::is_base_of<From, To>::value || std::is_base_of<To, From>::value;
-		LAB_CORE_ASSERT(isRelated, "Cannot cast to type that is not a sub class!");
+		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
 
 		From* targetPtr = &target;
 		To* toPtr = dynamic_cast<To*>(targetPtr);
@@ -77,8 +75,7 @@ namespace Labyrinth {
 	template<typename To, typename From>
 	constexpr Ref<To> CastRefToRelative(Ref<From> target)
 	{
-		bool isRelated = std::is_base_of<From, To>::value || std::is_base_of<To, From>::value;
-		LAB_CORE_ASSERT(isRelated, "Cannot cast to type that is not a sub class!");
+		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
 		return std::dynamic_pointer_cast<To>(target);
 	}
 

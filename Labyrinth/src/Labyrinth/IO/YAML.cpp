@@ -7,6 +7,7 @@
 
 namespace Labyrinth {
 
+#ifdef LAB_PLATFORM_WINDOWS
 	template<typename T>
 	void YAMLParser::EncodeObject(const T& data, bool flag)
 	{
@@ -36,5 +37,5 @@ namespace Labyrinth {
 	{
 		static_assert(false);
 	}
-
+#endif
 }

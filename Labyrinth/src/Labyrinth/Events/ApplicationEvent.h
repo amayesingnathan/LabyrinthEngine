@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class WindowResizeEvent : public Event
+	class LAB_API WindowResizeEvent : public Event
 	{
 	public:
 		WindowResizeEvent(uint32_t width, uint32_t height)
@@ -26,7 +26,7 @@ namespace Labyrinth {
 		uint32_t mWidth, mHeight;
 	};
 
-	class WindowCloseEvent : public Event
+	class LAB_API WindowCloseEvent : public Event
 	{
 	public:
 		WindowCloseEvent() {}
@@ -36,7 +36,7 @@ namespace Labyrinth {
 
 	};
 
-	class WindowFocusEvent : public Event
+	class LAB_API WindowFocusEvent : public Event
 	{
 	public:
 		WindowFocusEvent() {}
@@ -45,7 +45,7 @@ namespace Labyrinth {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class WindowFocusLostEvent : public Event
+	class LAB_API WindowFocusLostEvent : public Event
 	{
 	public:
 		WindowFocusLostEvent() {}
@@ -54,7 +54,7 @@ namespace Labyrinth {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppTickEvent : public Event
+	class LAB_API AppTickEvent : public Event
 	{
 	public:
 		AppTickEvent() {}
@@ -63,7 +63,7 @@ namespace Labyrinth {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppUpdateEvent : public Event
+	class LAB_API AppUpdateEvent : public Event
 	{
 	public:
 		AppUpdateEvent() {}
@@ -72,7 +72,7 @@ namespace Labyrinth {
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	};
 
-	class AppRenderEvent : public Event
+	class LAB_API AppRenderEvent : public Event
 	{
 	public:
 		AppRenderEvent() {}

@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class OrthographicCameraController
+	class LAB_API OrthographicCameraController
 	{
 	public:
 		OrthographicCameraController(float aspectRatio, bool rotation = false, bool dragging = false);

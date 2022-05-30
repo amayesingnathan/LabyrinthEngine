@@ -57,22 +57,23 @@ namespace Labyrinth {
 		mLayers.clear();
 	}
 
-	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID)
+	void RenderStack::clearQuads()
 	{
-		addQuad({ trComp, srComp, entID });
+		for (RenderLayer* layer : mLayers)
+			layer->clear();
 	}
 
-	void RenderStack::addQuad(const QuadData& quad)
+	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID)
 	{
-		RenderLayer* targetLayer = getLayer(quad.sprite.layer);
+		RenderLayer* targetLayer = getLayer(srComp.layer);
 
 		if (!targetLayer)
 		{
-			targetLayer = new RenderLayer(quad.sprite.layer);
+			targetLayer = new RenderLayer(srComp.layer);
 			pushLayer(targetLayer);
 		}
 
-		targetLayer->addQuad(quad);
+		targetLayer->addQuad(trComp, srComp, entID);
 	}
 
 	void RenderStack::draw()
@@ -85,7 +86,7 @@ namespace Labyrinth {
 		for (RenderLayer* layer : mLayers)
 		{
 			for (const QuadData& quad : layer->getQuads())
-				Renderer2D::DrawSprite(quad.transform, quad.sprite, quad.entID);
+				Renderer2D::DrawSprite(quad.getTrans(), quad.getSprite(), quad.getID());
 		}
 	}
 }

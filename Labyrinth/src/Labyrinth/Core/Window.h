@@ -3,12 +3,15 @@
 #include "Lpch.h"
 
 #include "Labyrinth/Events/Event.h"
+#include "Labyrinth/Renderer/GraphicsContext.h"
 
 #include "glm/glm.hpp"
 
+struct GLFWwindow;
+
 namespace Labyrinth {
 
-	struct WindowProps {
+	struct LAB_API WindowProps {
 		std::string title;
 		uint32_t width;
 		uint32_t height;
@@ -19,28 +22,48 @@ namespace Labyrinth {
 			: title(t), width(w), height(h) {}
 	};
 
-	class Window
+	class LAB_API Window
 	{
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;
 
-		virtual ~Window() = default;
+		Window(const WindowProps& props);
+		virtual ~Window();
 
-		virtual void onUpdate() = 0;
+		void onUpdate();
 
-		virtual glm::vec2 getSize() const = 0;
-		virtual uint32_t getWidth() const = 0;
-		virtual uint32_t getHeight() const = 0;
+		inline glm::vec2 getSize() const { return { mData.width, mData.height }; }
+		inline uint32_t getWidth() const { return mData.width; }
+		inline uint32_t getHeight() const { return mData.height; }
 
 		//Attributes
-		virtual void setEventCallback(const EventCallbackFunc& callback) = 0;
-		virtual void setVSync(bool enabled) = 0;
-		virtual bool isVSync() const = 0;
+		inline void setEventCallback(const EventCallbackFunc& callback) { mData.eventCallback = callback; }
+		void setVSync(bool enabled);
+		bool isVSync() const;
 
-		virtual void* getNativeWindow() const = 0;
-		virtual void* getNativeContext() const = 0;
+		inline GLFWwindow* getNativeWindow() const { return mWindow; }
+		inline GraphicsContext* getNativeContext() const { return mContext.get(); }
 
 		static Single<Window> Create(const WindowProps& props = WindowProps());
+
+	private:
+		void init(const WindowProps& props);
+		void shutdown();
+
+	private:
+		GLFWwindow* mWindow;
+		Single<GraphicsContext> mContext;
+
+		struct WindowData
+		{
+			std::string title;
+			unsigned int width, height;
+			bool vSync;
+
+			EventCallbackFunc eventCallback;
+		};
+
+		WindowData mData;
 	};
 
 }	

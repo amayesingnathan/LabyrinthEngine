@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class Timer
+	class LAB_API Timer
 	{
 	public:
 		Timer()
@@ -12,17 +12,17 @@ namespace Labyrinth {
 			reset();
 		}
 
-		void Timer::reset()
+		void reset()
 		{
 			mStart = std::chrono::high_resolution_clock::now();
 		}
 
-		float Timer::elapsed()
+		float elapsed()
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - mStart).count() * 0.001f * 0.001f * 0.001f;
 		}
 
-		float Timer::elapsedMillis()
+		float elapsedMillis()
 		{
 			return elapsed() * 1000.0f;
 		}

@@ -1,11 +1,10 @@
 #pragma once
 
-#include <xhash>
 #include <string>
 
 namespace Labyrinth {
 
-	class UUID
+	class LAB_API UUID
 	{
 	public:
 		UUID();

@@ -13,7 +13,7 @@ namespace Labyrinth {
 			uint32_t size = 0;
 		};
 
-		struct Message
+		struct LAB_API Message
 		{
 			MessageHeader header{};
 			std::vector<uint8_t> body;

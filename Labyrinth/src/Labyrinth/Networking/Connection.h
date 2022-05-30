@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 		class ServerLayer;
 
-		class Connection : public AllowRefFromThis<Connection>
+		class LAB_API Connection : public AllowRefFromThis<Connection>
 		{
 		public:
 			enum class Owner

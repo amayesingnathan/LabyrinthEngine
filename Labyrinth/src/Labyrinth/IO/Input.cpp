@@ -5,8 +5,6 @@
 
 #include <GLFW/glfw3.h>
 
-#ifdef	LAB_PLATFORM_WINDOWS  //Input redefine for Windows!
-
 namespace Labyrinth {
 
 	bool Input::IsWindowHovered()
@@ -49,5 +47,3 @@ namespace Labyrinth {
 	}
 
 }
-
-#endif

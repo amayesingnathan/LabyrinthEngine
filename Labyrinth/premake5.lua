@@ -1,8 +1,6 @@
 project "Labyrinth"
-    kind "StaticLib"
     language "C++"
     cppdialect "C++17"
-    staticruntime "on"
 		
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
@@ -43,13 +41,9 @@ project "Labyrinth"
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
         "%{IncludeDir.lua}",
-        "%{IncludeDir.asio}"
+        "%{IncludeDir.asio}",
+        "%{IncludeDir.pfd}"
     }
-	
-	libdirs
-	{
-		"%{LibDir.lua}"
-	}
 
 	links
 	{
@@ -58,28 +52,53 @@ project "Labyrinth"
 		"glfw",
 		"ImGui",
 		"yaml-cpp",
-		"lua54",
-		"opengl32.lib"
+		"lua"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
 	
     filter "system:windows"
+        kind "StaticLib"
+        staticruntime "on"
         systemversion "latest"
 		includedirs "%{IncludeDir.LabWin}"
-        
-    filter "configurations:Debug"
+        links "opengl32.lib"
+		
+	filter "system:linux"
+        kind "SharedLib"
+        staticruntime "off"
+        defines "LAB_SHARED"
+        pic "On"
+        systemversion "latest"
+        includedirs "%{IncludeDir.LabLinux}"
+
+    filter "configurations:x64d"
         defines { "LAB_DEBUG" }
 		runtime "Debug"
         symbols "on"
 
-    filter "configurations:Release"
+	filter "configurations:ARMd"
+        defines { "LAB_DEBUG" }
+		runtime "Debug"
+        symbols "on"
+
+	filter "configurations:ARM64d"
+        defines { "LAB_DEBUG" }
+		runtime "Debug"
+		symbols "on"
+
+    filter "configurations:x64"
         defines { "LAB_RELEASE" }
 		runtime "Release"
         optimize "on"
 
-    filter "configurations:Dist"
-        defines { "LAB_DIST" }
+	filter "configurations:ARM"
+        defines { "LAB_RELEASE" }
 		runtime "Release"
-        optimize "on"
+		optimize "on"
+
+	filter "configurations:ARM64"
+        defines { "LAB_RELEASE" }
+		runtime "Release"
+		optimize "on"
