@@ -39,15 +39,22 @@ Labyrinth is a game engine built for designing and creating 2D games.
   design pattern and the reasons it can be powerful during game development, from performance, such as minimising CPU cache misses, to design freedom, by removing the
   complexity and dependencies created when using a purely OOP approach to designing games.
   
-  ### Other ###
+  ### Linux Development ###
   
-  There are many topics that do not fit into a single category, but are worth mentioning as they cover quite a broad range. These include:
+  Labyrinth is supported on both Windows and Linux (Ubuntu tested only), and this has given me lots of experience with many facets of Linux development.
+  This includes understanding how GCC differs from the Visual C++ compiler, and how to effectively structure my code to handle the differences.
+  I have also gained a vast amount of experience with general linux and command line usage, such as familiarity with common bash commands as well as writing scripts to improve productivity.
   
-  * Modern C++ - I have a much deeper understanding of the features avaible in C++17. This engine makes use of many features of modern C++ such as 
-  templates, smart pointers, move semantics and lambda functions.
-  * Data Formatting - I now understand how to use both XML (Reading Map Data from Tiled files) and YAML (Serialising and Deserialising data).
-  * Networking - Still early in development but I have begun using Boost.Asio to create simple client-server connections.
-  * Linux - I have begun attempting to support developement using Linux. This involves understanding how GCC differs from the Visual C++ compiler, and generally 
-  improving my use of Linux (KUbuntu).
+  ### Networking ###
   
-    
+  Labyrinth comes with a fairly simple networking layer API, which allows users to create server and client applications and easily customise communication.
+  To define new messages, create an enum in a new namespace (e.g. NetMessages) with no name that has the type `MessageType`. 
+  Write to the `Message` object by using the `<<` operator, however the input data must satisfy `std::is_standard_layout<DataType>::value` where `DataType` is your input type.
+  Then use `ClientLayer::Send(const Message& msg)` or `ServerLayer::Send(const Message& msg)` to send messages to a connected client/server.
+  
+  ### Data Formatting ###
+  
+  Labyrinth uses/used various data formatting and markup languages for different functionalities. 
+  Previously Tiled XML tilemap data was imported, and I wrote a simple API to convert layered tilemaps and collision data to SDL objects. See https://github.com/amayesingnathan/TMXtoSDL.
+  Labyrinth Scene files are also serialised/deserialed using YAML, allowing users to save and load scenes from their local system. 
+  
