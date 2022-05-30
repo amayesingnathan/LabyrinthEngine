@@ -42,3 +42,7 @@
 	path = Labyrinth/dependencies/portable-file-dialogs
 	url = git@github.com:amayesingnathan/portable-file-dialogs.git
 	branch = main
+[submodule "Labyrinth/dependencies/glad"]
+	path = Labyrinth/dependencies/glad
+	url = git@github.com:amayesingnathan/glad.git
+	branch = main
