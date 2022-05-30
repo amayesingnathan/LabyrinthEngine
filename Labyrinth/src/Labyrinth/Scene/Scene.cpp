@@ -165,7 +165,7 @@ namespace Labyrinth {
 		Camera* mainCamera = nullptr;
 		glm::mat4 cameraTransform;
 		
-		mRegistry.view<TransformComponent, CameraComponent>().each([this, &mainCamera, &cameraTransform](auto entity, auto& trComponent, auto& camComponent)
+		mRegistry.view<TransformComponent, CameraComponent>().each([this, &mainCamera, &cameraTransform](auto entity, const auto& trComponent, auto& camComponent)
 		{
 			if (camComponent.primary)
 			{
@@ -176,7 +176,7 @@ namespace Labyrinth {
 		
 		if (mainCamera)
 		{
-			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, auto& trComponent, auto& srComponent)
+			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 				{
 					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
 				});
@@ -210,25 +210,20 @@ namespace Labyrinth {
 		mViewportHeight = height;
 
 		// Resize our non-FixedAspectRatio cameras
-		auto view = mRegistry.view<CameraComponent>();
-		for (auto entity : view)
-		{
-			auto& cameraComponent = view.get<CameraComponent>(entity);
+		mRegistry.view<CameraComponent>().each([this](auto& cameraComponent){
 			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(width, height);
-		}
+				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+		});
 	}
 
 	Entity Scene::getPrimaryCameraEntity()
 	{
-		auto view = mRegistry.view<CameraComponent>();
-		for (auto entity : view)
-		{
-			const auto& camera = view.get<CameraComponent>(entity);
-			if (camera.primary)
-				return Entity{ entity,CreateRefFromThis(this) };
-		}
-		return {};
+		Entity primaryCam;
+		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent){
+			if (cameraComponent.primary)
+				primaryCam = { entity, CreateRefFromThis(this) };
+		});
+		return primaryCam;
 	}
 
 #ifdef LAB_PLATFORM_WINDOWS
