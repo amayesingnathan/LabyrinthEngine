@@ -32,7 +32,7 @@ namespace Labyrinth {
 		auto imageSize = ImGui::GetWindowSize();
 		imageSize = { imageSize.x - 2 * xpos, imageSize.y - 1.5f * ypos };
 		ImVec2 tileSize = { imageSize.x / mMaxWidthCount, imageSize.y / mMaxHeightCount };
-		ImGui::Image((void*)sheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((ImTextureID)(uintptr_t)sheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
 
 		auto& colours = ImGui::GetStyle().Colors;
 		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
@@ -125,7 +125,7 @@ namespace Labyrinth {
 
 		//Get top leftmost selection and its index in the vector of all squares.
 		const auto& firstSquare = mPressedSquares[0];
-		int gridIndex = (firstSquare.pos.first * mMaxWidthCount) + firstSquare.pos.second;
+		size_t gridIndex = (firstSquare.pos.first * mMaxWidthCount) + firstSquare.pos.second;
 
 		//Find the quad that extends from this selection to the right and down if there is one
 		while (CheckRight(gridIndex))
@@ -172,14 +172,14 @@ namespace Labyrinth {
 			});
 	}
 
-	bool SubTexModal::CheckRight(int gridIndex)
+	bool SubTexModal::CheckRight(size_t gridIndex)
 	{
 		if ((gridIndex + 1) % mMaxWidthCount == 0) return false;
 
 		return mSquares[gridIndex + 1].pressed;
 	}
 
-	bool SubTexModal::CheckDown(int gridIndex)
+	bool SubTexModal::CheckDown(size_t gridIndex)
 	{
 		if (gridIndex + mMaxWidthCount >= mSquares.size()) return false;
 

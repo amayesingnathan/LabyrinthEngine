@@ -8,7 +8,26 @@
 
 #include <glm/glm.hpp>
 
+#include <box2d/b2_world.h>
+#include <box2d/b2_body.h>
+#include <box2d/b2_fixture.h>
+#include <box2d/b2_polygon_shape.h>
+#include <box2d/b2_circle_shape.h>
+
 namespace Labyrinth {
+
+	static b2BodyType BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType)
+	{
+		switch (bodyType)
+		{
+			case RigidBodyComponent::BodyType::Static: return b2_staticBody;
+			case RigidBodyComponent::BodyType::Dynamic: return b2_dynamicBody;
+			case RigidBodyComponent::BodyType::Kinematic: return b2_kinematicBody;
+		}
+
+		LAB_CORE_ASSERT(false, "Unknown body type");
+		return b2_staticBody;
+	}
 
 	Scene::Scene()
 	{
@@ -70,6 +89,12 @@ namespace Labyrinth {
 			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
 		if (copy.hasComponent<SpriteRendererComponent>())
 			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
+		if (copy.hasComponent<RigidBodyComponent>())
+			newEnt.addComponent<RigidBodyComponent>(copy.getComponent<RigidBodyComponent>());
+		if (copy.hasComponent<BoxColliderComponent>())
+			newEnt.addComponent<BoxColliderComponent>(copy.getComponent<BoxColliderComponent>());
+		if (copy.hasComponent<CircleColliderComponent>())
+			newEnt.addComponent<CircleColliderComponent>(copy.getComponent<CircleColliderComponent>());
 
 		return newEnt;
 	}
@@ -94,6 +119,12 @@ namespace Labyrinth {
 			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
 		if (copy.hasComponent<SpriteRendererComponent>())
 			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
+		if (copy.hasComponent<RigidBodyComponent>())
+			newEnt.addComponent<RigidBodyComponent>(copy.getComponent<RigidBodyComponent>());
+		if (copy.hasComponent<BoxColliderComponent>())
+			newEnt.addComponent<BoxColliderComponent>(copy.getComponent<BoxColliderComponent>());
+		if (copy.hasComponent<CircleColliderComponent>())
+			newEnt.addComponent<CircleColliderComponent>(copy.getComponent<CircleColliderComponent>());
 
 		return newEnt;
 	}
@@ -147,17 +178,58 @@ namespace Labyrinth {
 	{
 		sheets.clear();
 		mRegistry.view<SpriteRendererComponent>().each([&sheets](auto entity, auto& srComponent)
+		{
+			if (srComponent.type == SpriteRendererComponent::TexType::Tile)
 			{
-				if (srComponent.type == SpriteRendererComponent::TexType::Tile)
-				{
-					if (std::find_if(sheets.begin(), sheets.end(),
-						[&](Ref<Texture2DSheet> match) {
-							return srComponent.texture.subtex->getTex()->getPath() == match->getTex()->getPath();
-						})
-						== sheets.end())
-						sheets.emplace_back(srComponent.texture.subtex->getSheet());
-				}
-			});
+				if (std::find_if(sheets.begin(), sheets.end(),
+					[&](Ref<Texture2DSheet> match) {
+						return srComponent.texture.subtex->getTex()->getPath() == match->getTex()->getPath();
+					})
+					== sheets.end())
+					sheets.emplace_back(srComponent.texture.subtex->getSheet());
+			}
+		});
+	}
+
+	void Scene::onRuntimeStart()
+	{
+		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
+		
+		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent) 
+		{
+			Entity entity(e, CreateRefFromThis(this));
+
+			b2BodyDef bodyDef;
+			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
+			bodyDef.angle = trComponent.rotation.z;
+			bodyDef.fixedRotation = rbComponent.fixedRotation;
+			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+
+			rbComponent.runtimeBody = body;
+
+			if (entity.hasComponent<BoxColliderComponent>())
+			{
+				auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+
+				b2PolygonShape boxShape;
+				boxShape.SetAsBox(bcComponent.halfExtents.x * trComponent.scale.x, bcComponent.halfExtents.y * trComponent.scale.y);
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = bcComponent.density;
+				fixtureDef.friction = bcComponent.friction;
+				fixtureDef.restitution = bcComponent.restitution;
+				fixtureDef.restitutionThreshold = bcComponent.restitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		});
+	}
+
+	void Scene::onRuntimeStop()
+	{
+		delete mPhysicsWorld;
+		mPhysicsWorld = nullptr;
 	}
 	
 	void Scene::onUpdateRuntime(Timestep ts)
@@ -173,13 +245,30 @@ namespace Labyrinth {
 				cameraTransform = trComponent;
 			}
 		});
+
+		// Physics
+		if (mPhysicsWorld)
+		{
+			const int32_t velIters = 6;
+			const int32_t poslIters = 2;
+			mPhysicsWorld->Step(ts, velIters, poslIters);
+
+			mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto& trComponent, const auto& rbComponent)
+			{
+				b2Body* body = Cast<b2Body>(rbComponent.runtimeBody);
+				const auto& pos = body->GetPosition();
+				trComponent.translation.x = pos.x;
+				trComponent.translation.y = pos.y;
+				trComponent.rotation.z = body->GetAngle();
+			});
+		}
 		
 		if (mainCamera)
 		{
 			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
-				{
-					mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
-				});
+			{
+				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+			});
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
 			mRenderStack.draw();
@@ -193,9 +282,9 @@ namespace Labyrinth {
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
 		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
-			{
-				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
-			});
+		{
+			mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+		});
 
 		Renderer2D::BeginState(camera);
 		mRenderStack.draw();
@@ -271,6 +360,21 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<TagComponent>(Entity entity, TagComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<RigidBodyComponent>(Entity entity, RigidBodyComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<BoxColliderComponent>(Entity entity, BoxColliderComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<CircleColliderComponent>(Entity entity, CircleColliderComponent& component)
 	{
 	}
 

@@ -224,7 +224,7 @@ namespace Labyrinth {
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = mFramebuffer->getColourAttachmentRendererID();
-		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -308,7 +308,7 @@ namespace Labyrinth {
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-		if (ImGui::ImageButton((ImTextureID)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
 			if (mSceneState == SceneState::Edit)
 				OnScenePlay();
@@ -436,29 +436,27 @@ namespace Labyrinth {
 	void EditorLayer::SaveScene()
 	{
 		if (!mFilepath.empty())
-		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
-		}
 		else SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
+		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
 		if (!mFilepath.empty())
-		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
-		}
 	}
 	
 	void EditorLayer::OnScenePlay()
 	{
 		mSceneState = SceneState::Play;
+		mCurrentScene->onRuntimeStart();
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		mSceneState = SceneState::Edit;
+		mCurrentScene->onRuntimeStop();
 
 	}
 }

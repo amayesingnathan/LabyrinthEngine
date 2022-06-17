@@ -46,7 +46,7 @@ namespace Labyrinth {
 			Ref<Texture2D> icon = dirEntry.is_directory() ? mDirectoryIcon : mFileIcon;
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
-			ImGui::ImageButton((ImTextureID)icon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+			ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource())
 			{
 				const FS_CHAR_TYPE* itemPath = relativePath.c_str();

@@ -1,0 +1,74 @@
+Scene: Untitled
+Entities:
+  - Entity: 10982048038578088450
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-0.0848038793, -2.50950766, 0]
+      Rotation: [0, 0, 0]
+      Scale: [7.25345659, 0.494776011, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 0
+      Colour: [1, 1, 1, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 17014374854102427983
+    TagComponent:
+      Tag: Box
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [0.835727692, 1.05972672, 0]
+      Rotation: [0, 0, -0.440676153]
+      Scale: [0.999999881, 0.999999881, 0.999999762]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 0
+      Colour: [1, 1, 1, 1]
+    RigidBodyComponent:
+      Type: 1
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0.400000006
+      RestitutionThreshold: 0.5
+  - Entity: 9170353095846712291
+    TagComponent:
+      Tag: Camera
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-0.576651096, -1.23140132, 14.8932619]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false

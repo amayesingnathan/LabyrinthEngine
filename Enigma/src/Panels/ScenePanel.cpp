@@ -273,24 +273,40 @@ namespace Labyrinth {
 
 		if (ImGui::BeginPopup("AddComponent"))
 		{
-			if (ImGui::MenuItem("Camera"))
+			if (!mSelectedEntity.hasComponent<CameraComponent>())
 			{
-				if (!mSelectedEntity.hasComponent<CameraComponent>())
+				if (ImGui::MenuItem("Camera"))
 				{
 					auto& cam = mSelectedEntity.addComponent<CameraComponent>();
+					ImGui::CloseCurrentPopup();
 				}
-				else
-					LAB_CORE_WARN("This entity already has the Camera Component!");
-				ImGui::CloseCurrentPopup();
 			}
 
-			if (ImGui::MenuItem("Sprite Renderer"))
+			if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
 			{
-				if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
+				if (ImGui::MenuItem("Sprite Renderer"))
+				{
 					mSelectedEntity.addComponent<SpriteRendererComponent>();
-				else
-					LAB_CORE_WARN("This entity already has the Sprite Renderer Component!");
-				ImGui::CloseCurrentPopup();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!mSelectedEntity.hasComponent<RigidBodyComponent>())
+			{
+				if (ImGui::MenuItem("Rigid Body"))
+				{
+					mSelectedEntity.addComponent<RigidBodyComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!mSelectedEntity.hasComponent<BoxColliderComponent>())
+			{
+				if (ImGui::MenuItem("Box Collider"))
+				{
+					mSelectedEntity.addComponent<BoxColliderComponent>();
+					ImGui::CloseCurrentPopup();
+				}
 			}
 
 			ImGui::EndPopup();
@@ -469,6 +485,52 @@ namespace Labyrinth {
 			}
 
 			ImGui::DragFloat("Tiling Factor", &component.tilingFactor, 0.1f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)
+		{
+			const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic"};
+			const char* currentBodyTypeString = bodyTypeStrings[(int)component.type];
+			if (ImGui::BeginCombo("Type", currentBodyTypeString))
+			{
+				for (int i = 0; i < 3; i++)
+				{
+					bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
+
+					if (ImGui::Selectable(bodyTypeStrings[i], isSelected))
+					{
+						currentBodyTypeString = bodyTypeStrings[i];
+						component.type = (RigidBodyComponent::BodyType)i;
+					}
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
+
+			ImGui::Checkbox("Fixed Rotation", &component.fixedRotation);
+		});
+
+		DrawComponent<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
+		{
+			ImGui::DragFloat2("Half Extents", glm::value_ptr(component.halfExtents), 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Friction", &component.friction, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Density", &component.density, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution", &component.restitution, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.1f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
+		{
+			ImGui::DragFloat("Radius", &component.radius, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Friction", &component.friction, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Density", &component.density, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution", &component.restitution, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.1f, 0.0f, 100.0f);
 		});
 
 	}

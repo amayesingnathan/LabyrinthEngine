@@ -150,4 +150,49 @@ namespace Labyrinth {
 				* glm::scale(glm::mat4(1.0f), scale);
 		}
 	};
+
+
+	// Physics
+
+	struct RigidBodyComponent
+	{
+		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		BodyType type = BodyType::Static;
+		bool fixedRotation = false;
+
+		void* runtimeBody = nullptr;
+
+		RigidBodyComponent() = default;
+		RigidBodyComponent(const RigidBodyComponent&) = default;
+	};
+
+	struct BoxColliderComponent
+	{
+		glm::vec2 halfExtents = { 0.5f, 0.5f };
+		glm::vec2 offset = { 0.0f, 0.0f };
+		float friction = 1.0f;
+		float density = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
+
+		void* runtimeFixture = nullptr;
+
+		BoxColliderComponent() = default;
+		BoxColliderComponent(const BoxColliderComponent&) = default;
+	};
+
+	struct CircleColliderComponent
+	{
+		float radius = 0.5f;
+		glm::vec2 offset = { 0.0f, 0.0f };
+		float friction = 1.0f;
+		float density = 0.5f;
+		float restitution = 0.0f;
+		float restitutionThreshold = 0.5f;
+
+		void* runtimeFixture = nullptr;
+
+		CircleColliderComponent() = default;
+		CircleColliderComponent(const CircleColliderComponent&) = default;
+	};
 }

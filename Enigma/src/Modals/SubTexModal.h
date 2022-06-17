@@ -8,7 +8,7 @@ namespace Labyrinth {
 
 	class SubTexModal
 	{
-		using Position = std::pair<int, int>;
+		using Position = std::pair<size_t, size_t>;
 
 	public:
 		SubTexModal() = default;
@@ -23,8 +23,8 @@ namespace Labyrinth {
 		void SortSelected();
 
 		//Navigate grid
-		bool CheckRight(int gridIndex);
-		bool CheckDown(int gridIndex);
+		bool CheckRight(size_t gridIndex);
+		bool CheckDown(size_t gridIndex);
 
 		bool IsInSquare(const Position& min, const Position& max, const Position& check);
 
@@ -37,7 +37,7 @@ namespace Labyrinth {
 			SquareData() : pos(-1, -1), pressed(false) {}
 			SquareData(const Position& p)
 				: pos(p), pressed(false) {}
-			SquareData(int x, int y)
+			SquareData(size_t x, size_t y)
 				: pos(x, y), pressed(false) {}
 
 			bool operator== (const SquareData& other) const

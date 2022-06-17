@@ -46,9 +46,9 @@ namespace Labyrinth {
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		if (mCurrentSheet)
-			ImGui::Image((void*)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -119,14 +119,14 @@ namespace Labyrinth {
 
 		if (mPayload.mSelectedSubTex)
 		{
-			ImGui::Image((void*)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 			{
 				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPayload, sizeof(SubTexPayload));
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		else ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		TileWidthModal();
 		SubTexModalRender();

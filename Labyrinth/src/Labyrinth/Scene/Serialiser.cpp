@@ -239,6 +239,47 @@ namespace Labyrinth {
 	}
 
 	template<>
+	void YAMLParser::EncodeObject<RigidBodyComponent>(const RigidBodyComponent& rbComponent, bool flag)
+	{
+		BeginObject("RigidBodyComponent");
+
+		ObjectProperty("Type", Cast<int>(rbComponent.type));
+		ObjectProperty("FixedRotation", rbComponent.fixedRotation);
+
+		EndObject();
+	}
+
+	template<>
+	void YAMLParser::EncodeObject<BoxColliderComponent>(const BoxColliderComponent& bcComponent, bool flag)
+	{
+		BeginObject("BoxColliderComponent");
+
+		ObjectProperty("HalfExtents", bcComponent.halfExtents);
+		ObjectProperty("Offset", bcComponent.offset);
+		ObjectProperty("Density", bcComponent.density);
+		ObjectProperty("Friction", bcComponent.friction);
+		ObjectProperty("Restitution", bcComponent.restitution);
+		ObjectProperty("RestitutionThreshold", bcComponent.restitutionThreshold);
+
+		EndObject();
+	}
+
+	template<>
+	void YAMLParser::EncodeObject<CircleColliderComponent>(const CircleColliderComponent& bcComponent, bool flag)
+	{
+		BeginObject("CircleColliderComponent");
+
+		ObjectProperty("Radius", bcComponent.radius);
+		ObjectProperty("Offset", bcComponent.offset);
+		ObjectProperty("Density", bcComponent.density);
+		ObjectProperty("Friction", bcComponent.friction);
+		ObjectProperty("Restitution", bcComponent.restitution);
+		ObjectProperty("RestitutionThreshold", bcComponent.restitutionThreshold);
+
+		EndObject();
+	}
+
+	template<>
 	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps)
 	{
 		LAB_CORE_ASSERT(entity.hasComponent<IDComponent>());
@@ -252,30 +293,25 @@ namespace Labyrinth {
 			return;
 		}
 
-		{
-			const TagComponent& tc = entity.getComponent<TagComponent>();
-			EncodeObject(tc);
-		}
-		{
-			const NodeComponent& nc = entity.getComponent<NodeComponent>();
-			EncodeObject(nc);
-		}
-		{
-			const TransformComponent& tc = entity.getComponent<TransformComponent>();
-			EncodeObject(tc);
-		}
+		// Components guranteed to be on entity
+		EncodeObject(entity.getComponent<TagComponent>());
+		EncodeObject(entity.getComponent<NodeComponent>());
+		EncodeObject(entity.getComponent<TransformComponent>());
 
 		if (entity.hasComponent<CameraComponent>())
-		{
-			const CameraComponent& cc = entity.getComponent<CameraComponent>();
-			EncodeObject(cc);
-		}
+			EncodeObject(entity.getComponent<CameraComponent>());
 
 		if (entity.hasComponent<SpriteRendererComponent>())
-		{
-			const SpriteRendererComponent& src = entity.getComponent<SpriteRendererComponent>();
-			EncodeObject(src);
-		}
+			EncodeObject(entity.getComponent<SpriteRendererComponent>());
+
+		if (entity.hasComponent<RigidBodyComponent>())
+			EncodeObject(entity.getComponent<RigidBodyComponent>());
+
+		if (entity.hasComponent<BoxColliderComponent>())
+			EncodeObject(entity.getComponent<BoxColliderComponent>());
+
+		if (entity.hasComponent<CircleColliderComponent>())
+			EncodeObject(entity.getComponent<CircleColliderComponent>());
 
 		EndObject();
 	}
@@ -293,14 +329,14 @@ namespace Labyrinth {
 
 		BeginSequence("Entities");
 
-		scene->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
-			{
-				Entity entity = { entityID, scene };
-				if (!entity)
-					return;
+		scene->view<RootComponent>().each([&](auto entityID, auto& rc)
+		{
+			Entity entity = { entityID, scene };
+			if (!entity)
+				return;
 
-				EncodeObject(entity);
-			});
+			EncodeObject(entity);
+		});
 
 		EndSequence();
 		EndObject();
@@ -396,19 +432,6 @@ namespace Labyrinth {
 	}
 
 	template<>
-	TransformComponent YAMLParser::DecodeObject<TransformComponent>()
-	{
-		LAB_CORE_ASSERT(mIn["TransformComponent"], "File must contain a transform component!");
-
-		auto transformComponent = mIn["TransformComponent"];
-		return TransformComponent(
-			transformComponent["Translation"].as<glm::vec3>(), 
-			transformComponent["Rotation"].as<glm::vec3>(), 
-			transformComponent["Scale"].as<glm::vec3>()
-		);
-	}
-
-	template<>
 	Ref<CameraComponent> YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
 	{
 		auto cameraComponent = node["CameraComponent"];
@@ -431,28 +454,6 @@ namespace Labyrinth {
 			return CreateRef<CameraComponent>(cc);
 		}
 		return nullptr;
-	}
-
-	template<>
-	CameraComponent YAMLParser::DecodeObject<CameraComponent>()
-	{
-		LAB_CORE_ASSERT(mIn["CameraComponent"], "File must contain a camera component!");
-
-		auto cameraComponent = mIn["CameraComponent"];
-		auto cameraProps = cameraComponent["Camera"];
-		SceneCamera camera;
-
-		camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
-
-		camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-		camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-		camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
-
-		camera.setOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-		camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-		camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
-
-		return CameraComponent(camera, cameraComponent["Primary"].as<bool>(), cameraComponent["FixedAspectRatio"].as<bool>());
 	}
 
 	template<>
@@ -515,22 +516,62 @@ namespace Labyrinth {
 		}
 
 		return nullptr;
-
 	}
 
 	template<>
-	SpriteRendererComponent YAMLParser::DecodeObject<SpriteRendererComponent>()
+	Ref<RigidBodyComponent> YAMLParser::DecodeObject<RigidBodyComponent>(Entity entity, YAML::Node node)
 	{
-		LAB_CORE_ASSERT(mIn["SpriteRendererComponent"], "File must contain a SpriteRenderer component!");
-		auto spriteRendererComponent = mIn["SpriteRendererComponent"];
+		auto rbComponent = node["RigidBodyComponent"];
+		if (rbComponent)
+		{
+			auto& rbc = entity.addComponent<RigidBodyComponent>();
+			rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<int>();
+			rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
+			return CreateRef<RigidBodyComponent>(rbc);
+		}
+		return nullptr;
+	}
 
-		return SpriteRendererComponent(spriteRendererComponent["Colour"].as<glm::vec4>());
+	template<>
+	Ref<BoxColliderComponent> YAMLParser::DecodeObject<BoxColliderComponent>(Entity entity, YAML::Node node)
+	{
+		auto bcComponent = node["BoxColliderComponent"];
+		if (bcComponent)
+		{
+			auto& rbc = entity.addComponent<BoxColliderComponent>();
+			rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
+			rbc.offset = bcComponent["Offset"].as<glm::vec2>();
+			rbc.density = bcComponent["Density"].as<float>();
+			rbc.friction = bcComponent["Friction"].as<float>();
+			rbc.restitution = bcComponent["Restitution"].as<float>();
+			rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<float>();
+			return CreateRef<BoxColliderComponent>(rbc);
+		}
+		return nullptr;
+	}
+
+	template<>
+	Ref<CircleColliderComponent> YAMLParser::DecodeObject<CircleColliderComponent>(Entity entity, YAML::Node node)
+	{
+		auto ccComponent = node["CircleColliderComponent"];
+		if (ccComponent)
+		{
+			auto& rbc = entity.addComponent<CircleColliderComponent>();
+			rbc.radius = ccComponent["Radius"].as<float>();
+			rbc.offset = ccComponent["Offset"].as<glm::vec2>();
+			rbc.density = ccComponent["Density"].as<float>();
+			rbc.friction = ccComponent["Friction"].as<float>();
+			rbc.restitution = ccComponent["Restitution"].as<float>();
+			rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<float>();
+			return CreateRef<CircleColliderComponent>(rbc);
+		}
+		return nullptr;
 	}
 
 	template<>
 	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
 	{
-		uint64_t uuid = entity["Entity"].as<uint64_t>(); 
+		UUID uuid(entity["Entity"].as<uint64_t>()); 
 
 		std::string name;
 		auto tagComponent = entity["TagComponent"];
@@ -539,14 +580,16 @@ namespace Labyrinth {
 
 		LAB_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
 
-		//Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
-		Entity deserializedEntity = scene->CreateEntity(name);
+		Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
 
 		//Must add new components here as they are added.
 		if (!DecodeObject<NodeComponent>(deserializedEntity, entity)) return nullptr;
 		if (!DecodeObject<TransformComponent>(deserializedEntity, entity)) return nullptr;
 		DecodeObject<CameraComponent>(deserializedEntity, entity);
 		DecodeObject<SpriteRendererComponent>(deserializedEntity, entity);
+		DecodeObject<RigidBodyComponent>(deserializedEntity, entity);
+		DecodeObject<BoxColliderComponent>(deserializedEntity, entity);
+		DecodeObject<CircleColliderComponent>(deserializedEntity, entity);
 
 		return CreateRef<Entity>(deserializedEntity);
 	}
