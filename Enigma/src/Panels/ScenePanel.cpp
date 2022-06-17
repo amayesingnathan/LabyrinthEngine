@@ -123,7 +123,7 @@ namespace Labyrinth {
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode(node.children[i]);
+				DrawEntityNode({ node.children[i], mContext });
 			ImGui::TreePop();
 		}
 		if (childCreated)
@@ -328,7 +328,7 @@ namespace Labyrinth {
 			});
 
 			std::string currentParentString = "None";
-			auto& parent = mSelectedEntity.getParent();
+			Entity parent(mSelectedEntity.getParent(), mContext);
 			if (parent)
 				currentParentString = parent.getComponent<TagComponent>().tag + "    (ID =" + parent.getUUID().to_string() + ")";
 
@@ -515,22 +515,22 @@ namespace Labyrinth {
 
 		DrawComponent<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
 		{
-			ImGui::DragFloat2("Half Extents", glm::value_ptr(component.halfExtents), 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Friction", &component.friction, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Density", &component.density, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Restitution", &component.restitution, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Half Extents", glm::value_ptr(component.halfExtents), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
 		DrawComponent<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
 		{
-			ImGui::DragFloat("Radius", &component.radius, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Friction", &component.friction, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Density", &component.density, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Restitution", &component.restitution, 0.1f, 0.0f, 100.0f);
-			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.1f, 0.0f, 100.0f);
+			ImGui::DragFloat("Radius", &component.radius, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
 	}

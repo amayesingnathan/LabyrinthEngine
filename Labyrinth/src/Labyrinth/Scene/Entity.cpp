@@ -8,15 +8,10 @@ namespace Labyrinth {
 	{
 	}
 
-	//Entity::Entity(uint32_t entID, Scene* scene)
-	//	: mEntID(Cast<entt::entity>(entID)), mScene(scene)
-	//{
-	//}
+	const entt::entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
+	entt::entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
-	//const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
-	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
-
-	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
+	bool Entity::hasParent() { return getComponent<NodeComponent>(); }
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
@@ -30,10 +25,12 @@ namespace Labyrinth {
 		}
 		else { addComponent<RootComponent>(); };
 
-		if (node.parent)
-			node.parent.removeChild(*this);
-		else
-			removeComponent<RootComponent>(); //No longer root entity (will have parent)
+		if (node)
+		{
+			Entity nodeEnt(node.parent, mScene);
+			nodeEnt.removeChild(*this);
+		}
+		else removeComponent<RootComponent>(); //No longer root entity (will have parent)
 
 		node.parent = newParent;
 		return true;
@@ -44,12 +41,12 @@ namespace Labyrinth {
 		return setParent(newParent, getComponent<NodeComponent>());
 	}
 
-	std::vector<Entity>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
-	const std::vector<Entity>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
+	std::vector<entt::entity>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
+	const std::vector<entt::entity>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
 
 	bool Entity::hasChild(const Entity& child) const 
 	{ 
-		const std::vector<Entity>& children = getChildren();
+		const std::vector<entt::entity>& children = getChildren();
 		auto it = std::find(children.begin(), children.end(), child);
 		return it != getChildren().end();
 	}
@@ -66,7 +63,7 @@ namespace Labyrinth {
 
 	void Entity::removeChild(const Entity& child)
 	{
-		std::vector<Entity>& children = getChildren();
+		std::vector<entt::entity>& children = getChildren();
 		auto it = std::find(children.begin(), children.end(), child);
 		if (it != children.end())
 			children.erase(it);
@@ -78,12 +75,13 @@ namespace Labyrinth {
 		// Cycles every child
 		for (const auto& child : children)
 		{
-			if (child == filter)
+			Entity childEnt(child, mScene);
+			if (childEnt == filter)
 			{
 				// Found the child
 				return true;
 			}
-			bool found = child.isRelated(filter);
+			bool found = childEnt.isRelated(filter);
 			if (found)
 				return found;
 		}

@@ -29,12 +29,53 @@ namespace Labyrinth {
 		return b2_staticBody;
 	}
 
+	template<typename Component>
+	static void CopyComponent(const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
+	{
+		src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id) 
+		{
+			LAB_CORE_ASSERT(entMap.count(id) != 0);
+			dest.emplace_or_replace<Component>(entMap.at(id), component);
+		});
+	}
+	template<typename Component>
+	static void CopyComponent(Entity src, Entity dest)
+	{
+		if (src.hasComponent<Component>())
+			dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+	}
+
 	Scene::Scene()
+		: mRenderStack(CreateSingle<RenderStack>())
 	{
 	}
 
 	Scene::~Scene()
 	{
+	}
+
+	Ref<Scene> Scene::Clone()
+	{
+		Ref<Scene> newScene = CreateRef<Scene>();
+		newScene->mViewportWidth = mViewportWidth;
+		newScene->mViewportHeight = mViewportHeight;
+
+		std::unordered_map<UUID, entt::entity> entMap;
+		std::unordered_map<entt::entity, entt::entity> childMap;
+
+		mRegistry.view<IDComponent, TagComponent, NodeComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& tagComp, const auto& nodeComp)
+		{
+			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp, { nodeComp.parent, newScene });
+		});
+
+		CopyComponent<TransformComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<CameraComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<SpriteRendererComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<RigidBodyComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<BoxColliderComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<CircleColliderComponent>(mRegistry, newScene->mRegistry, entMap);
+
+		return newScene;
 	}
 
 	Entity Scene::CreateEntity(const std::string& name)
@@ -75,26 +116,19 @@ namespace Labyrinth {
 		Entity newEnt = CreateEntity(tag.tag);
 
 		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(nodeCopy.parent);
+		newEnt.setParent({ nodeCopy.parent, CreateRefFromThis(this) });
 
 		// Use counting loop to prevent iterator invalidation
 		size_t copyChildCount = nodeCopy.children.size();
 		for (size_t i = 0; i < copyChildCount; i++)
-			CloneChild(nodeCopy.children[i], newEnt);
+			CloneChild({ nodeCopy.children[i], CreateRefFromThis(this) }, newEnt);
 
-		auto& trans = newEnt.getComponent<TransformComponent>();
-		trans = copy.getComponent<TransformComponent>();
-
-		if (copy.hasComponent<CameraComponent>())
-			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
-		if (copy.hasComponent<SpriteRendererComponent>())
-			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
-		if (copy.hasComponent<RigidBodyComponent>())
-			newEnt.addComponent<RigidBodyComponent>(copy.getComponent<RigidBodyComponent>());
-		if (copy.hasComponent<BoxColliderComponent>())
-			newEnt.addComponent<BoxColliderComponent>(copy.getComponent<BoxColliderComponent>());
-		if (copy.hasComponent<CircleColliderComponent>())
-			newEnt.addComponent<CircleColliderComponent>(copy.getComponent<CircleColliderComponent>());
+		CopyComponent<TransformComponent>(copy, newEnt);
+		CopyComponent<CameraComponent>(copy, newEnt);
+		CopyComponent<SpriteRendererComponent>(copy, newEnt);
+		CopyComponent<RigidBodyComponent>(copy, newEnt);
+		CopyComponent<BoxColliderComponent>(copy, newEnt);
+		CopyComponent<CircleColliderComponent>(copy, newEnt);
 
 		return newEnt;
 	}
@@ -110,28 +144,21 @@ namespace Labyrinth {
 		// Use counting loop to prevent iterator invalidation
 		size_t copyChildCount = nodeCopy.children.size();
 		for (size_t i = 0; i < copyChildCount; i++)
-			CloneChild(nodeCopy.children[i], newEnt);
+			CloneChild({ nodeCopy.children[i], CreateRefFromThis(this) }, newEnt);
 
-		auto& trans = newEnt.getComponent<TransformComponent>();
-		trans = copy.getComponent<TransformComponent>();
-
-		if (copy.hasComponent<CameraComponent>())
-			newEnt.addComponent<CameraComponent>(copy.getComponent<CameraComponent>());
-		if (copy.hasComponent<SpriteRendererComponent>())
-			newEnt.addComponent<SpriteRendererComponent>(copy.getComponent<SpriteRendererComponent>());
-		if (copy.hasComponent<RigidBodyComponent>())
-			newEnt.addComponent<RigidBodyComponent>(copy.getComponent<RigidBodyComponent>());
-		if (copy.hasComponent<BoxColliderComponent>())
-			newEnt.addComponent<BoxColliderComponent>(copy.getComponent<BoxColliderComponent>());
-		if (copy.hasComponent<CircleColliderComponent>())
-			newEnt.addComponent<CircleColliderComponent>(copy.getComponent<CircleColliderComponent>());
+		CopyComponent<TransformComponent>(copy, newEnt);
+		CopyComponent<CameraComponent>(copy, newEnt);
+		CopyComponent<SpriteRendererComponent>(copy, newEnt);
+		CopyComponent<RigidBodyComponent>(copy, newEnt);
+		CopyComponent<BoxColliderComponent>(copy, newEnt);
+		CopyComponent<CircleColliderComponent>(copy, newEnt);
 
 		return newEnt;
 	}
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		auto& parent = entity.getParent();
+		Entity parent(entity.getParent(), CreateRefFromThis(this));
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
@@ -149,14 +176,15 @@ namespace Labyrinth {
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
+			Entity childEnt(child, CreateRefFromThis(this));
 			if (sLinkOnDestroy)
 			{
 				if (parent)
-					child.setParent(parent);
+					childEnt.setParent(parent);
 				else
-					DestroyEntityR(child, entity);
+					DestroyEntityR(childEnt, entity);
 			}
-			else DestroyEntityR(child, entity);
+			else DestroyEntityR(childEnt, entity);
 		}
 
 		mRegistry.destroy(entity);
@@ -223,6 +251,21 @@ namespace Labyrinth {
 				fixtureDef.restitutionThreshold = bcComponent.restitutionThreshold;
 				body->CreateFixture(&fixtureDef);
 			}
+			if (entity.hasComponent<CircleColliderComponent>())
+			{
+				auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+
+				b2CircleShape circleShape;
+				circleShape.m_radius = ccComponent.radius * trComponent.scale.x;
+
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = ccComponent.density;
+				fixtureDef.friction = ccComponent.friction;
+				fixtureDef.restitution = ccComponent.restitution;
+				fixtureDef.restitutionThreshold = ccComponent.restitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
 		});
 	}
 
@@ -267,14 +310,14 @@ namespace Labyrinth {
 		{
 			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 			{
-				mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+				mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
 			});
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
-			mRenderStack.draw();
+			mRenderStack->draw();
 			Renderer2D::EndState();
 
-			mRenderStack.clearQuads();
+			mRenderStack->clearQuads();
 		}
 
 	}
@@ -283,14 +326,14 @@ namespace Labyrinth {
 	{
 		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
 		{
-			mRenderStack.addQuad(trComponent, srComponent, Cast<int>(entity));
+			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
 		});
 
 		Renderer2D::BeginState(camera);
-		mRenderStack.draw();
+		mRenderStack->draw();
 		Renderer2D::EndState();
 
-		mRenderStack.clearQuads();
+		mRenderStack->clearQuads();
 	}
 
 	void Scene::onViewportResize(uint32_t width, uint32_t height)

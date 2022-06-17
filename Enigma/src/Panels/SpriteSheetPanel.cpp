@@ -156,11 +156,13 @@ namespace Labyrinth {
 		bool loadSheet = false;
 
 		if (ImGui::Button("OK"))
+		{
 			if (mTileWidth > 0 && mTileHeight > 0)
 			{
 				loadSheet = true;
 				ImGui::CloseCurrentPopup();
 			}
+		}
 
 		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
@@ -187,7 +189,7 @@ namespace Labyrinth {
 		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
+		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
 		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
 
 		mSubTexSelector.display(mCurrentSheet, mPayload);

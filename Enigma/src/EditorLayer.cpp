@@ -361,6 +361,14 @@ namespace Labyrinth {
 			}
 			break;
 
+			// Scene Commands
+			case Key::D:
+			{
+				if (control)
+					CloneEntity();
+			}
+			break;
+
 			// Gizmos
 			case Key::Q:
 			{
@@ -424,17 +432,24 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		mCurrentScene = CreateRef<Scene>();
-		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-		mScenePanel.setContext(mCurrentScene);
+		if (mSceneState != SceneState::Edit)
+			OnSceneStop();
 
-		Serialiser::Deserialise<Scene>(path.string(), mCurrentScene);
+		Ref<Scene> newScene = CreateRef<Scene>();
+		if (Serialiser::Deserialise<Scene>(path.string(), newScene))
+		{
+			mEditorScene = newScene;
+			mEditorScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mScenePanel.setContext(mEditorScene);
 
-		mFilepath = path.string();
+			mFilepath = path.string();
+			mCurrentScene = mEditorScene;
+		}
+
 	}
 
 	void EditorLayer::SaveScene()
-	{
+	{	
 		if (!mFilepath.empty())
 			Serialiser::Serialise(mCurrentScene, mFilepath);
 		else SaveSceneAs();
@@ -450,13 +465,26 @@ namespace Labyrinth {
 	void EditorLayer::OnScenePlay()
 	{
 		mSceneState = SceneState::Play;
+
+		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onRuntimeStart();
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		mSceneState = SceneState::Edit;
-		mCurrentScene->onRuntimeStop();
 
+		mCurrentScene->onRuntimeStop();
+		mCurrentScene = mEditorScene;
+	}
+
+	void EditorLayer::CloneEntity()
+	{
+		if (mSceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = mScenePanel.getSelectedEntity();
+		if (selectedEntity)
+			mCurrentScene->CloneEntity(selectedEntity);
 	}
 }

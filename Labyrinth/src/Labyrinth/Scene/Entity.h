@@ -17,7 +17,7 @@ namespace Labyrinth {
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
 
-		operator UUID() { return id; }
+		operator UUID() const { return id; }
 	};
 
 
@@ -43,12 +43,13 @@ namespace Labyrinth {
 			return component;
 		}
 
-		//template<typename T>
-		//T& addComponent(const T& component)
-		//{
-		//	assert(!hasComponent<T>());
-		//	return mScene->mRegistry.emplace_or_replace<T>(mEntID, component);
-		//}
+		template<typename T, typename... Args>
+		T& addOrReplaceComponent(Args&&... args)	
+		{
+			T& component = mScene->mRegistry.emplace_or_replace<T>(mEntID, std::forward<Args>(args)...);
+			mScene->onComponentAdded<T>(*this, component);
+			return component;
+		}
 
 		template<typename T>
 		void removeComponent()
@@ -120,22 +121,21 @@ namespace Labyrinth {
 		void destroy() { mScene->DestroyEntity(*this); }
 		Ref<Scene> getScene() { return mScene; }
 
-		Entity& getParent();
-		const Entity& getParent() const;
+		entt::entity& getParent();
+		const entt::entity& getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity newParent, NodeComponent& node);
 		bool setParent(Entity newParent);
 
-		std::vector<Entity>& getChildren();
-		const std::vector<Entity>& getChildren() const;
+		std::vector<entt::entity>& getChildren();
+		const std::vector<entt::entity>& getChildren() const;
     
 		const size_t getChildCount() const { return getChildren().size(); }
 		bool hasChild(const Entity& child) const;
 
 		bool isRelated(const Entity& filter) const;
 
-	private:
 		void addChild(const Entity& child, NodeComponent& node);
 		void addChild(const Entity& child);
 		void removeChild(const Entity& child);
@@ -165,13 +165,13 @@ namespace Labyrinth {
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
-		Entity parent = { entt::null, nullptr };
-		std::vector<Entity> children = {};
+		entt::entity parent = entt::null;
+		std::vector<entt::entity> children = {};
 
 		NodeComponent() = default;
-		NodeComponent(const Entity& _parent, const std::vector<Entity>& _children = {})
+		NodeComponent(const entt::entity& _parent, const std::vector<entt::entity>& _children = {})
 			: parent(_parent), children(_children) {}
 
-		operator bool() { return parent; }
+		operator bool() { return parent != entt::null; }
 	};
 }

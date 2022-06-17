@@ -19,6 +19,8 @@ namespace Labyrinth {
 		Scene();
 		~Scene();
 
+		Ref<Scene> Clone();
+
 		Entity CreateEntity(const std::string& name);
 		Entity CreateEntity(const std::string& name, Entity parent);
 
@@ -34,6 +36,11 @@ namespace Labyrinth {
 
 		template<typename Component, typename... Other, typename... Exclude>
 		auto view(entt::exclude_t<Exclude...> = {})
+		{
+			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
+		}
+		template<typename Component, typename... Other, typename... Exclude>
+		const auto view(entt::exclude_t<Exclude...> = {}) const
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
@@ -58,7 +65,7 @@ namespace Labyrinth {
 
 	private:
 		entt::registry mRegistry;
-		RenderStack mRenderStack;
+		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
 
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;

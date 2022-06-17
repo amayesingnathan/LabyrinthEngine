@@ -23,7 +23,6 @@ namespace Labyrinth {
 
 		void draw();
 
-
 		std::vector<RenderLayer*>::iterator begin() { return mLayers.begin(); }
 		std::vector<RenderLayer*>::iterator end() { return mLayers.end(); }
 		std::vector<RenderLayer*>::reverse_iterator rbegin() { return mLayers.rbegin(); }
