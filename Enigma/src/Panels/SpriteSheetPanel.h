@@ -1,14 +1,10 @@
 #pragma once
 
-#include "../Modals/SubTexModal.h"
-
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Renderer/SubTexture.h"
-#include "Labyrinth/Renderer/Framebuffer.h"
-
-#include <imgui/imgui_internal.h>
+#include "Labyrinth.h"
 
 namespace Labyrinth {
+
+	class SubTexModal;
 
 	struct SubTexPayload
 	{
@@ -26,7 +22,6 @@ namespace Labyrinth {
 		void onUpdate(Timestep ts);
 		void onImGuiRender();
 
-
 	private:
 		void TileWidthModal();
 		void SubTexModalRender();
@@ -40,11 +35,10 @@ namespace Labyrinth {
 
 		std::string mSheetName = "";
 
-		SubTexPayload mPayload;
-
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
-		SubTexModal mSubTexSelector;
+		SubTexModal* mSubTexSelector = nullptr;
+		SubTexPayload mPayload;
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

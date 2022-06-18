@@ -37,7 +37,8 @@ namespace Labyrinth {
 			
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
-		mCurrentScene = CreateRef<Scene>();
+		mEditorScene = CreateRef<Scene>();
+		mCurrentScene = mEditorScene;
 
 		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -79,7 +80,7 @@ namespace Labyrinth {
 		{
 		case SceneState::Edit:
 		{
-			if (mViewportHovered)
+			if (mViewportHovered && mViewportFocused)
 				mEditorCamera.onUpdate(ts);
 
 			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
@@ -224,7 +225,7 @@ namespace Labyrinth {
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		uint32_t textureID = mFramebuffer->getColourAttachmentRendererID();
-		ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+		ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -308,7 +309,7 @@ namespace Labyrinth {
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
 		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-		if (ImGui::ImageButton((ImTextureID)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+		if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
 			if (mSceneState == SceneState::Edit)
 				OnScenePlay();
@@ -358,6 +359,14 @@ namespace Labyrinth {
 					SaveSceneAs();
 				else if (control)
 					SaveScene();
+			}
+			break;
+
+			// Scene Commands
+			case Key::D:
+			{
+				if (control)
+					CloneEntity();
 			}
 			break;
 
@@ -424,41 +433,59 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
-		mCurrentScene = CreateRef<Scene>();
-		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-		mScenePanel.setContext(mCurrentScene);
+		if (mSceneState != SceneState::Edit)
+			OnSceneStop();
 
-		Serialiser::Deserialise<Scene>(path.string(), mCurrentScene);
+		Ref<Scene> newScene = CreateRef<Scene>();
+		if (Serialiser::Deserialise<Scene>(path.string(), newScene))
+		{
+			mEditorScene = newScene;
+			mEditorScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mScenePanel.setContext(mEditorScene);
 
-		mFilepath = path.string();
+			mFilepath = path.string();
+			mCurrentScene = mEditorScene;
+		}
+
 	}
 
 	void EditorLayer::SaveScene()
 	{
 		if (!mFilepath.empty())
-		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
-		}
 		else SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
+		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
 		if (!mFilepath.empty())
-		{
 			Serialiser::Serialise(mCurrentScene, mFilepath);
-		}
 	}
 	
 	void EditorLayer::OnScenePlay()
 	{
 		mSceneState = SceneState::Play;
+
+		mCurrentScene = mEditorScene->Clone();
+		mCurrentScene->onRuntimeStart();
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
 		mSceneState = SceneState::Edit;
 
+		mCurrentScene->onRuntimeStop();
+		mCurrentScene = mEditorScene;
+	}
+
+	void EditorLayer::CloneEntity()
+	{
+		if (mSceneState != SceneState::Edit)
+			return;
+
+		Entity selectedEntity = mScenePanel.getSelectedEntity();
+		if (selectedEntity)
+			mCurrentScene->CloneEntity(selectedEntity);
 	}
 }

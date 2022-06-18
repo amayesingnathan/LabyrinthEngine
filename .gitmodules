@@ -57,3 +57,8 @@
 	url = git@github.com:amayesingnathan/glad.git
 	branch = main
 	update = rebase
+[submodule "Labyrinth/dependencies/box2d"]
+	path = Labyrinth/dependencies/box2d
+	url = git@github.com:amayesingnathan/box2d.git
+	branch = submodule
+	update = rebase

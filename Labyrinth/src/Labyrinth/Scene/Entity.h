@@ -17,7 +17,7 @@ namespace Labyrinth {
 		IDComponent() = default;
 		IDComponent(const IDComponent&) = default;
 
-		operator UUID() { return id; }
+		operator UUID() const { return id; }
 	};
 
 
@@ -43,12 +43,22 @@ namespace Labyrinth {
 			return component;
 		}
 
-		//template<typename T>
-		//T& addComponent(const T& component)
-		//{
-		//	assert(!hasComponent<T>());
-		//	return mScene->mRegistry.emplace_or_replace<T>(mEntID, component);
-		//}
+		template<typename T, typename... Args>
+		T& addOrReplaceComponent(Args&&... args)	
+		{
+			T& component = mScene->mRegistry.emplace_or_replace<T>(mEntID, std::forward<Args>(args)...);
+			mScene->onComponentAdded<T>(*this, component);
+			return component;
+		}
+
+		template<typename T, typename... Args>
+		T& replaceComponent(Args&&... args)
+		{
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't replace component that doesn't exist on entity");
+			T& component = mScene->mRegistry.replace<T>(mEntID, std::forward<Args>(args)...);
+			mScene->onComponentAdded<T>(*this, component);
+			return component;
+		}
 
 		template<typename T>
 		void removeComponent()
@@ -135,7 +145,6 @@ namespace Labyrinth {
 
 		bool isRelated(const Entity& filter) const;
 
-	private:
 		void addChild(const Entity& child, NodeComponent& node);
 		void addChild(const Entity& child);
 		void removeChild(const Entity& child);
@@ -165,7 +174,7 @@ namespace Labyrinth {
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
-		Entity parent = { entt::null, nullptr };
+		Entity parent = {};
 		std::vector<Entity> children = {};
 
 		NodeComponent() = default;

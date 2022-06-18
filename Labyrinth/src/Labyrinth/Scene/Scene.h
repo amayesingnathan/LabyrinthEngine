@@ -7,6 +7,8 @@
 
 #include "entt.hpp"
 
+class b2World;
+
 namespace Labyrinth {
 
 	class Entity;
@@ -16,6 +18,8 @@ namespace Labyrinth {
 	public:
 		Scene();
 		~Scene();
+
+		Ref<Scene> Clone();
 
 		Entity CreateEntity(const std::string& name);
 		Entity CreateEntity(const std::string& name, Entity parent);
@@ -31,12 +35,20 @@ namespace Labyrinth {
 		Entity FindEntity(UUID id);
 
 		template<typename Component, typename... Other, typename... Exclude>
-		entt::basic_view<entt::entity, entt::get_t<Component, Other...>, entt::exclude_t<Exclude...>> view(entt::exclude_t<Exclude...> = {})
+		auto view(entt::exclude_t<Exclude...> = {})
+		{
+			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
+		}
+		template<typename Component, typename... Other, typename... Exclude>
+		const auto view(entt::exclude_t<Exclude...> = {}) const
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
 
 		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);
+
+		void onRuntimeStart();
+		void onRuntimeStop();
 
 		void onUpdateRuntime(Timestep ts);
 		void onUpdateEditor(Timestep ts, EditorCamera& camera);
@@ -53,7 +65,8 @@ namespace Labyrinth {
 
 	private:
 		entt::registry mRegistry;
-		RenderStack mRenderStack;
+		Single<RenderStack> mRenderStack;
+		b2World* mPhysicsWorld = nullptr;
 
 		uint32_t mViewportWidth = 0, mViewportHeight = 0;
 

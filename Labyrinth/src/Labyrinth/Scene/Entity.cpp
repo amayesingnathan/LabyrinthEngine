@@ -8,12 +8,7 @@ namespace Labyrinth {
 	{
 	}
 
-	//Entity::Entity(uint32_t entID, Scene* scene)
-	//	: mEntID(Cast<entt::entity>(entID)), mScene(scene)
-	//{
-	//}
-
-	//const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
+	const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
 	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }

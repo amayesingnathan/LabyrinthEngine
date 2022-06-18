@@ -4,9 +4,9 @@
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 
-#include <imgui/imgui_internal.h>
-
 namespace Labyrinth {
+
+	class BodySpecModal;
 
 	class ScenePanel
 	{
@@ -25,11 +25,15 @@ namespace Labyrinth {
 		void DrawEntityNode(Entity entity);
 		void DrawComponents();
 
+		void BodySpecModalRender();
+
 	private:
 		Ref<Scene> mContext;
 		Entity mSelectedEntity;
 
 		std::vector<Entity> mToRemove;
+
+		BodySpecModal* mBodyCreation = nullptr;
 	};
 
 }

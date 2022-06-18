@@ -19,7 +19,7 @@ namespace Labyrinth {
 
 	std::string FileDialogs::SaveFile(const std::vector<std::string>& filter)
 	{
-        auto destination = pfd::save_file("Save file as", ".", filter).result();
+		auto destination = pfd::save_file("Save file as", ".", filter).result();
         return destination;
 	}
 

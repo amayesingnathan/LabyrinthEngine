@@ -2,7 +2,10 @@
 
 #include <Labyrinth.h>
 
+#include "../Modals/SubTexModal.h"
+
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 namespace Labyrinth {
 
@@ -46,9 +49,9 @@ namespace Labyrinth {
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		if (mCurrentSheet)
-			ImGui::Image((void*)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -72,8 +75,8 @@ namespace Labyrinth {
 
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
 		{
+			mSubTexSelector = new SubTexModal(mPayload, mCurrentSheet);
 			ImGui::OpenPopup("SubTexModal");
-			Application::BlockEsc();
 		}
 
 		ImGui::SameLine();
@@ -119,14 +122,14 @@ namespace Labyrinth {
 
 		if (mPayload.mSelectedSubTex)
 		{
-			ImGui::Image((void*)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 			{
 				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPayload, sizeof(SubTexPayload));
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((void*)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		else ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		TileWidthModal();
 		SubTexModalRender();
@@ -156,11 +159,13 @@ namespace Labyrinth {
 		bool loadSheet = false;
 
 		if (ImGui::Button("OK"))
+		{
 			if (mTileWidth > 0 && mTileHeight > 0)
 			{
 				loadSheet = true;
 				ImGui::CloseCurrentPopup();
 			}
+		}
 
 		ImGui::SetItemDefaultFocus();
 		ImGui::SameLine();
@@ -187,12 +192,13 @@ namespace Labyrinth {
 		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
 		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoResize;
-		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
+		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags) || !mSubTexSelector) return;
 
-		mSubTexSelector.display(mCurrentSheet, mPayload);
+		mSubTexSelector->display();
+		if (mSubTexSelector->complete())
+			delete mSubTexSelector;
 
 		ImGui::EndPopup();
-				
 	}
 }

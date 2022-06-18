@@ -42,17 +42,19 @@ project "Labyrinth"
         "%{IncludeDir.yaml_cpp}",
         "%{IncludeDir.lua}",
         "%{IncludeDir.asio}",
-        "%{IncludeDir.pfd}"
+        "%{IncludeDir.pfd}",
+        "%{IncludeDir.box2d}"
     }
 
 	links
 	{
 		"asio",
+		"box2d",
 		"glad",
 		"glfw",
 		"ImGui",
-		"yaml-cpp",
-		"lua"
+		"lua",
+		"yaml-cpp"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
@@ -62,7 +64,6 @@ project "Labyrinth"
         kind "StaticLib"
         staticruntime "on"
         systemversion "latest"
-		includedirs "%{IncludeDir.LabWin}"
         links "opengl32.lib"
 		
 	filter "system:linux"
@@ -71,7 +72,6 @@ project "Labyrinth"
         defines "LAB_SHARED"
         pic "On"
         systemversion "latest"
-        includedirs "%{IncludeDir.LabLinux}"
 
     filter "configurations:x64d"
         defines { "LAB_DEBUG" }

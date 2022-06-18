@@ -35,15 +35,17 @@ namespace Labyrinth {
 		void OnScenePlay();
 		void OnSceneStop();
 
+		void CloneEntity();
+
 		// UI Panels
 		void UI_Toolbar();
 
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
-		ScenePanel mScenePanel;
-		Ref<Scene> mCurrentScene;
+		Ref<Scene> mCurrentScene, mEditorScene;
 
+		ScenePanel mScenePanel;
 		ContentBrowserPanel mContentBrowserPanel;
 		SpriteSheetPanel mSpriteSheetPanel;
 
