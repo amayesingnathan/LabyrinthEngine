@@ -4,8 +4,8 @@ import platform
 from pathlib import Path
 
 if platform.system() == "Windows":
-    import WinUtils as Utils
-if platform.system() == "Linux":
+    import WindowsUtils as Utils
+elif platform.system() == "Linux":
     import LinuxUtils as Utils
     
 class PremakeConfiguration:
@@ -17,7 +17,7 @@ class PremakeConfiguration:
     else:
         premakeSuffix = ""
         
-    premakeVersion = "5.0.0-alpha16"
+    premakeVersion = "5.0.0-beta1"
     premakeZipUrls = f"https://github.com/premake/premake-core/releases/download/v{premakeVersion}/premake-{premakeVersion}-{premakeSuffix}"
     premakeLicenseUrl = "https://raw.githubusercontent.com/premake/premake-core/master/LICENSE.txt"
     premakeDirectory = "./dependencies/premake/bin"

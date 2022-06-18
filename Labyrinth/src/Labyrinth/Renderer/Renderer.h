@@ -3,7 +3,7 @@
 #include "RenderCommand.h"
 
 #include "Shader.h"
-#include "Camera.h"
+#include "OrthographicCamera.h"
 
 namespace Labyrinth {
 

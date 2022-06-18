@@ -81,6 +81,7 @@ namespace Labyrinth {
 		CopyComponent<TransformComponent>(mRegistry, newScene->mRegistry, entMap);
 		CopyComponent<CameraComponent>(mRegistry, newScene->mRegistry, entMap);
 		CopyComponent<SpriteRendererComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyComponent<CircleRendererComponent>(mRegistry, newScene->mRegistry, entMap);
 		CopyComponent<RigidBodyComponent>(mRegistry, newScene->mRegistry, entMap);
 		CopyComponent<BoxColliderComponent>(mRegistry, newScene->mRegistry, entMap);
 		CopyComponent<CircleColliderComponent>(mRegistry, newScene->mRegistry, entMap);
@@ -136,6 +137,7 @@ namespace Labyrinth {
 		CopyComponent<TransformComponent>(copy, newEnt);
 		CopyComponent<CameraComponent>(copy, newEnt);
 		CopyComponent<SpriteRendererComponent>(copy, newEnt);
+		CopyComponent<CircleRendererComponent>(copy, newEnt);
 		CopyComponent<RigidBodyComponent>(copy, newEnt);
 		CopyComponent<BoxColliderComponent>(copy, newEnt);
 		CopyComponent<CircleColliderComponent>(copy, newEnt);
@@ -159,6 +161,7 @@ namespace Labyrinth {
 		CopyComponent<TransformComponent>(copy, newEnt);
 		CopyComponent<CameraComponent>(copy, newEnt);
 		CopyComponent<SpriteRendererComponent>(copy, newEnt);
+		CopyComponent<CircleRendererComponent>(copy, newEnt);
 		CopyComponent<RigidBodyComponent>(copy, newEnt);
 		CopyComponent<BoxColliderComponent>(copy, newEnt);
 		CopyComponent<CircleColliderComponent>(copy, newEnt);
@@ -317,9 +320,13 @@ namespace Labyrinth {
 		
 		if (mainCamera)
 		{
-			mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
+			mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
 			{
 				mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
+			});
+			mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
+			{
+				mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
 			});
 
 			Renderer2D::BeginState(*mainCamera, cameraTransform);
@@ -333,9 +340,13 @@ namespace Labyrinth {
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		mRegistry.view<TransformComponent, SpriteRendererComponent>().each([this](auto entity, const auto& trComponent, const auto& srComponent)
+		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
 			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
+		});
+		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
+		{
+			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
 		});
 
 		Renderer2D::BeginState(camera);
@@ -404,6 +415,14 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
+	{
+		// Overwrite transform component z value using render layer value
+		auto& trans = entity.getComponent<TransformComponent>().translation;
+		trans.z = component.getNLayer();
+	}
+
+	template<>
+	void Scene::onComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 	{
 		// Overwrite transform component z value using render layer value
 		auto& trans = entity.getComponent<TransformComponent>().translation;

@@ -40,6 +40,13 @@ namespace Labyrinth {
 		mEditorScene = CreateRef<Scene>();
 		mCurrentScene = mEditorScene;
 
+		auto commandLineArgs = Application::Get().getCommandLineArgs();
+		if (commandLineArgs.count > 1)
+		{
+			auto sceneFilePath = commandLineArgs[1];
+			OpenScene(sceneFilePath);
+		}
+
 		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		mScenePanel.setContext(mCurrentScene);
@@ -316,6 +323,11 @@ namespace Labyrinth {
 			else if (mSceneState == SceneState::Play)
 				OnSceneStop();
 		}
+		ImGui::SameLine();
+
+		if (ImGui::Button("Reset Camera", ImVec2(4 * size, size)))
+			mEditorCamera.resetAngle();
+
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
 		ImGui::End();

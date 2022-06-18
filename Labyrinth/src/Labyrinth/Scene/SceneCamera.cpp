@@ -39,7 +39,7 @@ namespace Labyrinth {
 	{
 		if (mProjectionType == ProjectionType::Perspective)
 		{
-			mProjectionMatrix = glm::perspective(mPerspectiveFOV, mAspectRatio, mPerspectiveNear, mPerspectiveFar);
+			mProjection = glm::perspective(mPerspectiveFOV, mAspectRatio, mPerspectiveNear, mPerspectiveFar);
 		}
 		else
 		{
@@ -48,7 +48,7 @@ namespace Labyrinth {
 			float orthoBottom = -mOrthographicSize * 0.5f;
 			float orthoTop = mOrthographicSize * 0.5f;
 
-			mProjectionMatrix = glm::ortho(orthoLeft, orthoRight,
+			mProjection = glm::ortho(orthoLeft, orthoRight,
 				orthoBottom, orthoTop, mOrthographicNear, mOrthographicFar);
 		}
 	}

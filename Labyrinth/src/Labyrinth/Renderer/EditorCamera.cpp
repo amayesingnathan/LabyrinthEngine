@@ -14,10 +14,17 @@ namespace Labyrinth {
 		UpdateView();
 	}
 
+	void EditorCamera::resetAngle()
+	{
+		mPitch = 0.0f;
+		mYaw = 0.0f;
+		UpdateView();
+	}
+
 	void EditorCamera::UpdateProjection()
 	{
 		mAspectRatio = mViewportWidth / mViewportHeight;
-		mProjectionMatrix = glm::perspective(glm::radians(mFOV), mAspectRatio, mNearClip, mFarClip);
+		mProjection = glm::perspective(glm::radians(mFOV), mAspectRatio, mNearClip, mFarClip);
 	}
 
 	void EditorCamera::UpdateView()

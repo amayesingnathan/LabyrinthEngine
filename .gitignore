@@ -25,5 +25,9 @@ Makefile.in
 #Profiling files
 **.json
 
+# Directories
+Labyrinth/dependencies/VulkanSDK
+Enigma/assets/cache
+
 #Python cache files
 __pycache__/

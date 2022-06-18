@@ -304,6 +304,15 @@ namespace Labyrinth {
 				}
 			}
 
+			if (!mSelectedEntity.hasComponent<CircleRendererComponent>())
+			{
+				if (ImGui::MenuItem("Circle Renderer"))
+				{
+					mSelectedEntity.addComponent<CircleRendererComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
 			if (!mSelectedEntity.hasComponent<RigidBodyComponent>())
 			{
 				if (ImGui::MenuItem("Rigid Body"))
@@ -318,6 +327,15 @@ namespace Labyrinth {
 				if (ImGui::MenuItem("Box Collider"))
 				{
 					mSelectedEntity.addComponent<BoxColliderComponent>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+
+			if (!mSelectedEntity.hasComponent<CircleColliderComponent>())
+			{
+				if (ImGui::MenuItem("Circle Collider"))
+				{
+					mSelectedEntity.addComponent<CircleColliderComponent>();
 					ImGui::CloseCurrentPopup();
 				}
 			}
@@ -498,6 +516,25 @@ namespace Labyrinth {
 			}
 
 			ImGui::DragFloat("Tiling Factor", &component.tilingFactor, 0.1f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<CircleRendererComponent>("Circle Renderer", mSelectedEntity, [&](auto& component)
+		{
+			int layerVal = component.layer;
+			if (ImGui::InputInt("Layer", &layerVal))
+			{
+				if (layerVal < 0) layerVal = 0;
+				if (layerVal > component.MaxLayers) layerVal = component.MaxLayers;
+
+				if (layerVal != component.layer)
+				{
+					component.layer = layerVal;
+					mSelectedEntity.getComponent<TransformComponent>().translation.z = component.getNLayer();
+				}
+			}
+
+			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
+			ImGui::DragFloat("Thickness", &component.thickness, 0.025f, 0.0f, 1.0f);
 		});
 
 		DrawComponent<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)

@@ -238,6 +238,18 @@ namespace Labyrinth {
 	}
 
 	template<>
+	void YAMLParser::EncodeObject<CircleRendererComponent>(const CircleRendererComponent& srComponent, bool flag)
+	{
+		BeginObject("SpriteRendererComponent");
+
+		ObjectProperty("Layer", Cast<int>(srComponent.layer)); //Cast to int so it is encoded as number not char
+		ObjectProperty("Colour", srComponent.colour);
+		ObjectProperty("Thickness", srComponent.thickness);
+
+		EndObject();
+	}
+
+	template<>
 	void YAMLParser::EncodeObject<RigidBodyComponent>(const RigidBodyComponent& rbComponent, bool flag)
 	{
 		BeginObject("RigidBodyComponent");
@@ -508,6 +520,24 @@ namespace Labyrinth {
 
 			return CreateRef<SpriteRendererComponent>(src);
 		}
+
+		return nullptr;
+	}
+
+	template<>
+	Ref<CircleRendererComponent> YAMLParser::DecodeObject<CircleRendererComponent>(Entity entity, YAML::Node node)
+	{
+		auto circleRendererComponent = node["CircleRendererComponent"];
+		if (circleRendererComponent)
+		{
+			auto& src = entity.addComponent<CircleRendererComponent>();
+
+			src.layer = circleRendererComponent["Layer"].as<uint8_t>();
+			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
+
+			src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
+			src.thickness = circleRendererComponent["Thickness"].as<float>();
+		}			
 
 		return nullptr;
 	}

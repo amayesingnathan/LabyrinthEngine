@@ -2,6 +2,7 @@
 
 #include "Camera.h"
 #include "EditorCamera.h"
+#include "OrthographicCamera.h"
 
 #include "Texture.h"
 #include "SubTexture.h"
@@ -44,6 +45,9 @@ namespace Labyrinth {
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
+
+		static void DrawCircle(const glm::mat4& transform, const glm::vec4& colour, float thickness = 1.0f, int entityID = -1);
+		static void DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, int entityID = -1);
 
 		// Stats
 		struct Statistics

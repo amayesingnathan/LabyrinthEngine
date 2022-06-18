@@ -95,12 +95,4 @@ namespace Labyrinth {
 
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
-
-	void OpenGLIndexBuffer::setData(const void* data, uint32_t size)
-	{
-		LAB_PROFILE_FUNCTION();
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mRendererID);
-		glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, size, data);
-	}
 }

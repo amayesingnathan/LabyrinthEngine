@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Renderer/Camera.h"
+#include "Labyrinth/Renderer/OrthographicCamera.h"
 #include "Labyrinth/Core/Timestep.h"
 
 #include "Labyrinth/Events/ApplicationEvent.h"

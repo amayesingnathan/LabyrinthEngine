@@ -15,21 +15,28 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		//Calculate how much to move camera from mouse being dragged.
-		//Ignore keyboard input if dragging
-		if (mDragging)
+		//Move the camera depending on it's current rotation for more intuitive movement.
+		//Similarly scale camera move speed by zoom factor.
+		if (Input::IsKeyPressed(Key::A))
 		{
-			float moveX = mLastMousePos.x - Input::GetMouseX();
-			float moveY = Input::GetMouseY() - mLastMousePos.y;
-			//Scale dragging movement speed down for more intuitive feel
-			mCameraPosition += 0.06f * mCameraTranslationSpeed * mZoom * ts * (mZoom * glm::vec3(moveX, moveY, 0.0f));
+			mCameraPosition.x -= cos(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+			mCameraPosition.y -= sin(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+		}
+		else if (Input::IsKeyPressed(Key::D))
+		{
+			mCameraPosition.x += cos(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+			mCameraPosition.y += sin(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+		}
 
-			mCamera.setPosition(mCameraPosition);
-			mCamera.setZoom(mZoom);
-
-			mLastMousePos.x = Input::GetMouseX();
-			mLastMousePos.y = Input::GetMouseY();
-			return;
+		if (Input::IsKeyPressed(Key::W))
+		{
+			mCameraPosition.x += -sin(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+			mCameraPosition.y += cos(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+		}
+		else if (Input::IsKeyPressed(Key::S))
+		{
+			mCameraPosition.x -= -sin(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
+			mCameraPosition.y -= cos(glm::radians(mCameraRotation)) * mCameraTranslationSpeed * ts;
 		}
 
 		if (mRotation)
@@ -47,54 +54,9 @@ namespace Labyrinth {
 			mCamera.setRotation(mCameraRotation);
 		}
 
-		//Lock movement to world axis if holding shift
-		mLockCam = (Input::IsKeyPressed(Key::LeftShift)) ? true : false;
-
-		//Move the camera depending on it's current rotation for more intuitive movement.
-		//Similarly scale camera move speed by zoom factor.
-		if (Input::IsKeyPressed(Key::A))
-		{
-			if (!mLockCam)
-			{
-				mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
-				mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts * sin(glm::radians(mCameraRotation));
-			}
-			else mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts;
-		}
-		else if (Input::IsKeyPressed(Key::D))
-		{
-			if (!mLockCam)
-			{
-				mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
-				mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts * sin(glm::radians(mCameraRotation));
-			}
-			else mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts;
-		}
-
-		if (Input::IsKeyPressed(Key::W))
-		{
-			if (!mLockCam)
-			{
-				mCameraPosition.x += mCameraTranslationSpeed * mZoom * ts * -sin(glm::radians(mCameraRotation));
-				mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
-			}
-			else mCameraPosition.y += mCameraTranslationSpeed * mZoom * ts;
-		}
-		else if (Input::IsKeyPressed(Key::S))
-		{
-			if (!mLockCam)
-			{
-				mCameraPosition.x -= mCameraTranslationSpeed * mZoom * ts * -sin(glm::radians(mCameraRotation));
-				mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts * cos(glm::radians(mCameraRotation));
-			}
-			else mCameraPosition.y -= mCameraTranslationSpeed * mZoom * ts;
-		}
-
 		mCamera.setPosition(mCameraPosition);
-		mCamera.setZoom(mZoom);
 
-		mLastMousePos.x = Input::GetMouseX();
-		mLastMousePos.y = Input::GetMouseY();
+		mCameraTranslationSpeed = mZoom;
 	}
 
 	void OrthographicCameraController::onEvent(Event& e)

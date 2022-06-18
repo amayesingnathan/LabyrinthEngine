@@ -50,7 +50,7 @@ namespace Labyrinth {
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
-		ApplicationCommandLineArgs GetCommandLineArgs() const { return mCommandLineArgs; }
+		ApplicationCommandLineArgs getCommandLineArgs() const { return mCommandLineArgs; }
 
 	private:
 		void run();

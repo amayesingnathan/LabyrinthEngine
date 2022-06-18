@@ -1,4 +1,5 @@
 include "./dependencies/premake/premake_customization/solution_items.lua"
+include "dependencies.lua"
 
 workspace "Labyrinth"
     startproject "Enigma"
@@ -41,25 +42,6 @@ workspace "Labyrinth"
 	}
 
 outputDir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architecture}"
-
-IncludeDir = {}
-IncludeDir["Labyrinth"] = "%{wks.location}/Labyrinth/src"
-IncludeDir["LabCore"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Core"
-IncludeDir["RenderAPI"] = "%{wks.location}/Labyrinth/src/Labyrinth/Renderer/APIs"
-IncludeDir["asio"] 		= "%{wks.location}/Labyrinth/dependencies/asio/include"
-IncludeDir["box2d"] 		= "%{wks.location}/Labyrinth/dependencies/box2d/include"
-IncludeDir["entt"] 		= "%{wks.location}/Labyrinth/dependencies/entt/include"
-IncludeDir["glad"] 		= "%{wks.location}/Labyrinth/dependencies/glad/include"
-IncludeDir["glfw"] 		= "%{wks.location}/Labyrinth/dependencies/glfw/include"
-IncludeDir["glm"] 		= "%{wks.location}/Labyrinth/dependencies/glm"
-IncludeDir["ImGui"] 	= "%{wks.location}/Labyrinth/dependencies/imgui"
-IncludeDir["ImGuizmo"] 	= "%{wks.location}/Labyrinth/dependencies/ImGuizmo"
-IncludeDir["lua"] 		= "%{wks.location}/Labyrinth/dependencies/lua"
-IncludeDir["pfd"] 		= "%{wks.location}/Labyrinth/dependencies/portable-file-dialogs"
-IncludeDir["rapidxml"] 	= "%{wks.location}/Labyrinth/dependencies/rapidxml"
-IncludeDir["spdlog"] 	= "%{wks.location}/Labyrinth/dependencies/spdlog/include"
-IncludeDir["stb_image"] = "%{wks.location}/Labyrinth/dependencies/stb_image"
-IncludeDir["yaml_cpp"] 	= "%{wks.location}/Labyrinth/dependencies/yaml-cpp/include"
 
 group "Dependencies"
 	include "dependencies/premake"

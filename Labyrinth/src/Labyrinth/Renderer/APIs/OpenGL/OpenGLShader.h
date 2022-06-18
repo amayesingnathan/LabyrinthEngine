@@ -45,11 +45,23 @@ namespace Labyrinth {
 
 		std::string ReadFile(const std::string filepath);
 		std::unordered_map<GLenum, std::string> PreProcess(const std::string& source);
-		void Compile(const std::unordered_map<GLenum, std::string>& shaderSources);
+
+		void CompileOrGetVulkanBinaries(const std::unordered_map<GLenum, std::string>& shaderSources);
+		void CompileOrGetOpenGLBinaries();
+		void CreateProgram();
+		void Reflect(GLenum stage, const std::vector<uint32_t>& shaderData);
 
 	private:
-		std::string mName;
 		uint32_t mRendererID;
+
+		std::string mFilepath;
+		std::string mName;
+
+		std::unordered_map<GLenum, std::vector<uint32_t>> mVulkanSPIRV;
+		std::unordered_map<GLenum, std::vector<uint32_t>> mOpenGLSPIRV;
+
+		std::unordered_map<GLenum, std::string> mOpenGLSourceCode;
+
 		mutable std::unordered_map<std::string, int> mUniformLocCache;
 	};
 

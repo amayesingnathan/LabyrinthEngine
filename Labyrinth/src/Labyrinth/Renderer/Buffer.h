@@ -36,15 +36,15 @@ namespace Labyrinth {
 
 	struct BufferElement
 	{
-		ShaderDataType type;
 		std::string name;
+		ShaderDataType type;
 		size_t offset;
 		uint32_t size;
 		bool normalised;
 
 		BufferElement() = default;
 		BufferElement(ShaderDataType t, const std::string& n, bool norm = false)
-			: type(t), name(n), size(ShaderDataTypeSize(t)), offset(0), normalised(norm)
+			: name(n), type(t), size(ShaderDataTypeSize(t)), offset(0), normalised(norm)
 		{}
 
 		uint32_t getComponentCount() const
@@ -134,8 +134,6 @@ namespace Labyrinth {
 
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
-
-		virtual void setData(const void* data, uint32_t count) = 0;
 
 		virtual uint32_t getCount() const = 0;
 

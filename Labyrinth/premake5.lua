@@ -43,7 +43,8 @@ project "Labyrinth"
         "%{IncludeDir.lua}",
         "%{IncludeDir.asio}",
         "%{IncludeDir.pfd}",
-        "%{IncludeDir.box2d}"
+        "%{IncludeDir.box2d}",
+        "%{IncludeDir.VulkanSDK}",
     }
 
 	links
@@ -62,7 +63,7 @@ project "Labyrinth"
 	
     filter "system:windows"
         kind "StaticLib"
-        staticruntime "on"
+        staticruntime "off"
         systemversion "latest"
         links "opengl32.lib"
 		
@@ -73,32 +74,24 @@ project "Labyrinth"
         pic "On"
         systemversion "latest"
 
-    filter "configurations:x64d"
+    filter "configurations:*d"
         defines { "LAB_DEBUG" }
 		runtime "Debug"
         symbols "on"
+        links
+		{
+			"%{Library.ShaderC_Debug}",
+			"%{Library.SPIRV_Cross_Debug}",
+			"%{Library.SPIRV_Cross_GLSL_Debug}"
+		}
 
-	filter "configurations:ARMd"
-        defines { "LAB_DEBUG" }
-		runtime "Debug"
-        symbols "on"
-
-	filter "configurations:ARM64d"
-        defines { "LAB_DEBUG" }
-		runtime "Debug"
-		symbols "on"
-
-    filter "configurations:x64"
+    filter "configurations:not *d"
         defines { "LAB_RELEASE" }
 		runtime "Release"
         optimize "on"
-
-	filter "configurations:ARM"
-        defines { "LAB_RELEASE" }
-		runtime "Release"
-		optimize "on"
-
-	filter "configurations:ARM64"
-        defines { "LAB_RELEASE" }
-		runtime "Release"
-		optimize "on"
+        links
+		{
+			"%{Library.ShaderC_Release}",
+			"%{Library.SPIRV_Cross_Release}",
+			"%{Library.SPIRV_Cross_GLSL_Release}"
+		}

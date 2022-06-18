@@ -4,6 +4,31 @@ SpriteSheets:
     Source: assets\textures\PlayerSprite.png
     TileSize: [16, 22]
 Entities:
+  - Entity: 9930939154273099405
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-2.29751968, -9.19512367, 0.00784313772]
+      Rotation: [0, 0, 0]
+      Scale: [7.25346231, 0.494775623, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 2
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
   - Entity: 5198405619224053099
     TagComponent:
       Tag: Floor
@@ -12,12 +37,12 @@ Entities:
       Children:
         []
     TransformComponent:
-      Translation: [-0.0848038793, -2.50950766, 0]
+      Translation: [-0.0848038793, -2.50950766, 0.00784313772]
       Rotation: [0, 0, -0.495200396]
       Scale: [7.25345707, 0.494775802, 1]
     SpriteRendererComponent:
       Type: -1
-      Layer: 0
+      Layer: 2
       Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
     RigidBodyComponent:
       Type: 0
@@ -37,12 +62,12 @@ Entities:
       Children:
         []
     TransformComponent:
-      Translation: [-2.29751968, -9.19512367, 0]
-      Rotation: [0, 0, -0.575896919]
-      Scale: [7.25345612, 0.494775623, 1]
+      Translation: [-5.67198515, -7.32356501, 0.00784313772]
+      Rotation: [0, 0, 1.57079637]
+      Scale: [4.24996281, 0.49477464, 1]
     SpriteRendererComponent:
       Type: -1
-      Layer: 0
+      Layer: 2
       Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
     RigidBodyComponent:
       Type: 0
@@ -62,12 +87,12 @@ Entities:
       Children:
         []
     TransformComponent:
-      Translation: [7.22842121, -6.48061752, -0.260040283]
+      Translation: [7.22842121, -6.48061752, 0.00784313772]
       Rotation: [-0.0805096999, 0.109930158, 0.30458194]
       Scale: [9.54999161, 0.494775623, 1]
     SpriteRendererComponent:
       Type: -1
-      Layer: 0
+      Layer: 2
       Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
     RigidBodyComponent:
       Type: 0
@@ -81,7 +106,7 @@ Entities:
       RestitutionThreshold: 0.5
   - Entity: 17014374854102427983
     TagComponent:
-      Tag: Box
+      Tag: Sprite
     NodeComponent:
       ChildCount: 0
       Children:
@@ -105,12 +130,12 @@ Entities:
     RigidBodyComponent:
       Type: 1
       FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
+    CircleColliderComponent:
+      Radius: 0.449999988
       Offset: [0, 0]
       Density: 0.5
       Friction: 1
-      Restitution: 0.660000026
+      Restitution: 0.300000012
       RestitutionThreshold: 0.5
   - Entity: 9170353095846712291
     TagComponent:
@@ -120,7 +145,7 @@ Entities:
       Children:
         []
     TransformComponent:
-      Translation: [1.11900485, -2.38008547, 15]
+      Translation: [4.18642616, -4.85834599, 20.6226673]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:

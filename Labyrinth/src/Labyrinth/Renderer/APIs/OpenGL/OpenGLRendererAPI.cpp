@@ -62,9 +62,11 @@ namespace Labyrinth {
 	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
+		vertexArray->bind();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
-
-		glBindTexture(GL_TEXTURE_2D, 0);
+#if LAB_DEBUG
+		vertexArray->unbind();
+#endif
 	}
 
 	void OpenGLRendererAPI::enableDepth()

@@ -21,7 +21,11 @@ namespace Labyrinth {
 		virtual void clearAttachment(uint32_t attachmentIndex, int value) override;
 
 		virtual void bindColourAttachment(uint32_t index = 0);
-		virtual uint32_t getColourAttachmentRendererID(uint32_t index = 0) const override { LAB_CORE_ASSERT(index < mColourAttachments.size()); return mColourAttachments[index]; }
+		virtual uint32_t getColourAttachmentRendererID(uint32_t index = 0) const override 
+		{ 
+			LAB_CORE_ASSERT(index < mColourAttachments.size()); 
+			return mColourAttachments[index]; 
+		}
 
 		virtual const FramebufferSpec& getSpecification() const override { return mSpecification; }
 	private:

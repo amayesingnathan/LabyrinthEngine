@@ -2,7 +2,7 @@ project "Sandbox"
     kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
-    staticruntime "on"
+    staticruntime "off"
 	
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
@@ -29,6 +29,11 @@ project "Sandbox"
     {
         "Labyrinth"
     }
+	
+	postbuildcommands
+	{
+		"{COPYDIR} \"%{LibraryDir.VulkanSDK_DebugDLL}\" \"%{cfg.targetdir}\""
+	}
 
     filter "system:windows"
         systemversion "latest"

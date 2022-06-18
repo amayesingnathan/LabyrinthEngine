@@ -20,6 +20,7 @@ namespace Labyrinth {
 		RenderLayer* getLayer(uint8_t layer);
 
 		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID = -1);
+		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, int entID = -1);
 
 		void draw();
 

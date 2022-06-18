@@ -24,7 +24,7 @@ namespace Labyrinth {
 		inline void setViewportSize(float width, float height) { mViewportWidth = width; mViewportHeight = height; UpdateProjection(); }
 
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
-		glm::mat4 getViewProjection() const { return mProjectionMatrix * mViewMatrix; }
+		glm::mat4 getViewProjection() const { return mProjection * mViewMatrix; }
 
 		glm::vec3 getUpDirection() const;
 		glm::vec3 getRightDirection() const;
@@ -34,6 +34,9 @@ namespace Labyrinth {
 
 		float getPitch() const { return mPitch; }
 		float getYaw() const { return mYaw; }
+
+		void resetAngle();
+
 	private:
 		void UpdateProjection();
 		void UpdateView();
@@ -49,6 +52,7 @@ namespace Labyrinth {
 		glm::vec2 PanSpeed() const;
 		float RotationSpeed() const;
 		float ZoomSpeed() const;
+
 	private:
 		float mFOV = 45.0f, mAspectRatio = 1.778f, mNearClip = 0.1f, mFarClip = 1000.0f;
 
