@@ -33,7 +33,7 @@ namespace Labyrinth {
 			if (parser.DecodeObject<T>(target)) return true;
 			return false;
 		}
-		static bool SeserialiseRuntime(const std::string& filepath)
+		static bool DeserialiseRuntime(const std::string& filepath)
 		{
 			// Not implemented
 			LAB_CORE_ASSERT(false);

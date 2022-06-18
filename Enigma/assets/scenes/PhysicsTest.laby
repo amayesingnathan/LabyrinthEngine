@@ -4,28 +4,81 @@ SpriteSheets:
     Source: assets\textures\PlayerSprite.png
     TileSize: [16, 22]
 Entities:
-  - Entity: 9170353095846712291
+  - Entity: 5198405619224053099
     TagComponent:
-      Tag: Camera
+      Tag: Floor
     NodeComponent:
       ChildCount: 0
       Children:
         []
     TransformComponent:
-      Translation: [1.11900485, -2.38008547, 15]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
+      Translation: [-0.0848038793, -2.50950766, 0]
+      Rotation: [0, 0, -0.495200396]
+      Scale: [7.25345707, 0.494775802, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 0
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 8981038691820956743
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-2.29751968, -9.19512367, 0]
+      Rotation: [0, 0, -0.575896919]
+      Scale: [7.25345612, 0.494775623, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 0
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 10982048038578088450
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [7.22842121, -6.48061752, -0.260040283]
+      Rotation: [-0.0805096999, 0.109930158, 0.30458194]
+      Scale: [9.54999161, 0.494775623, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 0
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
   - Entity: 17014374854102427983
     TagComponent:
       Tag: Box
@@ -57,55 +110,27 @@ Entities:
       Offset: [0, 0]
       Density: 0.5
       Friction: 1
-      Restitution: 0.400000006
+      Restitution: 0.660000026
       RestitutionThreshold: 0.5
-  - Entity: 10982048038578088450
+  - Entity: 9170353095846712291
     TagComponent:
-      Tag: Floor
+      Tag: Camera
     NodeComponent:
       ChildCount: 0
       Children:
         []
     TransformComponent:
-      Translation: [4.00575542, -6.00985622, 0]
-      Rotation: [-0.0805097595, 0.109930158, 0.169405594]
-      Scale: [7.25345564, 0.494775504, 1]
-    SpriteRendererComponent:
-      Type: -1
-      Layer: 0
-      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0
-      RestitutionThreshold: 0.5
-  - Entity: 8981038691820956743
-    TagComponent:
-      Tag: Floor
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-0.0848038793, -2.50950766, 0]
-      Rotation: [0, 0, -0.495200396]
-      Scale: [7.25345707, 0.494775802, 1]
-    SpriteRendererComponent:
-      Type: -1
-      Layer: 0
-      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0
-      RestitutionThreshold: 0.5
+      Translation: [1.11900485, -2.38008547, 15]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false

@@ -72,8 +72,8 @@ namespace Labyrinth {
 
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
 		{
+			mSubTexSelector = new SubTexModal(mPayload, mCurrentSheet);
 			ImGui::OpenPopup("SubTexModal");
-			Application::BlockEsc();
 		}
 
 		ImGui::SameLine();
@@ -190,11 +190,12 @@ namespace Labyrinth {
 		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags)) return;
+		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags) || !mSubTexSelector) return;
 
-		mSubTexSelector.display(mCurrentSheet, mPayload);
+		mSubTexSelector->display();
+		if (mSubTexSelector->complete())
+			delete mSubTexSelector;
 
 		ImGui::EndPopup();
-				
 	}
 }

@@ -6,20 +6,18 @@
 
 namespace Labyrinth {
 
-	class SubTexModal
+	class SubTexModal : public ModalWindow
 	{
 		using Position = std::pair<size_t, size_t>;
 
 	public:
-		SubTexModal() = default;
+		SubTexModal(struct SubTexPayload& data, Ref<Texture2DSheet> sheet);
 
-		void display(Ref<Texture2DSheet> sheet, struct SubTexPayload& data);
+		void display() override;
 
 	private:
-		void Close();
-
 		//Verify this is a valid subtexture i.e. a quad
-		bool CheckSelection(Ref<Texture2DSheet> sheet);
+		bool CheckSelection();
 		void SortSelected();
 
 		//Navigate grid
@@ -53,6 +51,7 @@ namespace Labyrinth {
 		bool open = false;
 
 		std::string mName = "SubTextureName";
+		Ref<Texture2DSheet> mSheet;
 
 		Position outTopLeft;
 		Position outBottomRight;

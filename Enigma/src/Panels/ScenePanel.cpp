@@ -1,10 +1,12 @@
 #include "ScenePanel.h"
 
 #include "SpriteSheetPanel.h"
+#include "../Modals/BodySpecModal.h"
 
 #include <Labyrinth.h>
 
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -41,13 +43,24 @@ namespace Labyrinth {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
 
+		bool openSpecModal = false;
 		if (ImGui::BeginPopupContextWindow(0, 1, false))
 		{
 			if (ImGui::MenuItem("Create Empty Entity"))
 				mContext->CreateEntity("Empty Entity");
+			if (ImGui::MenuItem("Create Rigid Body"))
+			{
+				mBodyCreation = new BodySpecModal(mContext);
+				openSpecModal = true;
+			}
 
 			ImGui::EndPopup();
 		}
+
+		if (openSpecModal)
+			ImGui::OpenPopup("BodySpecModal");
+
+		BodySpecModalRender();
 
 		ImGui::End();
 
@@ -533,6 +546,21 @@ namespace Labyrinth {
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
+	}
+
+	void ScenePanel::BodySpecModalRender()
+	{
+		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+		if (!ImGui::BeginPopupModal("BodySpecModal", nullptr, flags)) return;
+
+		mBodyCreation->display();
+		if (mBodyCreation->complete())
+			delete mBodyCreation;
+
+		ImGui::EndPopup();
 	}
 
 }

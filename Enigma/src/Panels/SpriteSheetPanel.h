@@ -40,11 +40,10 @@ namespace Labyrinth {
 
 		std::string mSheetName = "";
 
-		SubTexPayload mPayload;
-
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
-		SubTexModal mSubTexSelector;
+		SubTexModal* mSubTexSelector = nullptr;
+		SubTexPayload mPayload;
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

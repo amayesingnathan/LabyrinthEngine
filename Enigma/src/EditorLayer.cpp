@@ -37,7 +37,8 @@ namespace Labyrinth {
 			
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
-		mCurrentScene = CreateRef<Scene>();
+		mEditorScene = CreateRef<Scene>();
+		mCurrentScene = mEditorScene;
 
 		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -79,7 +80,7 @@ namespace Labyrinth {
 		{
 		case SceneState::Edit:
 		{
-			if (mViewportHovered)
+			if (mViewportHovered && mViewportFocused)
 				mEditorCamera.onUpdate(ts);
 
 			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
@@ -449,7 +450,7 @@ namespace Labyrinth {
 	}
 
 	void EditorLayer::SaveScene()
-	{	
+	{
 		if (!mFilepath.empty())
 			Serialiser::Serialise(mCurrentScene, mFilepath);
 		else SaveSceneAs();
