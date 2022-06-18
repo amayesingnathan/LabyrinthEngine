@@ -554,7 +554,7 @@ namespace Labyrinth {
 		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
 
 		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-		if (!ImGui::BeginPopupModal("BodySpecModal", nullptr, flags)) return;
+		if (!ImGui::BeginPopupModal("BodySpecModal", nullptr, flags) || !mBodyCreation) return;
 
 		mBodyCreation->display();
 		if (mBodyCreation->complete())

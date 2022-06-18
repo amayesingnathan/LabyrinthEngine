@@ -141,11 +141,8 @@ namespace Labyrinth {
 
 		BeginSequence("Children");
 		for (auto& child : node.children)
-		{
-			BeginObject();
-			ObjectProperty("EntID", Cast<uint32_t>(child));
-			EndObject();
-		}
+			EncodeObject(child);
+
 		EndSequence();
 
 		EndObject();
@@ -331,7 +328,7 @@ namespace Labyrinth {
 
 		BeginSequence("Entities");
 
-		scene->view<IDComponent>().each([&](auto entityID, const auto& rc)
+		scene->view<RootComponent>().each([&](auto entityID, const auto& rc)
 		{
 			Entity entity = { entityID, scene };
 			EncodeObject(entity);
@@ -400,7 +397,7 @@ namespace Labyrinth {
 				CurrentParent = entity;
 
 				for (auto child : children)
-					entity.addChild({ Cast<entt::entity>(child["EntID"].as<uint32_t>()), entity.getScene() });
+					DecodeObject<Entity>(entity.getScene(), child);
 
 				// Once all children have had parent set, restore the currentParent entity
 				// to this entity's parent.

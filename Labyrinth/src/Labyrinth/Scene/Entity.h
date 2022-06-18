@@ -51,6 +51,15 @@ namespace Labyrinth {
 			return component;
 		}
 
+		template<typename T, typename... Args>
+		T& replaceComponent(Args&&... args)
+		{
+			LAB_CORE_ASSERT(hasComponent<T>(), "Can't replace component that doesn't exist on entity");
+			T& component = mScene->mRegistry.replace<T>(mEntID, std::forward<Args>(args)...);
+			mScene->onComponentAdded<T>(*this, component);
+			return component;
+		}
+
 		template<typename T>
 		void removeComponent()
 		{
@@ -121,15 +130,15 @@ namespace Labyrinth {
 		void destroy() { mScene->DestroyEntity(*this); }
 		Ref<Scene> getScene() { return mScene; }
 
-		entt::entity& getParent();
-		const entt::entity& getParent() const;
+		Entity& getParent();
+		const Entity& getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity newParent, NodeComponent& node);
 		bool setParent(Entity newParent);
 
-		std::vector<entt::entity>& getChildren();
-		const std::vector<entt::entity>& getChildren() const;
+		std::vector<Entity>& getChildren();
+		const std::vector<Entity>& getChildren() const;
     
 		const size_t getChildCount() const { return getChildren().size(); }
 		bool hasChild(const Entity& child) const;
@@ -165,13 +174,13 @@ namespace Labyrinth {
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
-		entt::entity parent = entt::null;
-		std::vector<entt::entity> children = {};
+		Entity parent = {};
+		std::vector<Entity> children = {};
 
 		NodeComponent() = default;
-		NodeComponent(const entt::entity& _parent, const std::vector<entt::entity>& _children = {})
+		NodeComponent(const Entity& _parent, const std::vector<Entity>& _children = {})
 			: parent(_parent), children(_children) {}
 
-		operator bool() { return parent != entt::null; }
+		operator bool() { return parent; }
 	};
 }

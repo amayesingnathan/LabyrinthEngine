@@ -12,39 +12,17 @@ namespace Labyrinth {
 	public: // Class Types
 		enum class Shape { Box, Circle };
 
-		struct NoShapeOptions {};
-		struct BoxOptions 
-		{ 
-			glm::vec2 halfExtents = { 0.5f, 0.5f };
-			glm::vec2 offset = { 0.0f, 0.0f };
-			float friction = 1.f;
-			float density = 0.5f;
-			float restitution = 0.f;
-			float restitutionThreshold = 0.5f;
-		};
-		struct CircleOptions 
-		{ 
-			float radius = 0.5f;
-			glm::vec2 offset = { 0.0f, 0.0f };
-			float friction = 1.f;
-			float density = 0.5f;
-			float restitution = 0.f;
-			float restitutionThreshold = 0.5f;
-		};
-
-		using Options = std::variant<NoShapeOptions, BoxOptions, CircleOptions>;
+		struct NoCollider {};
+		using Collider = std::variant<NoCollider, BoxColliderComponent, CircleColliderComponent>;
 
 		struct BodyDef 
 		{
-			glm::vec2 position = { 0.0f, 0.0f };
-			float rotation = 0.0f;
-			glm::vec2 size = { 1.0f, 1.0f };
-			RigidBodyComponent::BodyType type = RigidBodyComponent::BodyType::Static;
-			bool fixedRotation = false;
+			TransformComponent trans;
+			RigidBodyComponent body;
 
 			bool hasShape = false;
 			Shape shape = Shape::Box;
-			Options shapeDef = NoShapeOptions();
+			Collider shapeDef = NoCollider();
 		};
 
 	public:
@@ -60,6 +38,21 @@ namespace Labyrinth {
 		Ref<Scene>& mContext;
 		Entity mNewEntity;
 		BodyDef mBodyDef;
+
+		struct BodyType { std::string label;  RigidBodyComponent::BodyType type; };
+		const std::vector<BodyType> mBodyTypes =
+		{
+			{"Static", RigidBodyComponent::BodyType::Static },
+			{"Kinematic", RigidBodyComponent::BodyType::Kinematic },
+			{"Dynamic", RigidBodyComponent::BodyType::Dynamic }
+		};
+
+		struct Shapes { std::string label;  Shape shape; };
+		const std::vector<Shapes> mShapeTypes =
+		{
+			{"Box", Shape::Box},
+			{"Circle", Shape::Circle},
+		};
 	};
 
 }

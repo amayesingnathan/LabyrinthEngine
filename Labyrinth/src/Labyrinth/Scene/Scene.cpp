@@ -61,11 +61,21 @@ namespace Labyrinth {
 		newScene->mViewportHeight = mViewportHeight;
 
 		std::unordered_map<UUID, entt::entity> entMap;
-		std::unordered_map<entt::entity, entt::entity> childMap;
 
-		mRegistry.view<IDComponent, TagComponent, NodeComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& tagComp, const auto& nodeComp)
+		mRegistry.view<IDComponent, TagComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& tagComp)
 		{
-			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp, { nodeComp.parent, newScene });
+			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
+		});
+
+		// Parent/child relations require more care to clone as parent/children are stored using entt::entity so need to find corresponding entities in cloned scene.
+		mRegistry.view<IDComponent, NodeComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& nodeComp)
+		{
+			if (nodeComp.parent) {
+				const auto& parentID = nodeComp.parent.getComponent<IDComponent>();
+				Entity newEnt = { entMap.at(idComp), newScene };
+				Entity newParent = { entMap.at(parentID), newScene };
+				newEnt.setParent(newParent);
+			}
 		});
 
 		CopyComponent<TransformComponent>(mRegistry, newScene->mRegistry, entMap);
@@ -116,12 +126,12 @@ namespace Labyrinth {
 		Entity newEnt = CreateEntity(tag.tag);
 
 		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent({ nodeCopy.parent, CreateRefFromThis(this) });
+		newEnt.setParent(nodeCopy.parent);
 
 		// Use counting loop to prevent iterator invalidation
 		size_t copyChildCount = nodeCopy.children.size();
 		for (size_t i = 0; i < copyChildCount; i++)
-			CloneChild({ nodeCopy.children[i], CreateRefFromThis(this) }, newEnt);
+			CloneChild(nodeCopy.children[i], newEnt);
 
 		CopyComponent<TransformComponent>(copy, newEnt);
 		CopyComponent<CameraComponent>(copy, newEnt);
@@ -144,7 +154,7 @@ namespace Labyrinth {
 		// Use counting loop to prevent iterator invalidation
 		size_t copyChildCount = nodeCopy.children.size();
 		for (size_t i = 0; i < copyChildCount; i++)
-			CloneChild({ nodeCopy.children[i], CreateRefFromThis(this) }, newEnt);
+			CloneChild(nodeCopy.children[i], newEnt);
 
 		CopyComponent<TransformComponent>(copy, newEnt);
 		CopyComponent<CameraComponent>(copy, newEnt);
@@ -158,7 +168,7 @@ namespace Labyrinth {
 
 	void Scene::DestroyEntity(Entity entity)
 	{
-		Entity parent(entity.getParent(), CreateRefFromThis(this));
+		Entity& parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
@@ -176,15 +186,14 @@ namespace Labyrinth {
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
-			Entity childEnt(child, CreateRefFromThis(this));
 			if (sLinkOnDestroy)
 			{
 				if (parent)
-					childEnt.setParent(parent);
+					child.setParent(parent);
 				else
-					DestroyEntityR(childEnt, entity);
+					DestroyEntityR(child, entity);
 			}
-			else DestroyEntityR(childEnt, entity);
+			else DestroyEntityR(child, entity);
 		}
 
 		mRegistry.destroy(entity);

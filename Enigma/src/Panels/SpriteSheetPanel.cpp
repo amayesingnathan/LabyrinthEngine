@@ -2,7 +2,10 @@
 
 #include <Labyrinth.h>
 
+#include "../Modals/SubTexModal.h"
+
 #include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
 
 namespace Labyrinth {
 

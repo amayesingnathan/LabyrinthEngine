@@ -1,14 +1,10 @@
 #pragma once
 
-#include "../Modals/SubTexModal.h"
-
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Renderer/SubTexture.h"
-#include "Labyrinth/Renderer/Framebuffer.h"
-
-#include <imgui/imgui_internal.h>
+#include "Labyrinth.h"
 
 namespace Labyrinth {
+
+	class SubTexModal;
 
 	struct SubTexPayload
 	{
@@ -25,7 +21,6 @@ namespace Labyrinth {
 
 		void onUpdate(Timestep ts);
 		void onImGuiRender();
-
 
 	private:
 		void TileWidthModal();
