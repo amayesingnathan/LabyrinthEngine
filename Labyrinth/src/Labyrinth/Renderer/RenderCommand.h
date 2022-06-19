@@ -47,9 +47,19 @@ namespace Labyrinth {
 			sRendererAPI->disableBlend();
 		}
 
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t count = 0)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)
 		{
-			sRendererAPI->drawIndexed(vertexArray, count);
+			sRendererAPI->drawIndexed(vertexArray, indexCount);
+		}
+
+		static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+		{
+			sRendererAPI->drawLines(vertexArray, vertexCount);
+		}
+
+		static void SetLineWidth(float width)
+		{
+			sRendererAPI->setLineWidth(width);
 		}
 
 	private:

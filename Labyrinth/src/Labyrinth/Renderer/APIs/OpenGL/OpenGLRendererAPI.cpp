@@ -42,6 +42,8 @@ namespace Labyrinth {
 
 		glDepthFunc(GL_LESS);
 		glEnable(GL_DEPTH_TEST);
+
+		glEnable(GL_LINE_SMOOTH);
 	}
 
 	void OpenGLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
@@ -67,6 +69,20 @@ namespace Labyrinth {
 #if LAB_DEBUG
 		vertexArray->unbind();
 #endif
+	}
+
+	void OpenGLRendererAPI::drawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+	{
+		vertexArray->bind();
+		glDrawArrays(GL_LINES, 0, vertexCount);
+#if LAB_DEBUG
+		vertexArray->unbind();
+#endif
+	}
+
+	void OpenGLRendererAPI::setLineWidth(float width)
+	{
+		glLineWidth(width);
 	}
 
 	void OpenGLRendererAPI::enableDepth()

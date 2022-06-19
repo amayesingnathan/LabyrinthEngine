@@ -41,6 +41,15 @@ namespace Labyrinth {
 		int entityID;
 	};
 
+	struct LineVertex
+	{
+		glm::vec3 position;
+		glm::vec4 colour;
+
+		// Editor-only
+		int entityID;
+	};
+
 	struct Renderer2DData
 	{
 		static const uint32_t MaxQuads = 20000;
@@ -71,6 +80,16 @@ namespace Labyrinth {
 		uint32_t circleIndexCount = 0;
 		CircleVertex* circleVertexBufferBase = nullptr;
 		CircleVertex* circleVertexBufferPtr = nullptr;
+
+		Ref<VertexArray> lineVertexArray;
+		Ref<VertexBuffer> lineVertexBuffer;
+		Ref<Shader> lineShader;
+
+		uint32_t lineVertexCount = 0;
+		LineVertex* lineVertexBufferBase = nullptr;
+		LineVertex* lineVertexBufferPtr = nullptr;
+
+		float lineWidth = 2.f;
 
 		std::array<Ref<Texture2D>, MaxTextureSlots> textureSlots;
 		uint32_t textureSlotIndex;
@@ -185,7 +204,7 @@ namespace Labyrinth {
 				{ ShaderDataType::Float3, "aWorldPosition" },
 				{ ShaderDataType::Float,  "aThickness"     },
 				{ ShaderDataType::Float2, "aLocalPosition" },
-				{ ShaderDataType::Float4, "aColor"         },
+				{ ShaderDataType::Float4, "aColour"        },
 				{ ShaderDataType::Int,    "aEntityID"      }
 				});
 
@@ -195,6 +214,21 @@ namespace Labyrinth {
 			sData.circleVertexArray->setIndexBuffer(sData.quadVertexArray->getIndexBuffer()); // Reuse quad index buffer
 		}
 
+		// Lines
+		{
+			sData.lineVertexArray = VertexArray::Create();
+
+			sData.lineVertexBuffer = VertexBuffer::Create(sData.MaxVertices * sizeof(QuadVertex));
+			sData.lineVertexBuffer->setLayout({
+				{ ShaderDataType::Float3, "aPosition" },
+				{ ShaderDataType::Float4, "aColour"   },
+				{ ShaderDataType::Int,    "aEntityID" }
+				});
+
+			sData.lineVertexArray->addVertexBuffer(sData.lineVertexBuffer);
+			sData.lineVertexBufferBase = new LineVertex[sData.MaxVertices];
+		}
+
 		// White Texture
 		sData.whiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
@@ -202,6 +236,7 @@ namespace Labyrinth {
 
 		sData.quadShader = Shader::Create("assets/shaders/Renderer2DQuad.glsl");
 		sData.circleShader = Shader::Create("assets/shaders/Renderer2DCircle.glsl");
+		sData.lineShader = Shader::Create("assets/shaders/Renderer2DLine.glsl");
 		sData.displayShader = Shader::Create("assets/shaders/Framebuffer.glsl");
 
 		sData.textureSlots[0] = sData.whiteTexture;
@@ -220,6 +255,7 @@ namespace Labyrinth {
 
 		delete[] sData.quadVertexBufferBase;
 		delete[] sData.circleVertexBufferBase;
+		delete[] sData.lineVertexBufferBase;
 		delete[] sData.displayVertexBufferBase;
 	}
 
@@ -278,6 +314,9 @@ namespace Labyrinth {
 		sData.circleIndexCount = 0;
 		sData.circleVertexBufferPtr = sData.circleVertexBufferBase;
 
+		sData.lineVertexCount = 0;
+		sData.lineVertexBufferPtr = sData.lineVertexBufferBase;
+
 		sData.textureSlotIndex = 1;
 	}
 
@@ -305,6 +344,18 @@ namespace Labyrinth {
 
 			sData.circleShader->bind();
 			RenderCommand::DrawIndexed(sData.circleVertexArray, sData.circleIndexCount);
+			sData.stats.drawCalls++;
+		}
+
+		// Lines
+		if (sData.lineVertexCount)
+		{
+			uint32_t lineDataSize = (uint32_t)((uint8_t*)sData.lineVertexBufferPtr - (uint8_t*)sData.lineVertexBufferBase);
+			sData.lineVertexBuffer->setData(sData.lineVertexBufferBase, lineDataSize);
+
+			sData.lineShader->bind();
+			RenderCommand::SetLineWidth(sData.lineWidth);
+			RenderCommand::DrawLines(sData.lineVertexArray, sData.lineVertexCount);
 			sData.stats.drawCalls++;
 		}
 	}
@@ -530,6 +581,45 @@ namespace Labyrinth {
 	{
 		DrawCircle(transform, src.colour, src.thickness, entityID);
 	}
+
+	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, int entityID)
+	{
+		sData.lineVertexBufferPtr->position = p0;
+		sData.lineVertexBufferPtr->colour = colour;
+		sData.lineVertexBufferPtr->entityID = entityID;
+		sData.lineVertexBufferPtr++;
+
+		sData.lineVertexBufferPtr->position = p1;
+		sData.lineVertexBufferPtr->colour = colour;
+		sData.lineVertexBufferPtr->entityID = entityID;
+		sData.lineVertexBufferPtr++;
+
+		sData.lineVertexCount += 2;
+	}
+
+	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, int entityID)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+
+		DrawRect(transform, colour, entityID);
+	}
+
+	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& colour, int entityID)
+	{
+		glm::vec3 lineVertices[4];
+		for (size_t i = 0; i < 4; i++)
+			lineVertices[i] = transform * sData.quadVertexPositions[i];
+
+		DrawLine(lineVertices[0], lineVertices[1], colour, entityID);
+		DrawLine(lineVertices[1], lineVertices[2], colour, entityID);
+		DrawLine(lineVertices[2], lineVertices[3], colour, entityID);
+		DrawLine(lineVertices[3], lineVertices[0], colour, entityID);
+	}
+
+	float Renderer2D::GetLineWidth() { return sData.lineWidth; }
+
+	void Renderer2D::SetLineWidth(float width) { sData.lineWidth = width; }
 
 	void Renderer2D::ResetStats()
 	{

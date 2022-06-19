@@ -49,6 +49,14 @@ namespace Labyrinth {
 		static void DrawCircle(const glm::mat4& transform, const glm::vec4& colour, float thickness = 1.0f, int entityID = -1);
 		static void DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, int entityID = -1);
 
+		static void DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, int entityID = -1);
+
+		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, int entityID = -1);
+		static void DrawRect(const glm::mat4& transform, const glm::vec4& colour, int entityID = -1);
+
+		static float GetLineWidth();
+		static void SetLineWidth(float width);
+
 		// Stats
 		struct Statistics
 		{

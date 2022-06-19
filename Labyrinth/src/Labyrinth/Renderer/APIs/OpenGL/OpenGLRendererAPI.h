@@ -14,6 +14,9 @@ namespace Labyrinth {
 		virtual void clear() override;
 
 		virtual void drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) override;
+		virtual void drawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount) override;
+
+		virtual void setLineWidth(float width) override;
 
 		virtual void enableDepth() override;
 		virtual void disableDepth() override;
