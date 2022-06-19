@@ -1,6 +1,3 @@
-//////////////
-// Hazel 2D //
-//////////////
 //
 // Renderer 2D Circle Shader
 //
@@ -64,6 +61,10 @@ void main()
 
 	float alpha = 1.0 - smoothstep(1.0f - fade, 1.0f, dist);
 	alpha *= smoothstep(1.0 - t - fade, 1.0 - t, dist);
+
+	if (alpha == 0.0)
+		discard;
+
 	oColour = Input.Colour;
 	oColour.a = Input.Colour.a * alpha;
 

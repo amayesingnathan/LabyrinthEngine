@@ -9,18 +9,6 @@
 
 namespace Labyrinth {
 
-	//Defined here so it can be used in body of Entity.
-	struct LAB_API IDComponent
-	{
-		UUID id;
-
-		IDComponent() = default;
-		IDComponent(const IDComponent&) = default;
-
-		operator UUID() const { return id; }
-	};
-
-
 	struct RootComponent;
 	struct NodeComponent;
 
@@ -100,10 +88,7 @@ namespace Labyrinth {
 			return Cast<uint32_t>(mEntID);
 		}
 
-		UUID getUUID() const
-		{
-			return getComponent<IDComponent>().id;
-		}
+		const UUID& getUUID() const;
 
 		operator entt::entity() const { return mEntID; }
 		operator uint32_t() const { return Cast<uint32_t>(mEntID); }

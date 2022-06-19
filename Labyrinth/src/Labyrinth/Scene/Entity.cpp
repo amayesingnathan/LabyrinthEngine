@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "Entity.h"
 
+#include "Components.h"
+
 namespace Labyrinth {
 
 	Entity::Entity(entt::entity entID, Ref<Scene> scene)
@@ -9,6 +11,8 @@ namespace Labyrinth {
 	}
 
 	const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
+	const UUID& Entity::getUUID() const { return getComponent<IDComponent>(); }
+
 	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }

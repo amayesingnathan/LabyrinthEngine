@@ -29,20 +29,46 @@ namespace Labyrinth {
 		return b2_staticBody;
 	}
 
-	template<typename Component>
+	template<typename... Component>
 	static void CopyComponent(const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
 	{
-		src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id) 
-		{
-			LAB_CORE_ASSERT(entMap.count(id) != 0);
-			dest.emplace_or_replace<Component>(entMap.at(id), component);
-		});
+		([&]()
+			{
+				src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id)
+					{
+						LAB_CORE_ASSERT(entMap.count(id) != 0);
+						dest.emplace_or_replace<Component>(entMap.at(id), component);
+					});
+			}(), ...);
 	}
-	template<typename Component>
+	template<typename... Component>
+	static void CopyComponent(ComponentGroup<Component...>, const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
+	{
+		CopyComponent<Component...>(src, dest, entMap);
+	}
+	static void CopyAllComponents(entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& enttMap)
+	{
+		CopyComponent(AllComponents{}, src, dest, enttMap);
+	}
+
+	template<typename... Component>
 	static void CopyComponent(Entity src, Entity dest)
 	{
-		if (src.hasComponent<Component>())
-			dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+		([&]()
+			{
+				if (src.hasComponent<Component>())
+					dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+			}(), ...);
+	}
+	template<typename... Component>
+	static void CopyComponent(ComponentGroup<Component...>, Entity src, Entity dest)
+	{
+		CopyComponent<Component...>(src, dest);
+	}
+
+	static void CopyAllComponents(Entity src, Entity dest)
+	{
+		CopyComponent(AllComponents{}, src, dest);
 	}
 
 	Scene::Scene()
@@ -78,13 +104,7 @@ namespace Labyrinth {
 			}
 		});
 
-		CopyComponent<TransformComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<CameraComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<SpriteRendererComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<CircleRendererComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<RigidBodyComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<BoxColliderComponent>(mRegistry, newScene->mRegistry, entMap);
-		CopyComponent<CircleColliderComponent>(mRegistry, newScene->mRegistry, entMap);
+		CopyAllComponents(mRegistry, newScene->mRegistry, entMap);
 
 		return newScene;
 	}
@@ -134,13 +154,7 @@ namespace Labyrinth {
 		for (size_t i = 0; i < copyChildCount; i++)
 			CloneChild(nodeCopy.children[i], newEnt);
 
-		CopyComponent<TransformComponent>(copy, newEnt);
-		CopyComponent<CameraComponent>(copy, newEnt);
-		CopyComponent<SpriteRendererComponent>(copy, newEnt);
-		CopyComponent<CircleRendererComponent>(copy, newEnt);
-		CopyComponent<RigidBodyComponent>(copy, newEnt);
-		CopyComponent<BoxColliderComponent>(copy, newEnt);
-		CopyComponent<CircleColliderComponent>(copy, newEnt);
+		CopyAllComponents(copy, newEnt);
 
 		return newEnt;
 	}
@@ -157,14 +171,8 @@ namespace Labyrinth {
 		size_t copyChildCount = nodeCopy.children.size();
 		for (size_t i = 0; i < copyChildCount; i++)
 			CloneChild(nodeCopy.children[i], newEnt);
-
-		CopyComponent<TransformComponent>(copy, newEnt);
-		CopyComponent<CameraComponent>(copy, newEnt);
-		CopyComponent<SpriteRendererComponent>(copy, newEnt);
-		CopyComponent<CircleRendererComponent>(copy, newEnt);
-		CopyComponent<RigidBodyComponent>(copy, newEnt);
-		CopyComponent<BoxColliderComponent>(copy, newEnt);
-		CopyComponent<CircleColliderComponent>(copy, newEnt);
+		
+		CopyAllComponents(copy, newEnt);
 
 		return newEnt;
 	}

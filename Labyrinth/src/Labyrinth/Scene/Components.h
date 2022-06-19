@@ -2,7 +2,8 @@
 
 #include "Labyrinth/Maths/Vector2D.h"
 
-#include "SceneCamera.h"
+#include "Labyrinth/Core/UUID.h"
+#include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"
 
 #include <glm/glm.hpp>
@@ -16,6 +17,16 @@ namespace Labyrinth {
 	//////////////////////////////////////////
 	//    General object data components	//
 	//////////////////////////////////////////
+
+	struct LAB_API IDComponent
+	{
+		UUID id;
+
+		IDComponent() = default;
+		IDComponent(const IDComponent&) = default;
+
+		operator UUID() const { return id; }
+	};
 
 	struct LAB_API CameraComponent
 	{
@@ -206,4 +217,17 @@ namespace Labyrinth {
 		CircleColliderComponent() = default;
 		CircleColliderComponent(const CircleColliderComponent&) = default;
 	};
+
+	template<typename... Component>
+	struct ComponentGroup {};
+	using AllComponents = ComponentGroup
+	<
+		TransformComponent,
+		SpriteRendererComponent,
+		CircleRendererComponent,
+		CameraComponent,
+		RigidBodyComponent,
+		BoxColliderComponent,
+		CircleColliderComponent
+	>;
 }
