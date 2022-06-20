@@ -14,6 +14,13 @@ namespace Labyrinth {
 		UpdateView();
 	}
 
+	void EditorCamera::resetPosition()
+	{
+		mFocalPoint = glm::vec3(0.f);
+		mDistance = 10.f;
+		UpdateView();
+	}
+
 	void EditorCamera::resetAngle()
 	{
 		mPitch = 0.0f;

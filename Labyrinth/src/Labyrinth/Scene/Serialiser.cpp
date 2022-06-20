@@ -340,7 +340,7 @@ namespace Labyrinth {
 
 		BeginSequence("Entities");
 
-		scene->view<RootComponent>().each([&](auto entityID, const auto& rc)
+		scene->getEntitiesWith<RootComponent>().each([&](auto entityID, const auto& rc)
 		{
 			Entity entity = { entityID, scene };
 			EncodeObject(entity);

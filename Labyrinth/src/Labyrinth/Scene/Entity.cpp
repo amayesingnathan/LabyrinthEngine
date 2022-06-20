@@ -11,7 +11,7 @@ namespace Labyrinth {
 	}
 
 	const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
-	const UUID& Entity::getUUID() const { return getComponent<IDComponent>(); }
+	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
 
 	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 

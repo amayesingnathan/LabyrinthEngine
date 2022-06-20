@@ -46,19 +46,20 @@ namespace Labyrinth {
             else
                 mBodyDef.shapeDef = NoCollider();
         }
+        ImGui::SameLine();
+        ImGui::Checkbox("Render?", &mAddRender);
 
         if (mBodyDef.hasShape) 
         {
-            std::string shape("Box");
-            if (ImGui::BeginCombo("Shape Type", shape.c_str()))
+            if (ImGui::BeginCombo("Shape Type", mShapeString.c_str()))
             {
                 for (const auto& [label, type] : mShapeTypes)
                 {
-                    bool isSelected = shape == label;
+                    bool isSelected = mShapeString == label;
 
                     if (ImGui::Selectable(label.c_str(), isSelected))
                     {
-                        shape = label;
+                        mShapeString = label;
                         mBodyDef.shape = type;
                         switch (mBodyDef.shape)
                         {
@@ -85,7 +86,6 @@ namespace Labyrinth {
         if (ImGui::Button("OK"))
         {
             mNewEntity = mContext->CreateEntity("Rigid Body");
-            mNewEntity.addComponent<SpriteRendererComponent>();
             auto& trans = mNewEntity.replaceComponent<TransformComponent>(mBodyDef.trans);
             auto& rbc = mNewEntity.addComponent<RigidBodyComponent>(mBodyDef.body);
 
@@ -135,10 +135,16 @@ namespace Labyrinth {
         std::visit([this](auto& arg) 
         {
             using T = std::decay_t<decltype(arg)>;
-            if constexpr (std::is_same_v<T, BoxColliderComponent>) 
-                auto& bcc = mNewEntity.addComponent<BoxColliderComponent>(arg);
-            else if constexpr (std::is_same_v<T, CircleColliderComponent>) 
-                auto& ccc = mNewEntity.addComponent<CircleColliderComponent>(arg);
+            if constexpr (std::is_same_v<T, BoxColliderComponent>)
+            {
+                mNewEntity.addComponent<BoxColliderComponent>(arg);
+                if (mAddRender) mNewEntity.addComponent<SpriteRendererComponent>();
+            }
+            else if constexpr (std::is_same_v<T, CircleColliderComponent>)
+            {
+                mNewEntity.addComponent<CircleColliderComponent>(arg);
+                if (mAddRender) mNewEntity.addComponent<CircleRendererComponent>();
+            }
             else if constexpr (std::is_same_v<T, NoCollider>) {}
             else 
                 static_assert(std::always_false_v<T>, "non-exhaustive visitor!");

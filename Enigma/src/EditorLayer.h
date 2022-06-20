@@ -9,6 +9,12 @@
 
 namespace Labyrinth {
 
+	struct EditorData
+	{
+		std::string currentFile;
+		bool displayColliders = false;
+	};
+
 	class EditorLayer : public Layer
 	{
 	public:
@@ -35,6 +41,8 @@ namespace Labyrinth {
 		void OnScenePlay();
 		void OnSceneStop();
 
+		void OnOverlayRender();
+
 		void CloneEntity();
 
 		// UI Panels
@@ -49,13 +57,10 @@ namespace Labyrinth {
 		ContentBrowserPanel mContentBrowserPanel;
 		SpriteSheetPanel mSpriteSheetPanel;
 
-		Entity mHoveredEntity;
-
-		std::string mFilepath;
-
-		bool mPrimaryCamera = true;
-
+		EditorData mEditorData;
 		EditorCamera mEditorCamera;
+
+		Entity mHoveredEntity;
 		
 		// Editor resources
 		Ref<Texture2D> mIconPlay, mIconStop;
@@ -65,7 +70,6 @@ namespace Labyrinth {
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 		std::array<glm::vec2, 2> mViewportBounds = {};
 
-		glm::vec4 mSquareColour = { 0.2f, 0.3f, 0.8f, 1.0f };
 		int mGizmoType = -1;
 
 		enum class SceneState

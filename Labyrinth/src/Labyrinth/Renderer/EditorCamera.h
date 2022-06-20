@@ -35,6 +35,7 @@ namespace Labyrinth {
 		float getPitch() const { return mPitch; }
 		float getYaw() const { return mYaw; }
 
+		void resetPosition();
 		void resetAngle();
 
 	private:

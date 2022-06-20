@@ -38,6 +38,8 @@ namespace Labyrinth {
 		Ref<Scene>& mContext;
 		Entity mNewEntity;
 		BodyDef mBodyDef;
+		std::string mShapeString = "Box";
+		bool mAddRender = false;
 
 		struct BodyType { std::string label;  RigidBodyComponent::BodyType type; };
 		const std::vector<BodyType> mBodyTypes =

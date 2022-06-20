@@ -35,12 +35,12 @@ namespace Labyrinth {
 		Entity FindEntity(UUID id);
 
 		template<typename Component, typename... Other, typename... Exclude>
-		auto view(entt::exclude_t<Exclude...> = {})
+		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
 		template<typename Component, typename... Other, typename... Exclude>
-		const auto view(entt::exclude_t<Exclude...> = {}) const
+		const auto getEntitiesWith(entt::exclude_t<Exclude...> = {}) const
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}

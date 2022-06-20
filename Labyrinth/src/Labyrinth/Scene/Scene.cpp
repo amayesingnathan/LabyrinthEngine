@@ -348,11 +348,11 @@ namespace Labyrinth {
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
+		mRegistry.view<SpriteRendererComponent, TransformComponent>().each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
 			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
 		});
-		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
+		mRegistry.view<CircleRendererComponent, TransformComponent>().each([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
 			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
 		});

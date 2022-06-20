@@ -17,7 +17,7 @@ namespace Labyrinth {
 	extern const std::filesystem::path gAssetPath;
 
 	EditorLayer::EditorLayer()
-		:	Layer("EditorLayer"), mSquareColour({ 0.5f, 0.15f, 0.15f, 1.0f })
+		:	Layer("EditorLayer")
 	{
 	}
 
@@ -101,7 +101,7 @@ namespace Labyrinth {
 		}
 
 		auto [mx, my] = ImGui::GetMousePos();
-		mx -= mViewportBounds[0].x;
+		mx -= mViewportBounds[0].x;	
 		my -= mViewportBounds[0].y;
 		glm::vec2 viewportSize = mViewportBounds[1] - mViewportBounds[0];
 		my = viewportSize.y - my;
@@ -113,6 +113,8 @@ namespace Labyrinth {
 			int pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
 			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
+
+		OnOverlayRender();
 
 		mFramebuffer->unbind();
 		
@@ -212,6 +214,16 @@ namespace Labyrinth {
 		ImGui::Text("Quads: %d", stats.quadCount);
 		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
 		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+
+		ImGui::End();
+
+		ImGui::Begin("Settings");
+
+		ImGui::Checkbox("Display Colliders", &mEditorData.displayColliders);
+		if (ImGui::Button("Reset Camera Angle"))
+			mEditorCamera.resetAngle();
+		if (ImGui::Button("Reset Camera Position"))
+			mEditorCamera.resetPosition();
 
 		ImGui::End();
 
@@ -323,10 +335,6 @@ namespace Labyrinth {
 			else if (mSceneState == SceneState::Play)
 				OnSceneStop();
 		}
-		ImGui::SameLine();
-
-		if (ImGui::Button("Reset Camera", ImVec2(4 * size, size)))
-			mEditorCamera.resetAngle();
 
 		ImGui::PopStyleVar(2);
 		ImGui::PopStyleColor(3);
@@ -436,10 +444,10 @@ namespace Labyrinth {
 
 	void EditorLayer::OpenScene()
 	{
-		mFilepath = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
-		if (!mFilepath.empty())
+		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
+		if (!mEditorData.currentFile.empty())
 		{
-			OpenScene(mFilepath);
+			OpenScene(mEditorData.currentFile);
 		}
 	}
 
@@ -455,7 +463,7 @@ namespace Labyrinth {
 			mEditorScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 			mScenePanel.setContext(mEditorScene);
 
-			mFilepath = path.string();
+			mEditorData.currentFile = path.string();
 			mCurrentScene = mEditorScene;
 		}
 
@@ -463,16 +471,16 @@ namespace Labyrinth {
 
 	void EditorLayer::SaveScene()
 	{
-		if (!mFilepath.empty())
-			Serialiser::Serialise(mCurrentScene, mFilepath);
+		if (!mEditorData.currentFile.empty())
+			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
 		else SaveSceneAs();
 	}
 
 	void EditorLayer::SaveSceneAs()
 	{
-		mFilepath = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
-		if (!mFilepath.empty())
-			Serialiser::Serialise(mCurrentScene, mFilepath);
+		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
+		if (!mEditorData.currentFile.empty())
+			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
 	}
 	
 	void EditorLayer::OnScenePlay()
@@ -489,6 +497,52 @@ namespace Labyrinth {
 
 		mCurrentScene->onRuntimeStop();
 		mCurrentScene = mEditorScene;
+	}
+
+	void EditorLayer::OnOverlayRender()
+	{
+		if (!mEditorData.displayColliders) return;
+
+		switch (mSceneState)
+		{
+		case SceneState::Edit:
+			Renderer2D::BeginState(mEditorCamera);
+			break;
+
+		case SceneState::Play:
+		{
+			Entity camera = mCurrentScene->getPrimaryCameraEntity();
+			Renderer2D::BeginState(camera.getComponent<CameraComponent>().camera, camera.getComponent<TransformComponent>());
+			break;
+		}
+		default:
+			return;
+		}
+
+		mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([](const auto& tc, const auto& bcc) 
+		{
+			glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, 0.001f);
+			glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
+
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+				* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+				* glm::scale(glm::mat4(1.0f), scale);
+
+			Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+		});
+
+		mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([](const auto& tc, const auto& ccc)
+		{
+			glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, 0.001f);
+			glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
+
+			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+				* glm::scale(glm::mat4(1.0f), scale);
+
+			Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.05f);
+		});
+
+		Renderer2D::EndState();
 	}
 
 	void EditorLayer::CloneEntity()
