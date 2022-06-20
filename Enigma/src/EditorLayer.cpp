@@ -28,6 +28,7 @@ namespace Labyrinth {
 		mHighlight = Texture2D::Create("resources/icons/highlight.png");
 		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
 		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
+		mIconSim = Texture2D::Create("resources/icons/simbutton.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -96,6 +97,14 @@ namespace Labyrinth {
 		case SceneState::Play:
 		{
 			mCurrentScene->onUpdateRuntime(ts);
+			break;
+		}
+		case SceneState::Simulate:
+		{
+			if (mViewportHovered && mViewportFocused)
+				mEditorCamera.onUpdate(ts);
+
+			mCurrentScene->onUpdateSimulation(ts, mEditorCamera);
 			break;
 		}
 		}
@@ -326,14 +335,27 @@ namespace Labyrinth {
 		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
-		Ref<Texture2D> icon = mSceneState == SceneState::Edit ? mIconPlay : mIconStop;
-		ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-		if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 		{
-			if (mSceneState == SceneState::Edit)
-				OnScenePlay();
-			else if (mSceneState == SceneState::Play)
-				OnSceneStop();
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate) ? mIconPlay : mIconStop;
+			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+			{
+				if (mSceneState == SceneState::Edit)
+					OnScenePlay();
+				else if (mSceneState == SceneState::Play)
+					OnSceneStop();
+			}
+		}
+		ImGui::SameLine();
+		{
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Play) ? mIconSim : mIconStop;
+			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+			{
+				if (mSceneState == SceneState::Edit)
+					OnSceneSimulate();
+				else if (mSceneState == SceneState::Simulate)
+					OnSceneStop();
+			}
 		}
 
 		ImGui::PopStyleVar(2);
@@ -387,6 +409,24 @@ namespace Labyrinth {
 			{
 				if (control)
 					CloneEntity();
+			}
+			break;
+			case Key::Space:
+			{
+				switch (mSceneState)
+				{
+				case SceneState::Edit:
+				{
+					if (control) OnScenePlay();
+					else OnSceneSimulate();
+					break;
+				}
+				default:
+				{
+					OnSceneStop();
+					break;
+				}
+				}
 			}
 			break;
 
@@ -489,6 +529,18 @@ namespace Labyrinth {
 
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onRuntimeStart();
+
+		mScenePanel.setContext(mCurrentScene);
+	}
+
+	void EditorLayer::OnSceneSimulate()
+	{
+		mSceneState = SceneState::Simulate;
+
+		mCurrentScene = mEditorScene->Clone();
+		mCurrentScene->onSimulationStart();
+
+		mScenePanel.setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -497,6 +549,8 @@ namespace Labyrinth {
 
 		mCurrentScene->onRuntimeStop();
 		mCurrentScene = mEditorScene;
+
+		mScenePanel.setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnOverlayRender()
@@ -509,9 +563,15 @@ namespace Labyrinth {
 			Renderer2D::BeginState(mEditorCamera);
 			break;
 
+		case SceneState::Simulate:
+			Renderer2D::BeginState(mEditorCamera);
+			break;
+
 		case SceneState::Play:
 		{
 			Entity camera = mCurrentScene->getPrimaryCameraEntity();
+			if (!camera) return;
+
 			Renderer2D::BeginState(camera.getComponent<CameraComponent>().camera, camera.getComponent<TransformComponent>());
 			break;
 		}

@@ -78,6 +78,7 @@ namespace Labyrinth {
 
 	Scene::~Scene()
 	{
+		if (mPhysicsWorld) delete mPhysicsWorld;
 	}
 
 	Ref<Scene> Scene::Clone()
@@ -126,7 +127,7 @@ namespace Labyrinth {
 
 	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity parent)
 	{
-		Entity newEnt(mRegistry.create(), CreateRefFromThis(this));
+		Entity newEnt(mRegistry.create(), CreateRef(this));
 
 		newEnt.addComponent<IDComponent>(id);
 		newEnt.addComponent<TransformComponent>();
@@ -210,6 +211,112 @@ namespace Labyrinth {
 		mRegistry.destroy(entity);
 	}
 
+	void Scene::OnPhysicsStart()
+	{
+		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
+
+		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
+			{
+				Entity entity(e, CreateRef(this));
+
+				b2BodyDef bodyDef;
+				bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+				bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
+				bodyDef.angle = trComponent.rotation.z;
+				bodyDef.fixedRotation = rbComponent.fixedRotation;
+				b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+
+				rbComponent.runtimeBody = body;
+
+				if (entity.hasComponent<BoxColliderComponent>())
+				{
+					auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+
+					b2PolygonShape boxShape;
+					boxShape.SetAsBox(bcComponent.halfExtents.x * trComponent.scale.x, bcComponent.halfExtents.y * trComponent.scale.y);
+
+					b2FixtureDef fixtureDef;
+					fixtureDef.shape = &boxShape;
+					fixtureDef.density = bcComponent.density;
+					fixtureDef.friction = bcComponent.friction;
+					fixtureDef.restitution = bcComponent.restitution;
+					fixtureDef.restitutionThreshold = bcComponent.restitutionThreshold;
+					body->CreateFixture(&fixtureDef);
+				}
+				if (entity.hasComponent<CircleColliderComponent>())
+				{
+					auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+
+					b2CircleShape circleShape;
+					circleShape.m_radius = ccComponent.radius * trComponent.scale.x;
+
+					b2FixtureDef fixtureDef;
+					fixtureDef.shape = &circleShape;
+					fixtureDef.density = ccComponent.density;
+					fixtureDef.friction = ccComponent.friction;
+					fixtureDef.restitution = ccComponent.restitution;
+					fixtureDef.restitutionThreshold = ccComponent.restitutionThreshold;
+					body->CreateFixture(&fixtureDef);
+				}
+			});
+	}
+
+	void Scene::OnPhysicsStop()
+	{
+		delete mPhysicsWorld;
+		mPhysicsWorld = nullptr;
+	}
+
+	void Scene::DrawScene(EditorCamera& camera)
+	{
+		Renderer2D::BeginState(camera);
+		mRenderStack->draw();
+		Renderer2D::EndState();
+
+		mRenderStack->clearQuads();
+	}
+
+	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
+	{
+		Renderer2D::BeginState(camera, transform);
+		mRenderStack->draw();
+		Renderer2D::EndState();
+
+		mRenderStack->clearQuads();
+	}
+
+	void Scene::BuildScene()
+	{
+		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
+		{
+			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
+		});
+		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
+		{
+			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
+		});
+	}
+
+	void Scene::StepPhysics2D(Timestep ts)
+	{
+		// Physics
+		if (!mPhysicsWorld) return;
+		
+		const int32_t velIters = 6;
+		const int32_t poslIters = 2;
+		mPhysicsWorld->Step(ts, velIters, poslIters);
+
+		mRegistry.group<RigidBodyComponent>(entt::get<TransformComponent>).each([this](const auto& rbComponent, auto& trComponent)
+		{
+			b2Body* body = Cast<b2Body>(rbComponent.runtimeBody);
+			const auto& pos = body->GetPosition();
+			trComponent.translation.x = pos.x;
+			trComponent.translation.y = pos.y;
+			trComponent.rotation.z = body->GetAngle();
+		});
+		
+	}
+
 	Entity Scene::FindEntity(UUID findID)
 	{
 		auto IDs = mRegistry.view<IDComponent>();
@@ -217,7 +324,7 @@ namespace Labyrinth {
 		{
 			auto& idc = IDs.get<IDComponent>(entity);
 			if (idc.id == findID)
-				return { entity, CreateRefFromThis(this) };
+				return { entity, CreateRef(this) };
 		}
 		return Entity();
 	}
@@ -241,127 +348,47 @@ namespace Labyrinth {
 
 	void Scene::onRuntimeStart()
 	{
-		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
-		
-		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent) 
-		{
-			Entity entity(e, CreateRefFromThis(this));
-
-			b2BodyDef bodyDef;
-			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
-			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
-			bodyDef.angle = trComponent.rotation.z;
-			bodyDef.fixedRotation = rbComponent.fixedRotation;
-			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
-
-			rbComponent.runtimeBody = body;
-
-			if (entity.hasComponent<BoxColliderComponent>())
-			{
-				auto& bcComponent = entity.getComponent<BoxColliderComponent>();
-
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bcComponent.halfExtents.x * trComponent.scale.x, bcComponent.halfExtents.y * trComponent.scale.y);
-
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = bcComponent.density;
-				fixtureDef.friction = bcComponent.friction;
-				fixtureDef.restitution = bcComponent.restitution;
-				fixtureDef.restitutionThreshold = bcComponent.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-			if (entity.hasComponent<CircleColliderComponent>())
-			{
-				auto& ccComponent = entity.getComponent<CircleColliderComponent>();
-
-				b2CircleShape circleShape;
-				circleShape.m_radius = ccComponent.radius * trComponent.scale.x;
-
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = ccComponent.density;
-				fixtureDef.friction = ccComponent.friction;
-				fixtureDef.restitution = ccComponent.restitution;
-				fixtureDef.restitutionThreshold = ccComponent.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-		});
+		OnPhysicsStart();
 	}
 
 	void Scene::onRuntimeStop()
 	{
-		delete mPhysicsWorld;
-		mPhysicsWorld = nullptr;
+		OnPhysicsStop();
+	}
+
+	void Scene::onSimulationStart()
+	{
+		OnPhysicsStart();
+	}
+
+	void Scene::onSimulationStop()
+	{
+		OnPhysicsStop();
 	}
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
-		Camera* mainCamera = nullptr;
-		glm::mat4 cameraTransform;
-		
-		mRegistry.view<TransformComponent, CameraComponent>().each([this, &mainCamera, &cameraTransform](auto entity, const auto& trComponent, auto& camComponent)
-		{
-			if (camComponent.primary)
-			{
-				mainCamera = &camComponent.camera;
-				cameraTransform = trComponent;
-			}
-		});
+		Entity camera = getPrimaryCameraEntity();
+		if (!camera) return;
 
-		// Physics
-		if (mPhysicsWorld)
-		{
-			const int32_t velIters = 6;
-			const int32_t poslIters = 2;
-			mPhysicsWorld->Step(ts, velIters, poslIters);
+		StepPhysics2D(ts);
 
-			mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto& trComponent, const auto& rbComponent)
-			{
-				b2Body* body = Cast<b2Body>(rbComponent.runtimeBody);
-				const auto& pos = body->GetPosition();
-				trComponent.translation.x = pos.x;
-				trComponent.translation.y = pos.y;
-				trComponent.rotation.z = body->GetAngle();
-			});
-		}
-		
-		if (mainCamera)
-		{
-			mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
-			{
-				mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
-			});
-			mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
-			{
-				mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
-			});
+		BuildScene();
+		DrawScene(camera.getComponent<CameraComponent>(), camera.getComponent<TransformComponent>());
+	}
 
-			Renderer2D::BeginState(*mainCamera, cameraTransform);
-			mRenderStack->draw();
-			Renderer2D::EndState();
+	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
+	{
+		StepPhysics2D(ts);
 
-			mRenderStack->clearQuads();
-		}
-
+		BuildScene();
+		DrawScene(camera);
 	}
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
-		mRegistry.view<SpriteRendererComponent, TransformComponent>().each([this](auto entity, const auto& srComponent, const auto& trComponent)
-		{
-			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
-		});
-		mRegistry.view<CircleRendererComponent, TransformComponent>().each([this](auto entity, const auto& crComponent, const auto& trComponent)
-		{
-			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
-		});
-
-		Renderer2D::BeginState(camera);
-		mRenderStack->draw();
-		Renderer2D::EndState();
-
-		mRenderStack->clearQuads();
+		BuildScene();
+		DrawScene(camera);
 	}
 
 	void Scene::onViewportResize(uint32_t width, uint32_t height)
@@ -381,7 +408,7 @@ namespace Labyrinth {
 		Entity primaryCam;
 		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent){
 			if (cameraComponent.primary)
-				primaryCam = { entity, CreateRefFromThis(this) };
+				primaryCam = { entity, CreateRef(this)};
 		});
 		return primaryCam;
 	}

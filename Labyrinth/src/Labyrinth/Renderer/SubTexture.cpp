@@ -60,7 +60,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, spriteSize, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRef(this), coords, spriteSize, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -73,7 +73,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRefFromThis(this), coords, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRef(this), coords, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}

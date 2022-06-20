@@ -16,8 +16,7 @@ namespace Labyrinth {
 	{
 	public:
 		Entity() : mEntID(entt::null), mScene(nullptr) {}
-		Entity(entt::entity entID, Ref<Scene> scene);
-		//Entity(uint32_t entID, Scene* scene);
+		Entity(entt::entity entID, const Ref<Scene>& scene);
 
 		Entity(const Entity& other) = default;
 		~Entity() {}
@@ -112,7 +111,7 @@ namespace Labyrinth {
 			return !(*this == other);
 		}
 
-		void destroy() { mScene->DestroyEntity(*this); }
+		void destroy() { mScene->DestroyEntity(*this); mEntID = entt::null; mScene = nullptr; }
 		Ref<Scene> getScene() { return mScene; }
 
 		Entity& getParent();

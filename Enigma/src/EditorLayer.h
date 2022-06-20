@@ -39,6 +39,7 @@ namespace Labyrinth {
 		void SaveSceneAs();
 
 		void OnScenePlay();
+		void OnSceneSimulate();
 		void OnSceneStop();
 
 		void OnOverlayRender();
@@ -63,7 +64,7 @@ namespace Labyrinth {
 		Entity mHoveredEntity;
 		
 		// Editor resources
-		Ref<Texture2D> mIconPlay, mIconStop;
+		Ref<Texture2D> mIconPlay, mIconStop, mIconSim;
 		Ref<Texture2D> mHighlight;
 
 		bool mViewportFocused = false, mViewportHovered = false;
@@ -74,7 +75,7 @@ namespace Labyrinth {
 
 		enum class SceneState
 		{
-			Edit = 0, Play = 1
+			Edit = 0, Play = 1, Simulate = 2
 		};
 		SceneState mSceneState = SceneState::Edit;
 	};

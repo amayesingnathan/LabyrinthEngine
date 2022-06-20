@@ -43,23 +43,19 @@ namespace Labyrinth {
 
 	template<typename T>
 	using Ref = std::shared_ptr<T>;
+
+	template<typename T>
+	using AllowRefFromThis = std::enable_shared_from_this<T>;
+
 	template<typename T, typename ... Args>
 	constexpr Ref<T> CreateRef(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
+	// Object T must inherit from AllowRefFromThis<T>
 	template<typename T>
-	constexpr Ref<T> CloneRef(const T& copy)
+	constexpr Ref<T> CreateRef(T* raw_ptr)
 	{
-		return std::make_shared<T>(copy);
-	}
-
-	template<typename T>
-	using AllowRefFromThis = std::enable_shared_from_this<T>;
-
-	template<typename T>
-	constexpr Ref<T> CreateRefFromThis(T* ptr)
-	{
-		return ptr->shared_from_this();
+		return raw_ptr->shared_from_this(); 
 	}
 }

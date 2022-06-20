@@ -50,7 +50,11 @@ namespace Labyrinth {
 		void onRuntimeStart();
 		void onRuntimeStop();
 
+		void onSimulationStart();
+		void onSimulationStop();
+
 		void onUpdateRuntime(Timestep ts);
+		void onUpdateSimulation(Timestep ts, EditorCamera& camera);
 		void onUpdateEditor(Timestep ts, EditorCamera& camera);
 
 		void onViewportResize(uint32_t width, uint32_t height);
@@ -59,6 +63,15 @@ namespace Labyrinth {
 
 	private:
 		void DestroyEntityR(Entity entity, Entity parent);
+
+		void OnPhysicsStart();
+		void OnPhysicsStop();
+
+		void DrawScene(EditorCamera& camera);
+		void DrawScene(Camera& camera, const glm::mat4& transform);
+		void BuildScene();
+
+		void StepPhysics2D(Timestep ts);
 
 		template<typename T>
 		void onComponentAdded(Entity entity, T& component);

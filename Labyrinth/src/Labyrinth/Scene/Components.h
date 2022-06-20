@@ -39,6 +39,7 @@ namespace Labyrinth {
 		CameraComponent(const SceneCamera & cam, bool prime = true, bool fixedAR = false)
 			: camera(cam), primary(prime), fixedAspectRatio(fixedAR) {}
 	
+		operator SceneCamera& () { return camera; }
 
 	};
 

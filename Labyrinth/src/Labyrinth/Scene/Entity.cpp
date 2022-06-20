@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	Entity::Entity(entt::entity entID, Ref<Scene> scene)
+	Entity::Entity(entt::entity entID, const Ref<Scene>& scene)
 		: mEntID(entID), mScene(scene)
 	{
 	}
