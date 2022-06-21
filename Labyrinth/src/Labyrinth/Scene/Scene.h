@@ -16,7 +16,7 @@ namespace Labyrinth {
 	class LAB_API Scene : public AllowRefFromThis<Scene>
 	{
 	public:
-		Scene();
+		Scene(const std::string& name = "Untitled");
 		~Scene();
 
 		Ref<Scene> Clone();
@@ -63,6 +63,7 @@ namespace Labyrinth {
 
 		void setName(const std::string name) { mName = name; }
 		const std::string& getName() const { return mName; }
+		bool hasName() const { return (mName != "Untitled" && mName != ""); }
 
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
@@ -80,7 +81,7 @@ namespace Labyrinth {
 		void onComponentAdded(Entity entity, T& component);
 
 	private:
-		std::string mName = "Untitled";
+		std::string mName;
 
 		entt::registry mRegistry;
 		Single<RenderStack> mRenderStack;

@@ -37,6 +37,12 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
+		char buffer[256];
+		memset(buffer, 0, sizeof(buffer));
+		STR_COPY(buffer, mContext->getName());
+		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
+			mContext->setName(buffer);
+
 		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
 				Entity entity{ entityID , mContext };

@@ -79,4 +79,6 @@ namespace Labyrinth {
 		return std::dynamic_pointer_cast<To>(target);
 	}
 
+	template<typename Base, typename Derived>
+	constexpr bool IsDerivedFrom() { return std::is_base_of<Base, Derived>::value; }
 }

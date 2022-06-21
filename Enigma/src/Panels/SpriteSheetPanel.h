@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PanelManager.h"
+
 #include "Labyrinth.h"
 
 namespace Labyrinth {
@@ -14,13 +16,13 @@ namespace Labyrinth {
 		SubTexPayload() = default;
 	};
 
-	class SpriteSheetPanel
+	class SpriteSheetPanel : public Panel
 	{
 	public:
 		SpriteSheetPanel();
 
-		void onUpdate(Timestep ts);
-		void onImGuiRender();
+		void onUpdate() override;
+		void onImGuiRender() override;
 
 	private:
 		void TileWidthModal();

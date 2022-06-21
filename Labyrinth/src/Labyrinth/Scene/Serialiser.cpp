@@ -331,7 +331,7 @@ namespace Labyrinth {
 	void YAMLParser::EncodeObject<Ref<Scene>>(const Ref<Scene>& scene, bool flag)
 	{
 		BeginObject();
-		ObjectProperty("Scene", "Untitled");
+		ObjectProperty("Scene", scene->getName());
 
 		std::vector<Ref<Texture2DSheet>> sheets;
 		scene->getSheetsInUse(sheets);
@@ -642,6 +642,7 @@ namespace Labyrinth {
 
 		std::string sceneName = mIn["Scene"].as<std::string>();
 		LAB_CORE_TRACE("Deserializing scene '{0}'", sceneName);
+		scene->setName(sceneName);
 
 		auto entities = mIn["Entities"];
 		if (entities)

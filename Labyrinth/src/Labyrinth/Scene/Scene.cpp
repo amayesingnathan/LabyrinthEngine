@@ -71,8 +71,8 @@ namespace Labyrinth {
 		CopyComponent(AllComponents{}, src, dest);
 	}
 
-	Scene::Scene()
-		: mRenderStack(CreateSingle<RenderStack>())
+	Scene::Scene(const std::string& name)
+		: mName(name), mRenderStack(CreateSingle<RenderStack>())
 	{
 	}
 
@@ -83,7 +83,7 @@ namespace Labyrinth {
 
 	Ref<Scene> Scene::Clone()
 	{
-		Ref<Scene> newScene = CreateRef<Scene>();
+		Ref<Scene> newScene = CreateRef<Scene>(mName);
 		newScene->mViewportWidth = mViewportWidth;
 		newScene->mViewportHeight = mViewportHeight;
 

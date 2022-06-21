@@ -1,5 +1,7 @@
 #pragma once
 
+#include "PanelManager.h"
+
 #include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
@@ -9,7 +11,7 @@ namespace Labyrinth {
 	class BodySpecModal;
 	struct EditorData;
 
-	class ScenePanel
+	class ScenePanel : public Panel
 	{
 	public:
 		ScenePanel() = default;
@@ -30,7 +32,7 @@ namespace Labyrinth {
 		void BodySpecModalRender();
 
 	private:
-		Ref<Scene> mContext;
+		Ref<Scene> mContext = nullptr;
 		EditorData* mEditorData = nullptr;
 
 		Entity mSelectedEntity;

@@ -13,7 +13,7 @@ from io import BytesIO
 from urllib.request import urlopen
 
 class VulkanConfiguration:
-    requiredVulkanVersion = "1.3.204.1"
+    requiredVulkanVersion = "1.3."
     vulkanDirectory = "./Labyrinth/dependencies/VulkanSDK"
 
     @classmethod

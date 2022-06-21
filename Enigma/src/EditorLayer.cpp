@@ -1,5 +1,11 @@
 #include "EditorLayer.h"
 
+#include "Panels/ScenePanel.h"
+#include "Panels/ContentBrowserPanel.h"
+#include "Panels/SpriteSheetPanel.h"
+#include "Panels/OptionsPanel.h"
+#include "Panels/StatsPanel.h"
+
 #include "Labyrinth/Scene/Serialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
@@ -40,19 +46,27 @@ namespace Labyrinth {
 
 		mViewportSize = { fbSpec.width, fbSpec.height };
 
+		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
+		mScenePanel = PanelManager::Register<ScenePanel>("SceneHeirarchy");
+		PanelManager::Register<ContentBrowserPanel>("ContentBrowser");
+		PanelManager::Register<SpriteSheetPanel>("SpriteSheets");
+		PanelManager::Register<OptionsPanel>("Options")->setEditorData(mEditorData);
+		PanelManager::Register<StatsPanel>("Statistic")->bindHoveredEntity(mHoveredEntity);
+
 		bool loadedScene = false;
 		auto commandLineArgs = Application::Get().getCommandLineArgs();
 		if (commandLineArgs.count > 1)
 			loadedScene = OpenScene(commandLineArgs[1]);
 		if (!loadedScene)
 			NewScene();
-
-		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 	}
 
 	void EditorLayer::onDetach()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		PanelManager::Clear();
 	}
 
 	void EditorLayer::onUpdate(Timestep ts)
@@ -65,13 +79,13 @@ namespace Labyrinth {
 		{
 			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 
-			mEditorCamera.setViewportSize(mViewportSize.x, mViewportSize.y);
+			mEditorData.camera.setViewportSize(mViewportSize.x, mViewportSize.y);
 			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 		}
 
 		Renderer2D::ResetStats();
 
-		mSpriteSheetPanel.onUpdate(ts);
+		PanelManager::UpdatePanels();
 
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
@@ -85,9 +99,9 @@ namespace Labyrinth {
 		case SceneState::Edit:
 		{
 			if (mViewportHovered && mViewportFocused)
-				mEditorCamera.onUpdate(ts);
+				mEditorData.camera.onUpdate(ts);
 
-			mCurrentScene->onUpdateEditor(ts, mEditorCamera);
+			mCurrentScene->onUpdateEditor(ts, mEditorData.camera);
 			break;
 		}
 		case SceneState::Play:
@@ -98,9 +112,9 @@ namespace Labyrinth {
 		case SceneState::Simulate:
 		{
 			if (mViewportHovered && mViewportFocused)
-				mEditorCamera.onUpdate(ts);
+				mEditorData.camera.onUpdate(ts);
 
-			mCurrentScene->onUpdateSimulation(ts, mEditorCamera);
+			mCurrentScene->onUpdateSimulation(ts, mEditorData.camera);
 			break;
 		}
 		}
@@ -182,8 +196,6 @@ namespace Labyrinth {
 		UI_Viewport();
 		UI_MenuBar();
 		UI_ChildPanels();
-		UI_Stats();
-		UI_Options();	
 		UI_Toolbar();
 
 		ImGui::End();
@@ -232,7 +244,7 @@ namespace Labyrinth {
 	void EditorLayer::UI_Gizmos()
 	{
 		// Gizmos
-		Entity selectedEntity = mScenePanel.getSelectedEntity();
+		Entity selectedEntity = mScenePanel->getSelectedEntity();
 		if (selectedEntity && mGizmoType != -1 && mViewportFocused)
 		{
 			ImGuizmo::SetOrthographic(false);
@@ -243,8 +255,8 @@ namespace Labyrinth {
 			ImGuizmo::SetRect(mViewportBounds[0].x, mViewportBounds[0].y, mViewportBounds[1].x - mViewportBounds[0].x, mViewportBounds[1].y - mViewportBounds[0].y);
 
 			//Editor camera
-			const glm::mat4& cameraProjection = mEditorCamera.getProjection();
-			glm::mat4 cameraView = mEditorCamera.getViewMatrix();
+			const glm::mat4& cameraProjection = mEditorData.camera.getProjection();
+			glm::mat4 cameraView = mEditorData.camera.getViewMatrix();
 
 			// Entity transform
 			auto& tc = selectedEntity.getComponent<TransformComponent>();
@@ -298,49 +310,21 @@ namespace Labyrinth {
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("View"))
+			{
+				for (auto& [key, panel] : PanelManager::GetPanels())
+					ImGui::MenuItem(key.c_str(), nullptr, &panel.displayed);
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
 	}
 
 	void EditorLayer::UI_ChildPanels()
 	{
-		mScenePanel.onImGuiRender();
-		mContentBrowserPanel.onImGuiRender();
-		mSpriteSheetPanel.onImGuiRender();
-	}
-
-	void EditorLayer::UI_Stats()
-	{
-		ImGui::Begin("Stats");
-
-		std::string name = "None";
-		if (mHoveredEntity)
-			name = mHoveredEntity.getComponent<TagComponent>().tag;
-		ImGui::Text("Hovered Entity: %s", name.c_str());
-
-		auto stats = Renderer2D::GetStats();
-		ImGui::Text("Renderer2D Stats:");
-		ImGui::Text("Draw Calls: %d", stats.drawCalls);
-		ImGui::Text("Quads: %d", stats.quadCount);
-		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
-		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
-
-		ImGui::End();
-	}
-
-	void EditorLayer::UI_Options()
-	{
-		ImGui::Begin("Settings");
-
-		ImGui::Checkbox("Display Colliders", &mEditorData.displayColliders);
-		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData.colliderColour));
-		if (ImGui::Button("Reset Camera Angle"))
-			mEditorCamera.resetAngle();
-		if (ImGui::Button("Reset Camera Position"))
-			mEditorCamera.resetPosition();
-		ImGui::Checkbox("Link Children On Destroy", &mEditorData.linkOnDestroy);
-
-		ImGui::End();
+		PanelManager::RenderPanels();
 	}
 
 	void EditorLayer::UI_Toolbar()
@@ -388,7 +372,7 @@ namespace Labyrinth {
 	void EditorLayer::onEvent(Event& e)
 	{
 		if (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate)
-			mEditorCamera.onEvent(e);
+			mEditorData.camera.onEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
@@ -491,7 +475,7 @@ namespace Labyrinth {
 		case Mouse::ButtonLeft:
 			{
 				if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-					mScenePanel.setSelectedEntity(mHoveredEntity);
+					mScenePanel->setSelectedEntity(mHoveredEntity);
 			}
 		}
 
@@ -531,11 +515,17 @@ namespace Labyrinth {
 
 		mEditorScene = newScene;
 		mEditorData.currentFile = path.string();
+		if (!mEditorScene->hasName())
+			mEditorScene->setName(path.stem().string());
+
 		SetCurrentScene(mEditorScene);
+		return true;
 	}
 
 	void EditorLayer::SaveScene()
 	{
+		SyncWindowTitle();
+
 		if (!mEditorData.currentFile.empty())
 			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
 		else SaveSceneAs();
@@ -543,6 +533,8 @@ namespace Labyrinth {
 
 	void EditorLayer::SaveSceneAs()
 	{
+		SyncWindowTitle();
+
 		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
 		if (!mEditorData.currentFile.empty())
 			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
@@ -555,7 +547,7 @@ namespace Labyrinth {
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onRuntimeStart();
 
-		mScenePanel.setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneSimulate()
@@ -565,7 +557,7 @@ namespace Labyrinth {
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onSimulationStart();
 
-		mScenePanel.setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -575,7 +567,7 @@ namespace Labyrinth {
 		mCurrentScene->onRuntimeStop();
 		mCurrentScene = mEditorScene;
 
-		mScenePanel.setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnOverlayRender()
@@ -585,11 +577,11 @@ namespace Labyrinth {
 		switch (mSceneState)
 		{
 		case SceneState::Edit:
-			Renderer2D::BeginState(mEditorCamera);
+			Renderer2D::BeginState(mEditorData.camera);
 			break;
 
 		case SceneState::Simulate:
-			Renderer2D::BeginState(mEditorCamera);
+			Renderer2D::BeginState(mEditorData.camera);
 			break;
 
 		case SceneState::Play:
@@ -606,7 +598,12 @@ namespace Labyrinth {
 
 		mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](const auto& tc, const auto& bcc) 
 		{
-			glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, 0.001f);
+			// Calculate z index for translation
+			float zIndex = 0.001f;
+			glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
+			glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
+
+			glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, -projectionCollider.z);
 			glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
 
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
@@ -618,13 +615,18 @@ namespace Labyrinth {
 
 		mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](const auto& tc, const auto& ccc)
 		{
-			glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, 0.001f);
+			// Calculate z index for translation
+			float zIndex = 0.001f;
+			glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
+			glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
+
+			glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, -projectionCollider.z);
 			glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
 
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
 				* glm::scale(glm::mat4(1.0f), scale);
 
-			Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.05f);
+			Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.1f);
 		});
 
 		Renderer2D::EndState();
@@ -637,7 +639,7 @@ namespace Labyrinth {
 		mCurrentScene = currentScene;
 		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
 
-		mScenePanel.setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
 
 		SyncWindowTitle();
 	}
@@ -656,7 +658,7 @@ namespace Labyrinth {
 		if (mSceneState != SceneState::Edit)
 			return;
 
-		Entity selectedEntity = mScenePanel.getSelectedEntity();
+		Entity selectedEntity = mScenePanel->getSelectedEntity();
 		if (selectedEntity)
 			mCurrentScene->CloneEntity(selectedEntity);
 	}

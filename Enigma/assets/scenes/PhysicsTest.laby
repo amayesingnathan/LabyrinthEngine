@@ -4,573 +4,6 @@ SpriteSheets:
     Source: assets\textures\PlayerSprite.png
     TileSize: [16, 22]
 Entities:
-  - Entity: 7435480453453246343
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-1.297472, 3.80661392, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 8488173316975398338
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-0.194852769, 3.22629166, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 8479254150738774871
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [1.76425171, 3.92265892, 0]
-      Rotation: [0, 0, 0.124770984]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 831435605016734660
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [1.72555542, 0.382678986, 0]
-      Rotation: [0, 0, 0.124770984]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 3372580560321398958
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [1.86096954, 1.69808578, 0]
-      Rotation: [0, 0, 0.43390587]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 15816407318972690438
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [1.95236778, 3.03284073, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 15721569030096215915
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-1.31682014, 1.29185104, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 18011603544115716750
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-0.0981273651, 1.05971909, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 11343872193858708710
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-0.982639313, 2.27840042, 0]
-      Rotation: [0, 0, -0.261419266]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 16490858765236783893
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [0.236053467, 4.25150108, 0]
-      Rotation: [0, 0, 0.124770984]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 10249004147868173764
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [0.835727692, 1.05972672, 0]
-      Rotation: [0, 0, -0.440676153]
-      Scale: [0.75, 0.75, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 17523804878023399700
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [2.8808918, 0.363325179, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 17974354820085791145
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [2.78415489, 2.68463516, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 1452311226613790005
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [0.178013206, 2.23971176, 0]
-      Rotation: [0, 0, 0.485601991]
-      Scale: [0.750000238, 0.750000238, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.800000012
-      RestitutionThreshold: 0.5
-  - Entity: 9170353095846712291
-    TagComponent:
-      Tag: Camera
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [4.18642616, -4.85834599, 20.6226673]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 17014374854102427983
-    TagComponent:
-      Tag: Sprite
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [1.15925217, 2.68460846, 0]
-      Rotation: [0, 0, 0.250072896]
-      Scale: [0.75000006, 0.75000006, 0.999999762]
-    SpriteRendererComponent:
-      Type: 1
-      Layer: 0
-      Colour: [1, 1, 1, 1]
-      Texture:
-        Sheet: Player
-        SubTexName: 1
-        Coordinates:
-          - 0: [0, 0.666666687]
-          - 1: [0.25, 0.666666687]
-          - 2: [0.25, 1]
-          - 3: [0, 1]
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    CircleColliderComponent:
-      Radius: 0.5
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0.810000002
-      RestitutionThreshold: 0.5
-  - Entity: 10982048038578088450
-    TagComponent:
-      Tag: Floor
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [7.22842121, -6.48061752, 0.00784313772]
-      Rotation: [0, 0, 0.30458194]
-      Scale: [9.54999161, 0.494775623, 1]
-    SpriteRendererComponent:
-      Type: -1
-      Layer: 2
-      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0
-      RestitutionThreshold: 0.5
-  - Entity: 8981038691820956743
-    TagComponent:
-      Tag: Floor
-    NodeComponent:
-      ChildCount: 0
-      Children:
-        []
-    TransformComponent:
-      Translation: [-5.67198515, -7.32356501, 0.00784313772]
-      Rotation: [0, 0, 1.57079637]
-      Scale: [4.24996281, 0.49477464, 1]
-    SpriteRendererComponent:
-      Type: -1
-      Layer: 2
-      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0
-      RestitutionThreshold: 0.5
   - Entity: 5198405619224053099
     TagComponent:
       Tag: Floor
@@ -607,6 +40,583 @@ Entities:
       Translation: [-2.29751968, -9.19512367, 0.00784313772]
       Rotation: [0, 0, 0]
       Scale: [7.25346231, 0.494775623, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 2
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 9170353095846712291
+    TagComponent:
+      Tag: Camera
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [4.18642616, -4.85834599, 20.6226673]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 7329217488479978551
+    TagComponent:
+      Tag: Bodies
+    NodeComponent:
+      ChildCount: 15
+      Children:
+        - Entity: 17014374854102427983
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [1.15925217, 2.68460846, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 1452311226613790005
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0.178013206, 2.23971176, 0]
+            Rotation: [0, 0, 0.485601991]
+            Scale: [0.750000238, 0.750000238, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 17974354820085791145
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [2.78415489, 2.68463516, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 17523804878023399700
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [2.8808918, 0.363325179, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 10249004147868173764
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0.835727692, 1.05972672, 0]
+            Rotation: [0, 0, -0.440676153]
+            Scale: [0.75, 0.75, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 16490858765236783893
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [0.236053467, 4.25150108, 0]
+            Rotation: [0, 0, 0.124770984]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 11343872193858708710
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [-0.982639313, 2.27840042, 0]
+            Rotation: [0, 0, -0.261419266]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 18011603544115716750
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [-0.0981273651, 1.05971909, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 15721569030096215915
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [-1.31682014, 1.29185104, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 15816407318972690438
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [1.95236778, 3.03284073, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 3372580560321398958
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [1.86096954, 1.69808578, 0]
+            Rotation: [0, 0, 0.43390587]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 831435605016734660
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [1.72555542, 0.382678986, 0]
+            Rotation: [0, 0, 0.124770984]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 8479254150738774871
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [1.76425171, 3.92265892, 0]
+            Rotation: [0, 0, 0.124770984]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          BoxColliderComponent:
+            HalfExtents: [0.5, 0.5]
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.800000012
+            RestitutionThreshold: 0.5
+        - Entity: 8488173316975398338
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [-0.194852769, 3.22629166, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+        - Entity: 7435480453453246343
+          TagComponent:
+            Tag: Sprite
+          NodeComponent:
+            ChildCount: 0
+            Children:
+              []
+          TransformComponent:
+            Translation: [-1.297472, 3.80661392, 0]
+            Rotation: [0, 0, 0.250072896]
+            Scale: [0.75000006, 0.75000006, 0.999999762]
+          SpriteRendererComponent:
+            Type: 1
+            Layer: 0
+            Colour: [1, 1, 1, 1]
+            Texture:
+              Sheet: Player
+              SubTexName: 1
+              Coordinates:
+                - 0: [0, 0.666666687]
+                - 1: [0.25, 0.666666687]
+                - 2: [0.25, 1]
+                - 3: [0, 1]
+          RigidBodyComponent:
+            Type: 1
+            FixedRotation: false
+          CircleColliderComponent:
+            Radius: 0.5
+            Offset: [0, 0]
+            Density: 0.5
+            Friction: 1
+            Restitution: 0.810000002
+            RestitutionThreshold: 0.5
+    TransformComponent:
+      Translation: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 10982048038578088450
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [7.22842121, -6.48061752, 0.00784313772]
+      Rotation: [0, 0, 0.30458194]
+      Scale: [9.54999161, 0.494775623, 1]
+    SpriteRendererComponent:
+      Type: -1
+      Layer: 2
+      Colour: [0.857142866, 0.445878774, 0.0562603325, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+  - Entity: 8981038691820956743
+    TagComponent:
+      Tag: Floor
+    NodeComponent:
+      ChildCount: 0
+      Children:
+        []
+    TransformComponent:
+      Translation: [-5.67198515, -7.32356501, 0.00784313772]
+      Rotation: [0, 0, 1.57079637]
+      Scale: [4.24996281, 0.49477464, 1]
     SpriteRendererComponent:
       Type: -1
       Layer: 2

@@ -58,3 +58,8 @@ Labyrinth is a game engine built for designing and creating 2D games.
   Previously Tiled XML tilemap data was imported, and I wrote a simple API to convert layered tilemaps and collision data to SDL objects. See https://github.com/amayesingnathan/TMXtoSDL.
   Labyrinth Scene files are also serialised/deserialed using YAML, allowing users to save and load scenes from their local system. 
   
+  ### C++ ###
+  
+  This project has greatly increased my proficiency in using modern C++. I am comfortable with many of newer features of C++ such as lambdas,
+  smart pointers, move semantics, as well as effective metaprogramming.
+  

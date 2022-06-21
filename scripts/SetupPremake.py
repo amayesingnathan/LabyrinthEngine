@@ -1,6 +1,7 @@
 import sys
 import os
 import platform
+import requests
 from pathlib import Path
 
 if platform.system() == "Windows":

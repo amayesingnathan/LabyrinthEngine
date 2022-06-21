@@ -1,9 +1,6 @@
 #pragma once
 
 #include "Labyrinth.h"
-#include "Panels/ScenePanel.h"
-#include "Panels/ContentBrowserPanel.h"
-#include "Panels/SpriteSheetPanel.h"
 
 #include "Labyrinth/Renderer/EditorCamera.h"
 
@@ -15,6 +12,8 @@ namespace Labyrinth {
 		bool displayColliders = false;
 		glm::vec4 colliderColour = { 0, 1, 0, 1 };
 		bool linkOnDestroy = false;
+
+		EditorCamera camera;
 	};
 
 	class EditorLayer : public Layer
@@ -56,8 +55,6 @@ namespace Labyrinth {
 		void UI_Gizmos();
 		void UI_MenuBar();
 		void UI_ChildPanels();
-		void UI_Stats();
-		void UI_Options();
 		void UI_Toolbar();
 
 	private:
@@ -65,14 +62,10 @@ namespace Labyrinth {
 
 		Ref<Scene> mCurrentScene, mEditorScene;
 
-		ScenePanel mScenePanel;
-		ContentBrowserPanel mContentBrowserPanel;
-		SpriteSheetPanel mSpriteSheetPanel;
-
 		EditorData mEditorData;
-		EditorCamera mEditorCamera;
-
 		Entity mHoveredEntity;
+
+		class ScenePanel* mScenePanel = nullptr;
 		
 		// Editor resources
 		Ref<Texture2D> mIconPlay, mIconStop, mIconSim;
