@@ -24,7 +24,7 @@ namespace Labyrinth {
 
 		virtual bool operator==(const Texture& other) const override
 		{
-			return mRendererID == ((OpenGLTexture2D&)other).mRendererID;
+			return mRendererID == other.getRendererID();
 		}
 
 	private:

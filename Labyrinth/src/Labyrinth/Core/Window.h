@@ -36,6 +36,8 @@ namespace Labyrinth {
 		inline uint32_t getWidth() const { return mData.width; }
 		inline uint32_t getHeight() const { return mData.height; }
 
+		void setTitle(const std::string& title);
+
 		//Attributes
 		inline void setEventCallback(const EventCallbackFunc& callback) { mData.eventCallback = callback; }
 		void setVSync(bool enabled);

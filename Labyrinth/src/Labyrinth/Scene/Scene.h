@@ -61,6 +61,9 @@ namespace Labyrinth {
 
 		Entity getPrimaryCameraEntity();
 
+		void setName(const std::string name) { mName = name; }
+		const std::string& getName() const { return mName; }
+
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
 
@@ -77,6 +80,8 @@ namespace Labyrinth {
 		void onComponentAdded(Entity entity, T& component);
 
 	private:
+		std::string mName = "Untitled";
+
 		entt::registry mRegistry;
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;

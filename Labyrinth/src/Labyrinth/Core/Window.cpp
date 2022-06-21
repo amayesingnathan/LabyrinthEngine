@@ -189,6 +189,12 @@ namespace Labyrinth {
 		mContext->swapBuffers();
 	}
 
+	void Window::setTitle(const std::string& title)
+	{
+		mData.title = title;
+		glfwSetWindowTitle(mWindow, title.c_str());
+	}
+
 	void Window::setVSync(bool enabled)
 	{
 		LAB_PROFILE_FUNCTION();

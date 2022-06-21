@@ -35,8 +35,8 @@ namespace Labyrinth {
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
 		void NewScene();
-		void OpenScene();
-		void OpenScene(const std::filesystem::path& path);
+		bool OpenScene();
+		bool OpenScene(const std::filesystem::path& path);
 		void SaveScene();
 		void SaveSceneAs();
 
@@ -46,9 +46,18 @@ namespace Labyrinth {
 
 		void OnOverlayRender();
 
+		void SetCurrentScene(const Ref<Scene>& currentScene);
+		void SyncWindowTitle();
+
 		void CloneEntity();
 
 		// UI Panels
+		void UI_Viewport();
+		void UI_Gizmos();
+		void UI_MenuBar();
+		void UI_ChildPanels();
+		void UI_Stats();
+		void UI_Options();
 		void UI_Toolbar();
 
 	private:

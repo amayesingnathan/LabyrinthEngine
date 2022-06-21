@@ -38,20 +38,16 @@ namespace Labyrinth {
 			
 		mFramebuffer = Framebuffer::Create(fbSpec);
 
-		mEditorScene = CreateRef<Scene>();
-		mCurrentScene = mEditorScene;
+		mViewportSize = { fbSpec.width, fbSpec.height };
 
+		bool loadedScene = false;
 		auto commandLineArgs = Application::Get().getCommandLineArgs();
 		if (commandLineArgs.count > 1)
-		{
-			auto sceneFilePath = commandLineArgs[1];
-			OpenScene(sceneFilePath);
-		}
+			loadedScene = OpenScene(commandLineArgs[1]);
+		if (!loadedScene)
+			NewScene();
 
 		mEditorCamera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-
-		mScenePanel.setContext(mCurrentScene);
-
 	}
 
 	void EditorLayer::onDetach()
@@ -183,64 +179,22 @@ namespace Labyrinth {
 
 		style.WindowMinSize.x = minWinSizeX;
 
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
-			{
-				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
-				// which we can't undo at the moment without finer window depth/z control.
-				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-				if (ImGui::MenuItem("New", "Ctrl+N"))
-					NewScene();
-				if (ImGui::MenuItem("Open", "Ctrl+O"))
-					OpenScene();
-				if (ImGui::MenuItem("Save", "Ctrl+S"))
-					SaveScene();
-				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-					SaveSceneAs();
-
-				if (ImGui::MenuItem("Exit")) Application::Get().Close();
-				ImGui::EndMenu();
-			}
-
-			ImGui::EndMenuBar();
-		}
-
-		mScenePanel.onImGuiRender();
-		mContentBrowserPanel.onImGuiRender();
-		mSpriteSheetPanel.onImGuiRender();
-
-		ImGui::Begin("Stats");
-
-		std::string name = "None";
-		if (mHoveredEntity)
-			name = mHoveredEntity.getComponent<TagComponent>().tag;
-		ImGui::Text("Hovered Entity: %s", name.c_str());
-
-		auto stats = Renderer2D::GetStats();
-		ImGui::Text("Renderer2D Stats:");
-		ImGui::Text("Draw Calls: %d", stats.drawCalls);
-		ImGui::Text("Quads: %d", stats.quadCount);
-		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
-		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
+		UI_Viewport();
+		UI_MenuBar();
+		UI_ChildPanels();
+		UI_Stats();
+		UI_Options();	
+		UI_Toolbar();
 
 		ImGui::End();
 
-		ImGui::Begin("Settings");
+	}
 
-		ImGui::Checkbox("Display Colliders", &mEditorData.displayColliders);
-		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData.colliderColour));
-		if (ImGui::Button("Reset Camera Angle"))
-			mEditorCamera.resetAngle();
-		if (ImGui::Button("Reset Camera Position"))
-			mEditorCamera.resetPosition();
-		ImGui::Checkbox("Link Children On Destroy", &mEditorData.linkOnDestroy);
-
-		ImGui::End();
-
+	void EditorLayer::UI_Viewport()
+	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport"); 
-		
+		ImGui::Begin("Viewport");
+
 		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
 		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
 		auto viewportOffset = ImGui::GetWindowPos();
@@ -269,6 +223,14 @@ namespace Labyrinth {
 			ImGui::EndDragDropTarget();
 		}
 
+		UI_Gizmos();
+
+		ImGui::End();
+		ImGui::PopStyleVar();
+	}
+
+	void EditorLayer::UI_Gizmos()
+	{
 		// Gizmos
 		Entity selectedEntity = mScenePanel.getSelectedEntity();
 		if (selectedEntity && mGizmoType != -1 && mViewportFocused)
@@ -312,15 +274,73 @@ namespace Labyrinth {
 				tc.scale = scale;
 			}
 		}
+	}
 
+	void EditorLayer::UI_MenuBar()
+	{
+		if (ImGui::BeginMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
+				// which we can't undo at the moment without finer window depth/z control.
+				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
+				if (ImGui::MenuItem("New", "Ctrl+N"))
+					NewScene();
+				if (ImGui::MenuItem("Open", "Ctrl+O"))
+					OpenScene();
+				if (ImGui::MenuItem("Save", "Ctrl+S"))
+					SaveScene();
+				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
+
+				if (ImGui::MenuItem("Exit")) Application::Get().Close();
+				ImGui::EndMenu();
+			}
+
+			ImGui::EndMenuBar();
+		}
+	}
+
+	void EditorLayer::UI_ChildPanels()
+	{
+		mScenePanel.onImGuiRender();
+		mContentBrowserPanel.onImGuiRender();
+		mSpriteSheetPanel.onImGuiRender();
+	}
+
+	void EditorLayer::UI_Stats()
+	{
+		ImGui::Begin("Stats");
+
+		std::string name = "None";
+		if (mHoveredEntity)
+			name = mHoveredEntity.getComponent<TagComponent>().tag;
+		ImGui::Text("Hovered Entity: %s", name.c_str());
+
+		auto stats = Renderer2D::GetStats();
+		ImGui::Text("Renderer2D Stats:");
+		ImGui::Text("Draw Calls: %d", stats.drawCalls);
+		ImGui::Text("Quads: %d", stats.quadCount);
+		ImGui::Text("Vertices: %d", stats.getTotalVertexCount());
+		ImGui::Text("Indices: %d", stats.getTotalIndexCount());
 
 		ImGui::End();
-		ImGui::PopStyleVar();
+	}
 
-		UI_Toolbar();
+	void EditorLayer::UI_Options()
+	{
+		ImGui::Begin("Settings");
+
+		ImGui::Checkbox("Display Colliders", &mEditorData.displayColliders);
+		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData.colliderColour));
+		if (ImGui::Button("Reset Camera Angle"))
+			mEditorCamera.resetAngle();
+		if (ImGui::Button("Reset Camera Position"))
+			mEditorCamera.resetPosition();
+		ImGui::Checkbox("Link Children On Destroy", &mEditorData.linkOnDestroy);
 
 		ImGui::End();
-
 	}
 
 	void EditorLayer::UI_Toolbar()
@@ -367,7 +387,8 @@ namespace Labyrinth {
 
 	void EditorLayer::onEvent(Event& e)
 	{
-		mEditorCamera.onEvent(e);
+		if (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate)
+			mEditorCamera.onEvent(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
@@ -479,36 +500,38 @@ namespace Labyrinth {
 
 	void EditorLayer::NewScene()
 	{
-		mCurrentScene = CreateRef<Scene>();
-		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-		mScenePanel.setContext(mCurrentScene);
+		mEditorScene = CreateRef<Scene>();
+		mEditorData.currentFile = std::string();
+		SetCurrentScene(mEditorScene);
 	}
 
-	void EditorLayer::OpenScene()
+	bool EditorLayer::OpenScene()
 	{
 		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
 		if (!mEditorData.currentFile.empty())
-		{
-			OpenScene(mEditorData.currentFile);
-		}
+			return OpenScene(mEditorData.currentFile);
+
+		return false;
 	}
 
-	void EditorLayer::OpenScene(const std::filesystem::path& path)
+	bool EditorLayer::OpenScene(const std::filesystem::path& path)
 	{
 		if (mSceneState != SceneState::Edit)
 			OnSceneStop();
 
-		Ref<Scene> newScene = CreateRef<Scene>();
-		if (Serialiser::Deserialise<Scene>(path.string(), newScene))
+		if (path.extension().string() != ".laby")
 		{
-			mEditorScene = newScene;
-			mEditorScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
-			mScenePanel.setContext(mEditorScene);
-
-			mEditorData.currentFile = path.string();
-			mCurrentScene = mEditorScene;
+			LAB_WARN("Could not load {0} - not a scene file", path.filename().string());
+			return false;
 		}
 
+		Ref<Scene> newScene = CreateRef<Scene>();
+		if (!Serialiser::Deserialise<Scene>(path.string(), newScene))
+			return false;
+
+		mEditorScene = newScene;
+		mEditorData.currentFile = path.string();
+		SetCurrentScene(mEditorScene);
 	}
 
 	void EditorLayer::SaveScene()
@@ -605,6 +628,27 @@ namespace Labyrinth {
 		});
 
 		Renderer2D::EndState();
+	}
+
+	void EditorLayer::SetCurrentScene(const Ref<Scene>& currentScene)
+	{
+		LAB_ASSERT(currentScene, "EditorLayer CurrentScene cannot be null");
+
+		mCurrentScene = currentScene;
+		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+
+		mScenePanel.setContext(mCurrentScene);
+
+		SyncWindowTitle();
+	}
+
+	void EditorLayer::SyncWindowTitle()
+	{
+		std::string title = "Enigma";
+		title += " - " + mCurrentScene->getName();
+		title += " (" + (mEditorData.currentFile.empty() ? "unsaved" : mEditorData.currentFile) + ")";
+
+		Application::Get().getWindow().setTitle(title);
 	}
 
 	void EditorLayer::CloneEntity()

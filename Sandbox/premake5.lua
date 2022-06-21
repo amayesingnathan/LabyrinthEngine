@@ -1,5 +1,4 @@
 project "Sandbox"
-    kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
@@ -36,26 +35,12 @@ project "Sandbox"
     filter "system:linux"
         links { "pthread", "dl" }
 
-    filter "configurations:x64d"
+    filter "configurations:*d"
+		kind "ConsoleApp"
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:ARMd"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:ARM64d"
-        runtime "Debug"
-        symbols "on"
-
-    filter "configurations:x64"
-        runtime "Release"
-        optimize "on"
-
-    filter "configurations:ARM"
-        runtime "Release"
-        optimize "on"
-
-    filter "configurations:ARM64"
+    filter "configurations:not *d"
+		kind "WindowedApp"
         runtime "Release"
         optimize "on"
