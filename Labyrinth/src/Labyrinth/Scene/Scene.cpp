@@ -33,13 +33,13 @@ namespace Labyrinth {
 	static void CopyComponent(const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
 	{
 		([&]()
-			{
-				src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id)
-					{
-						LAB_CORE_ASSERT(entMap.count(id) != 0);
-						dest.emplace_or_replace<Component>(entMap.at(id), component);
-					});
-			}(), ...);
+		{
+			src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id)
+				{
+					LAB_CORE_ASSERT(entMap.count(id) != 0);
+					dest.emplace_or_replace<Component>(entMap.at(id), component);
+				});
+		}(), ...);
 	}
 	template<typename... Component>
 	static void CopyComponent(ComponentGroup<Component...>, const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
@@ -55,10 +55,10 @@ namespace Labyrinth {
 	static void CopyComponent(Entity src, Entity dest)
 	{
 		([&]()
-			{
-				if (src.hasComponent<Component>())
-					dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
-			}(), ...);
+		{
+			if (src.hasComponent<Component>())
+				dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+		}(), ...);
 	}
 	template<typename... Component>
 	static void CopyComponent(ComponentGroup<Component...>, Entity src, Entity dest)
@@ -178,27 +178,23 @@ namespace Labyrinth {
 		return newEnt;
 	}
 
-	void Scene::DestroyEntity(Entity entity)
+	void Scene::DestroyEntity(Entity entity, bool linkChildren)
 	{
 		Entity& parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
 
-		DestroyEntityR(entity, parent);
+		DestroyEntityR(entity, parent, linkChildren);
 	}
 
-	void Scene::DestroyEntityR(Entity entity, Entity parent)
+	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
 	{
-		//Set this to true to link parent of entity with children of entity 
-		//instead of destroying all child entities.
-		static bool sLinkOnDestroy = false;
-
 		// Set the parent of all entity's children (will be null entity if no parent)
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
-			if (sLinkOnDestroy)
+			if (linkChildren)
 			{
 				if (parent)
 					child.setParent(parent);

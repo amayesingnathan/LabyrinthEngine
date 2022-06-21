@@ -7,14 +7,16 @@
 namespace Labyrinth {
 
 	class BodySpecModal;
+	struct EditorData;
 
 	class ScenePanel
 	{
 	public:
 		ScenePanel() = default;
-		ScenePanel(const Ref<Scene>& scene);
+		ScenePanel(const Ref<Scene>& scene, EditorData* options);
 
 		void setContext(const Ref<Scene>& scene);
+		void setContext(const Ref<Scene>& scene, EditorData* options);
 		
 		void onImGuiRender();
 
@@ -29,8 +31,9 @@ namespace Labyrinth {
 
 	private:
 		Ref<Scene> mContext;
-		Entity mSelectedEntity;
+		EditorData* mEditorData = nullptr;
 
+		Entity mSelectedEntity;
 		std::vector<Entity> mToRemove;
 
 		BodySpecModal* mBodyCreation = nullptr;

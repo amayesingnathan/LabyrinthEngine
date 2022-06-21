@@ -30,7 +30,7 @@ namespace Labyrinth {
 		Entity CloneEntity(Entity copy);
 		Entity CloneChild(Entity copy, Entity newParent);
 
-		void DestroyEntity(Entity entity);
+		void DestroyEntity(Entity entity, bool linkChildren = false);
 
 		Entity FindEntity(UUID id);
 
@@ -62,7 +62,7 @@ namespace Labyrinth {
 		Entity getPrimaryCameraEntity();
 
 	private:
-		void DestroyEntityR(Entity entity, Entity parent);
+		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
 
 		void OnPhysicsStart();
 		void OnPhysicsStop();

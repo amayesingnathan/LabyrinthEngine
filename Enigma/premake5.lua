@@ -30,11 +30,6 @@ project "Enigma"
     {
         "Labyrinth"
     }
-	
-	postbuildcommands
-	{
-		"{COPYDIR} \"%{LibraryDir.VulkanSDK_DebugDLL}\" \"%{cfg.targetdir}\""
-	}
 
     filter "system:windows"
         systemversion "latest"

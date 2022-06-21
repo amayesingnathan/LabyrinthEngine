@@ -229,10 +229,12 @@ namespace Labyrinth {
 		ImGui::Begin("Settings");
 
 		ImGui::Checkbox("Display Colliders", &mEditorData.displayColliders);
+		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData.colliderColour));
 		if (ImGui::Button("Reset Camera Angle"))
 			mEditorCamera.resetAngle();
 		if (ImGui::Button("Reset Camera Position"))
 			mEditorCamera.resetPosition();
+		ImGui::Checkbox("Link Children On Destroy", &mEditorData.linkOnDestroy);
 
 		ImGui::End();
 
@@ -374,7 +376,7 @@ namespace Labyrinth {
 
 	bool EditorLayer::OnKeyPressed(KeyPressedEvent& e)
 	{
-		if (e.getRepeatCount() > 0)
+		if (e.isRepeated())
 			return false;
 
 		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
@@ -579,7 +581,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([](const auto& tc, const auto& bcc) 
+		mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](const auto& tc, const auto& bcc) 
 		{
 			glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, 0.001f);
 			glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
@@ -588,10 +590,10 @@ namespace Labyrinth {
 				* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
 				* glm::scale(glm::mat4(1.0f), scale);
 
-			Renderer2D::DrawRect(transform, glm::vec4(0, 1, 0, 1));
+			Renderer2D::DrawRect(transform, mEditorData.colliderColour);
 		});
 
-		mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([](const auto& tc, const auto& ccc)
+		mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](const auto& tc, const auto& ccc)
 		{
 			glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, 0.001f);
 			glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
@@ -599,7 +601,7 @@ namespace Labyrinth {
 			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
 				* glm::scale(glm::mat4(1.0f), scale);
 
-			Renderer2D::DrawCircle(transform, glm::vec4(0, 1, 0, 1), 0.05f);
+			Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.05f);
 		});
 
 		Renderer2D::EndState();

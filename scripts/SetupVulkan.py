@@ -13,7 +13,7 @@ from io import BytesIO
 from urllib.request import urlopen
 
 class VulkanConfiguration:
-    requiredVulkanVersion = "1.2.170.0"
+    requiredVulkanVersion = "1.3.204.1"
     vulkanDirectory = "./Labyrinth/dependencies/VulkanSDK"
 
     @classmethod
@@ -23,7 +23,8 @@ class VulkanConfiguration:
             return
             
         if (not cls.CheckVulkanSDKDebugLibs()):
-            print("Vulkan SDK debug libs not found.")
+            print(f"\nNo Vulkan SDK debug libs found. Install Vulkan SDK with debug libs.")
+            print(f"\nDebug configuration disabled.")
 
     @classmethod
     def CheckVulkanSDK(cls):
@@ -63,23 +64,10 @@ class VulkanConfiguration:
 
     @classmethod
     def CheckVulkanSDKDebugLibs(cls):
-        shadercdLib = Path(f"{cls.vulkanDirectory}/Lib/shaderc_sharedd.lib")
+        vulkanSDK = os.environ.get("VULKAN_SDK")
+        shadercdLib = Path(f"{vulkanSDK}/Lib/shaderc_sharedd.lib")
         
-        VulkanSDKDebugLibsURLlist = [
-            f"https://sdk.lunarg.com/sdk/download/{cls.requiredVulkanVersion}/windows/VulkanSDK-{cls.requiredVulkanVersion}-DebugLibs.zip",
-            f"https://files.lunarg.com/SDK-{cls.requiredVulkanVersion}/VulkanSDK-{cls.requiredVulkanVersion}-DebugLibs.zip"
-        ]
-        
-        if not shadercdLib.exists():
-            print(f"\nNo Vulkan SDK debug libs found. (Checked {shadercdLib})")
-            vulkanPath = f"{cls.vulkanDirectory}/VulkanSDK-{cls.requiredVulkanVersion}-DebugLibs.zip"
-            Utils.DownloadFile(VulkanSDKDebugLibsURLlist, vulkanPath)
-            print("Extracting", vulkanPath)
-            Utils.UnzipFile(vulkanPath, deleteZipFile=False)
-            print(f"Vulkan SDK debug libs installed at {os.path.abspath(cls.vulkanDirectory)}")
-        else:
-            print(f"\nVulkan SDK debug libs located at {os.path.abspath(cls.vulkanDirectory)}")
-        return True
+        return shadercdLib.exists()
 
 if __name__ == "__main__":
     VulkanConfiguration.Validate()

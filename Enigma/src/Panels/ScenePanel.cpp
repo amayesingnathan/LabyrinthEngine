@@ -1,6 +1,7 @@
 #include "ScenePanel.h"
 
 #include "SpriteSheetPanel.h"
+#include "../EditorLayer.h"
 #include "../Modals/BodySpecModal.h"
 
 #include <Labyrinth.h>
@@ -10,19 +11,25 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-
 namespace Labyrinth {
 
 	extern const std::filesystem::path gAssetPath;
 
-	ScenePanel::ScenePanel(const Ref<Scene>& scene)
+	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData* options)
 	{
-		setContext(scene);
+		setContext(scene, options);
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene)
 	{
 		mContext = scene;
+		mSelectedEntity = {};
+	}
+
+	void ScenePanel::setContext(const Ref<Scene>& scene, EditorData* options)
+	{
+		mContext = scene;
+		mEditorData = options;
 		mSelectedEntity = {};
 	}
 
@@ -37,7 +44,7 @@ namespace Labyrinth {
 			});
 
 		for (auto& entity : mToRemove)
-			mContext->DestroyEntity(entity);
+			mContext->DestroyEntity(entity, mEditorData ? mEditorData->linkOnDestroy : false);
 		mToRemove.clear();
 
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
@@ -114,11 +121,17 @@ namespace Labyrinth {
 			ImGui::EndDragDropTarget();
 		}
 
+		bool entityCreated = false;
+		bool bodyCreated = false;
 		bool childCreated = false;
 		bool cloneEntity = false;
 		bool entityDeleted = false;
 		if (ImGui::BeginPopupContextItem())
 		{
+			if (ImGui::MenuItem("Create Entity"))
+				entityCreated = true;
+			if (ImGui::MenuItem("Create Rigid Body"))
+				bodyCreated = true;
 			if (ImGui::MenuItem("Create Child"))
 				childCreated = true;
 			if (ImGui::MenuItem("Clone Entity"))
@@ -139,9 +152,14 @@ namespace Labyrinth {
 				DrawEntityNode({ node.children[i], mContext });
 			ImGui::TreePop();
 		}
+		if (entityCreated)
+			mContext->CreateEntity("Empty Entity");
+		if (bodyCreated) {
+			mBodyCreation = new BodySpecModal(mContext);
+			ImGui::OpenPopup("BodySpecModal"); 
+		}
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
-
 		if (cloneEntity)
 			mContext->CloneEntity(entity);
 

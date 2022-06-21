@@ -22,21 +22,21 @@ namespace Labyrinth {
 	class LAB_API KeyPressedEvent : public KeyEvent
 	{
 	public:
-		KeyPressedEvent(const KeyCode keycode, uint16_t repeatCount)
-			: KeyEvent(keycode), mRepeatCount(repeatCount) {}
+		KeyPressedEvent(const KeyCode keycode, bool repeat = false)
+			: KeyEvent(keycode), mIsRepeat(repeat) {}
 
-		uint16_t getRepeatCount() const { return mRepeatCount; }
+		bool isRepeated() const { return mIsRepeat; }
 
 		std::string toString() const override
 		{
 			std::stringstream ss;
-			ss << "KeyPressedEvent: " << mKeyCode << " (" << mRepeatCount << " repeat(s))";
+			ss << "KeyPressedEvent: " << mKeyCode << " (" << mIsRepeat << " repeat(s))";
 			return ss.str();
 		}
 
 		EVENT_CLASS_TYPE(KeyPressed)
 	private:
-		uint16_t mRepeatCount;
+		bool mIsRepeat;
 	};
 
 	class LAB_API KeyReleasedEvent : public KeyEvent

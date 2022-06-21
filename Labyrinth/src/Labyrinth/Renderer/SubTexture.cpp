@@ -89,6 +89,19 @@ namespace Labyrinth {
 		mSubTextures.erase(name);
 	}
 
+	Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key)
+	{
+		if (mSubTextures.count(key) == 0) return nullptr;
+		return mSubTextures[key];
+	}
+
+	const Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key) const
+	{
+		if (mSubTextures.count(key) == 0) return nullptr;
+
+		return mSubTextures.at(key);
+	}
+
 	Ref<Texture2DSheet> Texture2DSheet::CreateFromPath(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
 	{
 		return CreateRef<Texture2DSheet>(filepath, tileSize, name);

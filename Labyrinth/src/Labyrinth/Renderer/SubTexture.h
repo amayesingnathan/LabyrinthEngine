@@ -47,6 +47,9 @@ namespace Labyrinth {
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
 		void deleteSubTex(const std::string& name);
 
+		Ref<SubTexture2D> operator[] (const std::string& key);
+		const Ref<SubTexture2D> operator[] (const std::string& key) const;
+
 		static Ref<Texture2DSheet> CreateFromPath(const std::string& filepath, const glm::vec2& tileSize, const std::string& name = "");
 		static Ref<Texture2DSheet> CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name = "");
 
