@@ -12,6 +12,8 @@
 
 #include "Labyrinth/Maths/Maths.h"
 
+#include "Assets/AssetManager.h"
+
 #include "imgui/imgui.h"
 #include "ImGuizmo.h"
 
@@ -31,10 +33,14 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mHighlight = Texture2D::Create("resources/icons/highlight.png");
-		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
-		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
-		mIconSim = Texture2D::Create("resources/icons/simbutton.png");
+		AssetManager::Create<Texture2D>("Highlight", "resources/icons/highlight.png");
+		mHighlight = AssetManager::Get<Texture2D>("Highlight");
+		AssetManager::Create<Texture2D>("PlayIcon", "resources/icons/playbutton.png");
+		mIconPlay = AssetManager::Get<Texture2D>("PlayIcon");
+		AssetManager::Create<Texture2D>("StopIcon", "resources/icons/stopbutton.png");
+		mIconStop = AssetManager::Get<Texture2D>("StopIcon");
+		AssetManager::Create<Texture2D>("SimIcon", "resources/icons/simbutton.png");
+		mIconSim = AssetManager::Get<Texture2D>("SimIcon");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -484,6 +490,9 @@ namespace Labyrinth {
 
 	void EditorLayer::NewScene()
 	{
+		if (mSceneState != SceneState::Edit)
+			return;
+
 		mEditorScene = CreateRef<Scene>();
 		mEditorData.currentFile = std::string();
 		SetCurrentScene(mEditorScene);
