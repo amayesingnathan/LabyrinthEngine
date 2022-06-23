@@ -11,7 +11,7 @@ namespace Labyrinth {
 		using Position = std::pair<size_t, size_t>;
 
 	public:
-		SubTexModal(struct SubTexPayload& data, Ref<Texture2DSheet> sheet);
+		SubTexModal(struct SubTexPayload& data);
 
 		void display() override;
 

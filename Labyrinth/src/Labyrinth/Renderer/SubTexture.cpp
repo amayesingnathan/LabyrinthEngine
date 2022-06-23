@@ -60,7 +60,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRef(this), coords, spriteSize, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::Create(CreateRef(this), coords, spriteSize, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -73,7 +73,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::CreateFromCoords(CreateRef(this), coords, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::Create(CreateRef(this), coords, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -102,12 +102,12 @@ namespace Labyrinth {
 		return mSubTextures.at(key);
 	}
 
-	Ref<Texture2DSheet> Texture2DSheet::CreateFromPath(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
+	Ref<Texture2DSheet> Texture2DSheet::Create(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
 	{
 		return CreateRef<Texture2DSheet>(filepath, tileSize, name);
 	}
 
-	Ref<Texture2DSheet> Texture2DSheet::CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name)
+	Ref<Texture2DSheet> Texture2DSheet::Create(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name)
 	{
 		return CreateRef<Texture2DSheet>(spriteSheet, tileSize, name);
 	}
@@ -134,7 +134,7 @@ namespace Labyrinth {
 			mTexCoords[i] = coords[i];
 	}
 
-	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
+	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
 		const uint32_t sheetHeight = tex->getHeight();
@@ -145,7 +145,7 @@ namespace Labyrinth {
 		return CreateRef<SubTexture2D>(tex, min, max, name);
 	}
 
-	Ref<SubTexture2D> SubTexture2D::CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name)
+	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
 		const uint32_t sheetHeight = tex->getHeight();

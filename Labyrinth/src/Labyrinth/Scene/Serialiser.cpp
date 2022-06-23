@@ -375,7 +375,7 @@ namespace Labyrinth {
 				std::string path = sheet["Source"].as<std::string>();
 				glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
 
-				sheetsOut.emplace_back(Texture2DSheet::CreateFromPath(path, tileSize, name));
+				sheetsOut.emplace_back(Texture2DSheet::Create(path, tileSize, name));
 			}
 		}
 	}

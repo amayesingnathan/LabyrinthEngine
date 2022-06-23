@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Assets/IAsset.h"
 
 #include <string>
 #include <regex>
 
 namespace Labyrinth {
 
-	class LAB_API Texture
+	class LAB_API Texture : public IAsset
 	{
 	public:
 		virtual ~Texture() = default;
@@ -27,6 +28,8 @@ namespace Labyrinth {
 	class LAB_API Texture2D : public Texture
 	{
 	public:
+		virtual ~Texture2D() = default;
+
 		static Ref<Texture2D> Create(uint32_t width, uint32_t height);
 		static Ref<Texture2D> Create(const std::string& path);
 

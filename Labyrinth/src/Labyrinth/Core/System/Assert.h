@@ -17,7 +17,12 @@
 	// Currently accepts at least the condition and one additional parameter (the message) being optional
 	#define LAB_ASSERT(...) LAB_EXPAND_MACRO( LAB_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(_, __VA_ARGS__) )
 	#define LAB_CORE_ASSERT(...) LAB_EXPAND_MACRO( LAB_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(_CORE_, __VA_ARGS__) )
+
+	#define LAB_STATIC_ASSERT(check, string) static_assert(check, string)
+
 #else
 	#define LAB_ASSERT(...)
 	#define LAB_CORE_ASSERT(...)
+
+	#define LAB_STATIC_ASSERT(...)
 #endif

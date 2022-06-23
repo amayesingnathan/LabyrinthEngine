@@ -2,6 +2,7 @@
 
 #include <Labyrinth.h>
 
+#include "../Assets/AssetManager.h"
 #include "../Modals/SubTexModal.h"
 
 #include <imgui/imgui.h>
@@ -13,7 +14,7 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		mNoSheet = Texture2D::Create("assets/textures/checkerboard.png");
+		mNoSheet = AssetManager::Create<Texture2D>("NoSheet", "assets/textures/checkerboard.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1;
@@ -26,7 +27,7 @@ namespace Labyrinth {
 
 	void SpriteSheetPanel::onUpdate()
 	{
-		if (mPayload.mSelectedSubTex)
+		if (mCurrentSubTex)
 		{
 			mFramebuffer->bind();
 
@@ -34,7 +35,7 @@ namespace Labyrinth {
 			RenderCommand::Clear();
 
 			Renderer2D::BeginState();
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mPayload.mSelectedSubTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mCurrentSubTex);
 			Renderer2D::EndState();
 
 			mFramebuffer->unbind();
@@ -65,7 +66,7 @@ namespace Labyrinth {
 					mCurrentSheetPath = texturePath.string();
 					ImGui::OpenPopup("TileWidthModal");
 
-					mSheetName = "";
+					mPayload.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 				}
 
@@ -75,7 +76,7 @@ namespace Labyrinth {
 
 		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
 		{
-			mSubTexSelector = new SubTexModal(mPayload, mCurrentSheet);
+			mSubTexSelector = new SubTexModal(mPayload);
 			ImGui::OpenPopup("SubTexModal");
 		}
 
@@ -83,31 +84,31 @@ namespace Labyrinth {
 
 		if (ImGui::Button("Remove  Subtexture") && mCurrentSheet)
 		{
-			mCurrentSheet->deleteSubTex(mPayload.mSelectedSubTexName);
-			mPayload.mSelectedSubTex = nullptr;
-			mPayload.mSelectedSubTexName = noSubTex;
+			mCurrentSheet->deleteSubTex(mPayload.subTexName);
+			mPayload.subTexName = noSubTex;
+			mCurrentSubTex = nullptr;
 		}
 
-		if (ImGui::BeginCombo("Subtextures", mPayload.mSelectedSubTexName.c_str()))
+		if (ImGui::BeginCombo("Subtextures", mPayload.subTexName.c_str()))
 		{
 			// Display "None" at the top of the list
-			bool clear = mPayload.mSelectedSubTexName == noSubTex;
+			bool clear = mPayload.subTexName == noSubTex;
 			if (ImGui::Selectable(noSubTex.c_str(), clear))
 			{
-				mPayload.mSelectedSubTexName = noSubTex;
-				mPayload.mSelectedSubTex = nullptr;
+				mPayload.subTexName = noSubTex;
+				mCurrentSubTex = nullptr;
 			}
 
 			if (mCurrentSheet)
 			{
 				for (const auto& [key, value] : mCurrentSheet->getSubTexList())
 				{
-					bool isSelected = mPayload.mSelectedSubTexName == key;
+					bool isSelected = mPayload.subTexName == key;
 
 					if (ImGui::Selectable(key.c_str(), isSelected))
 					{
-						mPayload.mSelectedSubTexName = key;
-						mPayload.mSelectedSubTex = value;
+						mPayload.subTexName = key;
+						mCurrentSubTex = mCurrentSheet->getSubTex(key);
 					}
 
 					if (isSelected)
@@ -120,7 +121,7 @@ namespace Labyrinth {
 
 		ImGui::NewLine();
 
-		if (mPayload.mSelectedSubTex)
+		if (mCurrentSubTex)
 		{
 			ImGui::Image((ImTextureID)(intptr_t)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
@@ -146,11 +147,9 @@ namespace Labyrinth {
 
 		char buffer[256];
 		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mSheetName);
+		STR_COPY(buffer, mPayload.sheetName);
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-		{
-			mSheetName = std::string(buffer);
-		}
+			mPayload.sheetName = std::string(buffer);
 
 		ImGui::InputInt("Width", &mTileWidth);
 		ImGui::InputInt("Height", &mTileHeight);
@@ -178,8 +177,7 @@ namespace Labyrinth {
 
 		if (loadSheet)
 		{
-			mCurrentSheet.reset();
-			mCurrentSheet = Texture2DSheet::CreateFromPath(mCurrentSheetPath, { mTileWidth, mTileHeight }, mSheetName);
+			mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, mCurrentSheetPath, glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName);
 			mSheetWidth = mCurrentSheet->getWidth();
 			mSheetHeight = mCurrentSheet->getHeight();
 			mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
@@ -197,7 +195,10 @@ namespace Labyrinth {
 
 		mSubTexSelector->display();
 		if (mSubTexSelector->complete())
+		{
+			mCurrentSubTex = mCurrentSheet->getSubTex(mPayload.subTexName);
 			delete mSubTexSelector;
+		}
 
 		ImGui::EndPopup();
 	}

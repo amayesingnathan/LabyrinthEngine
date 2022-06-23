@@ -29,6 +29,9 @@
 #include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Scripting/ScriptableEntity.h"
 
+#include "Labyrinth/Assets/AssetManager.h"
+#include "Labyrinth/Assets/AssetGroup.h"
+
 // ---Renderer------------------------
 #include "Labyrinth/Renderer/Renderer.h"
 #include "Labyrinth/Renderer/Renderer2D.h"

@@ -534,7 +534,7 @@ namespace Labyrinth {
 					SubTexPayload& data = *Cast<SubTexPayload>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::Tile;
-					component.texture = data.mSelectedSubTex;
+					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
 				}
 				ImGui::EndDragDropTarget();
 			}

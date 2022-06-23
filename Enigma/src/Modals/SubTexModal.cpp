@@ -4,8 +4,9 @@
 
 namespace Labyrinth {
 
-	SubTexModal::SubTexModal(SubTexPayload& data, Ref<Texture2DSheet> sheet) : ModalWindow(&data), mSheet(sheet)
+	SubTexModal::SubTexModal(SubTexPayload& data) : ModalWindow(&data)
 	{
+		mSheet = AssetManager::Get<Texture2DSheet>(data.sheetName);
 		mMaxWidthCount = mSheet->getTileCountX();
 		mMaxHeightCount = mSheet->getTileCountY();
 
@@ -91,8 +92,7 @@ namespace Labyrinth {
 			if (CheckSelection())
 			{
 				SubTexPayload& payload = *Cast<SubTexPayload>(mPayload);
-				payload.mSelectedSubTexName = mName;
-				payload.mSelectedSubTex = mSheet->getSubTex(mName);
+				payload.subTexName = mName;
 				Close();
 			}
 			else

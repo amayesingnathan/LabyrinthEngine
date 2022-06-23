@@ -13,13 +13,13 @@ namespace Labyrinth {
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
 	//IT also provides an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
 
-	class Texture2DSheet : public AllowRefFromThis<Texture2DSheet>
+	class Texture2DSheet : public IAsset, public AllowRefFromThis<Texture2DSheet>
 	{
 	public:
 		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name);
 		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name);
 		Texture2DSheet(const Texture2DSheet&) = default;
-		~Texture2DSheet() = default;
+		virtual ~Texture2DSheet() = default;
 
 		operator Ref<Texture2D>() const { return mTexture; }
 
@@ -50,8 +50,8 @@ namespace Labyrinth {
 		Ref<SubTexture2D> operator[] (const std::string& key);
 		const Ref<SubTexture2D> operator[] (const std::string& key) const;
 
-		static Ref<Texture2DSheet> CreateFromPath(const std::string& filepath, const glm::vec2& tileSize, const std::string& name = "");
-		static Ref<Texture2DSheet> CreateFromTex(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name = "");
+		static Ref<Texture2DSheet> Create(const std::string& filepath, const glm::vec2& tileSize, const std::string& name = "");
+		static Ref<Texture2DSheet> Create(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name = "");
 
 	private:
 		std::string mName;
@@ -63,13 +63,13 @@ namespace Labyrinth {
 		friend SubTexture2D;
 	};
 
-	class SubTexture2D
+	class SubTexture2D : public IAsset
 	{
 	public:
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
 		SubTexture2D(const SubTexture2D&) = default;
-		~SubTexture2D() = default;
+		virtual ~SubTexture2D() = default;
 
 		const Ref<Texture2DSheet>& getSheet() { return mSheet; }
 		const Ref<Texture2D>& getTex() { return mSheet->mTexture; }
@@ -78,8 +78,8 @@ namespace Labyrinth {
 		glm::vec2* getTexCoords() { return mTexCoords; }
 		const glm::vec2* getTexCoords() const { return mTexCoords; }
 
-		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f }, const std::string& name = "");
-		static Ref<SubTexture2D> CreateFromCoords(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name = "");
+		static Ref<SubTexture2D> Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f }, const std::string& name = "");
+		static Ref<SubTexture2D> Create(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name = "");
 
 	private:
 		std::string mName;
