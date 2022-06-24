@@ -14,7 +14,7 @@ namespace Labyrinth {
 	{
 		Ref<Tex2DGroup> iconGroup = AssetManager::Get<Tex2DGroup>("Icons");
 		mDirectoryIcon = iconGroup->add("Directory", "resources/icons/content-browser/directoryIcon.png");
-		mFileIcon = iconGroup->add("File", "resources/icons/content-browser/fileIcon.png");
+		mFileIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
 	}
 
 	void ContentBrowserPanel::onImGuiRender()

@@ -119,7 +119,7 @@ namespace Labyrinth {
 			BeginObject();
 
 			ObjectProperty("Name", sheet->getName());
-			ObjectProperty("Source", sheet->getTex()->getPath());
+			ObjectProperty("Source", sheet->getBaseTex()->getPath());
 			ObjectProperty("TileSize", sheet->getTileSize());
 
 			EndObject();
@@ -206,7 +206,7 @@ namespace Labyrinth {
 		case SpriteRendererComponent::TexType::Texture:
 		{
 			BeginObject("Texture");
-			ObjectProperty("Source", srComponent.texture.tex->getPath());
+			ObjectProperty("Source", srComponent.getTex<Texture2D>()->getPath());
 			EndObject();
 			break;
 		}
@@ -214,14 +214,15 @@ namespace Labyrinth {
 		{
 			BeginObject("Texture");
 
-			ObjectProperty("Sheet", srComponent.texture.subtex->getSheet()->getName());
-			ObjectProperty("SubTexName", srComponent.texture.subtex->getName());
+			const Ref<SubTexture2D>& tex = srComponent.getTex<SubTexture2D>();
+			ObjectProperty("Sheet", tex->getSheet()->getName());
+			ObjectProperty("SubTexName", tex->getName());
 
 			BeginSequence("Coordinates");
 			for (size_t i = 0; i < 4; i++)
 			{
 				BeginObject();
-				ObjectProperty(std::to_string(i), srComponent.texture.subtex->getTexCoords()[i]);
+				ObjectProperty(std::to_string(i), tex->getTexCoords()[i]);
 				EndObject();
 			}
 
@@ -509,9 +510,9 @@ namespace Labyrinth {
 					}
 
 					if (!(*it)->hasSubTex(subTexName))
-						src.texture.subtex = (*it)->createSubTex(subTexName, subtexCoords);
+						src.texture = (*it)->createSubTex(subTexName, subtexCoords);
 					else
-						src.texture.subtex = (*it)->getSubTex(subTexName);
+						src.texture = (*it)->getSubTex(subTexName);
 				}
 
 				break;

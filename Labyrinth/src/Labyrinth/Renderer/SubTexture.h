@@ -34,7 +34,7 @@ namespace Labyrinth {
 		uint32_t getTileHeight() const { return Cast< uint32_t>(mTileSize.y); }
 
 		std::string& getName() { return mName; }
-		Ref<Texture2D> getTex() const { return mTexture; }
+		Ref<Texture2D> getBaseTex() const { return mTexture; }
 
 		bool hasSubTex(const std::string& name) const;
 		Ref<SubTexture2D> getSubTex(const std::string& name);
@@ -71,8 +71,8 @@ namespace Labyrinth {
 		SubTexture2D(const SubTexture2D&) = default;
 		virtual ~SubTexture2D() = default;
 
-		const Ref<Texture2DSheet>& getSheet() { return mSheet; }
-		const Ref<Texture2D>& getTex() { return mSheet->mTexture; }
+		const Ref<Texture2DSheet>& getSheet() const { return mSheet; }
+		const Ref<Texture2D>& getBaseTex() const { return mSheet->mTexture; }
 
 		const std::string& getName() const { return mName; }
 		glm::vec2* getTexCoords() { return mTexCoords; }

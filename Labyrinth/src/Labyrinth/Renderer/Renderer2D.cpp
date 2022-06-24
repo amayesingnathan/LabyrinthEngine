@@ -416,12 +416,12 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
 	{
-		DrawQuad(position, size, subtexture->getTex(), tilingFactor, tintColour, subtexture->getTexCoords());
+		DrawQuad(position, size, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
 	{
-		DrawQuad(position, size, subtexture->getTex(), tilingFactor, tintColour, subtexture->getTexCoords());
+		DrawQuad(position, size, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour, int entityID)
@@ -502,14 +502,25 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID)
 	{
-		if (src.hasTex())
+		if (src.hasTex()) {
 			switch (src.type)
 			{
-				case SpriteRendererComponent::TexType::Texture: DrawQuad(transform, src.texture.tex, src.tilingFactor, src.colour, nullptr, entityID); break;
-				case SpriteRendererComponent::TexType::Tile: DrawQuad(transform, src.texture.subtex->getTex(), src.tilingFactor, src.colour, src.texture.subtex->getTexCoords(), entityID); break;
+			case SpriteRendererComponent::TexType::Texture:
+			{
+				DrawQuad(transform, src.getTex<Texture2D>(),
+					src.tilingFactor, src.colour, nullptr, entityID);
+				break;
 			}
-		else
-			DrawQuad(transform, src.colour, entityID);
+			case SpriteRendererComponent::TexType::Tile:
+			{
+				DrawQuad(transform, src.getTex<SubTexture2D>()->getBaseTex(),
+					src.tilingFactor, src.colour,
+					std::get<Ref<SubTexture2D>>(src.texture)->getTexCoords(),
+					entityID);
+				break;
+			}
+			}
+		} else DrawQuad(transform, src.colour, entityID);
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour)
@@ -547,12 +558,12 @@ namespace Labyrinth {
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
 	{
-		DrawRotatedQuad(position, size, rotation, subtexture->getTex(), tilingFactor, tintColour, subtexture->getTexCoords());
+		DrawRotatedQuad(position, size, rotation, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
 	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
 	{
-		DrawRotatedQuad(position, size, rotation, subtexture->getTex(), tilingFactor, tintColour, subtexture->getTexCoords());
+		DrawRotatedQuad(position, size, rotation, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
 	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, float thickness, int entityID)

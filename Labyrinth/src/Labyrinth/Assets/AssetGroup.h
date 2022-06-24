@@ -81,6 +81,23 @@ namespace Labyrinth {
             return newAsset;
         }
 
+        bool exists(const std::string& id)
+        {
+            bool result = false;
+            std::visit([&id, &result](auto& arg)
+                {
+                    using T = std::decay_t<decltype(arg)>;
+                    if constexpr (std::is_same_v<T, GroupPool>)
+                        result = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.id; }) != arg.end();
+                    else if constexpr (std::is_same_v<T, GroupMap>)
+                        result = arg.count(id) != 0;
+                    else
+                        LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+                }, mAssets);
+
+            return result;
+        }
+
         void clear() 
         {
             std::visit([&id, &newAsset](auto& arg)
@@ -152,6 +169,15 @@ namespace Labyrinth {
             }, mAssets);
 
             return asset;
+        }
+
+        template<typename... Args>
+        AssetRef addOrGet(const std::string& id, Args... args)
+        {
+            if (exists(id))
+                return get(id);
+            else
+                return add(id, std::forward<Args>(args)...);
         }
 
         size_t count(const std::string& id) const

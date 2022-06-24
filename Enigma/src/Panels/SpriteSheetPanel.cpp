@@ -50,7 +50,7 @@ namespace Labyrinth {
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
 		if (mCurrentSheet)
-			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getBaseTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
 			ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 

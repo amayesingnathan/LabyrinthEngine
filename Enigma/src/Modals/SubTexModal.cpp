@@ -36,7 +36,7 @@ namespace Labyrinth {
 		auto imageSize = ImGui::GetWindowSize();
 		imageSize = { imageSize.x - 2 * xpos, imageSize.y - 1.5f * ypos };
 		ImVec2 tileSize = { imageSize.x / mMaxWidthCount, imageSize.y / mMaxHeightCount };
-		ImGui::Image((ImTextureID)(uintptr_t)mSheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((ImTextureID)(uintptr_t)mSheet->getBaseTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
 
 		auto& colours = ImGui::GetStyle().Colors;
 		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];

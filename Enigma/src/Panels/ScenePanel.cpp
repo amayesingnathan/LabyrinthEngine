@@ -522,7 +522,7 @@ namespace Labyrinth {
 					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
 					{
 						component.type = SpriteRendererComponent::TexType::Texture;
-						component.texture.tex = Texture2D::Create(texturePath.string());
+						component.texture = Texture2D::Create(texturePath.string());
 					}
 				}
 				ImGui::EndDragDropTarget();
@@ -535,6 +535,16 @@ namespace Labyrinth {
 
 					component.type = SpriteRendererComponent::TexType::Tile;
 					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
+				}
+				ImGui::EndDragDropTarget();
+			}
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
+				{
+					const std::string& key = *Cast<std::string>(payload->Data);
+
+
 				}
 				ImGui::EndDragDropTarget();
 			}

@@ -2,6 +2,7 @@
 
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/AssetPanel.h"
 #include "Panels/SpriteSheetPanel.h"
 #include "Panels/OptionsPanel.h"
 #include "Panels/StatsPanel.h"
@@ -55,6 +56,7 @@ namespace Labyrinth {
 		mScenePanel = PanelManager::Register<ScenePanel>("SceneHeirarchy");
 		PanelManager::Register<ContentBrowserPanel>("ContentBrowser");
 		PanelManager::Register<SpriteSheetPanel>("SpriteSheets");
+		PanelManager::Register<AssetPanel>("AssetPanel");
 		PanelManager::Register<OptionsPanel>("Options")->setEditorData(mEditorData);
 		PanelManager::Register<StatsPanel>("Statistic")->bindHoveredEntity(mHoveredEntity);
 
