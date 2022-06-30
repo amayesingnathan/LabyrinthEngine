@@ -4,6 +4,8 @@
 #include "Entity.h"
 #include "Components.h"
 
+#include "Labyrinth/Assets/AssetManager.h"
+
 #include <fstream>
 
 
@@ -110,16 +112,16 @@ namespace Labyrinth {
 	}
 
 	template<> 
-	void YAMLParser::EncodeObject<std::vector<Ref<Texture2DSheet>>>(const std::vector<Ref<Texture2DSheet>>& sheets, bool flag)
+	void YAMLParser::EncodeObject<Tex2DSheetGroup>(const Tex2DSheetGroup& sheets, bool flag)
 	{
 		BeginSequence("SpriteSheets");
 
-		for (Ref<Texture2DSheet> sheet : sheets)
+		for (const auto& [key, sheet] : sheets)
 		{
 			BeginObject();
 
 			ObjectProperty("Name", sheet->getName());
-			ObjectProperty("Source", sheet->getTex()->getPath());
+			ObjectProperty("Source", sheet->getBaseTex()->getPath());
 			ObjectProperty("TileSize", sheet->getTileSize());
 
 			EndObject();
@@ -206,7 +208,7 @@ namespace Labyrinth {
 		case SpriteRendererComponent::TexType::Texture:
 		{
 			BeginObject("Texture");
-			ObjectProperty("Source", srComponent.texture.tex->getPath());
+			ObjectProperty("Source", srComponent.getTex<Texture2D>()->getPath());
 			EndObject();
 			break;
 		}
@@ -214,14 +216,15 @@ namespace Labyrinth {
 		{
 			BeginObject("Texture");
 
-			ObjectProperty("Sheet", srComponent.texture.subtex->getSheet()->getName());
-			ObjectProperty("SubTexName", srComponent.texture.subtex->getName());
+			const Ref<SubTexture2D>& tex = srComponent.getTex<SubTexture2D>();
+			ObjectProperty("Sheet", tex->getSheet()->getName());
+			ObjectProperty("SubTexName", tex->getName());
 
 			BeginSequence("Coordinates");
 			for (size_t i = 0; i < 4; i++)
 			{
 				BeginObject();
-				ObjectProperty(std::to_string(i), srComponent.texture.subtex->getTexCoords()[i]);
+				ObjectProperty(std::to_string(i), tex->getTexCoords()[i]);
 				EndObject();
 			}
 
@@ -333,10 +336,7 @@ namespace Labyrinth {
 		BeginObject();
 		ObjectProperty("Scene", scene->getName());
 
-		std::vector<Ref<Texture2DSheet>> sheets;
-		scene->getSheetsInUse(sheets);
-		if (!sheets.empty())
-			EncodeObject(sheets);
+		EncodeObject(*AssetManager::Get<Tex2DSheetGroup>("SpriteSheets"));
 
 		BeginSequence("Entities");
 
@@ -350,12 +350,10 @@ namespace Labyrinth {
 		EndObject();
 	}
 
-	static std::vector<Ref<Texture2DSheet>> SpriteSheets;
-
 	static Entity CurrentParent = Entity();
 
 	template<>
-	void YAMLParser::DecodeObject<std::vector<Ref<Texture2DSheet>>>(std::vector<Ref<Texture2DSheet>>& sheetsOut)
+	void YAMLParser::DecodeObject<Ref<Tex2DSheetGroup>>(Ref<Tex2DSheetGroup>& sheetsOut)
 	{
 		if (!mIn["SpriteSheets"]) return;
 
@@ -366,8 +364,8 @@ namespace Labyrinth {
 			for (auto sheet : sheetsNode)
 				count++;
 
-			if (sheetsOut.capacity() < count)
-				sheetsOut.reserve(count);
+			if (sheetsOut->capacity() < count)
+				sheetsOut->reserve(count);
 
 			for (auto sheet : sheetsNode)
 			{
@@ -375,7 +373,7 @@ namespace Labyrinth {
 				std::string path = sheet["Source"].as<std::string>();
 				glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
 
-				sheetsOut.emplace_back(Texture2DSheet::CreateFromPath(path, tileSize, name));
+				sheetsOut->addOrGet(name, Texture2DSheet::Create(path, tileSize, name));
 			}
 		}
 	}
@@ -485,12 +483,13 @@ namespace Labyrinth {
 				auto texture = spriteRendererComponent["Texture"];
 				std::string sheetName = texture["Sheet"].as<std::string>();
 
-				auto it = std::find_if(SpriteSheets.begin(), SpriteSheets.end(), [&](Ref<Texture2DSheet> match) 
-					{
-						return match->getName() == sheetName;
-					});
+				const auto& spriteSheets = AssetManager::Get<Tex2DSheetGroup>("SpriteSheets");
+				auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
+				{
+					return match.second->getName() == sheetName;
+				});
 
-				if (it != SpriteSheets.end())
+				if (it != spriteSheets->end())
 				{
 					std::string subTexName = texture["SubTexName"].as<std::string>();
 
@@ -508,10 +507,11 @@ namespace Labyrinth {
 						}
 					}
 
-					if (!(*it)->hasSubTex(subTexName))
-						src.texture.subtex = (*it)->createSubTex(subTexName, subtexCoords);
+
+					if (!it->second->hasSubTex(subTexName))
+						src.texture = it->second->createSubTex(subTexName, subtexCoords);
 					else
-						src.texture.subtex = (*it)->getSubTex(subTexName);
+						src.texture = it->second->getSubTex(subTexName);
 				}
 
 				break;
@@ -633,8 +633,7 @@ namespace Labyrinth {
 		if (!mIn["Scene"]) return nullptr;
 
 		// Load spritesheets
-		SpriteSheets.clear();
-		DecodeObject(SpriteSheets);
+		DecodeObject(AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets"));
 
 		// Initialise current parent entity to null entity as first entity
 		// read should have no parent.

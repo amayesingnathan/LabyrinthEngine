@@ -4,14 +4,16 @@
 #include "Labyrinth/Core/Application.h"
 
 #ifndef LAB_APP_NAME
-	#define LAB_APP_NAME "APP"
+	#define LAB_APP_NAME App
 #endif
+
+#define LAB_APP_NAME_STR LAB_STRINGIFY_MACRO(LAB_APP_NAME)
 
 extern Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args);
 
 int main(int argc, char** argv)
 {	
-	Labyrinth::Log::Init(LAB_APP_NAME);
+	Labyrinth::Log::Init(LAB_APP_NAME_STR);
 
 	LAB_PROFILE_BEGIN_SESSION("Startup", "LabyrinthProfile-Startup.json");
 	auto app = Labyrinth::CreateApplication({ argc, argv });

@@ -5,6 +5,7 @@
 #include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
+#include "Labyrinth/Scene/Components.h"
 
 namespace Labyrinth {
 
@@ -29,6 +30,7 @@ namespace Labyrinth {
 		void DrawEntityNode(Entity entity);
 		void DrawComponents();
 
+		void AssetTypeWarning();
 		void BodySpecModalRender();
 
 	private:
@@ -39,6 +41,14 @@ namespace Labyrinth {
 		std::vector<Entity> mToRemove;
 
 		BodySpecModal* mBodyCreation = nullptr;
+
+		struct TexTypes { std::string label;  SpriteRendererComponent::TexType type; };
+		const std::vector<TexTypes> mTexTypes =
+		{
+			{ "Colour", SpriteRendererComponent::TexType::None },
+			{ "Texture2D", SpriteRendererComponent::TexType::Texture },
+			{ "Circle", SpriteRendererComponent::TexType::Tile }
+		};
 	};
 
 }

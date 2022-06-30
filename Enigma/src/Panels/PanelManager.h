@@ -27,16 +27,25 @@ namespace Labyrinth {
 
 	class PanelManager
 	{
+	private:
+		PanelManager() = default;
+		PanelManager(const PanelManager&) = delete;
+		void operator=(const PanelManager&) = delete;
+
+	private:
+		using PanelData = std::unordered_map<std::string, PanelItem>;
+		PanelData mPanels;
+
 	public:
-		static std::unordered_map<std::string, PanelItem>& GetPanels()
+		static PanelData& GetPanels()
 		{
-			static std::unordered_map<std::string, PanelItem> mPanels;
-			return mPanels;
+			static PanelManager mInstance;
+			return mInstance.mPanels;
 		}
 
 		static Panel* Get(const std::string& name)
 		{
-			std::unordered_map<std::string, PanelItem>& panels = GetPanels();
+			PanelData& panels = GetPanels();
 
 			if (panels.count(name) == 0)
 			{
@@ -58,7 +67,7 @@ namespace Labyrinth {
 		{
 			static_assert(IsDerivedFrom<Panel, T>());
 
-			std::unordered_map<std::string, PanelItem>& panels = GetPanels();
+			PanelData& panels = GetPanels();
 			LAB_ASSERT(panels.count(name) == 0, "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			T* newPanel = new T;
@@ -73,7 +82,7 @@ namespace Labyrinth {
 		{
 			static_assert(IsDerivedFrom<Panel, T>());
 
-			std::unordered_map<std::string, PanelItem>& panels = GetPanels();
+			PanelData& panels = GetPanels();
 			LAB_ASSERT(panels.count(name) == 0, "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			panels.try_emplace(name, newPanel, display);
@@ -83,7 +92,7 @@ namespace Labyrinth {
 
 		static void Delete(const std::string& name)
 		{
-			std::unordered_map<std::string, PanelItem>& panels = GetPanels();
+			PanelData& panels = GetPanels();
 
 			if (panels.count(name) == 0)
 			{

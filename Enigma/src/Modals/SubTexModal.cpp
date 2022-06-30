@@ -4,8 +4,9 @@
 
 namespace Labyrinth {
 
-	SubTexModal::SubTexModal(SubTexPayload& data, Ref<Texture2DSheet> sheet) : ModalWindow(&data), mSheet(sheet)
+	SubTexModal::SubTexModal(SubTexPayload& data) : ModalWindow(&data)
 	{
+		mSheet = AssetManager::Get<Texture2DSheet>(data.sheetName);
 		mMaxWidthCount = mSheet->getTileCountX();
 		mMaxHeightCount = mSheet->getTileCountY();
 
@@ -35,7 +36,7 @@ namespace Labyrinth {
 		auto imageSize = ImGui::GetWindowSize();
 		imageSize = { imageSize.x - 2 * xpos, imageSize.y - 1.5f * ypos };
 		ImVec2 tileSize = { imageSize.x / mMaxWidthCount, imageSize.y / mMaxHeightCount };
-		ImGui::Image((ImTextureID)(uintptr_t)mSheet->getTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
+		ImGui::Image((ImTextureID)(uintptr_t)mSheet->getBaseTex()->getRendererID(), { imageSize.x, imageSize.y }, { 0, 1 }, { 1, 0 });
 
 		auto& colours = ImGui::GetStyle().Colors;
 		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
@@ -91,8 +92,7 @@ namespace Labyrinth {
 			if (CheckSelection())
 			{
 				SubTexPayload& payload = *Cast<SubTexPayload>(mPayload);
-				payload.mSelectedSubTexName = mName;
-				payload.mSelectedSubTex = mSheet->getSubTex(mName);
+				payload.subTexName = mName;
 				Close();
 			}
 			else

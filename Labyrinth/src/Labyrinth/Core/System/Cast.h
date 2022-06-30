@@ -50,20 +50,25 @@ namespace Labyrinth {
 	template<typename To, typename From>
 	constexpr To* CastToRelative(From* targetPointer)
 	{
-		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
+		LAB_STATIC_ASSERT((std::is_base_of<From, To>::value || std::is_base_of<To, From>::value));
 		return dynamic_cast<To*>(targetPointer);
 	}
 
 	template<typename To, typename From>
 	constexpr To& CastToRelative(From& target)
 	{
-		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
+		LAB_STATIC_ASSERT(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
+		try
+		{
 
-		From* targetPtr = &target;
-		To* toPtr = dynamic_cast<To*>(targetPtr);
-		LAB_CORE_ASSERT(toPtr, "Bad cast! Return value was null!");
-
-		return *toPtr;
+			To* toPtr = &target;
+			toPtr = dynamic_cast<To*>(targetPtr);
+			return *toPtr;
+		}
+		catch
+		{
+			LAB_CORE_ASSERT(false, "Bad cast! Return value was null!");
+		}
 	}
 
 	template<typename To, typename From>
@@ -75,7 +80,7 @@ namespace Labyrinth {
 	template<typename To, typename From>
 	constexpr Ref<To> CastRefToRelative(Ref<From> target)
 	{
-		static_assert(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
+		LAB_STATIC_ASSERT(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
 		return std::dynamic_pointer_cast<To>(target);
 	}
 

@@ -2,6 +2,7 @@
 
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
+#include "Panels/AssetPanel.h"
 #include "Panels/SpriteSheetPanel.h"
 #include "Panels/OptionsPanel.h"
 #include "Panels/StatsPanel.h"
@@ -11,6 +12,9 @@
 #include "Labyrinth/Tools/PlatformUtils.h"
 
 #include "Labyrinth/Maths/Maths.h"
+
+#include "Labyrinth/Assets/AssetManager.h"
+#include "Labyrinth/Assets/AssetGroup.h"
 
 #include "imgui/imgui.h"
 #include "ImGuizmo.h"
@@ -31,10 +35,11 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		mHighlight = Texture2D::Create("resources/icons/highlight.png");
-		mIconPlay = Texture2D::Create("resources/icons/playbutton.png");
-		mIconStop = Texture2D::Create("resources/icons/stopbutton.png");
-		mIconSim = Texture2D::Create("resources/icons/simbutton.png");
+		Ref<Tex2DGroup> iconGroup = AssetManager::Create<Tex2DGroup>("Icons", StorageType::Map);
+		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
+		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
+		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");
+		mIconSim = iconGroup->add("Sim", "resources/icons/simbutton.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -48,11 +53,12 @@ namespace Labyrinth {
 
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		mScenePanel = PanelManager::Register<ScenePanel>("SceneHeirarchy");
-		PanelManager::Register<ContentBrowserPanel>("ContentBrowser");
-		PanelManager::Register<SpriteSheetPanel>("SpriteSheets");
+		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy");
+		PanelManager::Register<AssetPanel>("Asset Manager");
+		PanelManager::Register<ContentBrowserPanel>("Content Browser");
+		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options")->setEditorData(mEditorData);
-		PanelManager::Register<StatsPanel>("Statistic")->bindHoveredEntity(mHoveredEntity);
+		PanelManager::Register<StatsPanel>("Statistics")->bindHoveredEntity(mHoveredEntity);
 
 		bool loadedScene = false;
 		auto commandLineArgs = Application::Get().getCommandLineArgs();
@@ -484,6 +490,9 @@ namespace Labyrinth {
 
 	void EditorLayer::NewScene()
 	{
+		if (mSceneState != SceneState::Edit)
+			return;
+
 		mEditorScene = CreateRef<Scene>();
 		mEditorData.currentFile = std::string();
 		SetCurrentScene(mEditorScene);

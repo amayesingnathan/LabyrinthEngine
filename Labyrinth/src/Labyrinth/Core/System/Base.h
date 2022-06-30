@@ -36,7 +36,7 @@ namespace Labyrinth {
 	template<typename T>
 	using Single = std::unique_ptr<T>;
 	template<typename T, typename ... Args>
-	constexpr Single<T> CreateSingle(Args&& ... args)
+	constexpr inline Single<T> CreateSingle(Args&& ... args)
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
@@ -48,13 +48,13 @@ namespace Labyrinth {
 	using AllowRefFromThis = std::enable_shared_from_this<T>;
 
 	template<typename T, typename ... Args>
-	constexpr Ref<T> CreateRef(Args&& ... args)
+	constexpr inline Ref<T> CreateRef(Args&& ... args)
 	{
 		return std::make_shared<T>(std::forward<Args>(args)...);
 	}
 	// Object T must inherit from AllowRefFromThis<T>
 	template<typename T>
-	constexpr Ref<T> CreateRef(T* raw_ptr)
+	constexpr inline Ref<T> CreateRef(T* raw_ptr)
 	{
 		return raw_ptr->shared_from_this(); 
 	}

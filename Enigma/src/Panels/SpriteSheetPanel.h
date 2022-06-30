@@ -10,14 +10,15 @@ namespace Labyrinth {
 
 	struct SubTexPayload
 	{
-		std::string mSelectedSubTexName = "None";
-		Ref<SubTexture2D> mSelectedSubTex = nullptr;
-
-		SubTexPayload() = default;
+		std::string sheetName = "";
+		std::string subTexName = "";
 	};
 
 	class SpriteSheetPanel : public Panel
 	{
+	public:
+		enum class SheetAddType { Path, Texture };
+
 	public:
 		SpriteSheetPanel();
 
@@ -31,9 +32,13 @@ namespace Labyrinth {
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
-		Ref<Texture2D> mNoSheet;
-		Ref<Texture2DSheet> mCurrentSheet;
-		std::string mCurrentSheetPath;
+		Ref<Texture2D> mNoSheet = nullptr;
+		Ref<Texture2DSheet> mCurrentSheet = nullptr;
+		Ref<SubTexture2D> mCurrentSubTex = nullptr;
+
+		SheetAddType mAddType = SheetAddType::Path;
+		using SheetVariable = std::variant<std::string, Ref<Texture2D>>;
+		SheetVariable mNewSheetVar = std::string();
 
 		std::string mSheetName = "";
 
@@ -41,6 +46,7 @@ namespace Labyrinth {
 
 		SubTexModal* mSubTexSelector = nullptr;
 		SubTexPayload mPayload;
+
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

@@ -332,12 +332,13 @@ namespace Labyrinth {
 		{
 			if (srComponent.type == SpriteRendererComponent::TexType::Tile)
 			{
+				Ref<SubTexture2D> subTex = srComponent.getTex<SubTexture2D>();
 				if (std::find_if(sheets.begin(), sheets.end(),
-					[&](Ref<Texture2DSheet> match) {
-						return srComponent.texture.subtex->getTex()->getPath() == match->getTex()->getPath();
+					[&subTex](const Ref<Texture2DSheet>& match) {
+						return subTex->getBaseTex()->getPath() == match->getBaseTex()->getPath();
 					})
 					== sheets.end())
-					sheets.emplace_back(srComponent.texture.subtex->getSheet());
+					sheets.emplace_back(subTex->getSheet());
 			}
 		});
 	}

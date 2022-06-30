@@ -12,6 +12,8 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
+#include <variant>
+
 namespace Labyrinth {
 
 	//////////////////////////////////////////
@@ -46,28 +48,8 @@ namespace Labyrinth {
 	struct LAB_API SpriteRendererComponent
 	{
 		enum class TexType { None = -1, Texture, Tile };
-
-		union TextureComponent
-		{
-			void* noTex = nullptr;
-			Ref<Texture2D> tex;
-			Ref<SubTexture2D> subtex;
-
-			TextureComponent() : noTex(nullptr) {}
-			TextureComponent(Ref<Texture2D> t) : tex(t) {}
-			TextureComponent(Ref<SubTexture2D> st) : subtex(st) {}
-			TextureComponent(const TextureComponent& other)
-			{
-				memcpy(this, &other, sizeof(TextureComponent));
-			}
-			~TextureComponent() {}
-
-			TextureComponent& operator= (const TextureComponent& other)
-			{
-				memcpy(this, &other, sizeof(TextureComponent));
-				return *this;
-			}
-		};
+		struct NoTex {};
+		using TextureComponent = std::variant<NoTex, Ref<Texture2D>, Ref<SubTexture2D>>;
 
 		TexType type = TexType::None;
 
@@ -75,7 +57,7 @@ namespace Labyrinth {
 		static const uint8_t MaxLayers = std::numeric_limits<uint8_t>::max();
 
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
-		TextureComponent texture;
+		TextureComponent texture = NoTex();
 		float tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
@@ -91,6 +73,12 @@ namespace Labyrinth {
 		bool hasTex() const 
 		{ 
 			return type != TexType::None; 
+		}
+
+		template<typename TexType>
+		Ref<TexType> getTex() const
+		{
+			return std::get<Ref<TexType>>(texture);
 		}
 
 		// Get normalised layer value
