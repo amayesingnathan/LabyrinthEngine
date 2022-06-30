@@ -13,7 +13,7 @@ namespace Labyrinth {
 		OpenGLTexture2D(const std::string& path);
 		virtual ~OpenGLTexture2D();
 
-		virtual std::string getPath() const override { return mPath; }
+		virtual const std::string& getPath() const override { return mPath; }
 		virtual uint32_t getWidth() const override { return mWidth; }
 		virtual uint32_t getHeight() const override { return mHeight; }
 		virtual uint32_t getRendererID() const override { return mRendererID; }

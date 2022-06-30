@@ -34,7 +34,10 @@ namespace Labyrinth {
         using GroupMap = std::unordered_map<std::string, AssetRef>;
         using GroupType = std::variant<GroupPool, GroupMap>;
 
-        using PoolIterator = typename std::vector<AssetGroupItem>::iterator;
+        using PoolIterator = typename GroupPool::iterator;
+        using ConstPoolIterator = typename GroupPool::const_iterator;
+        using MapIterator = typename GroupMap::iterator;
+        using ConstMapIterator = typename GroupMap::const_iterator;
 
     public:
         AssetGroup() : mAssets(GroupPool()) {}
@@ -79,6 +82,15 @@ namespace Labyrinth {
             }, mAssets);
 
             return newAsset;
+        }
+
+        template<typename... Args>
+        AssetRef addOrGet(const std::string& id, Args... args)
+        {
+            if (exists(id))
+                return get(id);
+            else
+                return add(id, std::forward<Args>(args)...);
         }
 
         bool exists(const std::string& id)
@@ -171,15 +183,6 @@ namespace Labyrinth {
             return asset;
         }
 
-        template<typename... Args>
-        AssetRef addOrGet(const std::string& id, Args... args)
-        {
-            if (exists(id))
-                return get(id);
-            else
-                return add(id, std::forward<Args>(args)...);
-        }
-
         size_t count(const std::string& id) const
         {
             size_t count = 0;;
@@ -218,6 +221,61 @@ namespace Labyrinth {
             return size;
         }
 
+        size_t capacity() const
+        {
+            size_t capacity = 0;
+            std::visit([&capacity](auto& arg)
+                {
+                    using T = std::decay_t<decltype(arg)>;
+                    if constexpr (std::is_same_v<T, GroupPool>)
+                        capacity = arg.capacity();
+                    else if constexpr (std::is_same_v<T, GroupMap>)
+                        LAB_STATIC_ASSERT("Map storage does not have capacity function");
+                    else
+                        LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+                }, mAssets);
+
+            return capacity;
+        }
+
+        void reserve(size_t newCapacity)
+        {
+            std::visit([&newCapacity](auto& arg)
+                {
+                    using T = std::decay_t<decltype(arg)>;
+                    if constexpr (std::is_same_v<T, GroupPool>)
+                        arg.reserve(newCapacity);
+                    else if constexpr (std::is_same_v<T, GroupMap>)
+                        LAB_STATIC_ASSERT("Map storage does not have reserve function");
+                    else
+                        LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+                }, mAssets);
+        }
+
+        constexpr size_t ref_count()
+        {
+            size_t ref_count = 0;
+            std::visit([&ref_count](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (std::is_same_v<T, GroupPool>)
+                {
+                    for (const auto& assetItem : arg)
+                        ref_count += AssetManager::GetRefCount(assetItem.asset);
+                }
+                else if constexpr (std::is_same_v<T, GroupMap>)
+                {
+                    for (const auto& [key, asset] : arg)
+                        ref_count += AssetManager::GetRefCount(asset);
+                }
+                else
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+            }, mAssets);
+
+            return ref_count;
+        }
+
         PoolIterator begin()
         {
             PoolIterator it = PoolIterator();
@@ -227,23 +285,23 @@ namespace Labyrinth {
                 if constexpr (std::is_same_v<T, GroupPool>)
                     it = arg.begin();
                 else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_CORE_ERROR("Map storage can not be accessed via iterator");
+                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
                 else
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
             }, mAssets);
 
             return it;
         }
-        const PoolIterator begin() const
+        ConstPoolIterator begin() const
         {
-            const PoolIterator it = PoolIterator();
-            std::visit([&it](auto& arg)
+            ConstPoolIterator it = ConstPoolIterator();
+            std::visit([&it](const auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, GroupPool>)
                     it = arg.begin();
                 else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_CORE_ERROR("Map storage can not be accessed via iterator");
+                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
                 else
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
             }, mAssets);
@@ -259,23 +317,23 @@ namespace Labyrinth {
                 if constexpr (std::is_same_v<T, GroupPool>)
                     it = arg.end();
                 else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_CORE_ERROR("Map storage can not be accessed via iterator");
+                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
                 else
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
             }, mAssets);
 
             return it;
         }
-        const PoolIterator end() const
+        ConstPoolIterator end() const
         {
-            const PoolIterator it;
-            std::visit([&it](auto& arg)
+            ConstPoolIterator it;
+            std::visit([&it](const auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, GroupPool>)
                     it = arg.end();
                 else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_CORE_ERROR("Map storage can not be accessed via iterator");
+                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
                 else
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
             }, mAssets);
@@ -301,4 +359,14 @@ namespace Labyrinth {
     using Tex2DGroup = AssetGroup<Texture2D>;
     using SubTex2DGroup = AssetGroup<SubTexture2D>;
     using Tex2DSheetGroup = AssetGroup<Texture2DSheet>;
+
+    template<typename... AssetGroupType>
+    struct AssetGroups {};
+    using AllAssetGroups = AssetGroups<
+        Tex2DGroup, SubTex2DGroup, Tex2DSheetGroup
+    >;
+
+    using AssetGroupVariant = std::variant<
+        Ref<Tex2DGroup>, Ref<SubTex2DGroup>, Ref<Tex2DSheetGroup>
+    >;
 }

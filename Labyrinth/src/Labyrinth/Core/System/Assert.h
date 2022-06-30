@@ -18,7 +18,7 @@
 	#define LAB_ASSERT(...) LAB_EXPAND_MACRO( LAB_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(_, __VA_ARGS__) )
 	#define LAB_CORE_ASSERT(...) LAB_EXPAND_MACRO( LAB_INTERNAL_ASSERT_GET_MACRO(__VA_ARGS__)(_CORE_, __VA_ARGS__) )
 
-	#define LAB_STATIC_ASSERT(check, string) static_assert(check, string)
+	#define LAB_STATIC_ASSERT(...) static_assert(__VA_ARGS__)
 
 #else
 	#define LAB_ASSERT(...)

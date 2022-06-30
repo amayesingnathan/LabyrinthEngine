@@ -36,7 +36,7 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		Ref<Tex2DGroup> iconGroup = AssetManager::Create<Tex2DGroup>("Icons", StorageType::Map);
-		mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
+		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
 		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
 		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");
 		mIconSim = iconGroup->add("Sim", "resources/icons/simbutton.png");
@@ -53,12 +53,12 @@ namespace Labyrinth {
 
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		mScenePanel = PanelManager::Register<ScenePanel>("SceneHeirarchy");
-		PanelManager::Register<ContentBrowserPanel>("ContentBrowser");
-		PanelManager::Register<SpriteSheetPanel>("SpriteSheets");
-		PanelManager::Register<AssetPanel>("AssetPanel");
+		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy");
+		PanelManager::Register<AssetPanel>("Assets");
+		PanelManager::Register<ContentBrowserPanel>("Content Browser");
+		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options")->setEditorData(mEditorData);
-		PanelManager::Register<StatsPanel>("Statistic")->bindHoveredEntity(mHoveredEntity);
+		PanelManager::Register<StatsPanel>("Statistics")->bindHoveredEntity(mHoveredEntity);
 
 		bool loadedScene = false;
 		auto commandLineArgs = Application::Get().getCommandLineArgs();

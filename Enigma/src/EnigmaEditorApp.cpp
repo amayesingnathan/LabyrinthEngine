@@ -1,4 +1,6 @@
 #include <Labyrinth.h>
+
+#define LAB_APP_NAME "ENIGMA"
 #include "Labyrinth/Core/EntryPoint.h"
 
 #include "EditorLayer.h"

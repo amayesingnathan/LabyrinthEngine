@@ -81,6 +81,8 @@ namespace Labyrinth {
 		if (mSelectedEntity)
 			DrawComponents();
 
+		AssetTypeWarning();
+
 		ImGui::End();
 	}
 
@@ -511,6 +513,40 @@ namespace Labyrinth {
 
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
 
+			std::string texLabel;
+			switch (component.type)
+			{
+			case SpriteRendererComponent::TexType::None:
+				texLabel = "None";
+				break;
+
+			case SpriteRendererComponent::TexType::Texture:
+				texLabel = "Texture2D";
+				break;
+
+			case SpriteRendererComponent::TexType::Tile:
+				texLabel = "SubTexture2D";
+				break;
+			}
+
+			if (ImGui::BeginCombo("Texture Type", texLabel.c_str()))
+			{
+				for (const auto& [label, type] : mTexTypes)
+				{
+					bool isSelected = component.type == type;
+
+					if (ImGui::Selectable(label.c_str(), isSelected))
+						component.type = type;
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+
+				ImGui::EndCombo();
+			}
+
 			ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -544,6 +580,30 @@ namespace Labyrinth {
 				{
 					const std::string& key = *Cast<std::string>(payload->Data);
 
+					switch (component.type)
+					{
+					case SpriteRendererComponent::TexType::None:
+						ImGui::OpenPopup("InvalidAsset");
+						break;
+
+					case SpriteRendererComponent::TexType::Texture:
+					{
+						Ref<Texture2D> tex = AssetManager::Get<Texture2D>(key);
+						if (tex) 
+							component.texture = tex; 
+						else 
+							ImGui::OpenPopup("InvalidAsset");
+						break;
+					}
+
+					case SpriteRendererComponent::TexType::Tile:
+						Ref<SubTexture2D> tex = AssetManager::Get<SubTexture2D>(key);
+						if (tex)
+							component.texture = tex;
+						else
+							ImGui::OpenPopup("InvalidAsset");
+						break;
+					}
 
 				}
 				ImGui::EndDragDropTarget();
@@ -617,6 +677,19 @@ namespace Labyrinth {
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
+	}
+
+	void ScenePanel::AssetTypeWarning()
+	{
+		if (!ImGui::BeginPopupModal("InvalidAsset", nullptr, ImGuiPopupFlags_None)) return;
+
+		ImGui::Text("This Asset Type does not match the Entity texture type");
+		ImGui::NewLine();
+
+		if (ImGui::Button("OK"))
+			ImGui::CloseCurrentPopup();
+
+		ImGui::EndPopup();
 	}
 
 	void ScenePanel::BodySpecModalRender()

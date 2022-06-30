@@ -63,12 +63,39 @@ namespace Labyrinth {
 
 				if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
 				{
-					mCurrentSheetPath = texturePath.string();
+					mAddType = SheetAddType::Path;
+					mNewSheetVar = texturePath.string();
 					ImGui::OpenPopup("TileWidthModal");
 
 					mPayload.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 				}
+
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
+			{
+				const std::string& key = *Cast<std::string>(payload->Data);
+				if (const Ref<Texture2DSheet>& sheet = AssetManager::Get<Texture2DSheet>(key))
+				{
+					mCurrentSheet = sheet;
+					mSheetWidth = mCurrentSheet->getWidth();
+					mSheetHeight = mCurrentSheet->getHeight();
+					mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
+				}
+				else if (const Ref<Texture2D>& asset = AssetManager::Get<Texture2D>(key))
+				{
+					mAddType = SheetAddType::Texture;
+					mNewSheetVar = asset;
+					ImGui::OpenPopup("TileWidthModal");
+
+					mPayload.sheetName = "";
+					mTileWidth = 0; mTileHeight = 0;
+				}
+				else { LAB_ERROR("Invalid asset type!"); }
 
 			}
 			ImGui::EndDragDropTarget();
@@ -170,6 +197,8 @@ namespace Labyrinth {
 		ImGui::SameLine();
 		if (ImGui::Button("Cancel"))
 		{
+			mAddType = SheetAddType::Path;
+			mNewSheetVar = std::string();
 			ImGui::CloseCurrentPopup();
 		}
 
@@ -177,7 +206,12 @@ namespace Labyrinth {
 
 		if (loadSheet)
 		{
-			mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, mCurrentSheetPath, glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName);
+			switch (mAddType)
+			{
+			case SheetAddType::Path:	mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<std::string>(mNewSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Texture: mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<Ref<Texture2D>>(mNewSheetVar), glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName); break;
+			}
+			
 			mSheetWidth = mCurrentSheet->getWidth();
 			mSheetHeight = mCurrentSheet->getHeight();
 			mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);

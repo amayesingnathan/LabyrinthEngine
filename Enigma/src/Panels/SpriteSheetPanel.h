@@ -17,6 +17,9 @@ namespace Labyrinth {
 	class SpriteSheetPanel : public Panel
 	{
 	public:
+		enum class SheetAddType { Path, Texture };
+
+	public:
 		SpriteSheetPanel();
 
 		void onUpdate() override;
@@ -33,13 +36,17 @@ namespace Labyrinth {
 		Ref<Texture2DSheet> mCurrentSheet = nullptr;
 		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 
-		std::string mCurrentSheetPath = "";
+		SheetAddType mAddType = SheetAddType::Path;
+		using SheetVariable = std::variant< std::string, Ref<Texture2D>>;
+		SheetVariable mNewSheetVar = std::string();
+
 		std::string mSheetName = "";
 
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 
 		SubTexModal* mSubTexSelector = nullptr;
 		SubTexPayload mPayload;
+
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

@@ -33,8 +33,8 @@ namespace Labyrinth {
 		uint32_t getTileWidth() const { return Cast<uint32_t>(mTileSize.x); }
 		uint32_t getTileHeight() const { return Cast< uint32_t>(mTileSize.y); }
 
-		std::string& getName() { return mName; }
-		Ref<Texture2D> getBaseTex() const { return mTexture; }
+		const std::string& getName() const { return mName; }
+		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
 		bool hasSubTex(const std::string& name) const;
 		Ref<SubTexture2D> getSubTex(const std::string& name);
