@@ -11,33 +11,296 @@ namespace Labyrinth {
 
     enum class StorageType { Pool = 0, Map };
 
+    template<typename AssetGroup>
+    class AssetGroupIterator
+    {
+    public:
+        using Type = AssetGroupIterator<AssetGroup>;
+
+        using TypeVal = typename AssetGroup::AssetType;
+        using TypeRef = typename Ref<TypeVal>;
+        using IteratorType = typename AssetGroup::AssetGroupItem;
+
+        using Pool = typename AssetGroup::GroupPool;
+        using PoolIterator = typename Pool::iterator;
+
+        using Map = typename AssetGroup::GroupMap;
+        using MapIterator = typename Map::iterator;
+
+        using IteratorVariant = std::variant<PoolIterator, MapIterator>;
+
+    public:
+        AssetGroupIterator() = default;
+        AssetGroupIterator(PoolIterator it) : mIt(it) {}
+        AssetGroupIterator(MapIterator it) : mIt(it) {}
+
+        AssetGroupIterator& operator++()
+        {
+            std::visit([](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                arg++;
+            }, mIt);
+
+            return *this;
+        }
+        AssetGroupIterator operator++(int)
+        {
+            IteratorType temp = *this;
+            std::visit([&temp](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp++;
+            }, mIt);
+
+            return temp;
+        }
+        AssetGroupIterator& operator--()
+        {
+            std::visit([](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                arg--;
+            }, mIt);
+
+            return *this;
+        }
+        AssetGroupIterator operator--(int)
+        {
+            IteratorType temp = *this;
+            std::visit([&temp](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp--;
+            }, mIt);
+
+            return temp;
+        }
+
+        IteratorType& operator*()
+        {
+            IteratorType* temp = nullptr;
+
+            std::visit([&temp](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp = &(*arg);
+            }, mIt);
+
+            LAB_CORE_ASSERT(temp, "Iterator pointer is invalid!");
+
+            return *temp;
+        }
+        IteratorType* operator->()
+        {
+            IteratorType* temp = nullptr;
+
+            std::visit([&temp](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp = &(*arg);
+            }, mIt);
+
+            return temp;
+        }
+
+        bool operator== (const AssetGroupIterator& other) const
+        {
+            LAB_CORE_ASSERT(mIt.index() == other.mIt.index(), "Iterator variants do not match!");
+
+            bool match = false;
+
+            std::visit([&match, other](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                match = arg == std::get<T>(other.mIt);
+            }, mIt);
+
+            return match;
+        }
+        bool operator!= (const AssetGroupIterator& other) const
+        {
+            return !(*this == other);
+        }
+
+    private:
+        IteratorVariant mIt;
+    };
+
+    template<typename AssetGroup>
+    class AssetGroupConstIterator
+    {
+    public:
+        using Type = AssetGroupIterator<AssetGroup>;
+
+        using TypeVal = typename AssetGroup::AssetType;
+        using TypeRef = typename Ref<TypeVal>;
+        using IteratorType = typename AssetGroup::AssetGroupItem;
+
+        using Pool = typename AssetGroup::GroupPool;
+        using PoolIterator = typename Pool::const_iterator;
+
+        using Map = typename AssetGroup::GroupMap;
+        using MapIterator = typename Map::const_iterator;
+
+        using IteratorVariant = std::variant<PoolIterator, MapIterator>;
+
+    public:
+        AssetGroupConstIterator() = default;
+        AssetGroupConstIterator(PoolIterator it) : mIt(it) {}
+        AssetGroupConstIterator(MapIterator it) : mIt(it) {}
+
+        AssetGroupConstIterator& operator++()
+        {
+            std::visit([](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                arg++;
+            }, mIt);
+
+            return *this;
+        }
+        AssetGroupConstIterator operator++(int)
+        {
+            IteratorType temp = *this;
+            std::visit([&temp](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp++;
+            }, mIt);
+
+            return temp;
+        }
+        AssetGroupConstIterator& operator--()
+        {
+            std::visit([](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                arg--;
+            }, mIt);
+
+            return *this;
+        }
+        AssetGroupConstIterator operator--(int)
+        {
+            IteratorType temp = *this;
+            std::visit([&temp](auto& arg)
+                {
+                    using T = std::decay_t<decltype(arg)>;
+                    if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                        LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                    temp--;
+                }, mIt);
+
+            return temp;
+        }
+
+        const IteratorType& operator*() const
+        {
+            const IteratorType* temp = nullptr;
+
+            std::visit([&temp](const auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp = &(*arg);
+            }, mIt);
+
+            LAB_CORE_ASSERT(temp, "Iterator pointer is invalid!");
+
+            return *temp;
+        }
+        const IteratorType* operator->() const
+        {
+            const IteratorType* temp = nullptr;
+             
+            std::visit([&temp](const auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                temp = &(*arg);
+            }, mIt);
+
+            return temp;
+        }
+
+        bool operator== (const AssetGroupConstIterator& other) const
+        {
+            LAB_CORE_ASSERT(mIt.index() == other.mIt.index(), "Iterator variants do not match!");
+
+            bool match = false;
+
+            std::visit([&match, other](auto& arg)
+            {
+                using T = std::decay_t<decltype(arg)>;
+                if constexpr (!(std::is_same_v<T, PoolIterator> || std::is_same_v<T, MapIterator>))
+                    LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                match = arg == std::get<T>(other.mIt);
+            }, mIt);
+
+            return match;
+        }
+        bool operator!= (const AssetGroupConstIterator& other) const
+        {
+            return !(*this == other);
+        }
+
+    private:
+        IteratorVariant mIt;
+    };
+
     template<typename T>
     class AssetGroup : public IAsset
     {
     public:
-        struct AssetGroupItem
-        {
-            std::string id;
-            Ref<T> asset;
-
-            AssetGroupItem(const std::string& _id, Ref<T> data) : id(_id), asset(data) {}
-
-            operator Ref<T>() { return asset; }
-        };
-
-    public:
         using AssetType = T;
         using AssetRef = Ref<T>;
         using GroupRef = Ref<AssetGroup>;
+        using AssetGroupItem = std::pair<const std::string, Ref<T>>;
 
         using GroupPool = std::vector<AssetGroupItem>;
         using GroupMap = std::unordered_map<std::string, AssetRef>;
         using GroupType = std::variant<GroupPool, GroupMap>;
 
-        using PoolIterator = typename GroupPool::iterator;
-        using ConstPoolIterator = typename GroupPool::const_iterator;
-        using MapIterator = typename GroupMap::iterator;
-        using ConstMapIterator = typename GroupMap::const_iterator;
+        using Iterator = AssetGroupIterator<AssetGroup<T>>;
+        using ConstIterator = AssetGroupConstIterator<AssetGroup<T>>;
 
     public:
         AssetGroup() : mAssets(GroupPool()) {}
@@ -100,7 +363,7 @@ namespace Labyrinth {
                 {
                     using T = std::decay_t<decltype(arg)>;
                     if constexpr (std::is_same_v<T, GroupPool>)
-                        result = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.id; }) != arg.end();
+                        result = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.first; }) != arg.end();
                     else if constexpr (std::is_same_v<T, GroupMap>)
                         result = arg.count(id) != 0;
                     else
@@ -152,7 +415,7 @@ namespace Labyrinth {
                 {
                     auto it = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.id; });
                     if (it != arg.end())
-                        asset = it->asset;
+                        asset = it->second;
                 }
                 else if constexpr (std::is_same_v<T, GroupMap>)
                     asset = arg[id];
@@ -170,9 +433,9 @@ namespace Labyrinth {
                 using T = std::decay_t<decltype(arg)>;
                 if constexpr (std::is_same_v<T, GroupPool>)
                 {
-                    auto it = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.id; });
+                    auto it = std::find_if(arg.begin(), arg.end(), [&id](const AssetGroupItem& item) { return id == item.first; });
                     if (it != arg.end())
-                        asset = it->asset;
+                        asset = it->second;
                 }
                 else if constexpr (std::is_same_v<T, GroupMap>)
                     asset = arg[id];
@@ -204,7 +467,7 @@ namespace Labyrinth {
             return count;
         }
 
-        constexpr size_t size() 
+        constexpr size_t size() const
         {
             size_t size = 0;
             std::visit([&size](auto& arg)
@@ -252,90 +515,75 @@ namespace Labyrinth {
                 }, mAssets);
         }
 
-        constexpr size_t ref_count()
+        constexpr size_t ref_count() const
         {
             size_t ref_count = 0;
             std::visit([&ref_count](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, GroupPool>)
-                {
-                    for (const auto& assetItem : arg)
-                        ref_count += AssetManager::GetRefCount(assetItem.asset);
-                }
-                else if constexpr (std::is_same_v<T, GroupMap>)
-                {
-                    for (const auto& [key, asset] : arg)
-                        ref_count += AssetManager::GetRefCount(asset);
-                }
-                else
+                if constexpr (!(std::is_same_v<T, GroupPool> || std::is_same_v<T, GroupMap>))
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                for (const auto& [key, asset] : arg)
+                    ref_count += AssetManager::GetRefCount(asset);
 
             }, mAssets);
 
             return ref_count;
         }
 
-        PoolIterator begin()
+        Iterator begin()
         {
-            PoolIterator it = PoolIterator();
+            Iterator it;
             std::visit([&it](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, GroupPool>)
-                    it = arg.begin();
-                else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
-                else
+                if constexpr (!(std::is_same_v<T, GroupPool> || std::is_same_v<T, GroupMap>))
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                it = arg.begin();
             }, mAssets);
 
             return it;
         }
-        ConstPoolIterator begin() const
+        ConstIterator begin() const
         {
-            ConstPoolIterator it = ConstPoolIterator();
+            ConstIterator it;
             std::visit([&it](const auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, GroupPool>)
-                    it = arg.begin();
-                else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
-                else
+                if constexpr (!(std::is_same_v<T, GroupPool> || std::is_same_v<T, GroupMap>))
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                it = arg.begin();
             }, mAssets);
 
             return it;
         }
-        PoolIterator end()
+        Iterator end()
         {
-            PoolIterator it;
+            Iterator it;
             std::visit([&it](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, GroupPool>)
-                    it = arg.end();
-                else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
-                else
+                if constexpr (!(std::is_same_v<T, GroupPool> || std::is_same_v<T, GroupMap>))
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                it = arg.end();
             }, mAssets);
 
             return it;
         }
-        ConstPoolIterator end() const
+        ConstIterator end() const
         {
-            ConstPoolIterator it;
+            ConstIterator it;
             std::visit([&it](const auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
-                if constexpr (std::is_same_v<T, GroupPool>)
-                    it = arg.end();
-                else if constexpr (std::is_same_v<T, GroupMap>)
-                    LAB_STATIC_ASSERT("Map storage can not be accessed via iterator");
-                else
+                if constexpr (!(std::is_same_v<T, GroupPool> || std::is_same_v<T, GroupMap>))
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
+
+                it = arg.end();
             }, mAssets);
 
             return it;

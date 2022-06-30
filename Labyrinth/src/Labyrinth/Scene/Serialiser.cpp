@@ -116,13 +116,13 @@ namespace Labyrinth {
 	{
 		BeginSequence("SpriteSheets");
 
-		for (const auto& sheet : sheets)
+		for (const auto& [key, sheet] : sheets)
 		{
 			BeginObject();
 
-			ObjectProperty("Name", sheet.asset->getName());
-			ObjectProperty("Source", sheet.asset->getBaseTex()->getPath());
-			ObjectProperty("TileSize", sheet.asset->getTileSize());
+			ObjectProperty("Name", sheet->getName());
+			ObjectProperty("Source", sheet->getBaseTex()->getPath());
+			ObjectProperty("TileSize", sheet->getTileSize());
 
 			EndObject();
 		}
@@ -483,10 +483,10 @@ namespace Labyrinth {
 				auto texture = spriteRendererComponent["Texture"];
 				std::string sheetName = texture["Sheet"].as<std::string>();
 
-				auto spriteSheets = AssetManager::Get<Tex2DSheetGroup>("SpriteSheets");
-				auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const Ref<Texture2DSheet>& match)
+				const auto spriteSheets = AssetManager::Get<Tex2DSheetGroup>("SpriteSheets");
+				auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
 				{
-					return match->getName() == sheetName;
+					return match.second->getName() == sheetName;
 				});
 
 				if (it != spriteSheets->end())
@@ -508,10 +508,10 @@ namespace Labyrinth {
 					}
 
 
-					if (!it->asset->hasSubTex(subTexName))
-						src.texture = it->asset->createSubTex(subTexName, subtexCoords);
+					if (!it->second->hasSubTex(subTexName))
+						src.texture = it->second->createSubTex(subTexName, subtexCoords);
 					else
-						src.texture = it->asset->getSubTex(subTexName);
+						src.texture = it->second->getSubTex(subTexName);
 				}
 
 				break;

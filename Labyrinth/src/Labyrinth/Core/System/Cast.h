@@ -67,7 +67,7 @@ namespace Labyrinth {
 		}
 		catch
 		{
-			LAB_CORE_ASSERT(toPtr, "Bad cast! Return value was null!");
+			LAB_CORE_ASSERT(false, "Bad cast! Return value was null!");
 		}
 	}
 
