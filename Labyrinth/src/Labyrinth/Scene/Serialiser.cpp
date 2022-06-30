@@ -483,7 +483,7 @@ namespace Labyrinth {
 				auto texture = spriteRendererComponent["Texture"];
 				std::string sheetName = texture["Sheet"].as<std::string>();
 
-				const auto spriteSheets = AssetManager::Get<Tex2DSheetGroup>("SpriteSheets");
+				const auto& spriteSheets = AssetManager::Get<Tex2DSheetGroup>("SpriteSheets");
 				auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
 				{
 					return match.second->getName() == sheetName;

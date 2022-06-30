@@ -37,7 +37,7 @@ namespace Labyrinth {
 		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 
 		SheetAddType mAddType = SheetAddType::Path;
-		using SheetVariable = std::variant< std::string, Ref<Texture2D>>;
+		using SheetVariable = std::variant<std::string, Ref<Texture2D>>;
 		SheetVariable mNewSheetVar = std::string();
 
 		std::string mSheetName = "";

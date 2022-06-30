@@ -10,6 +10,7 @@ namespace Labyrinth {
 	{
 		Ref<Tex2DGroup> iconGroup = AssetManager::Get<Tex2DGroup>("Icons");
 		mAssetIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
+		mGroupIcon = iconGroup->addOrGet("Group", "resources/icons/content-browser/groupIcon.png");
 	}
 
 	void AssetPanel::onImGuiRender()
@@ -29,16 +30,21 @@ namespace Labyrinth {
 
 		for (const auto& [key, asset] : AssetManager::GetAssets())
 		{
+			bool isGroup = AssetManager::IsGroup(asset);
+
+
 			ImGui::PushID(key.c_str());
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-			ImGui::ImageButton((ImTextureID)(intptr_t)mAssetIcon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
+
+			Ref<Texture2D> icon = isGroup ? mGroupIcon : mAssetIcon;
+			ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource())
 			{
 				ImGui::SetDragDropPayload("ASSET_MANAGER_ITEM", &key, sizeof(std::string));
 				ImGui::EndDragDropSource();
 			}
 
-			if (AssetManager::IsGroup(asset) && ImGui::BeginPopupContextItem())
+			if (isGroup && ImGui::BeginPopupContextItem())
 			{
 				AssetGroupVariant group = AssetManager::GetGroup(asset);
 

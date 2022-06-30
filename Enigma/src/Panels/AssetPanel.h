@@ -14,7 +14,7 @@ namespace Labyrinth {
 		void onImGuiRender() override;
 
 	private:
-		Ref<Texture2D> mAssetIcon;
+		Ref<Texture2D> mAssetIcon, mGroupIcon;
 	};
 
 }

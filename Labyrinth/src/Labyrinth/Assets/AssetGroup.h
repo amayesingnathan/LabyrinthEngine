@@ -15,8 +15,6 @@ namespace Labyrinth {
     class AssetGroupIterator
     {
     public:
-        using Type = AssetGroupIterator<AssetGroup>;
-
         using TypeVal = typename AssetGroup::AssetType;
         using TypeRef = typename Ref<TypeVal>;
         using IteratorType = typename AssetGroup::AssetGroupItem;
