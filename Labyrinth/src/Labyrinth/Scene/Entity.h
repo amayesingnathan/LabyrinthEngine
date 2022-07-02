@@ -74,14 +74,6 @@ namespace Labyrinth {
 			return mScene->mRegistry.all_of<T>(mEntID);
 		}
 
-		////Template to connect destruction of one component to the destruction of another.
-		//template<typename TDestroy, typename TLink>
-		//void connectDestruct()
-		//{
-		//	//m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
-		//	m_Registry->on_destroy<TDestroy>().connect<&Entity::removeComponent<TLink>>();
-		//}
-
 		uint32_t getEntID() const
 		{
 			return Cast<uint32_t>(mEntID);

@@ -589,13 +589,12 @@ namespace Labyrinth {
 
         static GroupRef Create()
         {
-            GroupRef newGroup = CreateRef<AssetGroup>();
-            return newGroup;
+            return CreateRef<AssetGroup>();
+            
         }
         static GroupRef Create(StorageType storageType)
         {
-            GroupRef newGroup = CreateRef<AssetGroup>(storageType);
-            return newGroup;
+            return CreateRef<AssetGroup>(storageType);
         }
 
     private:
@@ -612,7 +611,8 @@ namespace Labyrinth {
         Tex2DGroup, SubTex2DGroup, Tex2DSheetGroup
     >;
 
+    struct NotGroup : IAsset {};
     using AssetGroupVariant = std::variant<
-        Ref<Tex2DGroup>, Ref<SubTex2DGroup>, Ref<Tex2DSheetGroup>
+        NotGroup, Ref<Tex2DGroup>, Ref<SubTex2DGroup>, Ref<Tex2DSheetGroup>
     >;
 }

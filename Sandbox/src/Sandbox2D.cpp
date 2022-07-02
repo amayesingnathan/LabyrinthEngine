@@ -58,7 +58,7 @@ void Sandbox2D::onAttach()
 	// }
 	// lua_close(L);
 
-	// mCheckerboardTexture = Labyrinth::Texture2D::Create("assets/textures/checkerboard.png");
+	mCheckerboardTexture = Labyrinth::AssetManager::Create<Labyrinth::Texture2D>("Checkerboard", "assets/textures/checkerboard.png");
 
 	// mSpriteSheet = Labyrinth::Texture2DSheet::CreateFromPath("assets/textures/minecraft.png", { 64.0f, 64.0f });
 	// //mTNT = Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 8.0f, 0.0f }, { 1.0f, 1.0f });
@@ -124,8 +124,8 @@ void Sandbox2D::onImGuiRender()
 
 	ImGui::Begin("Settings");
 
-	//static bool demo = true; //Enable demo
-	//ImGui::ShowDemoWindow(&demo);
+	static bool demo = true; //Enable demo
+	ImGui::ShowDemoWindow(&demo);
 
 	auto stats = Labyrinth::Renderer2D::GetStats();
 	ImGui::Text("Renderer2D Stats:");

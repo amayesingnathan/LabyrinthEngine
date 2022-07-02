@@ -51,11 +51,15 @@ namespace Labyrinth {
 				std::visit([](auto& arg)
 				{
 					using T = std::decay_t<decltype(arg)>;
-					if constexpr (!(std::is_same_v<T, Ref<Tex2DGroup>> || std::is_same_v<T, Ref<SubTex2DGroup>> || std::is_same_v<T, Ref<Tex2DSheetGroup>>))
+					if constexpr (std::is_same_v<T, NotGroup>)
+						LAB_CORE_WARN("Variant was not a group!");
+					else if constexpr (!(std::is_same_v<T, Ref<Tex2DGroup>> || std::is_same_v<T, Ref<SubTex2DGroup>> || std::is_same_v<T, Ref<Tex2DSheetGroup>>))
 						LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
-					
-					for (const auto& [key, tex] : *arg)
-						ImGui::MenuItem(key.c_str());
+					else
+					{
+						for (const auto& [key, tex] : *arg)
+							ImGui::MenuItem(key.c_str());
+					}
 					
 				}, group);
 				ImGui::EndPopup();

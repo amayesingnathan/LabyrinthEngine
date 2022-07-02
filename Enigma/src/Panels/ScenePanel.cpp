@@ -43,6 +43,31 @@ namespace Labyrinth {
 		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
 			mContext->setName(buffer);
 
+		ImGui::SameLine();
+
+		if (ImGui::Button("Create.."))
+			ImGui::OpenPopup("CreateEntityPopup");
+
+		bool openSpecModal = false;
+		if (ImGui::BeginPopup("CreateEntityPopup"))
+		{
+			if (ImGui::MenuItem("Empty Entity"))
+				mSelectedEntity = mContext->CreateEntity("Empty Entity");
+			if (ImGui::MenuItem("Camera"))
+			{
+				mSelectedEntity = mContext->CreateEntity("Camera");
+				mSelectedEntity.addComponent<CameraComponent>();
+			}
+			if (ImGui::MenuItem("Rigid Body"))
+			{
+				mBodyCreation = new BodySpecModal(mContext);
+				openSpecModal = true;
+			}
+			ImGui::EndPopup();
+		}
+		if (openSpecModal)
+			ImGui::OpenPopup("BodySpecModal");
+
 		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
 				Entity entity{ entityID , mContext };
@@ -55,23 +80,6 @@ namespace Labyrinth {
 
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
-
-		bool openSpecModal = false;
-		if (ImGui::BeginPopupContextWindow(0, 1, false))
-		{
-			if (ImGui::MenuItem("Create Empty Entity"))
-				mContext->CreateEntity("Empty Entity");
-			if (ImGui::MenuItem("Create Rigid Body"))
-			{
-				mBodyCreation = new BodySpecModal(mContext);
-				openSpecModal = true;
-			}
-
-			ImGui::EndPopup();
-		}
-
-		if (openSpecModal)
-			ImGui::OpenPopup("BodySpecModal");
 
 		BodySpecModalRender();
 

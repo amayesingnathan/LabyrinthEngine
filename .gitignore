@@ -27,7 +27,7 @@ Makefile.in
 
 # Directories
 Labyrinth/dependencies/VulkanSDK
-Enigma/assets/cache
+*/assets/cache
 
 #Python cache files
 __pycache__/
