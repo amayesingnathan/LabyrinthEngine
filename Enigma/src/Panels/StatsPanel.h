@@ -9,7 +9,8 @@ namespace Labyrinth {
 	class StatsPanel : public Panel
 	{
 	public:
-		void bindHoveredEntity(Entity& entity);
+		StatsPanel(Entity& entity) 
+			: mHoveredEntity(&entity) {}
 
 		void onImGuiRender() override;
 

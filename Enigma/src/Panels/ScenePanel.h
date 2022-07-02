@@ -3,6 +3,7 @@
 #include "PanelManager.h"
 
 #include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Renderer/Framebuffer.h"
 #include "Labyrinth/Scene/Scene.h"
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
@@ -15,13 +16,15 @@ namespace Labyrinth {
 	class ScenePanel : public Panel
 	{
 	public:
-		ScenePanel() = default;
-		ScenePanel(const Ref<Scene>& scene, EditorData* options);
+		ScenePanel();
+		ScenePanel(EditorData& options);
+		ScenePanel(const Ref<Scene>& scene, EditorData& options);
 
 		void setContext(const Ref<Scene>& scene);
-		void setContext(const Ref<Scene>& scene, EditorData* options);
+		void setContext(const Ref<Scene>& scene, EditorData& options);
 		
-		void onImGuiRender();
+		void onUpdate() override;
+		void onImGuiRender() override;
 
 		Entity getSelectedEntity() const { return mSelectedEntity; }
 		void setSelectedEntity(Entity entity);
@@ -40,14 +43,17 @@ namespace Labyrinth {
 		Entity mSelectedEntity;
 		std::vector<Entity> mToRemove;
 
+		Ref<Framebuffer> mTexture;
+
 		BodySpecModal* mBodyCreation = nullptr;
 
+		Ref<Texture2D> mNoTex = nullptr;
 		struct TexTypes { std::string label;  SpriteRendererComponent::TexType type; };
 		const std::vector<TexTypes> mTexTypes =
 		{
 			{ "Colour", SpriteRendererComponent::TexType::None },
 			{ "Texture2D", SpriteRendererComponent::TexType::Texture },
-			{ "Circle", SpriteRendererComponent::TexType::Tile }
+			{ "SubTexture2D", SpriteRendererComponent::TexType::SubTexture }
 		};
 	};
 

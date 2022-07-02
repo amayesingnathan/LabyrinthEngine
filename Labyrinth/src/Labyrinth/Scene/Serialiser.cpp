@@ -212,7 +212,7 @@ namespace Labyrinth {
 			EndObject();
 			break;
 		}
-		case SpriteRendererComponent::TexType::Tile:
+		case SpriteRendererComponent::TexType::SubTexture:
 		{
 			BeginObject("Texture");
 
@@ -478,7 +478,7 @@ namespace Labyrinth {
 			{
 			case SpriteRendererComponent::TexType::None: break;
 			case SpriteRendererComponent::TexType::Texture: break;
-			case SpriteRendererComponent::TexType::Tile:
+			case SpriteRendererComponent::TexType::SubTexture:
 			{
 				auto texture = spriteRendererComponent["Texture"];
 				std::string sheetName = texture["Sheet"].as<std::string>();

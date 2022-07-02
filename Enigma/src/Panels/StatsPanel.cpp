@@ -6,8 +6,6 @@
 
 namespace Labyrinth {
 
-	void StatsPanel::bindHoveredEntity(Entity& entity) { mHoveredEntity = &entity; }
-
 	void StatsPanel::onImGuiRender()
 	{
 		ImGui::Begin("Stats");

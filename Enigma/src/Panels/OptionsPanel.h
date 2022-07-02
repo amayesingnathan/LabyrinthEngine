@@ -9,7 +9,7 @@ namespace Labyrinth {
 	class OptionsPanel : public Panel
 	{
 	public:
-		void setEditorData(EditorData& editorData);
+		OptionsPanel(EditorData& data) : mEditorData(&data) {}
 
 		void onImGuiRender() override;
 

@@ -10,8 +10,6 @@
 
 namespace Labyrinth {
 
-	void OptionsPanel::setEditorData(EditorData& editorData) { mEditorData = &editorData; }
-
 	void OptionsPanel::onImGuiRender()
 	{
 		if (!mEditorData) return;

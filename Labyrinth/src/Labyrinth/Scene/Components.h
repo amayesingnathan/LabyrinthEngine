@@ -47,7 +47,7 @@ namespace Labyrinth {
 
 	struct LAB_API SpriteRendererComponent
 	{
-		enum class TexType { None = -1, Texture, Tile };
+		enum class TexType { None = -1, Texture, SubTexture };
 		struct NoTex {};
 		using TextureComponent = std::variant<NoTex, Ref<Texture2D>, Ref<SubTexture2D>>;
 
@@ -68,7 +68,7 @@ namespace Labyrinth {
 		SpriteRendererComponent(Ref<Texture2D> tex, float tf, uint8_t layer = 0)
 			: type(TexType::Texture), layer(layer), texture(tex), tilingFactor(tf) {}
 		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf, uint8_t layer = 0)
-			: type(TexType::Tile), layer(layer), texture(subtex), tilingFactor(tf) {}
+			: type(TexType::SubTexture), layer(layer), texture(subtex), tilingFactor(tf) {}
 
 		bool hasTex() const 
 		{ 
@@ -139,22 +139,9 @@ namespace Labyrinth {
 
 		// These operators function the same as "getTransform()" for easier 
 		// implicit direct access when using the component
-		operator glm::mat4 () 
-		{ 
-			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
-
-			return glm::translate(glm::mat4(1.0f), translation)
-				* rot
-				* glm::scale(glm::mat4(1.0f), scale);
-		}
-
-		operator const glm::mat4 () const 
+		operator glm::mat4 () const
 		{
-			glm::mat4 rot = glm::rotate(glm::mat4(1.0f), rotation.x, { 1, 0, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.y, { 0, 1, 0 })
-				* glm::rotate(glm::mat4(1.0f), rotation.z, { 0, 0, 1 });
+			glm::mat4 rot = glm::toMat4(glm::quat(rotation));
 
 			return glm::translate(glm::mat4(1.0f), translation)
 				* rot

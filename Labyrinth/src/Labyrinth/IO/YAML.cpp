@@ -1,10 +1,6 @@
 #include "Lpch.h"
 #include "YAML.h"
 
-#include "Labyrinth/Scene/Scene.h"
-#include "Labyrinth/Scene/Entity.h"
-#include "Labyrinth/Scene/Components.h"
-
 namespace Labyrinth {
 
 #ifdef LAB_PLATFORM_WINDOWS

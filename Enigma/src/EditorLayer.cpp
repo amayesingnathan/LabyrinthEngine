@@ -53,12 +53,12 @@ namespace Labyrinth {
 
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
-		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy");
+		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", true, mEditorData);
 		PanelManager::Register<AssetPanel>("Asset Manager");
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
-		PanelManager::Register<OptionsPanel>("Options")->setEditorData(mEditorData);
-		PanelManager::Register<StatsPanel>("Statistics")->bindHoveredEntity(mHoveredEntity);
+		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);
+		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
 
 		bool loadedScene = false;
 		auto commandLineArgs = Application::Get().getCommandLineArgs();
@@ -318,8 +318,8 @@ namespace Labyrinth {
 
 			if (ImGui::BeginMenu("View"))
 			{
-				for (auto& [key, panel] : PanelManager::GetPanels())
-					ImGui::MenuItem(key.c_str(), nullptr, &panel.displayed);
+				for (auto& [key, _panel, display] : PanelManager::GetPanels())
+					ImGui::MenuItem(key.c_str(), nullptr, &display);
 
 				ImGui::EndMenu();
 			}

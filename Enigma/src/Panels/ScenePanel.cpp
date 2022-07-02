@@ -15,9 +15,23 @@ namespace Labyrinth {
 
 	extern const std::filesystem::path gAssetPath;
 
-	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData* options)
+	ScenePanel::ScenePanel()
 	{
-		setContext(scene, options);
+		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+	}
+
+	ScenePanel::ScenePanel(EditorData& options)
+	{
+		mEditorData = &options;
+		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+	}
+
+	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData& options)
+	{
+		mContext = scene;
+		mEditorData = &options;
+
+		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene)
@@ -26,11 +40,56 @@ namespace Labyrinth {
 		mSelectedEntity = {};
 	}
 
-	void ScenePanel::setContext(const Ref<Scene>& scene, EditorData* options)
+	void ScenePanel::setContext(const Ref<Scene>& scene, EditorData& options)
 	{
 		mContext = scene;
-		mEditorData = options;
+		mEditorData = &options;
 		mSelectedEntity = {};
+	}
+
+	void ScenePanel::onUpdate()
+	{
+		if (!mSelectedEntity || !mSelectedEntity.hasComponent<SpriteRendererComponent>()) return;
+
+		if (!mTexture)
+		{
+			FramebufferSpec fbSpec;
+			fbSpec.width = 200;
+			fbSpec.height = 200;
+			fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+			fbSpec.samples = 1;
+
+			mTexture = Framebuffer::Create(fbSpec);
+		}
+
+		auto& component = mSelectedEntity.getComponent<SpriteRendererComponent>();
+
+		// Draw texture/subtexture to framebuffer
+		mTexture->bind();
+
+		RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+		RenderCommand::Clear();
+
+		Renderer2D::BeginState();
+
+		std::string texLabel;
+		switch (component.type)
+		{
+		case SpriteRendererComponent::TexType::None:
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mNoTex);
+			break;
+
+		case SpriteRendererComponent::TexType::Texture:
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<Texture2D>());
+			break;
+
+		case SpriteRendererComponent::TexType::SubTexture:
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<SubTexture2D>());
+			break;
+		}
+
+		Renderer2D::EndState();
+		mTexture->unbind();
 	}
 
 	void ScenePanel::onImGuiRender()
@@ -532,7 +591,7 @@ namespace Labyrinth {
 				texLabel = "Texture2D";
 				break;
 
-			case SpriteRendererComponent::TexType::Tile:
+			case SpriteRendererComponent::TexType::SubTexture:
 				texLabel = "SubTexture2D";
 				break;
 			}
@@ -551,11 +610,11 @@ namespace Labyrinth {
 				}
 
 				ImGui::EndCombo();
-
-				ImGui::EndCombo();
 			}
 
-			ImGui::Button("Texture", ImVec2(100.0f, 0.0f));
+			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
+			ImGui::Text("Texture");
+			ImGui::Image((ImTextureID)(intptr_t)mTexture->getColourAttachmentRendererID(), { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -577,7 +636,7 @@ namespace Labyrinth {
 				{
 					SubTexPayload& data = *Cast<SubTexPayload>(payload->Data);
 
-					component.type = SpriteRendererComponent::TexType::Tile;
+					component.type = SpriteRendererComponent::TexType::SubTexture;
 					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
 				}
 				ImGui::EndDragDropTarget();
@@ -604,7 +663,7 @@ namespace Labyrinth {
 						break;
 					}
 
-					case SpriteRendererComponent::TexType::Tile:
+					case SpriteRendererComponent::TexType::SubTexture:
 						Ref<SubTexture2D> tex = AssetManager::Get<SubTexture2D>(key);
 						if (tex)
 							component.texture = tex;

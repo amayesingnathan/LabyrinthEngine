@@ -32,7 +32,7 @@ namespace Labyrinth {
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
-		Ref<Texture2D> mNoSheet = nullptr;
+		Ref<Texture2D> mNoTex = nullptr;
 		Ref<Texture2DSheet> mCurrentSheet = nullptr;
 		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 
@@ -46,7 +46,6 @@ namespace Labyrinth {
 
 		SubTexModal* mSubTexSelector = nullptr;
 		SubTexPayload mPayload;
-
 
 		uint32_t mSheetWidth = 0;
 		uint32_t mSheetHeight = 0;

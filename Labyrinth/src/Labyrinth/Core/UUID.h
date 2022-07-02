@@ -23,13 +23,14 @@ namespace Labyrinth {
 }
 
 namespace std {
+	template<typename T> struct hash;
 
 	template<>
 	struct hash<Labyrinth::UUID>
 	{
 		std::size_t operator()(const Labyrinth::UUID& uuid) const
 		{
-			return hash<uint64_t>()((uint64_t)uuid);
+			return (uint64_t)uuid;
 		}
 	};
 

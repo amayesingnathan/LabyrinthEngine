@@ -16,13 +16,13 @@ namespace Labyrinth {
 
 	struct PanelItem
 	{
+		std::string key;
 		Panel* panel = nullptr;
 		bool displayed = false;
 
 		PanelItem() = default;
-		PanelItem(Panel* _panel, bool _display)
-			: panel(_panel), displayed(_display) {}
-		~PanelItem() { if (panel) delete panel; }
+		PanelItem(const std::string& _key, Panel* _panel, bool _display)
+			: key(_key), panel(_panel), displayed(_display) {}
 	};
 
 	class PanelManager
@@ -33,27 +33,32 @@ namespace Labyrinth {
 		void operator=(const PanelManager&) = delete;
 
 	private:
-		using PanelData = std::unordered_map<std::string, PanelItem>;
-		PanelData mPanels;
+		std::vector<PanelItem> mPanels;
 
 	public:
-		static PanelData& GetPanels()
+		static std::vector<PanelItem>& GetPanels()
 		{
 			static PanelManager mInstance;
 			return mInstance.mPanels;
 		}
 
+		static auto Find(const std::string& key)
+		{
+			std::vector<PanelItem>& panels = GetPanels();
+			return std::find_if(panels.begin(), panels.end(), [&key](const PanelItem& panel) { return key == panel.key; });
+		}
+
 		static Panel* Get(const std::string& name)
 		{
-			PanelData& panels = GetPanels();
-
-			if (panels.count(name) == 0)
+			std::vector<PanelItem>& panels = GetPanels();
+			auto it = Find(name);
+			if (it == panels.end())
 			{
 				LAB_WARN("Panel was not registered with manager");
 				return nullptr;
 			}
 
-			return panels[name].panel;
+			return it->panel;
 		}
 
 		template<typename T>
@@ -62,62 +67,88 @@ namespace Labyrinth {
 			return Cast<T>(Get(name));
 		}
 
+
+		// Panels created are heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
 		template<typename T>
 		static T* Register(const std::string& name, bool display = true)
 		{
 			static_assert(IsDerivedFrom<Panel, T>());
 
-			PanelData& panels = GetPanels();
-			LAB_ASSERT(panels.count(name) == 0, "Can't register panel that is already being managed! (Check name is not already in use)");
+			std::vector<PanelItem>& panels = GetPanels();
+			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			T* newPanel = new T;
-			panels.try_emplace(name, newPanel, display);
+			panels.emplace_back(name, newPanel, display);
 
 			return newPanel;
 		}
 
-		// Panel pointers passed must be heap allocated, and will have their lifetime handled by the panel manager.
+		// Panels created are heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
+		template<typename T, typename... Args>
+		static T* Register(const std::string& name, bool display, Args&... args)
+		{
+			static_assert(IsDerivedFrom<Panel, T>());
+
+			std::vector<PanelItem>& panels = GetPanels();
+			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
+
+			T* newPanel = new T(std::forward<Args>(args)...);
+			panels.emplace_back(name, newPanel, display);
+
+			return newPanel;
+		}
+
+		// Panel pointers passed must be heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
 		template<typename T>
 		static T* Register(const std::string& name, T* panel, bool display = true)
 		{
 			static_assert(IsDerivedFrom<Panel, T>());
 
-			PanelData& panels = GetPanels();
-			LAB_ASSERT(panels.count(name) == 0, "Can't register panel that is already being managed! (Check name is not already in use)");
+			std::vector<PanelItem>& panels = GetPanels();
+			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
-			panels.try_emplace(name, newPanel, display);
+			panels.emplace_back(name, newPanel, display);
 
 			return panel;
 		}
 
 		static void Delete(const std::string& name)
 		{
-			PanelData& panels = GetPanels();
+			std::vector<PanelItem>& panels = GetPanels();
 
-			if (panels.count(name) == 0)
+			auto it = Find(name);
+			if (it == panels.end())
 			{
-				LAB_WARN("Panel was not registered with manager");
+				LAB_ERROR("Panel was not registered with manager");
 				return;
 			}
 
-			panels.erase(name);
+			delete it->panel;
+			panels.erase(it);
 		}
 
-		static void Clear() { GetPanels().clear(); }
+		static void Clear() 
+		{
+			std::vector<PanelItem>& panels = GetPanels();
+			for (PanelItem& panelItem : panels)
+				delete panelItem.panel;
+
+			panels.clear();
+		}
 
 		static void UpdatePanels()
 		{
-			for (auto& [key, panel] : GetPanels())
+			for (PanelItem& panelItem : GetPanels())
 			{
-				if (panel.panel) panel.panel->onUpdate();
+				if (panelItem.panel) panelItem.panel->onUpdate();
 			}
 		}
 
 		static void RenderPanels()
 		{
-			for (auto& [key, panel] : GetPanels())
+			for (PanelItem& panelItem : GetPanels())
 			{
-				if (panel.panel && panel.displayed) panel.panel->onImGuiRender();
+				if (panelItem.panel && panelItem.displayed) panelItem.panel->onImGuiRender();
 			}
 		}
 	};

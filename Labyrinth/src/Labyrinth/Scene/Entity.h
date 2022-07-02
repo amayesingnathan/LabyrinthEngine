@@ -15,7 +15,7 @@ namespace Labyrinth {
 	class LAB_API Entity
 	{
 	public:
-		Entity() : mEntID(entt::null), mScene(nullptr) {}
+		Entity() : mEntID(entt::null) {}
 		Entity(entt::entity entID, const Ref<Scene>& scene);
 
 		Entity(const Entity& other) = default;
@@ -25,16 +25,19 @@ namespace Labyrinth {
 		T& addComponent(Args&&... args)
 		{
 			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on entity");
-			T& component = mScene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
-			mScene->onComponentAdded<T>(*this, component);
+
+			Ref<Scene> scene = mScene.lock();
+			T& component = scene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
+			scene->onComponentAdded<T>(*this, component);
 			return component;
 		}
 
 		template<typename T, typename... Args>
 		T& addOrReplaceComponent(Args&&... args)	
 		{
-			T& component = mScene->mRegistry.emplace_or_replace<T>(mEntID, std::forward<Args>(args)...);
-			mScene->onComponentAdded<T>(*this, component);
+			Ref<Scene> scene = mScene.lock();
+			T& component = scene->mRegistry.emplace_or_replace<T>(mEntID, std::forward<Args>(args)...);
+			scene->onComponentAdded<T>(*this, component);
 			return component;
 		}
 
@@ -42,8 +45,10 @@ namespace Labyrinth {
 		T& replaceComponent(Args&&... args)
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't replace component that doesn't exist on entity");
-			T& component = mScene->mRegistry.replace<T>(mEntID, std::forward<Args>(args)...);
-			mScene->onComponentAdded<T>(*this, component);
+
+			Ref<Scene> scene = mScene.lock();
+			T& component = scene->mRegistry.replace<T>(mEntID, std::forward<Args>(args)...);
+			scene->onComponentAdded<T>(*this, component);
 			return component;
 		}
 
@@ -51,27 +56,34 @@ namespace Labyrinth {
 		void removeComponent()
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't remove component that doesn't exist on entity");
-			mScene->mRegistry.erase<T>(mEntID);
+
+			Ref<Scene> scene = mScene.lock();
+			scene->mRegistry.erase<T>(mEntID);
 		}
 
 		template<typename T>
 		T& getComponent()
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
-			return mScene->mRegistry.get<T>(mEntID);
+
+			Ref<Scene> scene = mScene.lock();
+			return scene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
 		const T& getComponent() const
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
-			return mScene->mRegistry.get<T>(mEntID);
+
+			Ref<Scene> scene = mScene.lock();
+			return scene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
 		bool hasComponent() const
 		{
-			return mScene->mRegistry.all_of<T>(mEntID);
+			Ref<Scene> scene = mScene.lock();
+			return scene->mRegistry.all_of<T>(mEntID);
 		}
 
 		uint32_t getEntID() const
@@ -87,7 +99,7 @@ namespace Labyrinth {
 		operator UUID() const { return getUUID(); }
 		operator uint64_t() const { return getUUID(); }
 
-		operator bool() const { return mEntID != entt::null; }
+		operator bool() const { return (mEntID != entt::null && !mScene.expired()); }
 
 		bool operator==(const Entity& other) const
 		{
@@ -103,8 +115,8 @@ namespace Labyrinth {
 			return !(*this == other);
 		}
 
-		void destroy() { mScene->DestroyEntity(*this); mEntID = entt::null; mScene = nullptr; }
-		Ref<Scene> getScene() { return mScene; }
+		void destroy();
+		Ref<Scene> getScene() { return mScene.lock(); }
 
 		Entity& getParent();
 		const Entity& getParent() const;
@@ -127,7 +139,7 @@ namespace Labyrinth {
 
 	private:
 		entt::entity mEntID{ entt::null };
-		Ref<Scene> mScene = nullptr;
+		WeakRef<Scene> mScene;
 
 		friend Scene;
 		friend NodeComponent;

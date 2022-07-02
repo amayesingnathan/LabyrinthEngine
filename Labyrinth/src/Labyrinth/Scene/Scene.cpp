@@ -78,7 +78,7 @@ namespace Labyrinth {
 
 	Scene::~Scene()
 	{
-		if (mPhysicsWorld) delete mPhysicsWorld;
+		delete mPhysicsWorld;
 	}
 
 	Ref<Scene> Scene::Clone()
@@ -330,7 +330,7 @@ namespace Labyrinth {
 		sheets.clear();
 		mRegistry.view<SpriteRendererComponent>().each([&sheets](auto entity, auto& srComponent)
 		{
-			if (srComponent.type == SpriteRendererComponent::TexType::Tile)
+			if (srComponent.type == SpriteRendererComponent::TexType::SubTexture)
 			{
 				Ref<SubTexture2D> subTex = srComponent.getTex<SubTexture2D>();
 				if (std::find_if(sheets.begin(), sheets.end(),

@@ -511,7 +511,7 @@ namespace Labyrinth {
 					src.tilingFactor, src.colour, nullptr, entityID);
 				break;
 			}
-			case SpriteRendererComponent::TexType::Tile:
+			case SpriteRendererComponent::TexType::SubTexture:
 			{
 				DrawQuad(transform, src.getTex<SubTexture2D>()->getBaseTex(),
 					src.tilingFactor, src.colour,

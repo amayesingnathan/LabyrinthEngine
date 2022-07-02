@@ -58,4 +58,7 @@ namespace Labyrinth {
 	{
 		return raw_ptr->shared_from_this(); 
 	}
+
+	template<typename T>
+	using WeakRef = std::weak_ptr<T>;
 }

@@ -14,7 +14,7 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		mNoSheet = AssetManager::Create<Texture2D>("NoSheet", "assets/textures/checkerboard.png");
+		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1;
@@ -52,7 +52,7 @@ namespace Labyrinth {
 		if (mCurrentSheet)
 			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getBaseTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -157,7 +157,7 @@ namespace Labyrinth {
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((ImTextureID)(intptr_t)mNoSheet->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		else ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		TileWidthModal();
 		SubTexModalRender();
