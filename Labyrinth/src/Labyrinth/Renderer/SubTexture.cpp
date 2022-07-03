@@ -134,6 +134,18 @@ namespace Labyrinth {
 			mTexCoords[i] = coords[i];
 	}
 
+	SubTexture2D::SubTexture2D(const Ref<Texture2D> tex, const std::string& name)
+		: mName(name)
+	{
+		//Y coordinates are flipped compared to usual so that sub texture coordinates are given from top left of sheet.
+		mTexCoords[0] = { 0.f, 0.f };
+		mTexCoords[1] = { 1.f, 0.f };
+		mTexCoords[2] = { 1.f, 1.f };
+		mTexCoords[3] = { 0.f, 1.f };
+
+		mSheet = Texture2DSheet::Create(tex, { 1.f, 1.f }, name);
+	}
+
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
@@ -147,11 +159,11 @@ namespace Labyrinth {
 
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name)
 	{
-		const uint32_t sheetWidth = tex->getWidth();
-		const uint32_t sheetHeight = tex->getHeight();
-
-		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
 		return CreateRef<SubTexture2D>(tex, coords, name);
 	}
 
+	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2D>& tex, const std::string& name)
+	{
+		return CreateRef<SubTexture2D>(tex, name);
+	}
 }

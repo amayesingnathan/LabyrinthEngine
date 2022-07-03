@@ -603,7 +603,15 @@ namespace Labyrinth {
 					bool isSelected = component.type == type;
 
 					if (ImGui::Selectable(label.c_str(), isSelected))
+					{
 						component.type = type;
+						switch (type)
+						{
+						case SpriteRendererComponent::TexType::None:       component.texture = SpriteRendererComponent::NoTex(); break;
+						case SpriteRendererComponent::TexType::Texture:    component.texture = mNoTex; break;
+						case SpriteRendererComponent::TexType::SubTexture: component.texture = SubTexture2D::Create(mNoTex, "NoTex"); break;
+						}
+					}
 
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();

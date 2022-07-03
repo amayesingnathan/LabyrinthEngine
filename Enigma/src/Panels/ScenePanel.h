@@ -43,7 +43,7 @@ namespace Labyrinth {
 		Entity mSelectedEntity;
 		std::vector<Entity> mToRemove;
 
-		Ref<Framebuffer> mTexture;
+		Ref<Framebuffer> mTexture = nullptr;
 
 		BodySpecModal* mBodyCreation = nullptr;
 

@@ -68,6 +68,7 @@ namespace Labyrinth {
 	public:
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
+		SubTexture2D(const Ref<Texture2D> sheet, const std::string& name);
 		SubTexture2D(const SubTexture2D&) = default;
 		virtual ~SubTexture2D() = default;
 
@@ -80,6 +81,7 @@ namespace Labyrinth {
 
 		static Ref<SubTexture2D> Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2{ 1.0f }, const std::string& name = "");
 		static Ref<SubTexture2D> Create(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name = "");
+		static Ref<SubTexture2D> Create(const Ref<Texture2D>& tex, const std::string& name = "");
 
 	private:
 		std::string mName;
