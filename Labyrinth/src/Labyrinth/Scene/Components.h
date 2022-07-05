@@ -2,9 +2,11 @@
 
 #include "Labyrinth/Maths/Vector2D.h"
 
+#include "Labyrinth/Assets/AssetGroup.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"
+#include "Labyrinth/Tilemap/MapSpec.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -190,6 +192,18 @@ namespace Labyrinth {
 
 		CircleColliderComponent() = default;
 		CircleColliderComponent(const CircleColliderComponent&) = default;
+	};
+
+
+	// Tilemaps
+
+	struct TilemapComponent
+	{
+		MapSpec spec;
+
+		TilemapComponent() = default;
+		TilemapComponent(const MapSpec& _spec) : spec(_spec) {}
+		TilemapComponent(const TilemapComponent&) = default;
 	};
 
 	template<typename... Component>

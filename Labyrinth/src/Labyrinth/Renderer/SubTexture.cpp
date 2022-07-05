@@ -89,6 +89,21 @@ namespace Labyrinth {
 		mSubTextures.erase(name);
 	}
 
+	void Texture2DSheet::generateTileset(unsigned int startIndex)
+	{
+		mSubTextures.clear();
+
+		int count = startIndex;
+		for (uint32_t x = 0; x < mTileCountX; x++)
+		{
+			for (uint32_t y = 0; y < mTileCountY; y++)
+			{
+				createSubTex(std::to_string(count), { Cast<float>(x), Cast<float>(y) });
+				count++;
+			}
+		}
+	}
+
 	Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key)
 	{
 		if (mSubTextures.count(key) == 0) return nullptr;
@@ -145,15 +160,14 @@ namespace Labyrinth {
 
 		mSheet = Texture2DSheet::Create(tex, { 1.f, 1.f }, name);
 	}
-
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
 	{
 		const uint32_t sheetWidth = tex->getWidth();
 		const uint32_t sheetHeight = tex->getHeight();
 
 		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
-		glm::vec2 min = { {(coords.x * tex->mTileSize.x) / sheetWidth}, {(sheetHeight - (coords.y * tex->mTileSize.y)) / sheetHeight} };
-		glm::vec2 max = { {((coords.x + spriteSize.x) * tex->mTileSize.x) / sheetWidth}, {(sheetHeight - ((coords.y + spriteSize.y) * tex->mTileSize.y)) / sheetHeight} };
+		glm::vec2 min = { ((coords.x * tex->mTileSize.x) / sheetWidth), ((sheetHeight - (coords.y * tex->mTileSize.y)) / sheetHeight) };
+		glm::vec2 max = { (((coords.x + spriteSize.x) * tex->mTileSize.x) / sheetWidth), ((sheetHeight - ((coords.y + spriteSize.y) * tex->mTileSize.y)) / sheetHeight) };
 		return CreateRef<SubTexture2D>(tex, min, max, name);
 	}
 

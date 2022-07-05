@@ -291,7 +291,7 @@ namespace Labyrinth {
         using AssetType = T;
         using AssetRef = Ref<T>;
         using GroupRef = Ref<AssetGroup>;
-        using AssetGroupItem = std::pair<const std::string, Ref<T>>;
+        using AssetGroupItem = std::pair<const std::string, AssetRef>;
 
         using GroupPool = std::vector<AssetGroupItem>;
         using GroupMap = std::unordered_map<std::string, AssetRef>;

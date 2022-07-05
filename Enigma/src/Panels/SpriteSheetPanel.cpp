@@ -101,7 +101,7 @@ namespace Labyrinth {
 			ImGui::EndDragDropTarget();
 		}
 
-		if (ImGui::Button("Add Subtexture") && mCurrentSheet)
+		if (ImGui::Button("Add SubTex") && mCurrentSheet)
 		{
 			mSubTexSelector = new SubTexModal(mPayload);
 			ImGui::OpenPopup("SubTexModal");
@@ -109,12 +109,17 @@ namespace Labyrinth {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Remove  Subtexture") && mCurrentSheet)
+		if (ImGui::Button("Remove SubTex") && mCurrentSheet)
 		{
 			mCurrentSheet->deleteSubTex(mPayload.subTexName);
 			mPayload.subTexName = noSubTex;
 			mCurrentSubTex = nullptr;
 		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Create Tileset") && mCurrentSheet)
+			mCurrentSheet->generateTileset();
 
 		if (ImGui::BeginCombo("Subtextures", mPayload.subTexName.c_str()))
 		{
