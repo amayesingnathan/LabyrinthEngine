@@ -129,18 +129,6 @@ namespace Labyrinth {
 			sData.displayVertexBufferBase = new DisplayVertex[4];
 			sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
 
-			const glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-
-			for (size_t i = 0; i < 4; i++)
-			{
-				sData.displayVertexBufferPtr->position = sData.displayVertexPositions[i];
-				sData.displayVertexBufferPtr->texCoord = textureCoords[i];
-				sData.displayVertexBufferPtr++;
-			}
-
-			uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
-			sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
-
 			uint32_t* displayIndices = new uint32_t[6];
 
 			displayIndices[0] = 0;
@@ -366,6 +354,38 @@ namespace Labyrinth {
 		StartBatch();
 	}
 
+	void Renderer2D::DrawFramebuffer(const glm::mat4& transform, const Ref<Framebuffer>& framebuffer, const glm::vec2* textureCoords)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		const glm::vec2 defTextureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		if (!textureCoords)
+			textureCoords = defTextureCoords;
+
+		RenderCommand::DisableDepth();
+
+		framebuffer->bindColourAttachment();
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			sData.displayVertexBufferPtr->position = transform * sData.displayVertexPositions[i];
+			sData.displayVertexBufferPtr->texCoord = textureCoords[i];
+			sData.displayVertexBufferPtr++;
+		}
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
+		sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
+
+		sData.displayVertexArray->bind();
+		sData.displayShader->bind();
+
+		RenderCommand::DrawIndexed(sData.displayVertexArray, 6);
+		sData.stats.drawCalls++;
+
+		RenderCommand::EnableDepth();
+		sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
+	}
+
 	void Renderer2D::DrawFramebuffer(Ref<Framebuffer> framebuffer)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -373,6 +393,18 @@ namespace Labyrinth {
 		framebuffer->unbind(); // Rendering to framebuffer complete so switch to default;
 		RenderCommand::Clear();
 		RenderCommand::DisableDepth();
+
+		const glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+
+		for (size_t i = 0; i < 4; i++)
+		{
+			sData.displayVertexBufferPtr->position = sData.displayVertexPositions[i];
+			sData.displayVertexBufferPtr->texCoord = textureCoords[i];
+			sData.displayVertexBufferPtr++;
+		}
+
+		uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
+		sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
 
 		sData.displayVertexArray->bind();
 		sData.displayShader->bind();
@@ -384,8 +416,7 @@ namespace Labyrinth {
 
 		// Reset back to framebuffer rendering.
 		RenderCommand::EnableDepth();
-		sData.quadVertexArray->bind();
-		sData.quadShader->bind();
+		sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
 	}
 
 	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour)

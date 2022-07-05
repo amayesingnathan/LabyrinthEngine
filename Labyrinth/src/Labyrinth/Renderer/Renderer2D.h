@@ -26,6 +26,7 @@ namespace Labyrinth {
 		static void Flush();
 
 		static void DrawFramebuffer(Ref<Framebuffer> framebuffer);
+		static void DrawFramebuffer(const glm::mat4& transform, const Ref<Framebuffer>& framebuffer, const glm::vec2* textureCoords = nullptr);
 
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour);

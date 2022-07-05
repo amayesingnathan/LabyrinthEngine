@@ -6,7 +6,7 @@
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"
-#include "Labyrinth/Tilemap/MapSpec.h"
+#include "Labyrinth/Tilemap/Tilemap.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -22,7 +22,7 @@ namespace Labyrinth {
 	//    General object data components	//
 	//////////////////////////////////////////
 
-	struct LAB_API IDComponent
+	struct IDComponent
 	{
 		UUID id;
 
@@ -32,7 +32,7 @@ namespace Labyrinth {
 		operator UUID() const { return id; }
 	};
 
-	struct LAB_API CameraComponent
+	struct CameraComponent
 	{
 		SceneCamera camera;
 		bool primary = true; //ToDo: Maybe move to Scene
@@ -47,7 +47,7 @@ namespace Labyrinth {
 
 	};
 
-	struct LAB_API SpriteRendererComponent
+	struct SpriteRendererComponent
 	{
 		enum class TexType { None = -1, Texture, SubTexture };
 		struct NoTex {};
@@ -87,7 +87,7 @@ namespace Labyrinth {
 		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
 	};
 
-	struct LAB_API CircleRendererComponent
+	struct CircleRendererComponent
 	{
 		uint8_t layer = 0;
 		static const uint8_t MaxLayers = std::numeric_limits<uint8_t>::max();
@@ -103,7 +103,7 @@ namespace Labyrinth {
 		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
 	};
 
-	struct LAB_API TagComponent
+	struct TagComponent
 	{
 		std::string tag;
 
@@ -117,7 +117,7 @@ namespace Labyrinth {
 		operator const char* () { return tag.c_str(); }
 	};
 
-	struct LAB_API TransformComponent
+	struct TransformComponent
 	{
 		glm::vec3 translation = glm::vec3{ 0.0f };
 		glm::vec3 rotation = glm::vec3{ 0.0f };
@@ -199,11 +199,14 @@ namespace Labyrinth {
 
 	struct TilemapComponent
 	{
-		MapSpec spec;
+		Ref<Tilemap> tilemap = nullptr;
+		uint8_t layer = 0;
 
 		TilemapComponent() = default;
-		TilemapComponent(const MapSpec& _spec) : spec(_spec) {}
+		TilemapComponent(const MapSpec& spec, uint8_t _layer = 0) : layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
+
+		const Ref<Framebuffer>& getTex() const { return tilemap->getTex(); }
 	};
 
 	template<typename... Component>

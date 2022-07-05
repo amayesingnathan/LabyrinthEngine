@@ -12,8 +12,8 @@ namespace Labyrinth {
 
 		void pushLayer(RenderLayer* layer);
 		void popLayer(RenderLayer* layer);
-		void clear();
-		void clearQuads();
+		void clearLayers();
+		void clearItems();
 
 		bool hasLayer(RenderLayer* layer);
 		bool hasLayer(uint8_t layer);
@@ -21,6 +21,7 @@ namespace Labyrinth {
 
 		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID = -1);
 		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, int entID = -1);
+		void addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp);
 
 		void draw();
 

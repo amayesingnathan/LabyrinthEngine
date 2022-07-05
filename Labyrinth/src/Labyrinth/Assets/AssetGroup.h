@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IAsset.h"
+#include <Labyrinth/Renderer/SubTexture.h>
 
 #include <variant>
 #include <string>
@@ -523,7 +524,7 @@ namespace Labyrinth {
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
 
                 for (const auto& [key, asset] : arg)
-                    ref_count += AssetManager::GetRefCount(asset);
+                    ref_count += AssetManager::GetRefCount(CastRefToRelative<IAsset>(asset));
 
             }, mAssets);
 

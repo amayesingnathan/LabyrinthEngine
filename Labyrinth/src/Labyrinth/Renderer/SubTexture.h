@@ -30,6 +30,8 @@ namespace Labyrinth {
 		uint32_t getTileWidth() const { return Cast<uint32_t>(mTileSize.x); }
 		uint32_t getTileHeight() const { return Cast<uint32_t>(mTileSize.y); }
 
+		glm::vec2 getTileSizeN() const { return { mTileSize.x / mTexture->getWidth(), mTileSize.y / mTexture->getHeight() }; }
+
 		const std::string& getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
