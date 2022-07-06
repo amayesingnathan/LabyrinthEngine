@@ -11,6 +11,7 @@ namespace Labyrinth {
 		std::string currentFile;
 		bool displayColliders = false;
 		glm::vec4 colliderColour = { 0, 1, 0, 1 };
+		glm::vec4 selectionColour = { 1, 0.4f, 0, 1 };
 		bool linkOnDestroy = false;
 
 		EditorCamera camera;

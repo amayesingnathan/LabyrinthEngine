@@ -581,8 +581,6 @@ namespace Labyrinth {
 
 	void EditorLayer::OnOverlayRender()
 	{
-		if (!mEditorData.displayColliders) return;
-
 		switch (mSceneState)
 		{
 		case SceneState::Edit:
@@ -605,38 +603,48 @@ namespace Labyrinth {
 			return;
 		}
 
-		mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](const auto& tc, const auto& bcc) 
+		if (mEditorData.displayColliders)
 		{
-			// Calculate z index for translation
-			float zIndex = 0.001f;
-			glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
-			glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
+			mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](const auto& tc, const auto& bcc)
+				{
+					// Calculate z index for translation
+					float zIndex = 0.001f;
+					glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
+					glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
 
-			glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, -projectionCollider.z);
-			glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
+					glm::vec3 translation = tc.translation + glm::vec3(bcc.offset, -projectionCollider.z);
+					glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
 
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
-				* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
-				* glm::scale(glm::mat4(1.0f), scale);
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+						* glm::scale(glm::mat4(1.0f), scale);
 
-			Renderer2D::DrawRect(transform, mEditorData.colliderColour);
-		});
+					Renderer2D::DrawRect(transform, mEditorData.colliderColour);
+				});
 
-		mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](const auto& tc, const auto& ccc)
+			mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](const auto& tc, const auto& ccc)
+				{
+					// Calculate z index for translation
+					float zIndex = 0.001f;
+					glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
+					glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
+
+					glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, -projectionCollider.z);
+					glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.05f);
+				});
+		}
+
+		if (Entity selectedEntity = mScenePanel->getSelectedEntity())
 		{
-			// Calculate z index for translation
-			float zIndex = 0.001f;
-			glm::vec3 cameraForwardDirection = mEditorData.camera.getForwardDirection();
-			glm::vec3 projectionCollider = cameraForwardDirection * glm::vec3(zIndex);
+			const auto& transform = selectedEntity.getComponent<TransformComponent>();
 
-			glm::vec3 translation = tc.translation + glm::vec3(ccc.offset, -projectionCollider.z);
-			glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
-
-			glm::mat4 transform = glm::translate(glm::mat4(1.0f), translation)
-				* glm::scale(glm::mat4(1.0f), scale);
-
-			Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.1f);
-		});
+			Renderer2D::DrawRect(transform.getTransform(), mEditorData.selectionColour);
+		}
 
 		Renderer2D::EndState();
 	}

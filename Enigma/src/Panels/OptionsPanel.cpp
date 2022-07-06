@@ -18,6 +18,7 @@ namespace Labyrinth {
 
 		ImGui::Checkbox("Display Colliders", &mEditorData->displayColliders);
 		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData->colliderColour));
+		ImGui::ColorEdit4("Selection Colour", glm::value_ptr(mEditorData->selectionColour));
 		if (ImGui::Button("Reset Camera Angle"))
 			mEditorData->camera.resetAngle();
 		if (ImGui::Button("Reset Camera Position"))
