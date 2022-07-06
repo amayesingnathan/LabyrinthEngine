@@ -226,32 +226,33 @@ namespace Labyrinth {
 
 				if (entity.hasComponent<BoxColliderComponent>())
 				{
-					auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+					auto& bcc = entity.getComponent<BoxColliderComponent>();
 
 					b2PolygonShape boxShape;
-					boxShape.SetAsBox(bcComponent.halfExtents.x * trComponent.scale.x, bcComponent.halfExtents.y * trComponent.scale.y);
+					boxShape.SetAsBox(bcc.halfExtents.x * trComponent.scale.x, bcc.halfExtents.y * trComponent.scale.y, b2Vec2(bcc.offset.x, bcc.offset.y), 0.0f);
 
 					b2FixtureDef fixtureDef;
 					fixtureDef.shape = &boxShape;
-					fixtureDef.density = bcComponent.density;
-					fixtureDef.friction = bcComponent.friction;
-					fixtureDef.restitution = bcComponent.restitution;
-					fixtureDef.restitutionThreshold = bcComponent.restitutionThreshold;
+					fixtureDef.density = bcc.density;
+					fixtureDef.friction = bcc.friction;
+					fixtureDef.restitution = bcc.restitution;
+					fixtureDef.restitutionThreshold = bcc.restitutionThreshold;
 					body->CreateFixture(&fixtureDef);
 				}
 				if (entity.hasComponent<CircleColliderComponent>())
 				{
-					auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+					auto& ccc = entity.getComponent<CircleColliderComponent>();
 
 					b2CircleShape circleShape;
-					circleShape.m_radius = ccComponent.radius * trComponent.scale.x;
+					circleShape.m_radius = ccc.radius * trComponent.scale.x;
+					circleShape.m_p = b2Vec2(ccc.offset.x, ccc.offset.y);
 
 					b2FixtureDef fixtureDef;
 					fixtureDef.shape = &circleShape;
-					fixtureDef.density = ccComponent.density;
-					fixtureDef.friction = ccComponent.friction;
-					fixtureDef.restitution = ccComponent.restitution;
-					fixtureDef.restitutionThreshold = ccComponent.restitutionThreshold;
+					fixtureDef.density = ccc.density;
+					fixtureDef.friction = ccc.friction;
+					fixtureDef.restitution = ccc.restitution;
+					fixtureDef.restitutionThreshold = ccc.restitutionThreshold;
 					body->CreateFixture(&fixtureDef);
 				}
 			});

@@ -45,6 +45,5 @@ layout (location = 1) in flat int vEntityID;
 void main()
 {
 	oColour = Input.Colour;
-
 	oEntityID = vEntityID;
 }

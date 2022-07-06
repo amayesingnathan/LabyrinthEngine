@@ -121,8 +121,6 @@ namespace Labyrinth {
 		glm::vec3 rotation = glm::vec3{ 0.0f };
 		glm::vec3 scale = glm::vec3{ 1.0f };
 
-		glm::mat4 lastSafeTransform{ 1.0f };
-
 		TransformComponent() = default;
 		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& trans, const glm::vec3& rot, const glm::vec3& sc) 
