@@ -61,7 +61,7 @@ namespace Labyrinth {
 		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
 
 		bool loadedScene = false;
-		auto commandLineArgs = Application::Get().getCommandLineArgs();
+		auto commandLineArgs = Application::Get().getSpec().commandLineArgs;
 		if (commandLineArgs.count > 1)
 			loadedScene = OpenScene(commandLineArgs[1]);
 		if (!loadedScene)

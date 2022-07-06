@@ -10,8 +10,8 @@ namespace Labyrinth {
 	class EnigmaEditor : public Application
 	{
 	public:
-		EnigmaEditor()
-			: Application("Enigma")
+		EnigmaEditor(const ApplicationSpec& spec)
+			: Application(spec)
 		{
 			pushLayer(new EditorLayer());
 		}
@@ -23,7 +23,11 @@ namespace Labyrinth {
 
 	Application* CreateApplication(ApplicationCommandLineArgs args)
 	{
-		return new EnigmaEditor();
+		ApplicationSpec spec;
+		spec.name = "Enigma";
+		spec.commandLineArgs = args;
+
+		return new EnigmaEditor(spec);
 	}
 
 }

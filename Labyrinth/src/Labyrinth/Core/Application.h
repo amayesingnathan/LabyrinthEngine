@@ -16,7 +16,7 @@ int main(int argc, char** argv);
 
 namespace Labyrinth { 
 
-	struct LAB_API ApplicationCommandLineArgs
+	struct ApplicationCommandLineArgs
 	{
 		int count = 0;
 		char** args = nullptr;
@@ -28,11 +28,18 @@ namespace Labyrinth {
 		}
 	};
 
-	class LAB_API Application
+	struct ApplicationSpec
+	{
+		std::string name = "Labyrinth Application";
+		ApplicationCommandLineArgs commandLineArgs;
+		std::string workingDir;
+	};
+
+	class Application
 	{
 	//Methods
 	public:
-		Application(const std::string& name = "Labyrinth Application", ApplicationCommandLineArgs args = ApplicationCommandLineArgs());
+		Application(const ApplicationSpec& spec);
 		~Application();
 
 		void onEvent(Event& e);
@@ -50,7 +57,7 @@ namespace Labyrinth {
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
-		ApplicationCommandLineArgs getCommandLineArgs() const { return mCommandLineArgs; }
+		const ApplicationSpec& getSpec() const { return mSpecification; }
 
 	private:
 		void run();
@@ -63,10 +70,7 @@ namespace Labyrinth {
 	public:
 
 	private:
-		static Application* sInstance;
-		friend int ::main(int argc, char** argv);
-
-		ApplicationCommandLineArgs mCommandLineArgs;
+		ApplicationSpec mSpecification;
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
 		bool mRunning = true;
@@ -75,6 +79,10 @@ namespace Labyrinth {
 		LayerStack mLayerStack;
 
 		float mLastFrameTime = 0.0f;
+
+	private:
+		static Application* sInstance;
+		friend int ::main(int argc, char** argv);
 
 	};
 

@@ -10,15 +10,18 @@ namespace Labyrinth {
 
 	Application* Application::sInstance = nullptr;
 
-	Application::Application(const std::string& name, ApplicationCommandLineArgs args)
-		: mCommandLineArgs(args)
+	Application::Application(const ApplicationSpec& spec)
+		: mSpecification(spec)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
 
-		mWindow = Window::Create(WindowProps(name));
+		if (!mSpecification.workingDir.empty())
+			std::filesystem::current_path(mSpecification.workingDir);
+
+		mWindow = Window::Create(WindowProps(mSpecification.name));
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();

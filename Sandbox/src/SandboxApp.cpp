@@ -6,7 +6,8 @@
 class Sandbox : public Labyrinth::Application
 {
 public:
-	Sandbox() 
+	Sandbox(const Labyrinth::ApplicationSpec& spec)
+		: Application(spec)
 	{
 		//pushLayer(new Labyrinth::ExampleLayer());
 		pushLayer(new Sandbox2D());
@@ -19,5 +20,10 @@ public:
 
 Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args)
 {
-	return new Sandbox();
+	ApplicationSpec spec;
+	spec.name = "Sandbox";
+	spec.workingDir = "../Enigma";
+	spec.commandLineArgs = args;
+
+	return new Sandbox(spec);
 }
