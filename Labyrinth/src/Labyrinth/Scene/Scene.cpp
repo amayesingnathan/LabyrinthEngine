@@ -486,4 +486,9 @@ namespace Labyrinth {
 	{
 	}
 
+	template<>
+	void Scene::onComponentAdded<TilemapComponent>(Entity entity, TilemapComponent& component)
+	{
+	}
+
 }

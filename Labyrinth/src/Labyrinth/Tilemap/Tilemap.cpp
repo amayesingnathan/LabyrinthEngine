@@ -7,10 +7,12 @@
 
 namespace Labyrinth {
 
-	Tilemap::Tilemap(const MapSpec& spec)
-		: mMapName(spec.name)
+	Tilemap::Tilemap(const std::string& name)
+		: mMapName(name)
 	{
-		TiledIO::Open(spec.source, mLayers, mSheets);
+		std::filesystem::path mapPath = "assets/tilemaps/" + name;
+
+		TiledIO::Open(mapPath, mLayers, mSheets);
 
 		genTex();
 	}
@@ -44,9 +46,9 @@ namespace Labyrinth {
 		return mTexture;
 	}
 
-	Ref<Tilemap> Tilemap::Create(const MapSpec& spec)
+	Ref<Tilemap> Tilemap::Create(const std::string& name)
 	{
-		return CreateRef<Tilemap>(spec);
+		return CreateRef<Tilemap>(name);
 	}
 
 	const Ref<Texture2DSheet>& Tilemap::GetSheet(size_t tileID)

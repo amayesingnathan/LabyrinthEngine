@@ -1,7 +1,6 @@
 #pragma once
 
 #include "MapLayer.h"
-#include "MapSpec.h"
 
 #include <Labyrinth/Assets/AssetGroup.h>
 #include <Labyrinth/Core/System/Base.h>
@@ -30,13 +29,13 @@ namespace Labyrinth {
 		const Ref<Texture2DSheet>& GetSheet(size_t tileID);
 
 	public:
-		Tilemap(const MapSpec& spec);
+		Tilemap(const std::string& name);
 
 		// Re-renders the internal framebuffer object
 		const Ref<Framebuffer>& genTex();
 		const Ref<Framebuffer>& getTex() const { return mTexture; }
 
-		static Ref<Tilemap> Create(const MapSpec& spec);
+		static Ref<Tilemap> Create(const std::string& name);
 
 	private:
 		std::string mMapName;

@@ -90,9 +90,7 @@ namespace Labyrinth {
                 GetTileData(tilesetPath, firstGridID, setData);
             }
             else
-            {
                 GetTileData(tileset, firstGridID, lvlPath, setData);
-            }
         }
 
         std::sort(setData.begin(), setData.end());

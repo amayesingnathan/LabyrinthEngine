@@ -203,7 +203,7 @@ namespace Labyrinth {
 		uint8_t layer = 0;
 
 		TilemapComponent() = default;
-		TilemapComponent(const MapSpec& spec, uint8_t _layer = 0) : layer(_layer) {}
+		TilemapComponent(const std::string& name, uint8_t _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
 
 		const Ref<Framebuffer>& getTex() const { return tilemap->getTex(); }
@@ -212,13 +212,14 @@ namespace Labyrinth {
 	template<typename... Component>
 	struct ComponentGroup {};
 	using AllComponents = ComponentGroup
-	<
+		<
 		TransformComponent,
 		SpriteRendererComponent,
 		CircleRendererComponent,
 		CameraComponent,
 		RigidBodyComponent,
 		BoxColliderComponent,
-		CircleColliderComponent
+		CircleColliderComponent,
+		TilemapComponent
 	>;
 }
