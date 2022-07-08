@@ -149,6 +149,7 @@ namespace Labyrinth {
 		if (mSelectedEntity)
 			DrawComponents();
 
+		MapSpecModalRender();
 		AssetTypeWarning();
 
 		ImGui::End();

@@ -100,7 +100,7 @@ namespace Labyrinth {
     {
         //Remove .tsx extension and replace with .png
         std::filesystem::path tilesetPng = tileset.parent_path();
-        tilesetPng += tileset.stem();
+        tilesetPng /= tileset.stem();
         tilesetPng += ".png";
 
         //Get initial node

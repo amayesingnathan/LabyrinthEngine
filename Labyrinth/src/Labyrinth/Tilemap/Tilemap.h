@@ -13,7 +13,7 @@ namespace Labyrinth {
 		size_t firstID;
 		Ref<Texture2DSheet> sheet;
 
-		SheetData(size_t id, const Ref<Texture2DSheet>& _sheet) : firstID(id), sheet(_sheet) {}
+		SheetData(size_t id, const Ref<Texture2DSheet>& _sheet) : firstID(id), sheet(_sheet) { sheet->generateTileset(firstID); }
 
 		bool operator <(const SheetData& other) const
 		{

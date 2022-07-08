@@ -14,6 +14,17 @@ namespace Labyrinth {
 
 		TiledIO::Open(mapPath, mLayers, mSheets);
 
+		uint32_t width = (uint32_t)mLayers[0].getWidth();
+		uint32_t height = (uint32_t)mLayers[0].getHeight();
+		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
+
+		FramebufferSpec fbSpec;
+		fbSpec.width = width * Cast<uint32_t>(tileSize.x);
+		fbSpec.height = height * Cast<uint32_t>(tileSize.y);
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+
+		mTexture = Framebuffer::Create(fbSpec);
 		genTex();
 	}
 
@@ -33,7 +44,9 @@ namespace Labyrinth {
 				for (size_t x = 0; x < layer.getWidth(); x++)
 				{
 					size_t tileID = layer(x, y);
-					const Ref<Texture2DSheet>& sheet = GetSheet(tileID);
+					if (tileID == 0) continue;
+
+					Ref<Texture2DSheet> sheet = GetSheet(tileID);
 					Renderer2D::DrawQuad({ x, y }, sheet->getTileSizeN(), sheet->getSubTex(std::to_string(tileID)));
 				}
 			}
