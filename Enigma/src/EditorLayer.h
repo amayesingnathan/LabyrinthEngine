@@ -66,7 +66,7 @@ namespace Labyrinth {
 		EditorData mEditorData;
 		Entity mHoveredEntity;
 
-		class ScenePanel* mScenePanel = nullptr;
+		Ref<class ScenePanel> mScenePanel = nullptr;
 		
 		// Editor resources
 		Ref<Texture2D> mIconPlay, mIconStop, mIconSim;

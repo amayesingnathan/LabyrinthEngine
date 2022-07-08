@@ -8,12 +8,14 @@
 
 namespace Labyrinth {
 
-	class ContentBrowserPanel : public Panel
+	class ContentBrowserPanel : public IPanel
 	{
 	public:
 		ContentBrowserPanel();
 
-		void onImGuiRender();
+		void onImGuiRender() override;
+
+		static Ref<ContentBrowserPanel> Create() { return CreateRef<ContentBrowserPanel>(); }
 
 	private:
 		std::filesystem::path mCurrentDirectory; 

@@ -14,7 +14,7 @@ namespace Labyrinth {
 		std::string subTexName = "";
 	};
 
-	class SpriteSheetPanel : public Panel
+	class SpriteSheetPanel : public IPanel
 	{
 	public:
 		enum class SheetAddType { Path, Texture };
@@ -24,6 +24,8 @@ namespace Labyrinth {
 
 		void onUpdate() override;
 		void onImGuiRender() override;
+
+		static Ref<SpriteSheetPanel> Create() { return CreateRef<SpriteSheetPanel>(); }
 
 	private:
 		void TileWidthModal();

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Core/System/Log.h"
 
 #include <string>
@@ -7,9 +8,11 @@
 
 namespace Labyrinth {
 
-	class Panel
+	class IPanel
 	{
 	public:
+		virtual ~IPanel() {}
+
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() = 0;
 	};
@@ -17,11 +20,11 @@ namespace Labyrinth {
 	struct PanelItem
 	{
 		std::string key;
-		Panel* panel = nullptr;
+		Ref<IPanel> panel = nullptr;
 		bool displayed = false;
 
 		PanelItem() = default;
-		PanelItem(const std::string& _key, Panel* _panel, bool _display)
+		PanelItem(const std::string& _key, const Ref<IPanel>& _panel, bool _display)
 			: key(_key), panel(_panel), displayed(_display) {}
 	};
 
@@ -48,7 +51,7 @@ namespace Labyrinth {
 			return std::find_if(panels.begin(), panels.end(), [&key](const PanelItem& panel) { return key == panel.key; });
 		}
 
-		static Panel* Get(const std::string& name)
+		static Ref<IPanel> Get(const std::string& name)
 		{
 			std::vector<PanelItem>& panels = GetPanels();
 			auto it = Find(name);
@@ -62,54 +65,40 @@ namespace Labyrinth {
 		}
 
 		template<typename T>
-		static T* Get(const std::string& name)
+		static Ref<T> Get(const std::string& name)
 		{
-			return Cast<T>(Get(name));
+			return CastRefToRelative<T>(Get(name));
 		}
 
 
 		// Panels created are heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
 		template<typename T>
-		static T* Register(const std::string& name, bool display = true)
+		static Ref<T> Register(const std::string& name, bool display = true)
 		{
-			static_assert(IsDerivedFrom<Panel, T>());
+			static_assert(IsDerivedFrom<IPanel, T>());
 
 			std::vector<PanelItem>& panels = GetPanels();
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
-			T* newPanel = new T;
-			panels.emplace_back(name, newPanel, display);
+			Ref<T> newPanel = T::Create();
+			panels.emplace_back(name, CastRefToRelative<IPanel>(newPanel), display);
 
 			return newPanel;
 		}
 
 		// Panels created are heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
 		template<typename T, typename... Args>
-		static T* Register(const std::string& name, bool display, Args&... args)
+		static Ref<T> Register(const std::string& name, bool display, Args&... args)
 		{
-			static_assert(IsDerivedFrom<Panel, T>());
+			static_assert(IsDerivedFrom<IPanel, T>());
 
 			std::vector<PanelItem>& panels = GetPanels();
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
-			T* newPanel = new T(std::forward<Args>(args)...);
-			panels.emplace_back(name, newPanel, display);
+			Ref<T> newPanel = T::Create(std::forward<Args>(args)...);
+			panels.emplace_back(name, CastRefToRelative<IPanel>(newPanel), display);
 
 			return newPanel;
-		}
-
-		// Panel pointers passed must be heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
-		template<typename T>
-		static T* Register(const std::string& name, T* panel, bool display = true)
-		{
-			static_assert(IsDerivedFrom<Panel, T>());
-
-			std::vector<PanelItem>& panels = GetPanels();
-			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
-
-			panels.emplace_back(name, newPanel, display);
-
-			return panel;
 		}
 
 		static void Delete(const std::string& name)
@@ -123,18 +112,10 @@ namespace Labyrinth {
 				return;
 			}
 
-			delete it->panel;
 			panels.erase(it);
 		}
 
-		static void Clear() 
-		{
-			std::vector<PanelItem>& panels = GetPanels();
-			for (PanelItem& panelItem : panels)
-				delete panelItem.panel;
-
-			panels.clear();
-		}
+		static void Clear() { GetPanels().clear(); }
 
 		static void UpdatePanels()
 		{

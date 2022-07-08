@@ -13,7 +13,7 @@ namespace Labyrinth {
 	class BodySpecModal;
 	struct EditorData;
 
-	class ScenePanel : public Panel
+	class ScenePanel : public IPanel
 	{
 	public:
 		ScenePanel();
@@ -28,6 +28,9 @@ namespace Labyrinth {
 
 		Entity getSelectedEntity() const { return mSelectedEntity; }
 		void setSelectedEntity(Entity entity);
+
+		static Ref<ScenePanel> Create(EditorData& options) { return CreateRef<ScenePanel>(options); }
+		static Ref<ScenePanel> Create(const Ref<Scene>& scene, EditorData& options) { return CreateRef<ScenePanel>(scene, options); }
 
 	private:
 		void DrawEntityNode(Entity entity);
