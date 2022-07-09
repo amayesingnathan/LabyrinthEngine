@@ -34,6 +34,9 @@ namespace Labyrinth {
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 
+		void LoadSettings();
+		void WriteSettings();
+
 		void NewScene();
 		bool OpenScene();
 		bool OpenScene(const std::filesystem::path& path);

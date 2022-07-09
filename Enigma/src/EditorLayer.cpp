@@ -66,11 +66,15 @@ namespace Labyrinth {
 			loadedScene = OpenScene(commandLineArgs[1]);
 		if (!loadedScene)
 			NewScene();
+
+		LoadSettings();
 	}
 
 	void EditorLayer::onDetach()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		WriteSettings();
 
 		PanelManager::Clear();
 	}
@@ -488,6 +492,38 @@ namespace Labyrinth {
 		}
 
 		return false;
+	}
+
+	void EditorLayer::LoadSettings()
+	{
+		JsonObj settings = JSON::Open("enigma.ini");
+
+		// Panels
+		if (settings.contains("Panels"))
+		{
+			for (const JsonObj& panel : settings["Panels"])
+			{
+				if (PanelItem* panelItem = PanelManager::GetPanelItem(panel["Key"]))
+					panelItem->displayed = panel["Displayed"];
+			}
+		}
+	}
+
+	void EditorLayer::WriteSettings()
+	{
+		JsonObj settings;
+
+		// Panels
+		for (const PanelItem& panelItem : PanelManager::GetPanels())
+		{
+			JsonObj panel;
+			panel["Key"] = panelItem.key;
+			panel["Displayed"] = panelItem.displayed;
+
+			settings["Panels"].push_back(panel);
+		}
+
+		JSON::Write("enigma.ini", settings);
 	}
 
 	void EditorLayer::NewScene()

@@ -40,6 +40,13 @@ namespace Labyrinth {
 	private:
 		std::vector<PanelItem> mPanels;
 
+	private:
+		static auto Find(const std::string& key)
+		{
+			std::vector<PanelItem>& panels = GetPanels();
+			return std::find_if(panels.begin(), panels.end(), [&key](const PanelItem& panel) { return key == panel.key; });
+		}
+
 	public:
 		static std::vector<PanelItem>& GetPanels()
 		{
@@ -47,10 +54,15 @@ namespace Labyrinth {
 			return mInstance.mPanels;
 		}
 
-		static auto Find(const std::string& key)
+		static PanelItem* GetPanelItem(const std::string& key)
 		{
 			std::vector<PanelItem>& panels = GetPanels();
-			return std::find_if(panels.begin(), panels.end(), [&key](const PanelItem& panel) { return key == panel.key; });
+
+			auto it = Find(key);
+			if (it == panels.end())
+				return nullptr;
+
+			return &(*it);
 		}
 
 		static Ref<IPanel> Get(const std::string& name)

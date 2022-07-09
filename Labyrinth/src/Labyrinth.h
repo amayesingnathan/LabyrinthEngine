@@ -16,6 +16,7 @@
 #include "Labyrinth/IO/Input.h"
 #include "Labyrinth/IO/KeyCodes.h"
 #include "Labyrinth/IO/MouseButtonCodes.h"
+#include "Labyrinth/IO/JSON.h"
 
 #include "Labyrinth/Maths/Constant.h"
 

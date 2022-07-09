@@ -36,6 +36,7 @@ project "Labyrinth"
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
         "%{IncludeDir.ImGuizmo}",
+        "%{IncludeDir.json}",
         "%{IncludeDir.entt}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
