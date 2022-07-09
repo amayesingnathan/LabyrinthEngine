@@ -11,7 +11,7 @@ namespace Labyrinth {
 	struct SubTexPayload
 	{
 		std::string sheetName = "";
-		std::string subTexName = "";
+		std::string subTexName = "None";
 	};
 
 	class SpriteSheetPanel : public IPanel

@@ -71,9 +71,9 @@ namespace Labyrinth {
 		void OnPhysicsStart();
 		void OnPhysicsStop();
 
+		void BuildScene();
 		void DrawScene(EditorCamera& camera);
 		void DrawScene(Camera& camera, const glm::mat4& transform);
-		void BuildScene();
 
 		void StepPhysics2D(Timestep ts);
 

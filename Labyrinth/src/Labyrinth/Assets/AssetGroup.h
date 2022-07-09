@@ -1,6 +1,7 @@
 #pragma once
 
 #include "IAsset.h"
+#include <Labyrinth/Renderer/SubTexture.h>
 
 #include <variant>
 #include <string>
@@ -291,7 +292,7 @@ namespace Labyrinth {
         using AssetType = T;
         using AssetRef = Ref<T>;
         using GroupRef = Ref<AssetGroup>;
-        using AssetGroupItem = std::pair<const std::string, Ref<T>>;
+        using AssetGroupItem = std::pair<const std::string, AssetRef>;
 
         using GroupPool = std::vector<AssetGroupItem>;
         using GroupMap = std::unordered_map<std::string, AssetRef>;
@@ -523,7 +524,7 @@ namespace Labyrinth {
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
 
                 for (const auto& [key, asset] : arg)
-                    ref_count += AssetManager::GetRefCount(asset);
+                    ref_count += AssetManager::GetRefCount(CastRefToRelative<IAsset>(asset));
 
             }, mAssets);
 

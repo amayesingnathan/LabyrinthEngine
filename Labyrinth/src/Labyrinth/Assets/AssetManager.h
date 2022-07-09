@@ -48,19 +48,7 @@ namespace Labyrinth {
         {
             return GetGroupRefCount<AssetType...>(asset);
         }
-        static size_t GetSubTexRefCount(const Ref<IAsset>& asset)
-        {
-            size_t count = 0;
-
-            // If this is not a sheet then no subtextures to count.
-            Ref<Texture2DSheet> isSheet = CastRefToRelative<Texture2DSheet>(asset);
-            if (!isSheet) return count;
-
-            for (const auto& [name, tex] : isSheet->getSubTexList())
-                count += (tex.use_count() - 1);
-
-            return count;
-        }
+        static size_t GetSubTexRefCount(const Ref<IAsset>& asset);
 
         template<typename... AssetType>
         static bool IsGroup(const Ref<IAsset>& asset)

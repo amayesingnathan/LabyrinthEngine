@@ -380,6 +380,8 @@ namespace Labyrinth {
 		if (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate)
 			mEditorData.camera.onEvent(e);
 
+		PanelManager::DispatchEvents(e);
+
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnMouseButtonPressed));

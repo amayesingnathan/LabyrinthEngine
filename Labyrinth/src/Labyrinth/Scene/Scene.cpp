@@ -264,24 +264,6 @@ namespace Labyrinth {
 		mPhysicsWorld = nullptr;
 	}
 
-	void Scene::DrawScene(EditorCamera& camera)
-	{
-		Renderer2D::BeginState(camera);
-		mRenderStack->draw();
-		Renderer2D::EndState();
-
-		mRenderStack->clearQuads();
-	}
-
-	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
-	{
-		Renderer2D::BeginState(camera, transform);
-		mRenderStack->draw();
-		Renderer2D::EndState();
-
-		mRenderStack->clearQuads();
-	}
-
 	void Scene::BuildScene()
 	{
 		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
@@ -292,6 +274,28 @@ namespace Labyrinth {
 		{
 			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
 		});
+		mRegistry.view<TilemapComponent, TransformComponent>().each([this](auto entity, const auto& tmComponent, const auto& trComponent)
+		{
+			mRenderStack->addTilemap(trComponent, tmComponent);
+		});
+	}
+
+	void Scene::DrawScene(EditorCamera& camera)
+	{
+		Renderer2D::BeginState(camera);
+		mRenderStack->draw();
+		Renderer2D::EndState();
+
+		mRenderStack->clearItems();
+	}
+
+	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
+	{
+		Renderer2D::BeginState(camera, transform);
+		mRenderStack->draw();
+		Renderer2D::EndState();
+
+		mRenderStack->clearItems();
 	}
 
 	void Scene::StepPhysics2D(Timestep ts)
@@ -479,6 +483,11 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<CircleColliderComponent>(Entity entity, CircleColliderComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<TilemapComponent>(Entity entity, TilemapComponent& component)
 	{
 	}
 

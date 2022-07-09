@@ -11,6 +11,7 @@
 namespace Labyrinth {
 
 	class BodySpecModal;
+	class MapSpecModal;
 	struct EditorData;
 
 	class ScenePanel : public IPanel
@@ -38,6 +39,7 @@ namespace Labyrinth {
 
 		void AssetTypeWarning();
 		void BodySpecModalRender();
+		void MapSpecModalRender();
 
 	private:
 		Ref<Scene> mContext = nullptr;
@@ -49,6 +51,7 @@ namespace Labyrinth {
 		Ref<Framebuffer> mTexture = nullptr;
 
 		BodySpecModal* mBodyCreation = nullptr;
+		MapSpecModal* mTilemapCreation = nullptr;
 
 		Ref<Texture2D> mNoTex = nullptr;
 		struct TexTypes { std::string label;  SpriteRendererComponent::TexType type; };

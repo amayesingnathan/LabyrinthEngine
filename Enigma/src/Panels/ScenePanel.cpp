@@ -3,6 +3,7 @@
 #include "SpriteSheetPanel.h"
 #include "../EditorLayer.h"
 #include "../Modals/BodySpecModal.h"
+#include "../Modals/MapSpecModal.h"
 
 #include <Labyrinth.h>
 
@@ -51,6 +52,8 @@ namespace Labyrinth {
 	{
 		if (!mSelectedEntity || !mSelectedEntity.hasComponent<SpriteRendererComponent>()) return;
 
+		auto& component = mSelectedEntity.getComponent<SpriteRendererComponent>();
+
 		if (!mTexture)
 		{
 			FramebufferSpec fbSpec;
@@ -61,8 +64,6 @@ namespace Labyrinth {
 
 			mTexture = Framebuffer::Create(fbSpec);
 		}
-
-		auto& component = mSelectedEntity.getComponent<SpriteRendererComponent>();
 
 		// Draw texture/subtexture to framebuffer
 		mTexture->bind();
@@ -148,6 +149,7 @@ namespace Labyrinth {
 		if (mSelectedEntity)
 			DrawComponents();
 
+		MapSpecModalRender();
 		AssetTypeWarning();
 
 		ImGui::End();
@@ -377,6 +379,7 @@ namespace Labyrinth {
 		if (ImGui::Button("Add Component"))
 			ImGui::OpenPopup("AddComponent");
 
+		bool addTileMap = false;
 		if (ImGui::BeginPopup("AddComponent"))
 		{
 			if (!mSelectedEntity.hasComponent<CameraComponent>())
@@ -433,8 +436,20 @@ namespace Labyrinth {
 				}
 			}
 
+			if (!mSelectedEntity.hasComponent<TilemapComponent>())
+			{
+				if (ImGui::MenuItem("Tilemap"))
+				{
+					mTilemapCreation = new MapSpecModal(mSelectedEntity);
+					addTileMap = true;
+				}
+			}
+
 			ImGui::EndPopup();
 		}
+
+		if (addTileMap)
+			ImGui::OpenPopup("MapSpecModal");
 
 		ImGui::PopItemWidth();
 
@@ -622,7 +637,8 @@ namespace Labyrinth {
 
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			ImGui::Image((ImTextureID)(intptr_t)mTexture->getColourAttachmentRendererID(), { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
+			ImTextureID tex = (ImTextureID)(intptr_t)(mTexture ? mTexture->getColourAttachmentRendererID() : mNoTex->getRendererID());
+			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropTarget())
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -752,6 +768,13 @@ namespace Labyrinth {
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
+		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		{
+			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
+			ImGui::Text("Texture");
+			ImGui::Image((ImTextureID)(intptr_t)component.tilemap->getFB()->getColourAttachmentRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
+		});
+
 	}
 
 	void ScenePanel::AssetTypeWarning()
@@ -778,6 +801,21 @@ namespace Labyrinth {
 		mBodyCreation->display();
 		if (mBodyCreation->complete())
 			delete mBodyCreation;
+
+		ImGui::EndPopup();
+	}
+
+	void ScenePanel::MapSpecModalRender()
+	{
+		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
+		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+
+		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+		if (!ImGui::BeginPopupModal("MapSpecModal", nullptr, flags) || !mTilemapCreation) return;
+
+		mTilemapCreation->display();
+		if (mTilemapCreation->complete())
+			delete mTilemapCreation;
 
 		ImGui::EndPopup();
 	}
