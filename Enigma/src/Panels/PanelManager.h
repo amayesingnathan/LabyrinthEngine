@@ -2,6 +2,7 @@
 
 #include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Core/System/Log.h"
+#include "Labyrinth/Events/Event.h"
 
 #include <string>
 #include <unordered_map>
@@ -15,6 +16,7 @@ namespace Labyrinth {
 
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() = 0;
+		virtual void onEvent(Event& e) {}
 	};
 
 	struct PanelItem
@@ -130,6 +132,14 @@ namespace Labyrinth {
 			for (PanelItem& panelItem : GetPanels())
 			{
 				if (panelItem.panel && panelItem.displayed) panelItem.panel->onImGuiRender();
+			}
+		}
+
+		static void DispatchEvents(Event& e)
+		{
+			for (PanelItem& panelItem : GetPanels())
+			{
+				if (panelItem.panel) panelItem.panel->onEvent(e);
 			}
 		}
 	};

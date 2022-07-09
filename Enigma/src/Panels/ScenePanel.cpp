@@ -768,6 +768,13 @@ namespace Labyrinth {
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
+		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		{
+			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
+			ImGui::Text("Texture");
+			ImGui::Image((ImTextureID)(intptr_t)component.tilemap->getFB()->getColourAttachmentRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
+		});
+
 	}
 
 	void ScenePanel::AssetTypeWarning()
