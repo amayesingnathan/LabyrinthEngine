@@ -33,6 +33,7 @@ namespace Labyrinth {
 		std::string name = "Labyrinth Application";
 		ApplicationCommandLineArgs commandLineArgs;
 		std::string workingDir;
+		bool fullscreen = false;
 	};
 
 	class Application

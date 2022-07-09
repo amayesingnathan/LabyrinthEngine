@@ -64,7 +64,8 @@ namespace Labyrinth {
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
-			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), nullptr, nullptr);
+			GLFWmonitor* monitor = props.fullscreen ? glfwGetPrimaryMonitor() : nullptr;
+			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), monitor, nullptr);
 			++sGLFWWindowCount;
 		}
 		LAB_CORE_ASSERT(mWindow, "Could not create GLFW window!");
