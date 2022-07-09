@@ -11,8 +11,8 @@ namespace Labyrinth {
 		ImGui::Begin("Stats");
 
 		std::string name = "None";
-		if (mHoveredEntity && *mHoveredEntity)
-			name = mHoveredEntity->getComponent<TagComponent>().tag;
+		if (mHoveredEntity)
+			name = mHoveredEntity.getComponent<TagComponent>().tag;
 		ImGui::Text("Hovered Entity: %s", name.c_str());
 
 		auto stats = Renderer2D::GetStats();

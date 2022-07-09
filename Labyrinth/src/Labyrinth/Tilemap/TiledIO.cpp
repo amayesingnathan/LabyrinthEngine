@@ -113,7 +113,7 @@ namespace Labyrinth {
         size_t tileHeight = Cast<size_t>(std::stoi(root->first_attribute("tileheight")->value()));
 
         //Build data struct for this tileset 
-        setData.emplace_back(firstID, CreateRef<Texture2DSheet>(tilesetPng.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID)));
+        setData.emplace_back(firstID, Texture2DSheet::Create(tilesetPng.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID)));
 
         delete doc;
     }
@@ -125,7 +125,7 @@ namespace Labyrinth {
         std::filesystem::path tilesetPath = pngPath;
         tilesetPath /= std::filesystem::path(GetChild(tilesetNode, "image")->first_attribute("source")->value());
 
-        setData.emplace_back(firstID, CreateRef<Texture2DSheet>(tilesetPath.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID)));
+        setData.emplace_back(firstID, Texture2DSheet::Create(tilesetPath.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID)));
     }
 
     rapidxml::xml_node<>* TiledIO::GetChild(rapidxml::xml_node<>* inputNode, std::string sNodeFilter)

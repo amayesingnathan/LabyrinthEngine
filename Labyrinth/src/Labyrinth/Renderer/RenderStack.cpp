@@ -118,7 +118,7 @@ namespace Labyrinth {
 				Renderer2D::DrawCircle(circle.getTrans(), circle.getCircle(), circle.getID());
 
 			for (const TilemapData& tilemap : layer->getTilemaps())
-				Renderer2D::DrawFramebuffer(tilemap.getTrans(), tilemap.getMap().getTex());
+				Renderer2D::DrawQuad(tilemap.getTrans(), tilemap.getMap().getTex());
 		}
 	}
 }

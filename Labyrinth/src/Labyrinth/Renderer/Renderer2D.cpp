@@ -354,38 +354,6 @@ namespace Labyrinth {
 		StartBatch();
 	}
 
-	void Renderer2D::DrawFramebuffer(const glm::mat4& transform, const Ref<Framebuffer>& framebuffer, const glm::vec2* textureCoords)
-	{
-		LAB_PROFILE_FUNCTION();
-
-		const glm::vec2 defTextureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		if (!textureCoords)
-			textureCoords = defTextureCoords;
-
-		RenderCommand::DisableDepth();
-
-		framebuffer->bindColourAttachment();
-
-		for (size_t i = 0; i < 4; i++)
-		{
-			sData.displayVertexBufferPtr->position = transform * sData.displayVertexPositions[i];
-			sData.displayVertexBufferPtr->texCoord = textureCoords[i];
-			sData.displayVertexBufferPtr++;
-		}
-
-		uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
-		sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
-
-		sData.displayVertexArray->bind();
-		sData.displayShader->bind();
-
-		RenderCommand::DrawIndexed(sData.displayVertexArray, 6);
-		sData.stats.drawCalls++;
-
-		RenderCommand::EnableDepth();
-		sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
-	}
-
 	void Renderer2D::DrawFramebuffer(Ref<Framebuffer> framebuffer)
 	{
 		LAB_PROFILE_FUNCTION();

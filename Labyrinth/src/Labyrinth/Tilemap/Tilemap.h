@@ -26,22 +26,30 @@ namespace Labyrinth {
 	private:
 		Tilemap() = default;
 
-		const Ref<Texture2DSheet>& GetSheet(size_t tileID);
-
 	public:
 		Tilemap(const std::string& name);
 
-		// Re-renders the internal framebuffer object
-		const Ref<Framebuffer>& genTex();
-		const Ref<Framebuffer>& getTex() const { return mTexture; }
+		void loadMap(const std::string& name);
+
+		const Ref<Texture2D>& getTex() const { return mTexture; };
+
+		Ref<Framebuffer> getFB() { return mFramebuffer; } // For debug purposes
 
 		static Ref<Tilemap> Create(const std::string& name);
 
 	private:
+		// Re-renders the internal framebuffer object and outputs it to a Texture2D
+		void GenTex();
+
+		const Ref<Texture2DSheet>& GetSheet(size_t tileID) const;
+
+	private:
 		std::string mMapName;
+		size_t mWidth, mHeight;
 		std::vector<SheetData> mSheets;
 		std::vector<MapLayer> mLayers;
-		Ref<Framebuffer> mTexture;
+		Ref<Framebuffer> mFramebuffer;
+		Ref<Texture2D> mTexture = nullptr;
 
 	};
 }

@@ -206,7 +206,7 @@ namespace Labyrinth {
 		TilemapComponent(const std::string& name, uint8_t _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
 
-		const Ref<Framebuffer>& getTex() const { return tilemap->getTex(); }
+		const Ref<Texture2D>& getTex() const { return tilemap->getTex(); }
 	};
 
 	template<typename... Component>

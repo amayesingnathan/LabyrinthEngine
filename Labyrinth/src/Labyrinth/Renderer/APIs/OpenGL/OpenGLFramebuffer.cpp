@@ -206,6 +206,14 @@ namespace Labyrinth {
 		return pixelData;
 	}
 
+	void OpenGLFramebuffer::readData(uint32_t attachmentIndex, void* data)
+	{
+		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
+
+		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
+		glReadPixels(0, 0, mSpecification.width, mSpecification.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+	}
+
 	void OpenGLFramebuffer::clearAttachment(uint32_t attachmentIndex, int value)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());

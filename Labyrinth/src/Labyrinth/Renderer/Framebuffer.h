@@ -59,6 +59,7 @@ namespace Labyrinth {
 
 		virtual void resize(uint32_t width, uint32_t height) = 0;
 		virtual int readPixel(uint32_t attachmentIndex, int x, int y) = 0;
+		virtual void readData(uint32_t attachmentIndex, void* data) = 0;
 
 		virtual void clearAttachment(uint32_t attachmentIndex, int value) = 0;
 
