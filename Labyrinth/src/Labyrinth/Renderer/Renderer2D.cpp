@@ -89,7 +89,7 @@ namespace Labyrinth {
 		LineVertex* lineVertexBufferBase = nullptr;
 		LineVertex* lineVertexBufferPtr = nullptr;
 
-		float lineWidth = 2.0f;
+		float lineWidth = 1.0f;
 
 		std::array<Ref<Texture2D>, MaxTextureSlots> textureSlots;
 		uint32_t textureSlotIndex;

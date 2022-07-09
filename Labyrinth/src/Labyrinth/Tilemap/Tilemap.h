@@ -45,7 +45,7 @@ namespace Labyrinth {
 
 	private:
 		std::string mMapName;
-		size_t mWidth, mHeight;
+		uint32_t mWidth, mHeight;
 		std::vector<SheetData> mSheets;
 		std::vector<MapLayer> mLayers;
 		Ref<Framebuffer> mFramebuffer;

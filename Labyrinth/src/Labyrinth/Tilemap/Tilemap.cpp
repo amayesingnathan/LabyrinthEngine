@@ -81,14 +81,14 @@ namespace Labyrinth {
 		Renderer2D::EndState();
 		RenderCommand::EnableDepth();
 
-		mFramebuffer->unbind();
-
 		mTexture = Texture2D::Create(mWidth, mHeight);
 
 		uint8_t* texData = new uint8_t[4 * mWidth * mHeight];
 		mFramebuffer->readData(0, texData);
 		mTexture->setData(texData, 4 * mWidth * mHeight);
 		delete[] texData;
+
+		mFramebuffer->unbind();
 	}
 
 	const Ref<Texture2DSheet>& Tilemap::GetSheet(size_t tileID) const
