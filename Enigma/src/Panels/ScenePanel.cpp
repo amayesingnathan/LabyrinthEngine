@@ -1,7 +1,8 @@
 #include "ScenePanel.h"
 
-#include "SpriteSheetPanel.h"
+#include "SpriteSheetData.h"
 #include "../EditorLayer.h"
+#include "../Modals/ModalManager.h"
 #include "../Modals/BodySpecModal.h"
 #include "../Modals/MapSpecModal.h"
 
@@ -119,14 +120,9 @@ namespace Labyrinth {
 				mSelectedEntity.addComponent<CameraComponent>();
 			}
 			if (ImGui::MenuItem("Rigid Body"))
-			{
-				mBodyCreation = new BodySpecModal(mContext);
-				openSpecModal = true;
-			}
+				ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
 			ImGui::EndPopup();
 		}
-		if (openSpecModal)
-			ImGui::OpenPopup("BodySpecModal");
 
 		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 			{
@@ -141,15 +137,12 @@ namespace Labyrinth {
 		if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && ImGui::IsWindowHovered())
 			mSelectedEntity = {};
 
-		BodySpecModalRender();
-
 		ImGui::End();
 
 		ImGui::Begin("Properties");
 		if (mSelectedEntity)
 			DrawComponents();
 
-		MapSpecModalRender();
 		AssetTypeWarning();
 
 		ImGui::End();
@@ -231,10 +224,8 @@ namespace Labyrinth {
 		}
 		if (entityCreated)
 			mContext->CreateEntity("Empty Entity");
-		if (bodyCreated) {
-			mBodyCreation = new BodySpecModal(mContext);
-			ImGui::OpenPopup("BodySpecModal"); 
-		}
+		if (bodyCreated)
+			ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
 		if (cloneEntity)
@@ -439,17 +430,11 @@ namespace Labyrinth {
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
 			{
 				if (ImGui::MenuItem("Tilemap"))
-				{
-					mTilemapCreation = new MapSpecModal(mSelectedEntity);
-					addTileMap = true;
-				}
+					ModalManager::Open<MapSpecModal>("MapSpecModal", mSelectedEntity);
 			}
 
 			ImGui::EndPopup();
 		}
-
-		if (addTileMap)
-			ImGui::OpenPopup("MapSpecModal");
 
 		ImGui::PopItemWidth();
 
@@ -658,7 +643,7 @@ namespace Labyrinth {
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("SPRITE_SHEET_ITEM"))
 				{
-					SubTexPayload& data = *Cast<SubTexPayload>(payload->Data);
+					SpriteSheetData& data = *Cast<SpriteSheetData>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::SubTexture;
 					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
@@ -786,36 +771,6 @@ namespace Labyrinth {
 
 		if (ImGui::Button("OK"))
 			ImGui::CloseCurrentPopup();
-
-		ImGui::EndPopup();
-	}
-
-	void ScenePanel::BodySpecModalRender()
-	{
-		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-		if (!ImGui::BeginPopupModal("BodySpecModal", nullptr, flags) || !mBodyCreation) return;
-
-		mBodyCreation->display();
-		if (mBodyCreation->complete())
-			delete mBodyCreation;
-
-		ImGui::EndPopup();
-	}
-
-	void ScenePanel::MapSpecModalRender()
-	{
-		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-		if (!ImGui::BeginPopupModal("MapSpecModal", nullptr, flags) || !mTilemapCreation) return;
-
-		mTilemapCreation->display();
-		if (mTilemapCreation->complete())
-			delete mTilemapCreation;
 
 		ImGui::EndPopup();
 	}

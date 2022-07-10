@@ -1,24 +1,14 @@
 #pragma once
 
 #include "PanelManager.h"
+#include "SpriteSheetData.h"
 
 #include "Labyrinth.h"
 
 namespace Labyrinth {
 
-	class SubTexModal;
-
-	struct SubTexPayload
-	{
-		std::string sheetName = "";
-		std::string subTexName = "None";
-	};
-
 	class SpriteSheetPanel : public IPanel
 	{
-	public:
-		enum class SheetAddType { Path, Texture };
-
 	public:
 		SpriteSheetPanel();
 
@@ -28,29 +18,14 @@ namespace Labyrinth {
 		static Ref<SpriteSheetPanel> Create() { return CreateRef<SpriteSheetPanel>(); }
 
 	private:
-		void TileWidthModal();
-		void SubTexModalRender();
-
-	private:
-		Ref<Framebuffer> mFramebuffer;
-
 		Ref<Texture2D> mNoTex = nullptr;
-		Ref<Texture2DSheet> mCurrentSheet = nullptr;
-		Ref<SubTexture2D> mCurrentSubTex = nullptr;
-
-		SheetAddType mAddType = SheetAddType::Path;
-		using SheetVariable = std::variant<std::string, Ref<Texture2D>>;
-		SheetVariable mNewSheetVar = std::string();
 
 		std::string mSheetName = "";
 
-		glm::vec2 mViewportSize = { 0.0f, 0.0f };
+		SpriteSheetData mPanelData;
 
-		SubTexModal* mSubTexSelector = nullptr;
-		SubTexPayload mPayload;
-
-		uint32_t mSheetWidth = 0;
-		uint32_t mSheetHeight = 0;
+		size_t mSheetWidth = 0;
+		size_t mSheetHeight = 0;
 		int mTileWidth = 0;
 		int mTileHeight = 0;
 

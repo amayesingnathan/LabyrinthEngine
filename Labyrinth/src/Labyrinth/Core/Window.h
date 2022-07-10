@@ -13,15 +13,13 @@ namespace Labyrinth {
 
 	struct LAB_API WindowProps {
 		std::string title;
-		bool fullscreen;
 		uint32_t width;
 		uint32_t height;
 
 		WindowProps(const std::string& t = "Labyrinth Engine",
-			bool f = false,
 			uint32_t w = 1600,
 			uint32_t h = 900)
-			: title(t), fullscreen(f), width(w), height(h) {}
+			: title(t), width(w), height(h) {}
 	};
 
 	class LAB_API Window

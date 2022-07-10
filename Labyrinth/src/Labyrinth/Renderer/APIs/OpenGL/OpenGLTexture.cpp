@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	OpenGLTexture2D::OpenGLTexture2D(uint32_t width, uint32_t height)
+	OpenGLTexture2D::OpenGLTexture2D(size_t width, size_t height)
 		: mWidth(width), mHeight(height)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -81,7 +81,7 @@ namespace Labyrinth {
 		glDeleteTextures(1, &mRendererID);
 	}
 
-	void OpenGLTexture2D::setData(void* data, uint32_t size)
+	void OpenGLTexture2D::setData(void* data, size_t size)
 	{
 		LAB_PROFILE_FUNCTION();
 

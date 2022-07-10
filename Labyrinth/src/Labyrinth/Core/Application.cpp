@@ -21,7 +21,7 @@ namespace Labyrinth {
 		if (!mSpecification.workingDir.empty())
 			std::filesystem::current_path(mSpecification.workingDir);
 
-		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.fullscreen));
+		mWindow = Window::Create(WindowProps(mSpecification.name));
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();

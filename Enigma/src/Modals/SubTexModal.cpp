@@ -1,10 +1,8 @@
 #include "SubTexModal.h"
 
-#include "../Panels/SpriteSheetPanel.h"
-
 namespace Labyrinth {
 
-	SubTexModal::SubTexModal(SubTexPayload& data) : ModalWindow(&data)
+	SubTexModal::SubTexModal(SpriteSheetData& data) : Modal(), mPayload(data)
 	{
 		mSheet = AssetManager::Get<Texture2DSheet>(data.sheetName);
 		mMaxWidthCount = mSheet->getTileCountX();
@@ -20,7 +18,7 @@ namespace Labyrinth {
 		}
 	}
 
-	void SubTexModal::display()
+	void SubTexModal::onImGuiRender()
 	{
 		char buffer[256];
 		memset(buffer, 0, sizeof(buffer));
@@ -81,18 +79,12 @@ namespace Labyrinth {
 
 		ImGui::PopStyleColor(2);
 
-		if (ImGui::IsKeyPressed(Key::Escape))
-		{
-			Close();
-			mWidthCount = 1; mHeightCount = 1;
-		}
-
 		if (ImGui::Button("OK"))
 		{
 			if (CheckSelection())
 			{
-				SubTexPayload& payload = *Cast<SubTexPayload>(mPayload);
-				payload.subTexName = mName;
+				mPayload.subTexName = mName;
+				mPayload.currentSubTex = mPayload.currentSheet->getSubTex(mPayload.subTexName);
 				Close();
 			}
 			else

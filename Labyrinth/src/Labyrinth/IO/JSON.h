@@ -13,7 +13,7 @@ namespace Labyrinth {
 		{
 			std::ifstream i(path);
 			JsonObj j;
-			i >> j;
+			if (i) i >> j;
 			return j;
 		}
 

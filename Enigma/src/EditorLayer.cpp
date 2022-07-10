@@ -1,5 +1,8 @@
 #include "EditorLayer.h"
 
+#include "Modals/ModalManager.h"
+#include "Modals/SettingsModal.h"
+
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
 #include "Panels/AssetPanel.h"
@@ -200,6 +203,8 @@ namespace Labyrinth {
 		UI_ChildPanels();
 		UI_Toolbar();
 
+		ModalManager::Display();
+
 		ImGui::End();
 
 	}
@@ -307,6 +312,8 @@ namespace Labyrinth {
 					SaveScene();
 				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
+				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
+					ModalManager::Open<SettingsModal>("SettingsModal");
 
 				if (ImGui::MenuItem("Exit")) Application::Get().Close();
 				ImGui::EndMenu();
@@ -403,6 +410,13 @@ namespace Labyrinth {
 			{
 				if (control)
 					OpenScene();
+
+			}
+			break;
+			case Key::P:
+			{
+				if (control)
+					ModalManager::Open<SettingsModal>("SettingsModal");
 
 			}
 			break;
@@ -503,7 +517,8 @@ namespace Labyrinth {
 
 	void EditorLayer::WriteSettings()
 	{
-		JsonObj settings;
+		JsonObj settings = JSON::Open("enigma.ini");
+		settings["Panels"] = {};
 
 		// Panels
 		for (const PanelItem& panelItem : PanelManager::GetPanels())

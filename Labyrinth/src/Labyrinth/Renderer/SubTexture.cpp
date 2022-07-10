@@ -162,8 +162,8 @@ namespace Labyrinth {
 	}
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name)
 	{
-		const uint32_t sheetWidth = tex->getWidth();
-		const uint32_t sheetHeight = tex->getHeight();
+		float sheetWidth = Cast<float>(tex->getWidth());
+		float sheetHeight = Cast<float>(tex->getHeight());
 
 		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
 		glm::vec2 min = { ((coords.x * tex->mTileSize.x) / sheetWidth), ((sheetHeight - (coords.y * tex->mTileSize.y)) / sheetHeight) };

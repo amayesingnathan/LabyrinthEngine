@@ -3,7 +3,9 @@
 #include <Labyrinth.h>
 
 #include "../Assets/AssetManager.h"
+#include "../Modals/ModalManager.h"
 #include "../Modals/SubTexModal.h"
+#include "../Modals/TileWidthModal.h"
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -22,23 +24,23 @@ namespace Labyrinth {
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 
-		mFramebuffer = Framebuffer::Create(fbSpec);
+		mPanelData.framebuffer = Framebuffer::Create(fbSpec);
 	}
 
 	void SpriteSheetPanel::onUpdate()
 	{
-		if (mCurrentSubTex)
+		if (mPanelData.currentSubTex)
 		{
-			mFramebuffer->bind();
+			mPanelData.framebuffer->bind();
 
 			RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
 			RenderCommand::Clear();
 
 			Renderer2D::BeginState();
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mCurrentSubTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mPanelData.currentSubTex);
 			Renderer2D::EndState();
 
-			mFramebuffer->unbind();
+			mPanelData.framebuffer->unbind();
 		}
 	}
 
@@ -47,12 +49,12 @@ namespace Labyrinth {
 		ImGui::Begin("Sprite Sheets");
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+		mPanelData.viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		if (mCurrentSheet)
-			ImGui::Image((ImTextureID)(intptr_t)mCurrentSheet->getBaseTex()->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		if (mPanelData.currentSheet)
+			ImGui::Image((ImTextureID)(intptr_t)mPanelData.currentSheet->getBaseTex()->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -63,12 +65,12 @@ namespace Labyrinth {
 
 				if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
 				{
-					mAddType = SheetAddType::Path;
-					mNewSheetVar = texturePath.string();
-					ImGui::OpenPopup("TileWidthModal");
-
-					mPayload.sheetName = "";
+					mPanelData.addType = SheetAddType::Path;
+					mPanelData.newSheetVar = texturePath.string();
+					mPanelData.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
+
+					ModalManager::Open<TileWidthModal>("TileWidthModal", mPanelData);
 				}
 
 			}
@@ -81,19 +83,19 @@ namespace Labyrinth {
 				const std::string& key = *Cast<std::string>(payload->Data);
 				if (const Ref<Texture2DSheet>& sheet = AssetManager::Get<Texture2DSheet>(key))
 				{
-					mCurrentSheet = sheet;
-					mSheetWidth = mCurrentSheet->getWidth();
-					mSheetHeight = mCurrentSheet->getHeight();
-					mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
+					mPanelData.currentSheet = sheet;
+					mSheetWidth = mPanelData.currentSheet->getWidth();
+					mSheetHeight = mPanelData.currentSheet->getHeight();
+					mPanelData.framebuffer->resize(Cast<uint32_t>(mPanelData.viewportSize.x - 15.0f), 200);
 				}
 				else if (const Ref<Texture2D>& asset = AssetManager::Get<Texture2D>(key))
 				{
-					mAddType = SheetAddType::Texture;
-					mNewSheetVar = asset;
-					ImGui::OpenPopup("TileWidthModal");
-
-					mPayload.sheetName = "";
+					mPanelData.addType = SheetAddType::Texture;
+					mPanelData.newSheetVar = asset;
+					mPanelData.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
+
+					ModalManager::Open<SubTexModal>("SubTexModal", mPanelData);
 				}
 				else { LAB_ERROR("Invalid asset type!"); }
 
@@ -101,46 +103,43 @@ namespace Labyrinth {
 			ImGui::EndDragDropTarget();
 		}
 
-		if (ImGui::Button("Add SubTex") && mCurrentSheet)
+		if (ImGui::Button("Add SubTex") && mPanelData.currentSheet)
+			ModalManager::Open<SubTexModal>("SubTexModal", mPanelData);
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Remove SubTex") && mPanelData.currentSheet)
 		{
-			mSubTexSelector = new SubTexModal(mPayload);
-			ImGui::OpenPopup("SubTexModal");
+			mPanelData.currentSheet->deleteSubTex(mPanelData.subTexName);
+			mPanelData.subTexName = noSubTex;
+			mPanelData.currentSubTex = nullptr;
 		}
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Remove SubTex") && mCurrentSheet)
-		{
-			mCurrentSheet->deleteSubTex(mPayload.subTexName);
-			mPayload.subTexName = noSubTex;
-			mCurrentSubTex = nullptr;
-		}
+		if (ImGui::Button("Create Tileset") && mPanelData.currentSheet)
+			mPanelData.currentSheet->generateTileset();
 
-		ImGui::SameLine();
-
-		if (ImGui::Button("Create Tileset") && mCurrentSheet)
-			mCurrentSheet->generateTileset();
-
-		if (ImGui::BeginCombo("Subtextures", mPayload.subTexName.c_str()))
+		if (ImGui::BeginCombo("Subtextures", mPanelData.subTexName.c_str()))
 		{
 			// Display "None" at the top of the list
-			bool clear = mPayload.subTexName == noSubTex;
+			bool clear = mPanelData.subTexName == noSubTex;
 			if (ImGui::Selectable(noSubTex.c_str(), clear))
 			{
-				mPayload.subTexName = noSubTex;
-				mCurrentSubTex = nullptr;
+				mPanelData.subTexName = noSubTex;
+				mPanelData.currentSubTex = nullptr;
 			}
 
-			if (mCurrentSheet)
+			if (mPanelData.currentSheet)
 			{
-				for (const auto& [key, value] : mCurrentSheet->getSubTexList())
+				for (const auto& [key, value] : mPanelData.currentSheet->getSubTexList())
 				{
-					bool isSelected = mPayload.subTexName == key;
+					bool isSelected = mPanelData.subTexName == key;
 
 					if (ImGui::Selectable(key.c_str(), isSelected))
 					{
-						mPayload.subTexName = key;
-						mCurrentSubTex = mCurrentSheet->getSubTex(key);
+						mPanelData.subTexName = key;
+						mPanelData.currentSubTex = mPanelData.currentSheet->getSubTex(key);
 					}
 
 					if (isSelected)
@@ -153,92 +152,17 @@ namespace Labyrinth {
 
 		ImGui::NewLine();
 
-		if (mCurrentSubTex)
+		if (mPanelData.currentSubTex)
 		{
-			ImGui::Image((ImTextureID)(intptr_t)mFramebuffer->getColourAttachmentRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)mPanelData.framebuffer->getColourAttachmentRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 			{
-				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPayload, sizeof(SubTexPayload));
+				ImGui::SetDragDropPayload("SPRITE_SHEET_ITEM", &mPanelData, sizeof(SpriteSheetData));
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mViewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
-
-		TileWidthModal();
-		SubTexModalRender();
+		else ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		ImGui::End();
-	}
-
-	void SpriteSheetPanel::TileWidthModal()
-	{
-		if (!ImGui::BeginPopupModal("TileWidthModal")) return;
-
-		ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
-		ImGui::NewLine();
-
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mPayload.sheetName);
-		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-			mPayload.sheetName = std::string(buffer);
-
-		ImGui::InputInt("Width", &mTileWidth);
-		ImGui::InputInt("Height", &mTileHeight);
-		ImGui::NewLine();
-
-		bool loadSheet = false;
-
-		if (ImGui::Button("OK"))
-		{
-			if (mTileWidth > 0 && mTileHeight > 0)
-			{
-				loadSheet = true;
-				ImGui::CloseCurrentPopup();
-			}
-		}
-
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			mAddType = SheetAddType::Path;
-			mNewSheetVar = std::string();
-			ImGui::CloseCurrentPopup();
-		}
-
-		ImGui::EndPopup();
-
-		if (loadSheet)
-		{
-			switch (mAddType)
-			{
-			case SheetAddType::Path:	mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<std::string>(mNewSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
-			case SheetAddType::Texture: mCurrentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<Ref<Texture2D>>(mNewSheetVar), glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName); break;
-			}
-			
-			mSheetWidth = mCurrentSheet->getWidth();
-			mSheetHeight = mCurrentSheet->getHeight();
-			mFramebuffer->resize(Cast<uint32_t>(mViewportSize.x - 15.0f), 200);
-		}
-		
-	}
-
-	void SpriteSheetPanel::SubTexModalRender() 
-	{
-		ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
-		ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-		ImGuiWindowFlags flags = ImGuiWindowFlags_None;
-		if (!ImGui::BeginPopupModal("SubTexModal", nullptr, flags) || !mSubTexSelector) return;
-
-		mSubTexSelector->display();
-		if (mSubTexSelector->complete())
-		{
-			mCurrentSubTex = mCurrentSheet->getSubTex(mPayload.subTexName);
-			delete mSubTexSelector;
-		}
-
-		ImGui::EndPopup();
 	}
 }

@@ -19,8 +19,8 @@ namespace Labyrinth {
 		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
 
 		FramebufferSpec fbSpec;
-		mWidth = fbSpec.width = width * Cast<uint32_t>(tileSize.x);
-		mHeight = fbSpec.height = height * Cast<uint32_t>(tileSize.y);
+		mWidth = fbSpec.width = width * Cast<size_t>(tileSize.x);
+		mHeight = fbSpec.height = height * Cast<size_t>(tileSize.y);
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 

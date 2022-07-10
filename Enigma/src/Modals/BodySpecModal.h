@@ -2,12 +2,14 @@
 
 #include <Labyrinth.h>
 
+#include "Modal.h"
+
 #include <imgui/imgui.h>
 #include <glm/glm.hpp>
 
 namespace Labyrinth {
 
-	class BodySpecModal : public ModalWindow
+	class BodySpecModal : public Modal
 	{
 	public: // Class Types
 		enum class Shape { Box, Circle };
@@ -28,7 +30,9 @@ namespace Labyrinth {
 	public:
 		BodySpecModal(Ref<Scene>& data);
 
-		void display() override;
+		void onImGuiRender() override;
+
+		static Ref<BodySpecModal> Create(Ref<Scene>& data) { return CreateRef<BodySpecModal>(data); }
 
 	private:
 		void ShapeOptions();

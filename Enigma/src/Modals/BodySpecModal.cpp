@@ -6,9 +6,9 @@
 
 namespace Labyrinth {
 
-    BodySpecModal::BodySpecModal(Ref<Scene>& data) : mContext(data) {}
+    BodySpecModal::BodySpecModal(Ref<Scene>& data) : Modal(), mContext(data) {}
 
-    void BodySpecModal::display()
+    void BodySpecModal::onImGuiRender()
     {
         ImGui::Text("Please enter the specifications for the new rigid body:");
         ImGui::NewLine();

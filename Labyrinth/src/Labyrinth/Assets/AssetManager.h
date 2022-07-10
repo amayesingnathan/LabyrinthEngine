@@ -121,7 +121,7 @@ namespace Labyrinth {
         /// <param name="...args">AssetType constructor arguments</param>
         /// <returns>A Ref to the newly created asset</returns>
         template<typename AssetType, typename... Args>
-        static Ref<AssetType> Create(const std::string& id, Args... args)
+        static Ref<AssetType> Create(const std::string& id, Args&&... args)
         {
             LAB_STATIC_ASSERT(IsDerivedFrom<IAsset, AssetType>());
 
@@ -193,7 +193,7 @@ namespace Labyrinth {
         /// <param name="...args">AssetType constructor arguments</param>
         /// <returns>The new asset or requested asset</returns>
         template<typename AssetType, typename... Args>
-        static Ref<AssetType> GetOrCreate(const std::string& id, Args... args)
+        static Ref<AssetType> GetOrCreate(const std::string& id, Args&&... args)
         {
             AssetCache& assets = GetAssets();
             if (assets.count(id) == 0)

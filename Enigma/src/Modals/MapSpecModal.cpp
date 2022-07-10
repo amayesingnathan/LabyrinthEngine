@@ -6,11 +6,11 @@
 
 namespace Labyrinth {
 
-    MapSpecModal::MapSpecModal(Entity& data) : mEntity(data) 
+    MapSpecModal::MapSpecModal(Entity& data) : Modal(), mEntity(data)
     {
     }
 
-    void MapSpecModal::display()
+    void MapSpecModal::onImGuiRender()
     {
         ImGui::Text("Please enter the specifications for the tilemap:");
         ImGui::NewLine();

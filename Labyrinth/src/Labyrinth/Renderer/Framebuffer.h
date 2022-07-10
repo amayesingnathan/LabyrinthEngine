@@ -42,7 +42,7 @@ namespace Labyrinth {
 
 	struct LAB_API FramebufferSpec
 	{
-		uint32_t width, height;
+		size_t width, height;
 		FramebufferAttachmentSpec attachments;
 		uint32_t samples = 1;
 
@@ -57,7 +57,7 @@ namespace Labyrinth {
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 
-		virtual void resize(uint32_t width, uint32_t height) = 0;
+		virtual void resize(size_t width, size_t height) = 0;
 		virtual int readPixel(uint32_t attachmentIndex, int x, int y) = 0;
 		virtual void readData(uint32_t attachmentIndex, void* data) = 0;
 

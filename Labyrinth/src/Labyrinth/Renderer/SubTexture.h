@@ -20,8 +20,8 @@ namespace Labyrinth {
 
 		operator Ref<Texture2D>() const { return mTexture; }
 
-		uint32_t getWidth() const { return mTexture->getWidth(); }
-		uint32_t getHeight() const { return mTexture->getHeight(); }
+		size_t getWidth() const { return mTexture->getWidth(); }
+		size_t getHeight() const { return mTexture->getHeight(); }
 
 		uint32_t getTileCountX() const { return mTileCountX; }
 		uint32_t getTileCountY() const { return mTileCountY; }

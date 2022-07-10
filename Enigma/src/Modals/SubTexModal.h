@@ -1,19 +1,24 @@
 #pragma once
 
+#include "Modal.h"
+#include "../Panels/SpriteSheetData.h"
+
 #include <Labyrinth.h>
 
 #include <imgui/imgui.h>
 
 namespace Labyrinth {
 
-	class SubTexModal : public ModalWindow
+	class SubTexModal : public Modal
 	{
 		using Position = std::pair<size_t, size_t>;
 
 	public:
-		SubTexModal(struct SubTexPayload& data);
+		SubTexModal(SpriteSheetData& data);
 
-		void display() override;
+		void onImGuiRender() override;
+
+		static Ref<SubTexModal> Create(SpriteSheetData& data) { return CreateRef<SubTexModal>(data); }
 
 	private:
 		//Verify this is a valid subtexture i.e. a quad
@@ -48,7 +53,7 @@ namespace Labyrinth {
 			}
 		};
 
-		bool open = false;
+		SpriteSheetData& mPayload;
 
 		std::string mName = "SubTextureName";
 		Ref<Texture2DSheet> mSheet;

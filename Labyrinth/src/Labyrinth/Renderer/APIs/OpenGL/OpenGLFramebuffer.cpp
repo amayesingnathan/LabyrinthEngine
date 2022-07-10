@@ -14,7 +14,7 @@ namespace Labyrinth {
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
 
-		static void CreateTextures(bool multisampled, uint32_t* outID, uint32_t count)
+		static void CreateTextures(bool multisampled, uint32_t* outID, size_t count)
 		{
 			glCreateTextures(TextureTarget(multisampled), count, outID);
 		}
@@ -24,7 +24,7 @@ namespace Labyrinth {
 			glBindTexture(TextureTarget(multisampled), id);
 		}
 
-		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, uint32_t width, uint32_t height, int index)
+		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, size_t width, size_t height, size_t index)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -45,7 +45,7 @@ namespace Labyrinth {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
 		}
 
-		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, uint32_t width, uint32_t height)
+		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, size_t width, size_t height)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -188,7 +188,7 @@ namespace Labyrinth {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFramebuffer::resize(uint32_t width, uint32_t height)
+	void OpenGLFramebuffer::resize(size_t width, size_t height)
 	{
 		mSpecification.width = width;
 		mSpecification.height = height;

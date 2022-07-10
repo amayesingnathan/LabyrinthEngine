@@ -102,7 +102,7 @@ namespace Labyrinth {
 
 		// Panels created are heap allocated, and must be cleaned up using the Clear() or Delete(const std::string&) functions. 
 		template<typename T, typename... Args>
-		static Ref<T> Register(const std::string& name, bool display, Args&... args)
+		static Ref<T> Register(const std::string& name, bool display, Args&&... args)
 		{
 			static_assert(IsDerivedFrom<IPanel, T>());
 

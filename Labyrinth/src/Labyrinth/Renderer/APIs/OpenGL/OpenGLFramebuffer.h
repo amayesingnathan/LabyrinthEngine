@@ -15,7 +15,7 @@ namespace Labyrinth {
 		virtual void bind() override;
 		virtual void unbind() override;
 
-		virtual void resize(uint32_t width, uint32_t height) override;
+		virtual void resize(size_t width, size_t height) override;
 		virtual int readPixel(uint32_t attachmentIndex, int x, int y) override;
 		virtual void readData(uint32_t attachmentIndex, void* data) override;
 

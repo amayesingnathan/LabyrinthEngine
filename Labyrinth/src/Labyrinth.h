@@ -9,7 +9,6 @@
 
 #include "Labyrinth/Core/Application.h"
 #include "Labyrinth/Core/Layer.h"
-#include "Labyrinth/Core/ModalWindow.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/CameraController.h"
 
