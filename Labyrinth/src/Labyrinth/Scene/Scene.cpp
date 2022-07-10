@@ -3,6 +3,7 @@
 
 #include "Entity.h"
 #include "Components.h"
+#include "NativeScript.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
 
@@ -316,6 +317,31 @@ namespace Labyrinth {
 			trComponent.rotation.z = body->GetAngle();
 		});
 		
+	}
+
+	void Scene::UpdateScripts(Timestep ts)
+	{
+		// Update scripts
+		{
+			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			{
+				if (!nsc.complete && !nsc.instance)
+				{
+					nsc.instance = nsc.instantiateScript();
+					nsc.instance->mScriptEntity = { entity, CreateRef(this) };
+					nsc.instance->onStart();
+				}
+
+				nsc.instance->onUpdate(ts);
+
+				if (nsc.instance->isComplete())
+				{
+					nsc.complete = true;
+					nsc.instance->onStop();
+					nsc.destroyScript();
+				}
+			});
+		}
 	}
 
 	Entity Scene::FindEntity(UUID findID)

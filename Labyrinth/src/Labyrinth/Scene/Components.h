@@ -150,6 +150,25 @@ namespace Labyrinth {
 	};
 
 
+	class NativeScript;
+
+	struct NativeScriptComponent
+	{
+		NativeScript* instance = nullptr;
+		std::function<NativeScript* ()> instantiateScript;
+		std::function<void()> destroyScript;
+
+		bool complete = false;
+
+		template<typename T>
+		void bind()
+		{
+			instantiateScript = []() { return static_cast<NativeScript*>(new T()); };
+			destroyScript = [this]() { delete this->instance; this->instance = nullptr; };
+		}
+	};
+
+
 	// Physics
 
 	struct RigidBodyComponent
