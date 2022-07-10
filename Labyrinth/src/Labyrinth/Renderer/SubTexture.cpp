@@ -89,7 +89,7 @@ namespace Labyrinth {
 		mSubTextures.erase(name);
 	}
 
-	void Texture2DSheet::generateTileset(unsigned int startIndex)
+	void Texture2DSheet::generateTileset(size_t startIndex)
 	{
 		mSubTextures.clear();
 

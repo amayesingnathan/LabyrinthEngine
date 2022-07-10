@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Labyrinth.h>
+#include "Modal.h"
 
-#include "ModalManager.h"
+#include <Labyrinth/Scene/Entity.h>
 
 #include <imgui/imgui.h>
 #include <glm/glm.hpp>

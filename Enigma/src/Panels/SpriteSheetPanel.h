@@ -3,7 +3,7 @@
 #include "PanelManager.h"
 #include "SpriteSheetData.h"
 
-#include "Labyrinth.h"
+#include <Labyrinth/Renderer/Texture.h>
 
 namespace Labyrinth {
 

@@ -1,6 +1,8 @@
 #include "StatsPanel.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Scene/Entity.h>
+#include <Labyrinth/Scene/Components.h>
 
 #include <imgui/imgui.h>
 

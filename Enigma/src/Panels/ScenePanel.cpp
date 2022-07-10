@@ -6,7 +6,9 @@
 #include "../Modals/BodySpecModal.h"
 #include "../Modals/MapSpecModal.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Renderer/RenderCommand.h>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -125,10 +127,10 @@ namespace Labyrinth {
 		}
 
 		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
-			{
-				Entity entity{ entityID , mContext };
-				DrawEntityNode(entity);
-			});
+		{
+			Entity entity{ entityID , mContext };
+			DrawEntityNode(entity);
+		});
 
 		for (auto& entity : mToRemove)
 			mContext->DestroyEntity(entity, mEditorData ? mEditorData->linkOnDestroy : false);

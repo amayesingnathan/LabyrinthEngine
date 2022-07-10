@@ -1,8 +1,17 @@
 #pragma once
 
-#include "Labyrinth.h"
-
+#include "Labyrinth/Core/Layer.h"
+#include "Labyrinth/Events/KeyEvent.h"
+#include "Labyrinth/Events/MouseEvent.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
+#include "Labyrinth/Renderer/Framebuffer.h"
+#include "Labyrinth/Renderer/Texture.h"
+#include "Labyrinth/Scene/Entity.h"
+#include "Labyrinth/Scene/Scene.h"
+
+#include <glm/glm.hpp>
+
+#include <filesystem>
 
 namespace Labyrinth {
 

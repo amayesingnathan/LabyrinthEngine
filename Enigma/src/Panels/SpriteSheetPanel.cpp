@@ -1,7 +1,5 @@
 #include "SpriteSheetPanel.h"
 
-#include <Labyrinth.h>
-
 #include "../Assets/AssetManager.h"
 #include "../Modals/ModalManager.h"
 #include "../Modals/SubTexModal.h"

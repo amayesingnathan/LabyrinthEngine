@@ -1,6 +1,6 @@
 #include "AssetPanel.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Assets/AssetManager.h>
 
 #include <imgui/imgui.h>
 

@@ -1,6 +1,9 @@
 #pragma once
 
-#include "Labyrinth.h"
+#include <Labyrinth/Renderer/Framebuffer.h>
+#include <Labyrinth/Renderer/SubTexture.h>
+
+#include <variant>
 
 namespace Labyrinth {
 

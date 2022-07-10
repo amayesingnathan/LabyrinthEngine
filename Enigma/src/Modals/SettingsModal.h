@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Labyrinth.h>
-
 #include "Modal.h"
+
+#include <Labyrinth/IO/JSON.h>
 
 #include <imgui/imgui.h>
 

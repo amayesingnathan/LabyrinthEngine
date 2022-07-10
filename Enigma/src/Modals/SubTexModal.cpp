@@ -1,5 +1,7 @@
 #include "SubTexModal.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
+
 namespace Labyrinth {
 
 	SubTexModal::SubTexModal(SpriteSheetData& data) : Modal(), mPayload(data)

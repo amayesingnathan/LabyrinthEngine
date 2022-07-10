@@ -3,7 +3,7 @@
 #include "Modal.h"
 #include "../Panels/SpriteSheetData.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Renderer/SubTexture.h>
 
 #include <imgui/imgui.h>
 

@@ -10,14 +10,19 @@
 #include "Panels/OptionsPanel.h"
 #include "Panels/StatsPanel.h"
 
+#include "Labyrinth/Assets/AssetManager.h"
+#include "Labyrinth/Assets/AssetGroup.h"
+
+#include "Labyrinth/IO/Input.h"
+
+#include "Labyrinth/Renderer/Renderer2D.h"
+#include "Labyrinth/Renderer/RenderCommand.h"
+
 #include "Labyrinth/Scene/Serialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
 
 #include "Labyrinth/Maths/Maths.h"
-
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Assets/AssetGroup.h"
 
 #include "imgui/imgui.h"
 #include "ImGuizmo.h"

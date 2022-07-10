@@ -2,6 +2,8 @@
 
 #include "Texture.h"
 
+#include <Labyrinth/Core/System/Cast.h>
+
 #include <glm/glm.hpp>
 
 #include <unordered_map>
@@ -46,7 +48,7 @@ namespace Labyrinth {
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
 		void deleteSubTex(const std::string& name);
 
-		void generateTileset(unsigned int startIndex = 0);
+		void generateTileset(size_t startIndex = 0);
 
 		Ref<SubTexture2D> operator[] (const std::string& key);
 		const Ref<SubTexture2D> operator[] (const std::string& key) const;
