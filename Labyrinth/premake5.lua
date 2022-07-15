@@ -68,7 +68,14 @@ project "Labyrinth"
         kind "StaticLib"
         staticruntime "off"
         systemversion "latest"
-        links "opengl32.lib"
+        links 
+        {
+            "opengl32.lib",
+            "%{Library.WinSock}",
+            "%{Library.WinMM}",
+            "%{Library.WinVersion}",
+            "%{Library.BCrypt}",
+        }
 		
 	filter "system:linux"
         kind "SharedLib"

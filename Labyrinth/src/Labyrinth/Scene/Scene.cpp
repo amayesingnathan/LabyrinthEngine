@@ -3,9 +3,9 @@
 
 #include "Entity.h"
 #include "Components.h"
-#include "NativeScript.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
+#include "Labyrinth/Scripting/NativeScript.h"
 
 #include <glm/glm.hpp>
 
