@@ -17,7 +17,7 @@ namespace Labyrinth
         }
         public void PrintMessageCustom(string message)
         {
-            Console.WriteLine($"C# says@ {message}");
+            Console.WriteLine($"C# says: {message}");
         }
     }
 }
