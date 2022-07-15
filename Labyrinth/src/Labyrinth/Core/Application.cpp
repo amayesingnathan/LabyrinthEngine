@@ -5,6 +5,8 @@
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Renderer/Renderer.h"
 #include "Labyrinth/IO/Input.h"
+#include "Labyrinth/Renderer/Renderer.h"
+#include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
 
 namespace Labyrinth {
@@ -27,6 +29,7 @@ namespace Labyrinth {
 
 		Renderer::Init();
 		AssetManager::Init();
+		ScriptEngine::Init();
 
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
@@ -36,7 +39,7 @@ namespace Labyrinth {
 	Application::~Application()
 	{
 		LAB_PROFILE_FUNCTION();
-
+		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
 		AssetManager::Shutdown();
 	}
