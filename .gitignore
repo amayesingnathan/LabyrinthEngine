@@ -2,6 +2,7 @@
 bin/
 obj/
 !dependencies/premake/bin/
+Intermediates
 
 #Branch Test Spaces
 Chess/
