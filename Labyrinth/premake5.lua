@@ -38,6 +38,7 @@ project "Labyrinth"
         "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.json}",
         "%{IncludeDir.entt}",
+        "%{IncludeDir.mono}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
@@ -56,7 +57,8 @@ project "Labyrinth"
 		"glfw",
 		"ImGui",
 		"lua",
-		"yaml-cpp"
+		"yaml-cpp",
+         "%{Library.mono}"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
