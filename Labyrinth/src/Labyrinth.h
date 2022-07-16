@@ -25,7 +25,8 @@
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 #include "Labyrinth/Scene/Serialiser.h"
-#include "Labyrinth/Scene/NativeScript.h"
+
+#include "Labyrinth/Scripting/NativeScript.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Assets/AssetGroup.h"

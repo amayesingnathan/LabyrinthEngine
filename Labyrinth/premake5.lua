@@ -38,6 +38,7 @@ project "Labyrinth"
         "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.json}",
         "%{IncludeDir.entt}",
+        "%{IncludeDir.mono}",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
@@ -56,7 +57,8 @@ project "Labyrinth"
 		"glfw",
 		"ImGui",
 		"lua",
-		"yaml-cpp"
+		"yaml-cpp",
+         "%{Library.mono}"
 	}
 	
 	filter "files:dependencies/ImGuizmo/**.cpp"
@@ -66,7 +68,14 @@ project "Labyrinth"
         kind "StaticLib"
         staticruntime "off"
         systemversion "latest"
-        links "opengl32.lib"
+        links 
+        {
+            "opengl32.lib",
+            "%{Library.WinSock}",
+            "%{Library.WinMM}",
+            "%{Library.WinVersion}",
+            "%{Library.BCrypt}",
+        }
 		
 	filter "system:linux"
         kind "SharedLib"

@@ -2,8 +2,9 @@
 #include "Application.h"
 
 #include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Renderer/Renderer.h"
 #include "Labyrinth/IO/Input.h"
+#include "Labyrinth/Renderer/Renderer.h"
+#include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
 
 namespace Labyrinth {
@@ -25,6 +26,7 @@ namespace Labyrinth {
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
+		ScriptEngine::Init();
 
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
@@ -33,7 +35,8 @@ namespace Labyrinth {
 
 	Application::~Application()
 	{
-		LAB_PROFILE_FUNCTION(); 
+		LAB_PROFILE_FUNCTION();
+		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
 	}
 

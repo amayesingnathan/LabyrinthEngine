@@ -54,6 +54,15 @@ group "Dependencies"
 	include "Labyrinth/dependencies/yaml-cpp"
 group ""
 
-include "Labyrinth"
-include "Sandbox"
-include "Enigma"
+group "Core"
+	include "Labyrinth"
+	include "Labyrinth-ScriptCore"
+group ""
+
+group "Tools"
+	include "Enigma"
+group ""
+
+group "Misc"
+	include "Sandbox"
+group ""
