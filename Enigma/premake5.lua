@@ -1,4 +1,5 @@
 project "Enigma"
+	kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
@@ -38,13 +39,11 @@ project "Enigma"
         links { "pthread", "dl", "yaml-cpp" }
         
     filter "configurations:*d"
-		kind "ConsoleApp"
         defines { "LAB_DEBUG" }
         runtime "Debug"
         symbols "on"
 
     filter "configurations:not *d"
-		kind "WindowedApp"
         defines { "LAB_RELEASE" }
         runtime "Release"
         optimize "on"

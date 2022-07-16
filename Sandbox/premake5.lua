@@ -1,4 +1,5 @@
 project "Sandbox"
+	kind "ConsoleApp"
     language "C++"
     cppdialect "C++17"
     staticruntime "off"
@@ -37,11 +38,9 @@ project "Sandbox"
         links { "pthread", "dl" }
 
     filter "configurations:*d"
-		kind "ConsoleApp"
         runtime "Debug"
         symbols "on"
 
     filter "configurations:not *d"
-		kind "WindowedApp"
         runtime "Release"
         optimize "on"
