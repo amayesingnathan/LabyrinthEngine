@@ -1,11 +1,6 @@
 #include "Lpch.h"
 #include "Scripting.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/object.h>
-#include <mono/metadata/attrdefs.h>
-
 namespace Labyrinth {
 
 	char* Scripting::ReadBytes(const std::string& filepath, uint32_t* outSize)
