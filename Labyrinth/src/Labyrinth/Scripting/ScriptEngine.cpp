@@ -45,8 +45,8 @@ namespace Labyrinth {
 		sData->coreAssembly = Scripting::LoadCSharpAssembly("Resources/Scripts/Labyrinth-ScriptCore.dll");
 		Scripting::PrintAssemblyTypes(sData->coreAssembly);
 
-		MonoObject* instance = Scripting::InstantiateClass(sData->appDomain, sData->coreAssembly, "Labyrinth", "TestClass");
-		Scripting::CallMethod(instance, "PrintVariables", 1.1f, 2.4f);
+		//MonoObject* instance = Scripting::InstantiateClass(sData->appDomain, sData->coreAssembly, "Labyrinth", "TestClass");
+		//Scripting::CallMethod(instance, "PrintVariables", 1.1f, 2.4f);
 	}
 
 	void ScriptEngine::ShutdownMono()

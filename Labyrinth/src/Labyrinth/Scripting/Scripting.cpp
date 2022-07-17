@@ -3,7 +3,7 @@
 
 namespace Labyrinth {
 
-	char* Scripting::ReadBytes(const std::string& filepath, uint32_t* outSize)
+	char* Scripting::ReadBytes(const std::string& filepath, size_t* outSize)
 	{
 		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
@@ -15,7 +15,7 @@ namespace Labyrinth {
 
 		std::streampos end = stream.tellg();
 		stream.seekg(0, std::ios::beg);
-		uint32_t size = end - stream.tellg();
+		size_t size = end - stream.tellg();
 
 		if (size == 0)
 		{
@@ -34,7 +34,7 @@ namespace Labyrinth {
 
 	MonoAssembly* Scripting::LoadCSharpAssembly(const std::string& assemblyPath)
 	{
-		uint32_t fileSize = 0;
+		size_t fileSize = 0;
 		char* fileData = ReadBytes(assemblyPath, &fileSize);
 
 		// NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
@@ -107,9 +107,14 @@ namespace Labyrinth {
 		return classInstance;
 	}
 
+	MonoMethod* Scripting::GetMethodInternal(MonoClass* klass, const char* methodName, void** argv, int argc)
+	{
+		return mono_class_get_method_from_name(klass, methodName, argc);;
+	}
+
 	void Scripting::CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc)
 	{
-		MonoMethod* method = mono_class_get_method_from_name(mono_object_get_class(instance), methodName, argc);
+		MonoMethod* method = GetMethodInternal(mono_object_get_class(instance), methodName, argv, argc);
 
 		if (!method)
 		{
