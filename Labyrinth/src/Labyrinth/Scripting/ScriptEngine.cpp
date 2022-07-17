@@ -3,9 +3,6 @@
 
 #include "Scripting.h"
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-
 namespace Labyrinth {
 
 	struct ScriptEngineData
