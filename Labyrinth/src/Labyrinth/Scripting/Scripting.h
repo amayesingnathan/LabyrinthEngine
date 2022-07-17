@@ -1,6 +1,6 @@
 #pragma once
 
-#include "MonoForward.h"
+#include "ScriptingFwd.h"
 
 #include <string>
 
@@ -27,7 +27,36 @@ namespace Labyrinth {
 		MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className);
 		MonoObject* InstantiateClass(MonoDomain* domain, MonoAssembly* assembly, const char* namespaceName, const char* className);
 
-		void CallMethod(MonoObject* instance, const char* methodName, void** argv, int argc);
+		void CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
+
+		template<typename... Args>
+		void CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
+		{
+			constexpr size_t argc = sizeof...(Args);
+
+			if (argc == 0)
+				CallMethodInternal(instance, methodName, nullptr, 0);
+
+			void* voidArgs[argc] = { nullptr };
+
+			size_t i = 0;
+			([&]()
+			{
+				if (i < argc)
+				{
+					void* tmp = nullptr;
+					if constexpr (IsPointer<Args>::value)
+						tmp = args;
+					else
+						tmp = &args;
+					voidArgs[i] = tmp;
+				}
+
+				i++;
+			}(), ...);
+
+			CallMethodInternal(instance, methodName, voidArgs, argc);
+		}
 
 		uint8_t GetFieldAccessibility(MonoClassField* field);
 		uint8_t GetPropertyAccessibility(MonoProperty* property);

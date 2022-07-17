@@ -93,10 +93,10 @@ namespace Labyrinth {
 	{
 		mSubTextures.clear();
 
-		int count = startIndex;
-		for (uint32_t y = 0; y < mTileCountY; y++)
+		size_t count = startIndex;
+		for (size_t y = 0; y < mTileCountY; y++)
 		{
-			for (uint32_t x = 0; x < mTileCountX; x++)
+			for (size_t x = 0; x < mTileCountX; x++)
 			{
 				createSubTex(std::to_string(count), { Cast<float>(x), Cast<float>(y) });
 				count++;

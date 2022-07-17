@@ -25,12 +25,12 @@ namespace Labyrinth {
 		size_t getWidth() const { return mTexture->getWidth(); }
 		size_t getHeight() const { return mTexture->getHeight(); }
 
-		uint32_t getTileCountX() const { return mTileCountX; }
-		uint32_t getTileCountY() const { return mTileCountY; }
+		size_t getTileCountX() const { return mTileCountX; }
+		size_t getTileCountY() const { return mTileCountY; }
 		
 		glm::vec2 getTileSize() const { return mTileSize; }
-		uint32_t getTileWidth() const { return Cast<uint32_t>(mTileSize.x); }
-		uint32_t getTileHeight() const { return Cast<uint32_t>(mTileSize.y); }
+		size_t getTileWidth() const { return Cast<size_t>(mTileSize.x); }
+		size_t getTileHeight() const { return Cast<size_t>(mTileSize.y); }
 
 		glm::vec2 getTileSizeN() const { return { mTileSize.x / mTexture->getWidth(), mTileSize.y / mTexture->getHeight() }; }
 
@@ -60,7 +60,7 @@ namespace Labyrinth {
 		std::string mName;
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
-		uint32_t mTileCountX, mTileCountY;
+		size_t mTileCountX, mTileCountY;
 		std::unordered_map<std::string, Ref<SubTexture2D>> mSubTextures;
 		
 		friend class SubTexture2D;

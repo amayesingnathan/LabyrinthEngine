@@ -3,6 +3,8 @@ bin/
 obj/
 !dependencies/premake/bin/
 Intermediates
+**/Labyrinth-ScriptCore.dll
+**/Labyrinth-ScriptCore.pdb
 
 #Branch Test Spaces
 Chess/

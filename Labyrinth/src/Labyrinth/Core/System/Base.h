@@ -61,4 +61,15 @@ namespace Labyrinth {
 
 	template<typename T>
 	using WeakRef = std::weak_ptr<T>;
+
+
+	/*
+		Raw Pointer Tools
+	*/
+
+	template<typename T>
+	struct IsPointer { static const bool value = false; };
+
+	template<typename T>
+	struct IsPointer<T*> { static const bool value = true; };
 }

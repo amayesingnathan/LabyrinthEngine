@@ -114,11 +114,20 @@ namespace Labyrinth {
 			return classInstance;
 		}
 
-		void CallMethod(MonoObject* instance, const char* methodName, void** argv, int argc)
+		void CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc)
 		{
 			MonoMethod* method = mono_class_get_method_from_name(mono_object_get_class(instance), methodName, argc);
 
-			mono_runtime_invoke(method, instance, argv, nullptr);
+			if (!method)
+			{
+				LAB_CORE_ERROR("Specified function with parameter count does not exist on object!");
+				return;
+			}
+
+			MonoObject* exception = nullptr;
+			mono_runtime_invoke(method, instance, argv, &exception);   
+			if (exception)
+				mono_print_unhandled_exception(exception);
 		}
 
 		uint8_t GetFieldAccessibility(MonoClassField* field)
