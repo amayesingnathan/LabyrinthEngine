@@ -29,6 +29,44 @@ namespace Labyrinth {
 		static void PrintAssemblyTypes(MonoAssembly* assembly);
 		static MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className);
 		static MonoObject* InstantiateClass(MonoDomain* domain, MonoAssembly* assembly, const char* namespaceName, const char* className);
+		template<typename... Args>
+		static MonoObject* InstantiateClass(MonoDomain* domain, MonoAssembly* assembly, const char* namespaceName, const char* className, Args&&... args)
+		{
+			MonoClass* klass = GetClassInAssembly(assembly, namespaceName, className);
+
+			// Allocate an instance of our class
+			MonoObject* classInstance = mono_object_new(domain, klass);
+
+			if (classInstance == nullptr)
+			{
+				LAB_CORE_ERROR("The class could not be instantiated!");
+				return nullptr;
+			}
+			constexpr size_t argc = sizeof...(Args);
+			void* voidArgs[argc] = { nullptr };
+
+			size_t i = 0;
+			([&]()
+			{
+				if (i < argc)
+				{
+					void* tmp = nullptr;
+					if constexpr (IsPointer<Args>::value)
+						tmp = args;
+					else
+						tmp = &args;
+					voidArgs[i] = tmp;
+				}
+
+				i++;
+			}(), ...);
+
+			MonoMethod* constructor = GetMethodInternal(klass, className, voidArgs, argc);
+
+			mono_runtime_invoke(constructor, classInstance, nullptr);
+
+			return classInstance;
+		}
 
 		template<typename... Args>
 		static void CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
@@ -79,10 +117,11 @@ namespace Labyrinth {
 		static void SetProperty(MonoObject* instance, const char* propertyName, void* data);
 
 	private:
-		static char* ReadBytes(const std::string& filepath, uint32_t* outSize);
+		static char* ReadBytes(const std::string& filepath, size_t* outSize);
 
 		static bool CheckMonoError(MonoError& error);
 
+		static MonoMethod* GetMethodInternal(MonoClass* klass, const char* methodName, void** argv, int argc);
 		static void CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
 
 		static uint8_t GetFieldAccessibility(MonoClassField* field);

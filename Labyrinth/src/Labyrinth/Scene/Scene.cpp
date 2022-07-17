@@ -321,26 +321,24 @@ namespace Labyrinth {
 	void Scene::UpdateScripts(Timestep ts)
 	{
 		// Update scripts
+		mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
-			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			if (!nsc.complete && !nsc.instance)
 			{
-				if (!nsc.complete && !nsc.instance)
-				{
-					nsc.instance = nsc.instantiateScript();
-					nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
-					nsc.instance->onStart();
-				}
+				nsc.instance = nsc.instantiateScript();
+				nsc.instance->mScriptEntity = { entity, CreateRef(this) };
+				nsc.instance->onStart();
+			}
 
-				nsc.instance->onUpdate(ts);
+			nsc.instance->onUpdate(ts);
 
-				if (nsc.instance->isComplete())
-				{
-					nsc.complete = true;
-					nsc.instance->onStop();
-					nsc.destroyScript();
-				}
-			});
-		}
+			if (nsc.instance->isComplete())
+			{
+				nsc.complete = true;
+				nsc.instance->onStop();
+				nsc.destroyScript();
+			}
+		});
 	}
 
 	Entity Scene::FindEntity(UUID findID)
