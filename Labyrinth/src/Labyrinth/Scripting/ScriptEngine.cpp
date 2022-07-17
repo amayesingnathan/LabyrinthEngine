@@ -49,9 +49,7 @@ namespace Labyrinth {
 		Scripting::PrintAssemblyTypes(sData->coreAssembly);
 
 		MonoObject* instance = Scripting::InstantiateClass(sData->appDomain, sData->coreAssembly, "Labyrinth", "TestClass");
-		MonoString* monoString = mono_string_new(sData->appDomain, "Hello World from C++!");
-		void* param = monoString;
-		Scripting::CallMethod(instance, "PrintMessageCustom", &param, 1);
+		Scripting::CallMethod(instance, "PrintVariables", 1.1f, 2.4f);
 	}
 
 	void ScriptEngine::ShutdownMono()

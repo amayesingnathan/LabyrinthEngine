@@ -19,5 +19,10 @@ namespace Labyrinth
         {
             Console.WriteLine($"C# says: {message}");
         }
+
+        public void PrintVariables(float a, float b)
+        {
+            Console.WriteLine($"Float 1: {a}\tFloat 2: {b}");
+        }
     }
 }
