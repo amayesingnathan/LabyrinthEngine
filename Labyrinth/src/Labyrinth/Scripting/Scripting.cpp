@@ -3,6 +3,8 @@
 
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
+#include <mono/metadata/object.h>
+#include <mono/metadata/attrdefs.h>
 
 namespace Labyrinth {
 
@@ -118,5 +120,130 @@ namespace Labyrinth {
 
 			mono_runtime_invoke(method, instance, argv, nullptr);
 		}
+
+		uint8_t GetFieldAccessibility(MonoClassField* field)
+		{
+			uint8_t accessibility = Accessibility::None;
+			uint32_t accessFlag = mono_field_get_flags(field) & MONO_FIELD_ATTR_FIELD_ACCESS_MASK;
+
+			switch (accessFlag)
+			{
+			case MONO_FIELD_ATTR_PRIVATE:
+			{
+				accessibility = Accessibility::Private;
+				break;
+			}
+			case MONO_FIELD_ATTR_FAM_AND_ASSEM:
+			{
+				accessibility |= Accessibility::Protected;
+				accessibility |= Accessibility::Internal;
+				break;
+			}
+			case MONO_FIELD_ATTR_ASSEMBLY:
+			{
+				accessibility = Accessibility::Internal;
+				break;
+			}
+			case MONO_FIELD_ATTR_FAMILY:
+			{
+				accessibility = Accessibility::Protected;
+				break;
+			}
+			case MONO_FIELD_ATTR_FAM_OR_ASSEM:
+			{
+				accessibility |= Accessibility::Private;
+				accessibility |= Accessibility::Protected;
+				break;
+			}
+			case MONO_FIELD_ATTR_PUBLIC:
+			{
+				accessibility = Accessibility::Public;
+				break;
+			}
+			}
+
+			return accessibility;
+		}
+
+		uint8_t GetPropertyAccessibility(MonoProperty* property)
+		{
+			uint8_t accessibility = Accessibility::None;
+
+			// Get a reference to the property's getter method
+			MonoMethod* propertyGetter = mono_property_get_get_method(property);
+			if (propertyGetter != nullptr)
+			{
+				// Extract the access flags from the getters flags
+				uint32_t accessFlag = mono_method_get_flags(propertyGetter, nullptr) & MONO_METHOD_ATTR_ACCESS_MASK;
+
+				switch (accessFlag)
+				{
+				case MONO_FIELD_ATTR_PRIVATE:
+				{
+					accessibility = Accessibility::Private;
+					break;
+				}
+				case MONO_FIELD_ATTR_FAM_AND_ASSEM:
+				{
+					accessibility |= Accessibility::Protected;
+					accessibility |= Accessibility::Internal;
+					break;
+				}
+				case MONO_FIELD_ATTR_ASSEMBLY:
+				{
+					accessibility = Accessibility::Internal;
+					break;
+				}
+				case MONO_FIELD_ATTR_FAMILY:
+				{
+					accessibility = Accessibility::Protected;
+					break;
+				}
+				case MONO_FIELD_ATTR_FAM_OR_ASSEM:
+				{
+					accessibility |= Accessibility::Private;
+					accessibility |= Accessibility::Protected;
+					break;
+				}
+				case MONO_FIELD_ATTR_PUBLIC:
+				{
+					accessibility = Accessibility::Public;
+					break;
+				}
+				}
+			}
+
+			// Get a reference to the property's setter method
+			MonoMethod* propertySetter = mono_property_get_set_method(property);
+			if (propertySetter != nullptr)
+			{
+				// Extract the access flags from the setters flags
+				uint32_t accessFlag = mono_method_get_flags(propertySetter, nullptr) & MONO_METHOD_ATTR_ACCESS_MASK;
+				if (accessFlag != MONO_FIELD_ATTR_PUBLIC)
+					accessibility = Accessibility::Private;
+			}
+			else
+			{
+				accessibility = Accessibility::Private;
+			}
+
+			return accessibility;
+		}
+
+		bool CheckMonoError(MonoError& error)
+		{
+			bool hasError = !mono_error_ok(&error);
+			if (hasError)
+			{
+				unsigned short errorCode = mono_error_get_error_code(&error);
+				const char* errorMessage = mono_error_get_message(&error);
+				LAB_CORE_ERROR("Mono Error!");
+				LAB_CORE_ERROR("\tError Code: {}", errorCode);
+				LAB_CORE_ERROR("\tError Message: {}", errorMessage);
+				mono_error_cleanup(&error);
+			}
+			return hasError;
+		}
+
 	}
 }
