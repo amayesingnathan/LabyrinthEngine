@@ -2,9 +2,27 @@
 Labyrinth is a game engine built for designing and creating 2D games.
 **It was created as a learning experiment** for me to gain understanding about the many aspects of game and game engine development. It is still early in development. It comes with a work-in-progress editor called *Enigma*.
 
+***
+
   ### Getting Started ###
-  To use Labyrinth clone the repo using git or download it as a zip. Once downloaded run scripts/Setup.bat, or scripts/SetupVS22 if you have Visual Studio 2022 to generate visual studio files on Windows. 
-  From there build and run and the Enigma editor should launch.
+  Labyrinth has been developed in Visual Studio 2019/22, as well as limited use with gcc, but Visual Studio is recommeded.
+
+  <ins>**1. Downloading the repository:**</ins>
+
+  Start by cloning the repository with `git clone --recursive https://github.com/amayesingnathan/LabyrinthEngine.git`.
+
+  If the repository was cloned non-recursively previously, use `git submodule update --init --recursive` to clone the necessary submodules.
+
+  <ins>**2. Configuring the dependencies:**</ins>
+
+  1. Run the [Setup.bat](https://github.com/amayesingnathan/LabyrinthEngine/tree/main/scripts/Setup.bat) file found in `scripts` folder. This will download the required prerequisites for the project if they are not present yet.
+  2. One prerequisite is the Vulkan SDK. If it is not installed, the script will execute the `VulkanSDK.exe` file, and will prompt the user to install the SDK.
+  3. After installation, run the [Setup.bat](https://github.com/amayesingnathan/LabyrinthEngine/tree/main/scripts/Setup.bat) file again. If the Vulkan SDK is installed properly, it will then download the Vulkan SDK Debug libraries. (This may take a longer amount of time)
+  4. After downloading and unzipping the files, the [WinVS-GenProjects.bat](https://github.com/amayesingnathan/LabyrinthEngine/tree/main/scripts/WinVS-GenProjects.bat) script file will get executed automatically, which will then generate a Visual Studio solution file for user's usage.
+
+  If changes are made, or if you want to regenerate project files, rerun the [WinVS-GenProjects.bat](https://github.com/amayesingnathan/LabyrinthEngine/tree/main/scripts/WinVS-GenProjects.ba) script file found in `scripts` folder.
+
+***
 
 ## What I've Learned ##
   
