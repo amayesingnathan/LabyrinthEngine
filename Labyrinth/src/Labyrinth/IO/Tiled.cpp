@@ -1,9 +1,9 @@
 #include "Lpch.h"
-#include "TiledIO.h"
+#include "Tiled.h"
 
-#include "Tilemap.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
+#include "Labyrinth/Tilemap/Tilemap.h"
 
 #include "rapidxml.hpp"
 #include "rapidxml_utils.hpp"

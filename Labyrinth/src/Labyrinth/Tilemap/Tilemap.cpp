@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "Tilemap.h"
-#include "TiledIO.h"
 
+#include "Labyrinth/IO/Tiled.h"
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
