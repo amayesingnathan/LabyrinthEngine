@@ -16,39 +16,4 @@ namespace Labyrinth {
 		static void InitMono();
 		static void ShutdownMono();
 	};
-
-	class ScriptClass
-	{
-	public:
-		ScriptClass() = default;
-		ScriptClass(const std::string& classNamespace, const std::string& className);
-		
-		MonoObject* instantiate();
-		template<typename... Args>
-		MonoObject* instantiate(Args&&... args)
-		{
-			return Scripting::WrapArgs<MonoObject>([=](void** argv, size_t argc) {
-				return InstantiateInternal(argv, argc);
-				}, std::forward<Args>(args)...);
-		}
-
-		MonoMethod* getMethod(const std::string& name, size_t argc);
-
-		template<typename... Args>
-		MonoObject* invokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
-		{
-			return Scripting::CallMethod(instance, name.c_str(), std::forward<Args>(args)...);
-		}
-
-	private:
-		MonoObject* InstantiateInternal(void** argv, size_t argc);
-
-	private:
-		std::string mClassNamespace;
-		std::string mClassName;
-
-		MonoClass* mMonoClass = nullptr;
-	};
-
-
 }

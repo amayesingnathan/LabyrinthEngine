@@ -23,7 +23,7 @@ namespace Labyrinth {
 	{
 	public:
 		template<typename T, typename Func, typename... Args>
-		static T* WrapArgs(Func function, Args&&... args)
+		static T WrapArgs(Func function, Args&&... args)
 		{
 			constexpr size_t argc = sizeof...(Args);
 			
@@ -59,7 +59,7 @@ namespace Labyrinth {
 		template<typename... Args>
 		static MonoObject* InstantiateClass(MonoDomain* domain, MonoClass* classInstance, Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject>([=](void** argv, int argc) {
+			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return InstantiateClassInternal(domain, classInstance, argv, argc);
 				}, std::forward<Args>(args)...);
 		}
@@ -67,8 +67,15 @@ namespace Labyrinth {
 		template<typename... Args>
 		static MonoObject* CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject>([=](void** argv, int argc) {
+			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return CallMethodInternal(instance, methodName, argv, argc);
+				}, std::forward<Args>(args)...);
+		}
+		template<typename... Args>
+		static MonoObject* CallMethod(MonoObject* instance, MonoMethod* method, Args&&... args)
+		{
+			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
+				return CallMethodInternal(instance, method, argv);
 				}, std::forward<Args>(args)...);
 		}
 
@@ -77,6 +84,7 @@ namespace Labyrinth {
 
 		static MonoMethod* GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc);
 		static MonoObject* CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
+		static MonoObject* CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv);
 		static MonoObject* InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc);
 
 		friend class ScriptClass;
