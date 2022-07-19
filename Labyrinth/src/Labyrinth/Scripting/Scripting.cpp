@@ -114,12 +114,17 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
+		return CallMethodInternal(instance, method, argv);
+	}
+
+	MonoObject* Scripting::CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv)
+	{
 		MonoObject* exception = nullptr;
-		mono_runtime_invoke(method, instance, argv, &exception);
+		MonoObject* result = mono_runtime_invoke(method, instance, argv, &exception);
 		if (exception)
 			mono_print_unhandled_exception(exception);
 
-		return instance;
+		return result;
 	}
 
 	MonoObject* Scripting::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc)
@@ -133,7 +138,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		MonoMethod* constructor = GetMethodInternal(classInstance, mono_class_get_name(classInstance), argc);
+		MonoMethod* constructor = GetMethodInternal(classInstance, ".ctor", argc);
 
 		mono_runtime_invoke(constructor, instance, argv, nullptr);
 
