@@ -99,7 +99,7 @@ namespace Labyrinth {
 		return hasError;
 	}
 
-	MonoMethod* Scripting::GetMethodInternal(MonoClass* classInstance, const char* methodName, size_t argc)
+	MonoMethod* Scripting::GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc)
 	{
 		return mono_class_get_method_from_name(classInstance, methodName, argc);;
 	}
@@ -122,7 +122,7 @@ namespace Labyrinth {
 		return instance;
 	}
 
-	MonoObject* Scripting::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, size_t argc)
+	MonoObject* Scripting::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc)
 	{
 		// Allocate an instance of our class
 		MonoObject* instance = mono_object_new(domain, classInstance);

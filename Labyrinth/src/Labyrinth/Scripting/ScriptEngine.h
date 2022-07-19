@@ -27,11 +27,9 @@ namespace Labyrinth {
 		template<typename... Args>
 		MonoObject* instantiate(Args&&... args)
 		{
-			MonoObject* instance = nullptr;
-			Scripting::WrapArgs([=](void** argv, size_t argc) {
+			return Scripting::WrapArgs<MonoObject>([=](void** argv, size_t argc) {
 				return InstantiateInternal(argv, argc);
-				}, instance, std::forward<Args>(args)...);
-			return instance;
+				}, std::forward<Args>(args)...);
 		}
 
 		MonoMethod* getMethod(const std::string& name, size_t argc);
