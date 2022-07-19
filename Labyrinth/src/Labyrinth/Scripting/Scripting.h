@@ -1,11 +1,9 @@
 #pragma once
 
-#include <mono/jit/jit.h>
-#include <mono/metadata/assembly.h>
-#include <mono/metadata/object.h>
-#include <mono/metadata/attrdefs.h>
+#include "ScriptFwd.h"
 
 #include <string>
+#include <filesystem>
 
 namespace Labyrinth {
 
@@ -24,111 +22,74 @@ namespace Labyrinth {
 	class Scripting
 	{
 	public:
-		static MonoAssembly* LoadCSharpAssembly(const std::string& assemblyPath);
+		template<typename Func, typename T, typename... Args>
+		static void WrapArgs(Func function, T* result, Args&&... args)
+		{
+			constexpr size_t argc = sizeof...(Args);
+
+			if constexpr (argc == 0)
+			{
+				function(nullptr, 0);
+			}
+			else
+			{
+				void* argv[argc] = { nullptr };
+
+				size_t i = 0;
+				([&]()
+					{
+						if (i < argc)
+						{
+							void* tmp = nullptr;
+							if constexpr (IsPointer<Args>::value)
+								tmp = args;
+							else
+								tmp = &args;
+							argv[i] = tmp;
+						}
+
+						i++;
+					}(), ...);
+
+				result = function(argv, argc);
+			}
+		}
+
+		static MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
 
 		static void PrintAssemblyTypes(MonoAssembly* assembly);
+
 		static MonoClass* GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className);
-		static MonoObject* InstantiateClass(MonoDomain* domain, MonoAssembly* assembly, const char* namespaceName, const char* className);
+
+		static MonoObject* InstantiateClass(MonoDomain* domain, MonoClass* classInstance);
 		template<typename... Args>
-		static MonoObject* InstantiateClass(MonoDomain* domain, MonoAssembly* assembly, const char* namespaceName, const char* className, Args&&... args)
+		static MonoObject* InstantiateClass(MonoDomain* domain, MonoClass* classInstance, Args&&... args)
 		{
-			MonoClass* klass = GetClassInAssembly(assembly, namespaceName, className);
-
-			// Allocate an instance of our class
-			MonoObject* classInstance = mono_object_new(domain, klass);
-
-			if (classInstance == nullptr)
-			{
-				LAB_CORE_ERROR("The class could not be instantiated!");
-				return nullptr;
-			}
-			constexpr size_t argc = sizeof...(Args);
-			void* voidArgs[argc] = { nullptr };
-
-			size_t i = 0;
-			([&]()
-			{
-				if (i < argc)
-				{
-					void* tmp = nullptr;
-					if constexpr (IsPointer<Args>::value)
-						tmp = args;
-					else
-						tmp = &args;
-					voidArgs[i] = tmp;
-				}
-
-				i++;
-			}(), ...);
-
-			MonoMethod* constructor = GetMethodInternal(klass, className, voidArgs, argc);
-
-			mono_runtime_invoke(constructor, classInstance, nullptr);
-
-			return classInstance;
+			MonoObject* instance = nullptr;
+			Scripting::WrapArgs([=](void** argv, size_t argc) {
+				return InstantiateClassInternal(domain, classInstance, argv, argc);
+				}, instance, std::forward<Args>(args)...);
+			return instance;
 		}
 
 		template<typename... Args>
-		static void CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
+		static MonoObject* CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
 		{
-			constexpr size_t argc = sizeof...(Args);
-
-			if (argc == 0)
-				CallMethodInternal(instance, methodName, nullptr, 0);
-
-			void* voidArgs[argc] = { nullptr };
-
-			size_t i = 0;
-			([&]()
-			{
-				if (i < argc)
-				{
-					void* tmp = nullptr;
-					if constexpr (IsPointer<Args>::value)
-						tmp = args;
-					else
-						tmp = &args;
-					voidArgs[i] = tmp;
-				}
-
-				i++;
-			}(), ...);
-
-			CallMethodInternal(instance, methodName, voidArgs, argc);
+			MonoObject* returnInstance = nullptr;
+			Scripting::WrapArgs([=](void** argv, size_t argc) {
+				return CallMethodInternal(instance, methodName, argv, argc);
+				}, returnInstance, std::forward<Args>(args)...);
+			return returnInstance;
 		}
-
-		template<typename T>
-		static void GetField(MonoObject* instance, const char* fieldName, T& data)
-		{
-			void* voidData = data;
-			GetFieldInternal(instance, fieldName, &voidData);
-			LAB_CORE_ASSERT(voidData, "Field return value from Mono was null!");
-			data = *voidData;
-		}
-
-		template<typename T>
-		static T GetProperty(MonoObject* instance, const char* propertyName)
-		{
-			return *Cast<T>(GetPropertyInternal(instance, propertyName));
-		}
-		static MonoObject* GetPropertyRef(MonoObject* instance, const char* propertyName);
-
-		static void SetField(MonoObject* instance, const char* fieldName, void* data);
-		static void SetProperty(MonoObject* instance, const char* propertyName, void* data);
 
 	private:
-		static char* ReadBytes(const std::string& filepath, size_t* outSize);
-
 		static bool CheckMonoError(MonoError& error);
 
-		static MonoMethod* GetMethodInternal(MonoClass* klass, const char* methodName, void** argv, int argc);
-		static void CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
+		static MonoMethod* GetMethodInternal(MonoClass* classInstance, const char* methodName, size_t argc);
+		static MonoObject* CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
+		static MonoObject* InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, size_t argc);
 
-		static uint8_t GetFieldAccessibility(MonoClassField* field);
-		static uint8_t GetPropertyAccessibility(MonoProperty* property);
 
-		static void GetFieldInternal(MonoObject* instance, const char* fieldName, void* data);
-		static void* GetPropertyInternal(MonoObject* instance, const char* propertyName);
-
+		friend class ScriptClass;
 	};
 }

@@ -3,6 +3,9 @@
 
 #include "Scripting.h"
 
+#include <mono/jit/jit.h>
+#include <mono/metadata/assembly.h>
+
 namespace Labyrinth {
 
 	struct ScriptEngineData
@@ -11,6 +14,7 @@ namespace Labyrinth {
 		MonoDomain* appDomain = nullptr;
 
 		MonoAssembly* coreAssembly = nullptr;
+		MonoImage* coreAssemblyImage = nullptr;
 	};
 
 	static ScriptEngineData* sData = nullptr;
@@ -18,7 +22,13 @@ namespace Labyrinth {
 	void ScriptEngine::Init()
 	{
 		sData = new ScriptEngineData();
+
 		InitMono();
+		LoadCoreAssembly("Resources/Scripts/Labyrinth-ScriptCore.dll");
+
+		ScriptClass testclass("Labyrinth", "TestClass");
+		MonoObject* instance = testclass.instantiate();
+		testclass.invokeMethod(instance, "PrintMessage");
 	}
 
 	void ScriptEngine::Shutdown()
@@ -27,6 +37,19 @@ namespace Labyrinth {
 
 		delete sData;
 		sData = nullptr;
+	}
+
+	void ScriptEngine::LoadCoreAssembly(const std::filesystem::path& path)
+	{
+		sData->appDomain = mono_domain_create_appdomain("LabScriptRuntime", nullptr);
+		mono_domain_set(sData->appDomain, true);
+
+		sData->coreAssembly = Scripting::LoadMonoAssembly(path);
+		sData->coreAssemblyImage = mono_assembly_get_image(sData->coreAssembly);
+
+#ifdef LAB_DEBUG
+		Scripting::PrintAssemblyTypes(sData->coreAssembly);
+#endif
 	}
 
 	void ScriptEngine::InitMono()
@@ -38,15 +61,6 @@ namespace Labyrinth {
 
 		// Store the root domain pointer
 		sData->rootDomain = rootDomain;
-
-		sData->appDomain = mono_domain_create_appdomain("LabScriptRuntime", nullptr);
-		mono_domain_set(sData->appDomain, true);
-
-		sData->coreAssembly = Scripting::LoadCSharpAssembly("Resources/Scripts/Labyrinth-ScriptCore.dll");
-		Scripting::PrintAssemblyTypes(sData->coreAssembly);
-
-		//MonoObject* instance = Scripting::InstantiateClass(sData->appDomain, sData->coreAssembly, "Labyrinth", "TestClass");
-		//Scripting::CallMethod(instance, "PrintVariables", 1.1f, 2.4f);
 	}
 
 	void ScriptEngine::ShutdownMono()
@@ -58,6 +72,26 @@ namespace Labyrinth {
 		sData->rootDomain = nullptr;
 	}
 
+	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className)
+		: mClassNamespace(classNamespace), mClassName(className)
+	{
+		mMonoClass = mono_class_from_name(sData->coreAssemblyImage, classNamespace.c_str(), className.c_str());
+	}
+
+	MonoObject* ScriptClass::instantiate()
+	{
+		return Scripting::InstantiateClass(sData->appDomain, mMonoClass);
+	}
+
+	MonoMethod* ScriptClass::getMethod(const std::string& name, size_t argc)
+	{
+		return mono_class_get_method_from_name(mMonoClass, name.c_str(), argc);
+	}
+
+	MonoObject* ScriptClass::InstantiateInternal(void** argv, size_t argc)
+	{
+		return Scripting::InstantiateClassInternal(sData->appDomain, mMonoClass, argv, argc);
+	}
 
 
 }
