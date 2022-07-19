@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "OpenGLShader.h"
 
+#include "Labyrinth/IO/File.h"
 #include "Labyrinth/Tools/Timer.h"
 
 #include <glad/glad.h>
@@ -91,7 +92,8 @@ namespace Labyrinth {
 
 		Utils::CreateCacheDirectoryIfNeeded();
 
-		std::string source = ReadFile(filepath);
+		std::string source;
+		FileUtils::Read(filepath, source);
 		auto shaderSources = PreProcess(source);
 
 		{
@@ -129,36 +131,6 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		glDeleteProgram(mRendererID);
-	}
-
-	std::string OpenGLShader::ReadFile(const std::string filepath)
-	{
-		LAB_PROFILE_FUNCTION();
-
-		std::string result;
-		std::ifstream in(filepath, std::ios::in | std::ios::binary);
-		if (in)
-		{
-			in.seekg(0, std::ios::end);
-			usize size = in.tellg();
-			if (size != -1)
-			{
-				result.resize(size);
-				in.seekg(0, std::ios::beg);
-				in.read(&result[0], size);
-				in.close();
-			}
-			else
-			{
-				LAB_CORE_ERROR("Could not read from file '{0}'", filepath);
-			}
-		}
-		else
-		{
-			LAB_CORE_ERROR("Could not open file {0}", filepath);
-		}
-
-		return result;
 	}
 
 	std::unordered_map<GLenum, std::string> OpenGLShader::PreProcess(const std::string& source)
