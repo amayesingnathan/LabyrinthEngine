@@ -55,21 +55,21 @@ namespace Labyrinth {
 
 		TexType type = TexType::None;
 
-		uint8_t layer = 0;
-		static const uint8_t MaxLayers = std::numeric_limits<uint8_t>::max();
+		u8 layer = 0;
+		static const u8 MaxLayers = std::numeric_limits<u8>::max();
 
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
 		TextureComponent texture = NoTex();
-		float tilingFactor = 1.0f;
+		f32 tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
-		SpriteRendererComponent(uint8_t layer)
+		SpriteRendererComponent(u8 layer)
 			: type(TexType::None), layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
-		SpriteRendererComponent(const glm::vec4& rgba, uint8_t layer = 0)
+		SpriteRendererComponent(const glm::vec4& rgba, u8 layer = 0)
 			: type(TexType::None), layer(layer), colour(rgba) {}
-		SpriteRendererComponent(Ref<Texture2D> tex, float tf, uint8_t layer = 0)
+		SpriteRendererComponent(Ref<Texture2D> tex, f32 tf, u8 layer = 0)
 			: type(TexType::Texture), layer(layer), texture(tex), tilingFactor(tf) {}
-		SpriteRendererComponent(Ref<SubTexture2D> subtex, float tf, uint8_t layer = 0)
+		SpriteRendererComponent(Ref<SubTexture2D> subtex, f32 tf, u8 layer = 0)
 			: type(TexType::SubTexture), layer(layer), texture(subtex), tilingFactor(tf) {}
 
 		bool hasTex() const 
@@ -84,23 +84,23 @@ namespace Labyrinth {
 		}
 
 		// Get normalised layer value
-		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
+		f32 getNLayer() const { return (Cast<f32>(layer) / Cast<f32>(MaxLayers)); }
 	};
 
 	struct CircleRendererComponent
 	{
-		uint8_t layer = 0;
-		static const uint8_t MaxLayers = std::numeric_limits<uint8_t>::max();
+		u8 layer = 0;
+		static const u8 MaxLayers = std::numeric_limits<u8>::max();
 
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
-		float thickness = 1.0f;
+		f32 thickness = 1.0f;
 
 		CircleRendererComponent() = default;
-		CircleRendererComponent(uint8_t layer)
+		CircleRendererComponent(u8 layer)
 			: layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
 
 		// Get normalised layer value
-		float getNLayer() const { return (Cast<float>(layer) / Cast<float>(MaxLayers)); }
+		f32 getNLayer() const { return (Cast<f32>(layer) / Cast<f32>(MaxLayers)); }
 	};
 
 	struct TagComponent
@@ -187,10 +187,10 @@ namespace Labyrinth {
 	{
 		glm::vec2 halfExtents = { 0.5f, 0.5f };
 		glm::vec2 offset = { 0.0f, 0.0f };
-		float friction = 1.0f;
-		float density = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
+		f32 friction = 1.0f;
+		f32 density = 0.5f;
+		f32 restitution = 0.0f;
+		f32 restitutionThreshold = 0.5f;
 
 		void* runtimeFixture = nullptr;
 
@@ -200,12 +200,12 @@ namespace Labyrinth {
 
 	struct CircleColliderComponent
 	{
-		float radius = 0.5f;
+		f32 radius = 0.5f;
 		glm::vec2 offset = { 0.0f, 0.0f };
-		float friction = 1.0f;
-		float density = 0.5f;
-		float restitution = 0.0f;
-		float restitutionThreshold = 0.5f;
+		f32 friction = 1.0f;
+		f32 density = 0.5f;
+		f32 restitution = 0.0f;
+		f32 restitutionThreshold = 0.5f;
 
 		void* runtimeFixture = nullptr;
 
@@ -219,10 +219,10 @@ namespace Labyrinth {
 	struct TilemapComponent
 	{
 		Ref<Tilemap> tilemap = nullptr;
-		uint8_t layer = 0;
+		u8 layer = 0;
 
 		TilemapComponent() = default;
-		TilemapComponent(const std::string& name, uint8_t _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
+		TilemapComponent(const std::string& name, u8 _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
 
 		const Ref<Texture2D>& getTex() const { return tilemap->getTex(); }

@@ -9,7 +9,7 @@ namespace Labyrinth {
 		void Connection::WriteHeader()
 		{
 			asio::async_write(mSocket, asio::buffer(&mQMessagesOut.front().header, sizeof(MessageHeader)),
-				[this](std::error_code ec, std::size_t length)
+				[this](std::error_code ec, usize length)
 				{
 					if (!ec)
 					{
@@ -34,7 +34,7 @@ namespace Labyrinth {
 		void Connection::WriteBody()
 		{
 			asio::async_write(mSocket, asio::buffer(mQMessagesOut.front().body.data(), mQMessagesOut.front().body.size()),
-				[this](std::error_code ec, std::size_t length)
+				[this](std::error_code ec, usize length)
 				{
 					if (!ec)
 					{
@@ -54,7 +54,7 @@ namespace Labyrinth {
 		void Connection::ReadHeader()
 		{
 			asio::async_read(mSocket, asio::buffer(&mMsgTemporaryIn.header, sizeof(MessageHeader)),
-				[this](std::error_code ec, std::size_t length)
+				[this](std::error_code ec, usize length)
 				{
 					if (!ec)
 					{
@@ -77,7 +77,7 @@ namespace Labyrinth {
 		void Connection::ReadBody()
 		{
 			asio::async_read(mSocket, asio::buffer(mMsgTemporaryIn.body.data(), mMsgTemporaryIn.body.size()),
-				[this](std::error_code ec, std::size_t length)
+				[this](std::error_code ec, usize length)
 				{
 					if (!ec)
 						AddToIncomingMessageQueue();
@@ -101,8 +101,8 @@ namespace Labyrinth {
 
 		void Connection::WriteValidation()
 		{
-			asio::async_write(mSocket, asio::buffer(&mHandshakeOut, sizeof(uint64_t)),
-				[this](std::error_code ec, std::size_t length)
+			asio::async_write(mSocket, asio::buffer(&mHandshakeOut, sizeof(u64)),
+				[this](std::error_code ec, usize length)
 				{
 					if (!ec)
 					{
@@ -119,8 +119,8 @@ namespace Labyrinth {
 
 		void Connection::ReadValidation(ServerLayer* server)
 		{
-			asio::async_read(mSocket, asio::buffer(&mHandshakeIn, sizeof(uint64_t)),
-				[this, server](std::error_code ec, std::size_t length)
+			asio::async_read(mSocket, asio::buffer(&mHandshakeIn, sizeof(u64)),
+				[this, server](std::error_code ec, usize length)
 				{
 					if (!ec)
 					{

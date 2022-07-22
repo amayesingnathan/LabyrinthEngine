@@ -7,15 +7,15 @@ namespace Labyrinth {
 	class OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left, float right, float bottom, float top);
+		OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top);
 
-		void setProjection(float left, float right, float bottom, float top);
+		void setProjection(f32 left, f32 right, f32 bottom, f32 top);
 
 		const glm::vec3& getPosition() const { return mPosition; }
 		void setPosition(const glm::vec3& position) { mPosition = position; RecalculateViewMatrix(); }
 
-		float getRotation() const { return mRotation; }
-		void setRotation(float rotation) { mRotation = rotation; RecalculateViewMatrix(); }
+		f32 getRotation() const { return mRotation; }
+		void setRotation(f32 rotation) { mRotation = rotation; RecalculateViewMatrix(); }
 
 		const glm::mat4& getProjectionMatrix() const { return mProjectionMatrix; }
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
@@ -30,7 +30,7 @@ namespace Labyrinth {
 		glm::mat4 mViewProjectionMatrix;
 
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
-		float mRotation = 0.0f;
+		f32 mRotation = 0.0f;
 	};
 
 }

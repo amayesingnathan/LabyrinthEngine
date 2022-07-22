@@ -31,17 +31,17 @@ namespace Labyrinth {
 	glm::vec2 Input::GetMousePosition()
 	{
 		auto* window = static_cast<GLFWwindow*>(Application::Get().getWindow().getNativeWindow());
-		double xpos, ypos;
+		f64 xpos, ypos;
 		glfwGetCursorPos(window, &xpos, &ypos);
-		return { static_cast<float>(xpos), static_cast<float>(ypos) };
+		return { static_cast<f32>(xpos), static_cast<f32>(ypos) };
 	}
 
-	float Input::GetMouseX()
+	f32 Input::GetMouseX()
 	{
 		return GetMousePosition().x;
 	}
 
-	float Input::GetMouseY()
+	f32 Input::GetMouseY()
 	{
 		return GetMousePosition().y;
 	}

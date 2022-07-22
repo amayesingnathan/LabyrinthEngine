@@ -4,6 +4,7 @@
 
 #include <memory>
 #include "Labyrinth/Core/System/API.h"
+#include <Labyrinth/Core/System/Types.h>
 
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)

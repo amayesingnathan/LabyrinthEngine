@@ -10,10 +10,10 @@ namespace Labyrinth {
 
 	struct SheetData
 	{
-		size_t firstID;
+		usize firstID;
 		Ref<Texture2DSheet> sheet;
 
-		SheetData(size_t id, const Ref<Texture2DSheet>& tex) : firstID(id), sheet(tex) {}
+		SheetData(usize id, const Ref<Texture2DSheet>& tex) : firstID(id), sheet(tex) {}
 
 		bool operator <(const SheetData& other) const
 		{
@@ -41,11 +41,11 @@ namespace Labyrinth {
 		// Re-renders the internal framebuffer object and outputs it to a Texture2D
 		void GenTex();
 
-		const Ref<Texture2DSheet>& GetSheet(size_t tileID) const;
+		const Ref<Texture2DSheet>& GetSheet(usize tileID) const;
 
 	private:
 		std::string mMapName;
-		size_t mWidth, mHeight;
+		usize mWidth, mHeight;
 		std::vector<SheetData> mSheets;
 		std::vector<MapLayer> mLayers;
 		Ref<Framebuffer> mFramebuffer;

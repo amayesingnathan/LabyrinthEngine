@@ -23,9 +23,9 @@ namespace Labyrinth {
         return destination;
 	}
 
-	float Stopwatch::GetTime()
+	f32 Stopwatch::GetTime()
 	{
-		return (float)glfwGetTime();
+		return (f32)glfwGetTime();
 	}
 
 }

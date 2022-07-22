@@ -7,20 +7,20 @@ namespace Labyrinth {
 	class LAB_API OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
-		OpenGLVertexBuffer(uint32_t size);
-		OpenGLVertexBuffer(float* vertices, uint32_t size);
+		OpenGLVertexBuffer(u32 size);
+		OpenGLVertexBuffer(f32* vertices, u32 size);
 		virtual ~OpenGLVertexBuffer() override;
 
 		virtual void bind() const override;
 		virtual void unbind() const override;
 
-		virtual void setData(const void* data, uint32_t size) override;
+		virtual void setData(const void* data, u32 size) override;
 
 		virtual const BufferLayout& getLayout() const override { return mLayout; }
 		virtual void setLayout(const BufferLayout& layout) override { mLayout = layout; }
 
 	private:
-		uint32_t mRendererID;
+		u32 mRendererID;
 		BufferLayout mLayout;
 	};
 
@@ -28,16 +28,16 @@ namespace Labyrinth {
 	class OpenGLIndexBuffer : public IndexBuffer
 	{
 	public:
-		OpenGLIndexBuffer(uint32_t* indices, uint32_t count);
+		OpenGLIndexBuffer(u32* indices, u32 count);
 		virtual ~OpenGLIndexBuffer() override;
 
 		virtual void bind() const override;
 		virtual void unbind() const override;
 
-		virtual uint32_t getCount() const override { return mCount; }
+		virtual u32 getCount() const override { return mCount; }
 
 	private:
-		uint32_t mRendererID;
-		uint32_t mCount;
+		u32 mRendererID;
+		u32 mCount;
 	};
 }

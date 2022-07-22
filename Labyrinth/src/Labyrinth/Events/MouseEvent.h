@@ -10,12 +10,12 @@ namespace Labyrinth {
 	class LAB_API MouseMovedEvent : public Event
 	{
 	public:
-		MouseMovedEvent(const float x, const float y)
+		MouseMovedEvent(const f32 x, const f32 y)
 			: mMouseX(x), mMouseY(y) {}
 
 		glm::vec2 getPos() const { return { mMouseX, mMouseY }; }
-		float getX() const { return mMouseX; }
-		float getY() const { return mMouseY; }
+		f32 getX() const { return mMouseX; }
+		f32 getY() const { return mMouseY; }
 
 		std::string toString() const override
 		{
@@ -27,17 +27,17 @@ namespace Labyrinth {
 		EVENT_CLASS_TYPE(MouseMoved)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float mMouseX, mMouseY;
+		f32 mMouseX, mMouseY;
 	};
 
 	class LAB_API MouseScrolledEvent : public Event
 	{
 	public:
-		MouseScrolledEvent(const float xOffset, const float yOffset)
+		MouseScrolledEvent(const f32 xOffset, const f32 yOffset)
 			: mXOffset(xOffset), mYOffset(yOffset) {}
 
-		float getXOffset() const { return mXOffset; }
-		float getYOffset() const { return mYOffset; }
+		f32 getXOffset() const { return mXOffset; }
+		f32 getYOffset() const { return mYOffset; }
 
 		std::string toString() const override
 		{
@@ -49,7 +49,7 @@ namespace Labyrinth {
 		EVENT_CLASS_TYPE(MouseScrolled)
 		EVENT_CLASS_CATEGORY(EventCategoryMouse | EventCategoryInput)
 	private:
-		float mXOffset, mYOffset;
+		f32 mXOffset, mYOffset;
 	};
 
 	class LAB_API MouseButtonEvent : public Event

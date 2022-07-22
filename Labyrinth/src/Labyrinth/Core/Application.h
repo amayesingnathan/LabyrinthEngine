@@ -5,7 +5,6 @@
 #include <Labyrinth/Core/Timestep.h>
 #include <Labyrinth/Core/LayerStack.h>
 
-
 #include <Labyrinth/Events/ApplicationEvent.h>
 #include <Labyrinth/Events/KeyEvent.h>
 #include <Labyrinth/Events/MouseEvent.h>
@@ -21,7 +20,7 @@ namespace Labyrinth {
 		int count = 0;
 		char** args = nullptr;
 
-		const char* operator[](int index) const
+		const char* operator[](i32 index) const
 		{
 			LAB_CORE_ASSERT(index < count);
 			return args[index];
@@ -79,7 +78,7 @@ namespace Labyrinth {
 		bool mBlockExit = false;
 		LayerStack mLayerStack;
 
-		float mLastFrameTime = 0.0f;
+		f32 mLastFrameTime = 0.0f;
 
 	private:
 		static Application* sInstance;

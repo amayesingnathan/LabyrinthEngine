@@ -16,11 +16,11 @@ namespace Labyrinth {
 		void clearItems();
 
 		bool hasLayer(RenderLayer* layer);
-		bool hasLayer(uint8_t layer);
-		RenderLayer* getLayer(uint8_t layer);
+		bool hasLayer(u8 layer);
+		RenderLayer* getLayer(u8 layer);
 
-		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID = -1);
-		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, int entID = -1);
+		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID = -1);
+		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID = -1);
 		void addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp);
 
 		void draw();

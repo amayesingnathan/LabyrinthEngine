@@ -17,7 +17,7 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 
 		glfwMakeContextCurrent(mWindowHandle);
-		int status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+		i32 status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 		LAB_CORE_ASSERT(status, "Failed to initialize Glad!");
 
 		LAB_CORE_INFO("OpenGL Info:");

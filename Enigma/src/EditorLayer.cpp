@@ -95,10 +95,10 @@ namespace Labyrinth {
 			mViewportSize.x > 0.0f && mViewportSize.y > 0.0f && // zero sized framebuffer is invalid
 			(spec.width != mViewportSize.x || spec.height != mViewportSize.y))
 		{
-			mFramebuffer->resize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mFramebuffer->resize((u32)mViewportSize.x, (u32)mViewportSize.y);
 
 			mEditorData.camera.setViewportSize(mViewportSize.x, mViewportSize.y);
-			mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+			mCurrentScene->onViewportResize((u32)mViewportSize.x, (u32)mViewportSize.y);
 		}
 
 		Renderer2D::ResetStats();
@@ -142,12 +142,12 @@ namespace Labyrinth {
 		my -= mViewportBounds[0].y;
 		glm::vec2 viewportSize = mViewportBounds[1] - mViewportBounds[0];
 		my = viewportSize.y - my;
-		int mouseX = (int)mx;
-		int mouseY = (int)my;
+		i32 mouseX = (i32)mx;
+		i32 mouseY = (i32)my;
 
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (int)viewportSize.x && mouseY < (int)viewportSize.y)
+		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
 		{
-			int pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
+			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
 			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
 
@@ -232,7 +232,7 @@ namespace Labyrinth {
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 
-		uint32_t textureID = mFramebuffer->getColourAttachmentRendererID();
+		u32 textureID = mFramebuffer->getColourAttachmentRendererID();
 		ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ mViewportSize.x, mViewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
@@ -697,7 +697,7 @@ namespace Labyrinth {
 		LAB_ASSERT(currentScene, "EditorLayer CurrentScene cannot be null");
 
 		mCurrentScene = currentScene;
-		mCurrentScene->onViewportResize((uint32_t)mViewportSize.x, (uint32_t)mViewportSize.y);
+		mCurrentScene->onViewportResize((u32)mViewportSize.x, (u32)mViewportSize.y);
 
 		mScenePanel->setContext(mCurrentScene);
 

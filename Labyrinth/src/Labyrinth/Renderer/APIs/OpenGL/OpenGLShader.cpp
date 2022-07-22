@@ -61,7 +61,7 @@ namespace Labyrinth {
 				std::filesystem::create_directories(cacheDirectory);
 		}
 
-		static const char* GLShaderStageCachedOpenGLFileExtension(uint32_t stage)
+		static const char* GLShaderStageCachedOpenGLFileExtension(u32 stage)
 		{
 			switch (stage)
 			{
@@ -72,7 +72,7 @@ namespace Labyrinth {
 			return "";
 		}
 
-		static const char* GLShaderStageCachedVulkanFileExtension(uint32_t stage)
+		static const char* GLShaderStageCachedVulkanFileExtension(u32 stage)
 		{
 			switch (stage)
 			{
@@ -140,7 +140,7 @@ namespace Labyrinth {
 		if (in)
 		{
 			in.seekg(0, std::ios::end);
-			size_t size = in.tellg();
+			usize size = in.tellg();
 			if (size != -1)
 			{
 				result.resize(size);
@@ -168,17 +168,17 @@ namespace Labyrinth {
 		std::unordered_map<GLenum, std::string> shaderSources;
 
 		const char* typeToken = "#type";
-		size_t typeTokenLength = strlen(typeToken);
-		size_t pos = source.find(typeToken, 0);
+		usize typeTokenLength = strlen(typeToken);
+		usize pos = source.find(typeToken, 0);
 		while (pos != std::string::npos)
 		{
-			size_t eol = source.find_first_of("\r\n", pos);
+			usize eol = source.find_first_of("\r\n", pos);
 			LAB_CORE_ASSERT(eol != std::string::npos, "Shader syntax error!");
-			size_t begin = pos + typeTokenLength + 1;
+			usize begin = pos + typeTokenLength + 1;
 			std::string type = source.substr(begin, eol - begin);
 			LAB_CORE_ASSERT(Utils::ShaderTypeFromString(type), "Invalid shader type given!");
 
-			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
+			usize nextLinePos = source.find_first_not_of("\r\n", eol);
 			LAB_CORE_ASSERT(nextLinePos != std::string::npos, "Shader syntax error!");
 			pos = source.find(typeToken, nextLinePos);
 			shaderSources[Utils::ShaderTypeFromString(type)] = (pos == std::string::npos) ? source.substr(nextLinePos) : source.substr(nextLinePos, pos - nextLinePos);
@@ -216,7 +216,7 @@ namespace Labyrinth {
 				in.seekg(0, std::ios::beg);
 
 				auto& data = shaderData[stage];
-				data.resize(size / sizeof(uint32_t));
+				data.resize(size / sizeof(u32));
 				in.read((char*)data.data(), size);
 			}
 			else
@@ -228,13 +228,13 @@ namespace Labyrinth {
 					LAB_CORE_ASSERT(false);
 				}
 
-				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+				shaderData[stage] = std::vector<u32>(module.cbegin(), module.cend());
 
 				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
 				if (out.is_open())
 				{
 					auto& data = shaderData[stage];
-					out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+					out.write((char*)data.data(), data.size() * sizeof(u32));
 					out.flush();
 					out.close();
 				}
@@ -273,7 +273,7 @@ namespace Labyrinth {
 				in.seekg(0, std::ios::beg);
 
 				auto& data = shaderData[stage];
-				data.resize(size / sizeof(uint32_t));
+				data.resize(size / sizeof(u32));
 				in.read((char*)data.data(), size);
 			}
 			else
@@ -289,13 +289,13 @@ namespace Labyrinth {
 					LAB_CORE_ASSERT(false);
 				}
 
-				shaderData[stage] = std::vector<uint32_t>(module.cbegin(), module.cend());
+				shaderData[stage] = std::vector<u32>(module.cbegin(), module.cend());
 
 				std::ofstream out(cachedPath, std::ios::out | std::ios::binary);
 				if (out.is_open())
 				{
 					auto& data = shaderData[stage];
-					out.write((char*)data.data(), data.size() * sizeof(uint32_t));
+					out.write((char*)data.data(), data.size() * sizeof(u32));
 					out.flush();
 					out.close();
 				}
@@ -311,7 +311,7 @@ namespace Labyrinth {
 		for (auto&& [stage, spirv] : mOpenGLSPIRV)
 		{
 			GLuint shaderID = shaderIDs.emplace_back(glCreateShader(stage));
-			glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(uint32_t));
+			glShaderBinary(1, &shaderID, GL_SHADER_BINARY_FORMAT_SPIR_V, spirv.data(), spirv.size() * sizeof(u32));
 			glSpecializeShader(shaderID, "main", 0, nullptr, nullptr);
 			glAttachShader(program, shaderID);
 		}
@@ -344,7 +344,7 @@ namespace Labyrinth {
 		mRendererID = program;
 	}
 
-	void OpenGLShader::Reflect(GLenum stage, const std::vector<uint32_t>& shaderData)
+	void OpenGLShader::Reflect(GLenum stage, const std::vector<u32>& shaderData)
 	{
 		spirv_cross::Compiler compiler(shaderData);
 		spirv_cross::ShaderResources resources = compiler.get_shader_resources();
@@ -357,9 +357,9 @@ namespace Labyrinth {
 		for (const auto& resource : resources.uniform_buffers)
 		{
 			const auto& bufferType = compiler.get_type(resource.base_type_id);
-			uint32_t bufferSize = compiler.get_declared_struct_size(bufferType);
-			uint32_t binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
-			int memberCount = bufferType.member_types.size();
+			usize bufferSize = compiler.get_declared_struct_size(bufferType);
+			u32 binding = compiler.get_decoration(resource.id, spv::DecorationBinding);
+			usize memberCount = bufferType.member_types.size();
 
 			LAB_CORE_TRACE("  {0}", resource.name);
 			LAB_CORE_TRACE("    Size = {0}", bufferSize);
@@ -382,7 +382,7 @@ namespace Labyrinth {
 		glUseProgram(0);
 	}
 
-	void OpenGLShader::uploadUniformInt(const std::string& name, int value)
+	void OpenGLShader::uploadUniformInt(const std::string& name, i32 value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -390,13 +390,13 @@ namespace Labyrinth {
 		glUniform1i(location, value);
 	}
 
-	void OpenGLShader::uploadUniformIntArray(const std::string& name, int* values, uint32_t count)
+	void OpenGLShader::uploadUniformIntArray(const std::string& name, i32* values, u32 count)
 	{
 		GLint location = glGetUniformLocation(mRendererID, name.c_str());
 		glUniform1iv(location, count, values);
 	}
 
-	void OpenGLShader::uploadUniformFloat(const std::string& name, float value)
+	void OpenGLShader::uploadUniformFloat(const std::string& name, f32 value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -444,14 +444,14 @@ namespace Labyrinth {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void OpenGLShader::setInt(const std::string& name, int value)
+	void OpenGLShader::setInt(const std::string& name, i32 value)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		uploadUniformInt(name, value);
 	}
 
-	void OpenGLShader::setIntArray(const std::string& name, int* values, uint32_t count)
+	void OpenGLShader::setIntArray(const std::string& name, i32* values, u32 count)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -465,7 +465,7 @@ namespace Labyrinth {
 		uploadUniformMat4(name, value);
 	}
 
-	void OpenGLShader::setFloat(const std::string& name, float value)
+	void OpenGLShader::setFloat(const std::string& name, f32 value)
 	{
 		LAB_PROFILE_FUNCTION();
 

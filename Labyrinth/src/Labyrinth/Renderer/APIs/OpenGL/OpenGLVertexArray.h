@@ -20,8 +20,8 @@ namespace Labyrinth {
 		virtual const Ref<IndexBuffer>& getIndexBuffer() const { return mIndexBuffer; }
 
 	private:
-		uint32_t mRendererID;
-		uint32_t mVertexBufferIndex = 0;
+		u32 mRendererID;
+		u32 mVertexBufferIndex = 0;
 		std::vector<Ref<VertexBuffer>> mVertexBuffers;
 		Ref<IndexBuffer> mIndexBuffer;
 

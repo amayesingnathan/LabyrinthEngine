@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	OrthographicCamera::OrthographicCamera(float left, float right, float bottom, float top)
+	OrthographicCamera::OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top)
 		: mProjectionMatrix(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), mViewMatrix(1.0f)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -13,7 +13,7 @@ namespace Labyrinth {
 		mViewProjectionMatrix = mProjectionMatrix * mViewMatrix;
 	}
 
-	void OrthographicCamera::setProjection(float left, float right, float bottom, float top)
+	void OrthographicCamera::setProjection(f32 left, f32 right, f32 bottom, f32 top)
 	{
 		LAB_PROFILE_FUNCTION();
 

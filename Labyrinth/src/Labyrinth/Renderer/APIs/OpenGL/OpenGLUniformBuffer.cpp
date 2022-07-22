@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	OpenGLUniformBuffer::OpenGLUniformBuffer(uint32_t size, uint32_t binding)
+	OpenGLUniformBuffer::OpenGLUniformBuffer(u32 size, u32 binding)
 	{
 		glCreateBuffers(1, &m_RendererID);
 		glNamedBufferData(m_RendererID, size, nullptr, GL_DYNAMIC_DRAW); // TODO: investigate usage hint
@@ -17,7 +17,7 @@ namespace Labyrinth {
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
-	void OpenGLUniformBuffer::setData(const void* data, uint32_t size, uint32_t offset)
+	void OpenGLUniformBuffer::setData(const void* data, u32 size, u32 offset)
 	{
 		glNamedBufferSubData(m_RendererID, offset, size, data);
 	}

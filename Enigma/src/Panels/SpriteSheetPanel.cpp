@@ -84,7 +84,7 @@ namespace Labyrinth {
 					mPanelData.currentSheet = sheet;
 					mSheetWidth = mPanelData.currentSheet->getWidth();
 					mSheetHeight = mPanelData.currentSheet->getHeight();
-					mPanelData.framebuffer->resize(Cast<uint32_t>(mPanelData.viewportSize.x - 15.0f), 200);
+					mPanelData.framebuffer->resize(Cast<u32>(mPanelData.viewportSize.x - 15.0f), 200);
 				}
 				else if (const Ref<Texture2D>& asset = AssetManager::Get<Texture2D>(key))
 				{

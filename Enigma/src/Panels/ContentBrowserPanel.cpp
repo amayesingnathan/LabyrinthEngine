@@ -30,7 +30,7 @@ namespace Labyrinth {
 		float cellSize = thumbnailSize + padding;
 
 		float panelWidth = ImGui::GetContentRegionAvail().x;
-		int columnCount = (int)(panelWidth / cellSize);
+		i32 columnCount = (i32)(panelWidth / cellSize);
 		if (columnCount < 1)
 			columnCount = 1;
 

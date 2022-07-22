@@ -6,6 +6,7 @@
 #include "Labyrinth/Core/System/Assert.h"
 #include "Labyrinth/Core/System/Platforms.h"
 #include "Labyrinth/Core/System/Cast.h"
+#include "Labyrinth/Core/System/Types.h"
 
 #include "Labyrinth/Tools/Profiling.h"
 

@@ -169,7 +169,7 @@ namespace Labyrinth {
 		ImGuiTreeNodeFlags flags = ((mSelectedEntity == entity) ? ImGuiTreeNodeFlags_Selected : 0) | ImGuiTreeNodeFlags_OpenOnArrow;
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
-		bool opened = ImGui::TreeNodeEx((void*)(uint64_t)(uint32_t)entity, flags, tag.c_str());
+		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
 			mSelectedEntity = entity;
@@ -513,10 +513,10 @@ namespace Labyrinth {
 			}
 
 			const char* projectionTypeStrings[] = { "Perspective", "Orthographic" };
-			const char* currentProjectionTypeString = projectionTypeStrings[(int)camera.getProjectionType()];
+			const char* currentProjectionTypeString = projectionTypeStrings[(i32)camera.getProjectionType()];
 			if (ImGui::BeginCombo("Projection", currentProjectionTypeString))
 			{
-				for (int i = 0; i < 2; i++)
+				for (i32 i = 0; i < 2; i++)
 				{
 					bool isSelected = currentProjectionTypeString == projectionTypeStrings[i];
 
@@ -567,7 +567,7 @@ namespace Labyrinth {
 
 		DrawComponent<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
 		{
-			int layerVal = component.layer;
+			i32 layerVal = component.layer;
 			if (ImGui::InputInt("Layer", &layerVal))
 			{
 				if (layerVal < 0) layerVal = 0;
@@ -692,7 +692,7 @@ namespace Labyrinth {
 
 		DrawComponent<CircleRendererComponent>("Circle Renderer", mSelectedEntity, [&](auto& component)
 		{
-			int layerVal = component.layer;
+			i32 layerVal = component.layer;
 			if (ImGui::InputInt("Layer", &layerVal))
 			{
 				if (layerVal < 0) layerVal = 0;
@@ -712,10 +712,10 @@ namespace Labyrinth {
 		DrawComponent<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)
 		{
 			const char* bodyTypeStrings[] = { "Static", "Dynamic", "Kinematic"};
-			const char* currentBodyTypeString = bodyTypeStrings[(int)component.type];
+			const char* currentBodyTypeString = bodyTypeStrings[(i32)component.type];
 			if (ImGui::BeginCombo("Type", currentBodyTypeString))
 			{
-				for (int i = 0; i < 3; i++)
+				for (i32 i = 0; i < 3; i++)
 				{
 					bool isSelected = currentBodyTypeString == bodyTypeStrings[i];
 

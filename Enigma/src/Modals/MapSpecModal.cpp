@@ -21,9 +21,9 @@ namespace Labyrinth {
         if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
             mMapName = std::string(nameBuf);
 
-        int layer = (int)mLayer;
+        i32 layer = (i32)mLayer;
         ImGui::DragInt("Layer", &layer, 0, 255);
-        mLayer = (uint8_t)layer;
+        mLayer = (u8)layer;
 
         ImGui::NewLine();
 

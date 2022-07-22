@@ -64,11 +64,11 @@ namespace Labyrinth {
 		std::vector<SquareData> mSquares = {};
 		std::vector<SquareData> mPressedSquares = {};
 
-		uint32_t mWidthCount = 1;
-		uint32_t mHeightCount = 1;
+		u32 mWidthCount = 1;
+		u32 mHeightCount = 1;
 
-		uint32_t mMaxWidthCount = 1;
-		uint32_t mMaxHeightCount = 1;
+		u32 mMaxWidthCount = 1;
+		u32 mMaxHeightCount = 1;
 
 		const ImVec4 mUnpressedColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 		const ImVec4 mPressedColour = { 0.25f, 1.0f, 1.0f, 0.5f };

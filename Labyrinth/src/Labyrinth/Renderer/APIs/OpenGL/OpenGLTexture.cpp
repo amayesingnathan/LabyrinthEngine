@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	OpenGLTexture2D::OpenGLTexture2D(size_t width, size_t height)
+	OpenGLTexture2D::OpenGLTexture2D(i32 width, i32 height)
 		: mWidth(width), mHeight(height)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -28,9 +28,9 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		int width, height, channels;
+		i32 width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
-		uint8_t* data = nullptr;
+		u8* data = nullptr;
 		{
 			LAB_PROFILE_SCOPE("stbi_load - OpenGLTexture2D::OpenGLTexture2D(const std::string&)");
 			data = stbi_load(path.c_str(), &width, &height, &channels, 0);
@@ -81,16 +81,16 @@ namespace Labyrinth {
 		glDeleteTextures(1, &mRendererID);
 	}
 
-	void OpenGLTexture2D::setData(void* data, size_t size)
+	void OpenGLTexture2D::setData(void* data, i32 size)
 	{
 		LAB_PROFILE_FUNCTION();
 
-		uint32_t bpp = mDataFormat == GL_RGBA ? 4 : 3;
+		u32 bpp = mDataFormat == GL_RGBA ? 4 : 3;
 		LAB_CORE_ASSERT(size == mWidth * mHeight * bpp, "Data must be entire texture!");
 		glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, mDataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
-	void OpenGLTexture2D::bind(uint32_t slot) const
+	void OpenGLTexture2D::bind(u32 slot) const
 	{
 		LAB_PROFILE_FUNCTION();
 

@@ -57,7 +57,7 @@ namespace Labyrinth {
 		void onUpdateSimulation(Timestep ts, EditorCamera& camera);
 		void onUpdateEditor(Timestep ts, EditorCamera& camera);
 
-		void onViewportResize(uint32_t width, uint32_t height);
+		void onViewportResize(u32 width, u32 height);
 
 		Entity getPrimaryCameraEntity();
 
@@ -89,7 +89,7 @@ namespace Labyrinth {
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
 
-		uint32_t mViewportWidth = 0, mViewportHeight = 0;
+		u32 mViewportWidth = 0, mViewportHeight = 0;
 
 		friend Entity;
 		friend class ScenePanel;

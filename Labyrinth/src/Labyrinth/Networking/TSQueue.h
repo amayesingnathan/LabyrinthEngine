@@ -61,7 +61,7 @@ namespace Labyrinth {
 				return mQueue.empty();
 			}
 
-			size_t count()
+			usize count()
 			{
 				std::scoped_lock lock(mQueueMutex);
 				return mQueue.size();

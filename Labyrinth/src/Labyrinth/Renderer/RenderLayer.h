@@ -12,34 +12,34 @@ namespace Labyrinth {
 	class QuadData
 	{
 	public:
-		QuadData(const TransformComponent& trans, const SpriteRendererComponent& src, int id = -1) 
+		QuadData(const TransformComponent& trans, const SpriteRendererComponent& src, i32 id = -1) 
 			: transform(&trans), sprite(&src), entID(id) {}
 
 		const TransformComponent& getTrans() const { return *transform; }
 		const SpriteRendererComponent& getSprite() const { return *sprite; }
-		int getID() const { return entID; }
+		i32 getID() const { return entID; }
 
 	private:
 		const TransformComponent* transform;
 		const SpriteRendererComponent* sprite;
-		int entID;
+		i32 entID;
 
 	};
 
 	class CircleData
 	{
 	public:
-		CircleData(const TransformComponent& trans, const CircleRendererComponent& crc, int id = -1)
+		CircleData(const TransformComponent& trans, const CircleRendererComponent& crc, i32 id = -1)
 			: transform(&trans), circle(&crc), entID(id) {}
 
 		const TransformComponent& getTrans() const { return *transform; }
 		const CircleRendererComponent& getCircle() const { return *circle; }
-		int getID() const { return entID; }
+		i32 getID() const { return entID; }
 
 	private:
 		const TransformComponent* transform;
 		const CircleRendererComponent* circle;
-		int entID;
+		i32 entID;
 
 	};
 
@@ -61,10 +61,10 @@ namespace Labyrinth {
 	class LAB_API RenderLayer
 	{
 	public:
-		RenderLayer(uint8_t layer) : mDepth(layer) {}
+		RenderLayer(u8 layer) : mDepth(layer) {}
 		virtual ~RenderLayer() = default;
 
-		uint8_t getDepth() const { return mDepth; }
+		u8 getDepth() const { return mDepth; }
 		void clear() { mQuads.clear(); mCircles.clear(); mTilemaps.clear(); }
 
 		std::vector<QuadData>& getQuads() { return mQuads; }
@@ -76,11 +76,11 @@ namespace Labyrinth {
 		std::vector<TilemapData>& getTilemaps() { return mTilemaps; }
 		const std::vector<TilemapData>& getTilemaps() const { return mTilemaps; }
 
-		void addQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, int entID)
+		void addQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, i32 entID)
 		{
 			mQuads.emplace_back(trans, sprite, entID);
 		}
-		void addCircle(const TransformComponent& trans, const CircleRendererComponent& sprite, int entID)
+		void addCircle(const TransformComponent& trans, const CircleRendererComponent& sprite, i32 entID)
 		{
 			mCircles.emplace_back(trans, sprite, entID);
 		}
@@ -90,7 +90,7 @@ namespace Labyrinth {
 		}
 
 	private:
-		uint8_t mDepth;
+		u8 mDepth;
 		std::vector<QuadData> mQuads;
 		std::vector<CircleData> mCircles;
 		std::vector<TilemapData> mTilemaps;

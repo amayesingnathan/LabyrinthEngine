@@ -19,7 +19,7 @@ namespace Labyrinth {
 		Renderer2D::Shutdown();
 	}
 
-	void Renderer::OnWindowResize(uint32_t w, uint32_t h)
+	void Renderer::OnWindowResize(u32 w, u32 h)
 	{
 		RenderCommand::SetViewport(0, 0, w, h);
 	}

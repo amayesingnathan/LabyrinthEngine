@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	enum class ShaderDataType : uint8_t
+	enum class ShaderDataType : u8
 	{
 		None = 0,
 		Float, Float2, Float3, Float4,
@@ -13,7 +13,7 @@ namespace Labyrinth {
 		Bool
 	};
 
-	static uint32_t ShaderDataTypeSize(ShaderDataType type)
+	static u32 ShaderDataTypeSize(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -38,8 +38,8 @@ namespace Labyrinth {
 	{
 		std::string name;
 		ShaderDataType type;
-		size_t offset;
-		uint32_t size;
+		usize offset;
+		u32 size;
 		bool normalised;
 
 		BufferElement() = default;
@@ -47,7 +47,7 @@ namespace Labyrinth {
 			: name(n), type(t), size(ShaderDataTypeSize(t)), offset(0), normalised(norm)
 		{}
 
-		uint32_t getComponentCount() const
+		u32 getComponentCount() const
 		{
 			switch (type)
 			{
@@ -80,7 +80,7 @@ namespace Labyrinth {
 		}
 
 		const std::vector<BufferElement>& getElements() const { return mElements; }
-		uint32_t getStride() const { return mStride; }
+		u32 getStride() const { return mStride; }
 
 		std::vector<BufferElement>::iterator begin() { return mElements.begin(); }
 		std::vector<BufferElement>::iterator end() { return mElements.end(); }
@@ -95,7 +95,7 @@ namespace Labyrinth {
 	private:
 		void CalculateOffsetsAndStride()
 		{
-			size_t offset = 0;
+			usize offset = 0;
 			mStride = 0;
 			for (auto& element : mElements)
 			{
@@ -107,7 +107,7 @@ namespace Labyrinth {
 
 	private:
 		std::vector<BufferElement> mElements;
-		uint32_t mStride = 0;
+		u32 mStride = 0;
 	};
 
 	class LAB_API VertexBuffer
@@ -118,13 +118,13 @@ namespace Labyrinth {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
-		virtual void setData(const void* data, uint32_t size) = 0;
+		virtual void setData(const void* data, u32 size) = 0;
 
 		virtual const BufferLayout& getLayout() const = 0;
 		virtual void setLayout(const BufferLayout& layout) = 0;
 
-		static Ref<VertexBuffer> Create(uint32_t size);
-		static Ref<VertexBuffer> Create(float* vertices, uint32_t size);
+		static Ref<VertexBuffer> Create(u32 size);
+		static Ref<VertexBuffer> Create(f32* vertices, u32 size);
 	};
 
 	class IndexBuffer
@@ -135,8 +135,8 @@ namespace Labyrinth {
 		virtual void bind() const = 0;
 		virtual void unbind() const = 0;
 
-		virtual uint32_t getCount() const = 0;
+		virtual u32 getCount() const = 0;
 
-		static Ref<IndexBuffer> Create(uint32_t* indices, uint32_t count);
+		static Ref<IndexBuffer> Create(u32* indices, u32 count);
 	};
 }

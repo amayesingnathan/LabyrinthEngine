@@ -16,8 +16,8 @@ namespace Labyrinth {
 		static bool IsMouseButtonPressed(KeyCode button);
 
 		static glm::vec2 GetMousePosition();
-		static float GetMouseX();
-		static float GetMouseY();
+		static f32 GetMouseX();
+		static f32 GetMouseY();
 
 	};
 

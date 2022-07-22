@@ -10,7 +10,7 @@ namespace Labyrinth {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setPerspective(float verticalFOV, float nearClip, float farClip)
+	void SceneCamera::setPerspective(f32 verticalFOV, f32 nearClip, f32 farClip)
 	{
 		mProjectionType = ProjectionType::Perspective;
 		mPerspectiveFOV = verticalFOV;
@@ -19,7 +19,7 @@ namespace Labyrinth {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setOrthographic(float size, float nearClip, float farClip)
+	void SceneCamera::setOrthographic(f32 size, f32 nearClip, f32 farClip)
 	{
 		mProjectionType = ProjectionType::Orthographic;
 		mOrthographicSize = size;
@@ -28,10 +28,10 @@ namespace Labyrinth {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setViewportSize(uint32_t width, uint32_t height)
+	void SceneCamera::setViewportSize(u32 width, u32 height)
 	{
 		LAB_CORE_ASSERT(width > 0 && height > 0);
-		mAspectRatio = (float)width / (float)height;
+		mAspectRatio = (f32)width / (f32)height;
 		RecalculateProjection();
 	}
 
@@ -43,10 +43,10 @@ namespace Labyrinth {
 		}
 		else
 		{
-			float orthoLeft = -mOrthographicSize * mAspectRatio * 0.5f;
-			float orthoRight = mOrthographicSize * mAspectRatio * 0.5f;
-			float orthoBottom = -mOrthographicSize * 0.5f;
-			float orthoTop = mOrthographicSize * 0.5f;
+			f32 orthoLeft = -mOrthographicSize * mAspectRatio * 0.5f;
+			f32 orthoRight = mOrthographicSize * mAspectRatio * 0.5f;
+			f32 orthoBottom = -mOrthographicSize * 0.5f;
+			f32 orthoTop = mOrthographicSize * 0.5f;
 
 			mProjection = glm::ortho(orthoLeft, orthoRight,
 				orthoBottom, orthoTop, mOrthographicNear, mOrthographicFar);

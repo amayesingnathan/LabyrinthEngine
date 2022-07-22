@@ -22,15 +22,15 @@ namespace Labyrinth {
 
 		operator Ref<Texture2D>() const { return mTexture; }
 
-		size_t getWidth() const { return mTexture->getWidth(); }
-		size_t getHeight() const { return mTexture->getHeight(); }
+		usize getWidth() const { return mTexture->getWidth(); }
+		usize getHeight() const { return mTexture->getHeight(); }
 
-		uint32_t getTileCountX() const { return mTileCountX; }
-		uint32_t getTileCountY() const { return mTileCountY; }
+		u32 getTileCountX() const { return mTileCountX; }
+		u32 getTileCountY() const { return mTileCountY; }
 		
 		glm::vec2 getTileSize() const { return mTileSize; }
-		uint32_t getTileWidth() const { return Cast<uint32_t>(mTileSize.x); }
-		uint32_t getTileHeight() const { return Cast<uint32_t>(mTileSize.y); }
+		u32 getTileWidth() const { return Cast<u32>(mTileSize.x); }
+		u32 getTileHeight() const { return Cast<u32>(mTileSize.y); }
 
 		glm::vec2 getTileSizeN() const { return { mTileSize.x / mTexture->getWidth(), mTileSize.y / mTexture->getHeight() }; }
 
@@ -48,7 +48,7 @@ namespace Labyrinth {
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
 		void deleteSubTex(const std::string& name);
 
-		void generateTileset(size_t startIndex = 0);
+		void generateTileset(usize startIndex = 0);
 
 		Ref<SubTexture2D> operator[] (const std::string& key);
 		const Ref<SubTexture2D> operator[] (const std::string& key) const;
@@ -60,7 +60,7 @@ namespace Labyrinth {
 		std::string mName;
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
-		uint32_t mTileCountX, mTileCountY;
+		u32 mTileCountX, mTileCountY;
 		std::unordered_map<std::string, Ref<SubTexture2D>> mSubTextures;
 		
 		friend class SubTexture2D;

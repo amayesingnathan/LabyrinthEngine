@@ -23,22 +23,22 @@ namespace Labyrinth {
 		glm::vec4 colour;
 		glm::vec2 texCoord;
 
-		float texIndex;
-		float tilingFactor;
+		f32 texIndex;
+		f32 tilingFactor;
 
 		// Editor-only
-		int entityID;
+		i32 entityID;
 	};
 
 	struct CircleVertex
 	{
 		glm::vec3 worldPosition;
-		float thickness;
+		f32 thickness;
 		glm::vec2 localPosition;
 		glm::vec4 colour;
 
 		// Editor-only
-		int entityID;
+		i32 entityID;
 	};
 
 	struct LineVertex
@@ -47,15 +47,15 @@ namespace Labyrinth {
 		glm::vec4 colour;
 
 		// Editor-only
-		int entityID;
+		i32 entityID;
 	};
 
 	struct Renderer2DData
 	{
-		static const uint32_t MaxQuads = 20000;
-		static const uint32_t MaxVertices = MaxQuads * 4;
-		static const uint32_t MaxIndices = MaxQuads * 6;
-		static const uint32_t MaxTextureSlots = 32; //ToDo: RenderCaps
+		static const u32 MaxQuads = 20000;
+		static const u32 MaxVertices = MaxQuads * 4;
+		static const u32 MaxIndices = MaxQuads * 6;
+		static const u32 MaxTextureSlots = 32; //ToDo: RenderCaps
 
 		Ref<VertexArray> displayVertexArray;
 		Ref<VertexBuffer> displayVertexBuffer;
@@ -69,7 +69,7 @@ namespace Labyrinth {
 		Ref<Shader> quadShader;
 		Ref<Texture2D> whiteTexture;
 
-		uint32_t quadIndexCount = 0;
+		u32 quadIndexCount = 0;
 		QuadVertex* quadVertexBufferBase = nullptr;
 		QuadVertex* quadVertexBufferPtr = nullptr;
 
@@ -77,7 +77,7 @@ namespace Labyrinth {
 		Ref<VertexBuffer> circleVertexBuffer;
 		Ref<Shader> circleShader;
 
-		uint32_t circleIndexCount = 0;
+		u32 circleIndexCount = 0;
 		CircleVertex* circleVertexBufferBase = nullptr;
 		CircleVertex* circleVertexBufferPtr = nullptr;
 
@@ -85,14 +85,14 @@ namespace Labyrinth {
 		Ref<VertexBuffer> lineVertexBuffer;
 		Ref<Shader> lineShader;
 
-		uint32_t lineVertexCount = 0;
+		u32 lineVertexCount = 0;
 		LineVertex* lineVertexBufferBase = nullptr;
 		LineVertex* lineVertexBufferPtr = nullptr;
 
-		float lineWidth = 1.0f;
+		f32 lineWidth = 1.0f;
 
 		std::array<Ref<Texture2D>, MaxTextureSlots> textureSlots;
-		uint32_t textureSlotIndex;
+		u32 textureSlotIndex;
 
 		glm::vec4 displayVertexPositions[4];
 		glm::vec4 quadVertexPositions[4]; 
@@ -129,7 +129,7 @@ namespace Labyrinth {
 			sData.displayVertexBufferBase = new DisplayVertex[4];
 			sData.displayVertexBufferPtr = sData.displayVertexBufferBase;
 
-			uint32_t* displayIndices = new uint32_t[6];
+			u32* displayIndices = new u32[6];
 
 			displayIndices[0] = 0;
 			displayIndices[1] = 1;
@@ -162,10 +162,10 @@ namespace Labyrinth {
 
 			sData.quadVertexBufferBase = new QuadVertex[sData.MaxVertices];
 
-			uint32_t* quadIndices = new uint32_t[sData.MaxIndices];
+			u32* quadIndices = new u32[sData.MaxIndices];
 
-			uint32_t offset = 0;
-			for (uint32_t i = 0; i < sData.MaxIndices; i += 6)
+			u32 offset = 0;
+			for (u32 i = 0; i < sData.MaxIndices; i += 6)
 			{
 				quadIndices[i + 0] = offset + 0;
 				quadIndices[i + 1] = offset + 1;
@@ -219,8 +219,8 @@ namespace Labyrinth {
 
 		// White Texture
 		sData.whiteTexture = Texture2D::Create(1, 1);
-		uint32_t whiteTextureData = 0xffffffff;
-		sData.whiteTexture->setData(&whiteTextureData, sizeof(uint32_t));
+		u32 whiteTextureData = 0xffffffff;
+		sData.whiteTexture->setData(&whiteTextureData, sizeof(u32));
 
 		sData.quadShader = Shader::Create("assets/shaders/Renderer2DQuad.glsl");
 		sData.circleShader = Shader::Create("assets/shaders/Renderer2DCircle.glsl");
@@ -313,10 +313,10 @@ namespace Labyrinth {
 		// Quads
 		if (sData.quadIndexCount) 
 		{
-			uint32_t quadDataSize = (uint32_t)((uint8_t*)sData.quadVertexBufferPtr - (uint8_t*)sData.quadVertexBufferBase);
+			u32 quadDataSize = (u32)((u8*)sData.quadVertexBufferPtr - (u8*)sData.quadVertexBufferBase);
 			sData.quadVertexBuffer->setData(sData.quadVertexBufferBase, quadDataSize);
 
-			for (uint32_t i = 0; i < sData.textureSlotIndex; i++)
+			for (u32 i = 0; i < sData.textureSlotIndex; i++)
 				sData.textureSlots[i]->bind(i);
 
 			sData.quadShader->bind();
@@ -327,7 +327,7 @@ namespace Labyrinth {
 		// Circles
 		if (sData.circleIndexCount)
 		{
-			uint32_t circleDataSize = (uint32_t)((uint8_t*)sData.circleVertexBufferPtr - (uint8_t*)sData.circleVertexBufferBase);
+			u32 circleDataSize = (u32)((u8*)sData.circleVertexBufferPtr - (u8*)sData.circleVertexBufferBase);
 			sData.circleVertexBuffer->setData(sData.circleVertexBufferBase, circleDataSize);
 
 			sData.circleShader->bind();
@@ -338,7 +338,7 @@ namespace Labyrinth {
 		// Lines
 		if (sData.lineVertexCount)
 		{
-			uint32_t lineDataSize = (uint32_t)((uint8_t*)sData.lineVertexBufferPtr - (uint8_t*)sData.lineVertexBufferBase);
+			u32 lineDataSize = (u32)((u8*)sData.lineVertexBufferPtr - (u8*)sData.lineVertexBufferBase);
 			sData.lineVertexBuffer->setData(sData.lineVertexBufferBase, lineDataSize);
 
 			sData.lineShader->bind();
@@ -364,14 +364,14 @@ namespace Labyrinth {
 
 		const glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 
-		for (size_t i = 0; i < 4; i++)
+		for (usize i = 0; i < 4; i++)
 		{
 			sData.displayVertexBufferPtr->position = sData.displayVertexPositions[i];
 			sData.displayVertexBufferPtr->texCoord = textureCoords[i];
 			sData.displayVertexBufferPtr++;
 		}
 
-		uint32_t dataSize = (uint32_t)((uint8_t*)sData.displayVertexBufferPtr - (uint8_t*)sData.displayVertexBufferBase);
+		u32 dataSize = (u32)((u8*)sData.displayVertexBufferPtr - (u8*)sData.displayVertexBufferBase);
 		sData.displayVertexBuffer->setData(sData.displayVertexBufferBase, dataSize);
 
 		sData.displayVertexArray->bind();
@@ -400,12 +400,12 @@ namespace Labyrinth {
 		DrawQuad(transform, colour);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
 	{
 		DrawQuad({ position.x, position.y, 0.0f }, size, texture, tilingFactor, tintColour, textureCoords);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
@@ -413,29 +413,29 @@ namespace Labyrinth {
 		DrawQuad(transform, texture, tilingFactor, tintColour, textureCoords);
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
+	void Renderer2D::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, f32 tilingFactor, const glm::vec4& tintColour)
 	{
 		DrawQuad(position, size, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
-	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
+	void Renderer2D::DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& subtexture, f32 tilingFactor, const glm::vec4& tintColour)
 	{
 		DrawQuad(position, size, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const glm::vec4& colour, i32 entityID)
 	{
 		LAB_PROFILE_FUNCTION();
 
-		constexpr size_t quadVertexCount = 4;
-		const float textureIndex = 0.0f; // White Texture
+		constexpr usize quadVertexCount = 4;
+		const f32 textureIndex = 0.0f; // White Texture
 		constexpr glm::vec2 textureCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		const float tilingFactor = 1.0f;
+		const f32 tilingFactor = 1.0f;
 
 		if (sData.quadIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();
 
-		for (size_t i = 0; i < quadVertexCount; i++)
+		for (usize i = 0; i < quadVertexCount; i++)
 		{
 			sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[i];
 			sData.quadVertexBufferPtr->colour = colour;
@@ -451,11 +451,11 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords, int entityID)
+	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords, i32 entityID)
 	{
 		LAB_PROFILE_FUNCTION();
 
-		constexpr size_t quadVertexCount = 4;
+		constexpr usize quadVertexCount = 4;
 		const glm::vec2 defTextureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 		if (!textureCoords)
 			textureCoords = defTextureCoords;
@@ -463,12 +463,12 @@ namespace Labyrinth {
 		if (sData.quadIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();
 
-		float textureIndex = 0.0f;
-		for (uint32_t i = 1; i < sData.textureSlotIndex; i++)
+		f32 textureIndex = 0.0f;
+		for (u32 i = 1; i < sData.textureSlotIndex; i++)
 		{
 			if (*sData.textureSlots[i] == *texture)
 			{
-				textureIndex = (float)i;
+				textureIndex = (f32)i;
 				break;
 			}
 		}
@@ -478,12 +478,12 @@ namespace Labyrinth {
 			if (sData.textureSlotIndex >= Renderer2DData::MaxTextureSlots)
 				NextBatch();
 
-			textureIndex = (float)sData.textureSlotIndex;
+			textureIndex = (f32)sData.textureSlotIndex;
 			sData.textureSlots[sData.textureSlotIndex] = texture;
 			sData.textureSlotIndex++;
 		}
 
-		for (size_t i = 0; i < quadVertexCount; i++)
+		for (usize i = 0; i < quadVertexCount; i++)
 		{
 			sData.quadVertexBufferPtr->position = transform * sData.quadVertexPositions[i];
 			sData.quadVertexBufferPtr->colour = tintColour;
@@ -499,7 +499,7 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID)
+	void Renderer2D::DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, i32 entityID)
 	{
 		if (src.hasTex()) {
 			switch (src.type)
@@ -522,12 +522,12 @@ namespace Labyrinth {
 		} else DrawQuad(transform, src.colour, entityID);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, colour);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& colour)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -539,12 +539,12 @@ namespace Labyrinth {
 
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, texture, tilingFactor, tintColour, textureCoords);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const Ref<Texture2D>& texture, f32 tilingFactor, const glm::vec4& tintColour, const glm::vec2* textureCoords)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -555,24 +555,24 @@ namespace Labyrinth {
 		DrawQuad(transform, texture, tilingFactor, tintColour, textureCoords);
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
+	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<SubTexture2D>& subtexture, f32 tilingFactor, const glm::vec4& tintColour)
 	{
 		DrawRotatedQuad(position, size, rotation, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
-	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& subtexture, float tilingFactor, const glm::vec4& tintColour)
+	void Renderer2D::DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const Ref<SubTexture2D>& subtexture, f32 tilingFactor, const glm::vec4& tintColour)
 	{
 		DrawRotatedQuad(position, size, rotation, subtexture->getBaseTex(), tilingFactor, tintColour, subtexture->getTexCoords());
 	}
 
-	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, float thickness, int entityID)
+	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, f32 thickness, i32 entityID)
 	{
 		LAB_PROFILE_FUNCTION();
 
 		if (sData.circleIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();
 
-		for (size_t i = 0; i < 4; i++)
+		for (usize i = 0; i < 4; i++)
 		{
 			sData.circleVertexBufferPtr->worldPosition = transform * sData.quadVertexPositions[i];
 			sData.circleVertexBufferPtr->thickness = thickness;
@@ -587,12 +587,12 @@ namespace Labyrinth {
 		sData.stats.quadCount++;
 	}
 
-	void Renderer2D::DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, int entityID)
+	void Renderer2D::DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, i32 entityID)
 	{
 		DrawCircle(transform, src.colour, src.thickness, entityID);
 	}
 
-	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, int entityID)
+	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, i32 entityID)
 	{
 		sData.lineVertexBufferPtr->position = p0;
 		sData.lineVertexBufferPtr->colour = colour;
@@ -607,7 +607,7 @@ namespace Labyrinth {
 		sData.lineVertexCount += 2;
 	}
 
-	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, int entityID)
+	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID)
 	{
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position)
 			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
@@ -615,10 +615,10 @@ namespace Labyrinth {
 		DrawRect(transform, colour, entityID);
 	}
 
-	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& colour, int entityID)
+	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& colour, i32 entityID)
 	{
 		glm::vec3 lineVertices[4];
-		for (size_t i = 0; i < 4; i++)
+		for (usize i = 0; i < 4; i++)
 			lineVertices[i] = transform * sData.quadVertexPositions[i];
 
 		DrawLine(lineVertices[0], lineVertices[1], colour, entityID);
@@ -627,9 +627,9 @@ namespace Labyrinth {
 		DrawLine(lineVertices[3], lineVertices[0], colour, entityID);
 	}
 
-	float Renderer2D::GetLineWidth() { return sData.lineWidth; }
+	f32 Renderer2D::GetLineWidth() { return sData.lineWidth; }
 
-	void Renderer2D::SetLineWidth(float width) { sData.lineWidth = width; }
+	void Renderer2D::SetLineWidth(f32 width) { sData.lineWidth = width; }
 
 	void Renderer2D::ResetStats()
 	{

@@ -5,9 +5,9 @@
 
 namespace Labyrinth {
 
-	size_t AssetManager::GetSubTexRefCount(const Ref<IAsset>& asset)
+	usize AssetManager::GetSubTexRefCount(const Ref<IAsset>& asset)
     {
-        size_t count = 0;
+        usize count = 0;
 
         // If this is not a sheet then no subtextures to count.
         Ref<Texture2DSheet> isSheet = CastRefToRelative<Texture2DSheet>(asset);

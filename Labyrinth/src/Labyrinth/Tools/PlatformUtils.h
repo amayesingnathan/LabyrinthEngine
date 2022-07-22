@@ -15,6 +15,6 @@ namespace Labyrinth {
 	class LAB_API Stopwatch
 	{
 	public:
-		static float GetTime();
+		static f32 GetTime();
 	};
 }

@@ -29,7 +29,7 @@ namespace Labyrinth {
 								virtual EventType getEventType() const override { return GetStaticType(); }\
 								virtual const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual i32 getCategoryFlags() const override { return category; }
 
 	class LAB_API Event
 	{
@@ -40,7 +40,7 @@ namespace Labyrinth {
 
 		virtual EventType getEventType() const = 0;
 		virtual const char* getName() const = 0;
-		virtual int getCategoryFlags() const = 0;
+		virtual i32 getCategoryFlags() const = 0;
 		virtual std::string toString() const { return getName(); }
 
 		bool isInCategory(EventCategory category)

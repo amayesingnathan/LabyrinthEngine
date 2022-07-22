@@ -7,12 +7,12 @@ namespace Labyrinth {
 	class OpenGLUniformBuffer : public UniformBuffer
 	{
 	public:
-		OpenGLUniformBuffer(uint32_t size, uint32_t binding);
+		OpenGLUniformBuffer(u32 size, u32 binding);
 		virtual ~OpenGLUniformBuffer();
 
-		virtual void setData(const void* data, uint32_t size, uint32_t offset = 0) override;
+		virtual void setData(const void* data, u32 size, u32 offset = 0) override;
 
 	private:
-		uint32_t m_RendererID = 0;
+		u32 m_RendererID = 0;
 	};
 }

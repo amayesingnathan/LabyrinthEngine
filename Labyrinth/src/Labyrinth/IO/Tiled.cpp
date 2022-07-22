@@ -39,7 +39,7 @@ namespace Labyrinth {
     void TiledIO::GetLayers(rapidxml::xml_node<>* mapNode, std::vector<MapLayer>& layers)
     {
         {
-            int layerCount = 0;
+            i32 layerCount = 0;
             for (rapidxml::xml_node<>* layer = GetChild(mapNode, "layer"); layer; layer = layer->next_sibling())
                 layerCount++;
 
@@ -48,8 +48,8 @@ namespace Labyrinth {
 
         rapidxml::xml_node<>* layerMetaData = GetChild(mapNode, "layer");
 
-        size_t width = Cast<size_t>(std::stoi(layerMetaData->first_attribute("width")->value()));
-        size_t height = Cast<size_t>(std::stoi(layerMetaData->first_attribute("height")->value()));
+        usize width = Cast<usize>(std::stoi(layerMetaData->first_attribute("width")->value()));
+        usize height = Cast<usize>(std::stoi(layerMetaData->first_attribute("height")->value()));
 
         std::string mapLine;
         std::string mapElement;
@@ -69,7 +69,7 @@ namespace Labyrinth {
                 while (std::getline(lineStream, mapElement, ','))
                 {
                     if (mapElement != "\r" && mapElement != "\n")
-                        currLayer.add(Cast<size_t>(std::stoi(mapElement)));
+                        currLayer.add(Cast<usize>(std::stoi(mapElement)));
                 }
             }
             layers.emplace_back(std::move(currLayer));
@@ -80,7 +80,7 @@ namespace Labyrinth {
     {
         for (rapidxml::xml_node<>* tileset = GetChild(mapNode, "tileset"); std::string(tileset->name()) == "tileset"; tileset = tileset->next_sibling())
         {
-            size_t firstGridID = Cast<size_t>(std::stoll(tileset->first_attribute("firstgid")->value()));
+            usize firstGridID = Cast<usize>(std::stoll(tileset->first_attribute("firstgid")->value()));
 
             //Some tilesets are included inline in file, some stored externally. 
             if (rapidxml::xml_attribute<>* source = tileset->first_attribute("source"))
@@ -96,7 +96,7 @@ namespace Labyrinth {
         std::sort(setData.begin(), setData.end());
     }
 
-    void TiledIO::GetTileData(const std::filesystem::path& tileset, size_t firstID, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(const std::filesystem::path& tileset, usize firstID, std::vector<SheetData>& setData)
     {
         //Remove .tsx extension and replace with .png
         std::filesystem::path tilesetPng = tileset.parent_path();
@@ -109,8 +109,8 @@ namespace Labyrinth {
         doc->parse<0>(xmlFile.data());
         rapidxml::xml_node<>* root = doc->first_node();
 
-        size_t tileWidth = Cast<size_t>(std::stoi(root->first_attribute("tilewidth")->value()));
-        size_t tileHeight = Cast<size_t>(std::stoi(root->first_attribute("tileheight")->value()));
+        usize tileWidth = Cast<usize>(std::stoi(root->first_attribute("tilewidth")->value()));
+        usize tileHeight = Cast<usize>(std::stoi(root->first_attribute("tileheight")->value()));
 
         //Build data struct for this tileset 
         Ref<Texture2DSheet> sheet = Texture2DSheet::Create(tilesetPng.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID));
@@ -120,10 +120,10 @@ namespace Labyrinth {
         delete doc;
     }
 
-    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, size_t firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, usize firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
     {
-        size_t tileWidth = Cast<size_t>(std::stoi(tilesetNode->first_attribute("tilewidth")->value()));
-        size_t tileHeight = Cast<size_t>(std::stoi(tilesetNode->first_attribute("tileheight")->value()));
+        usize tileWidth = Cast<usize>(std::stoi(tilesetNode->first_attribute("tilewidth")->value()));
+        usize tileHeight = Cast<usize>(std::stoi(tilesetNode->first_attribute("tileheight")->value()));
         std::filesystem::path tilesetPath = pngPath;
         tilesetPath /= std::filesystem::path(GetChild(tilesetNode, "image")->first_attribute("source")->value());
 

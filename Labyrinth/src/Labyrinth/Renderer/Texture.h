@@ -14,13 +14,13 @@ namespace Labyrinth {
 		virtual ~Texture() = default;
 
 		virtual const std::string& getPath() const = 0;
-		virtual size_t getWidth() const = 0;
-		virtual size_t getHeight() const = 0;
-		virtual uint32_t getRendererID() const = 0;
+		virtual i32 getWidth() const = 0;
+		virtual i32 getHeight() const = 0;
+		virtual u32 getRendererID() const = 0;
 
-		virtual void setData(void* data, size_t size) = 0;
+		virtual void setData(void* data, i32 size) = 0;
 
-		virtual void bind(uint32_t slot = 0) const = 0;
+		virtual void bind(u32 slot = 0) const = 0;
 
 		virtual bool operator==(const Texture& other) const = 0;
 	};
@@ -30,7 +30,7 @@ namespace Labyrinth {
 	public:
 		virtual ~Texture2D() = default;
 
-		static Ref<Texture2D> Create(size_t width, size_t height);
+		static Ref<Texture2D> Create(i32 width, i32 height);
 		static Ref<Texture2D> Create(const std::string& path);
 
 		static const std::regex GetSuppTypes() { return mSuppImgTypes; }

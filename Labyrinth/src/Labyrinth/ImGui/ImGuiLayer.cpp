@@ -35,7 +35,7 @@ namespace Labyrinth {
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoTaskBarIcons;
 		//io.ConfigFlags |= ImGuiConfigFlags_ViewportsNoMerge;
 
-		float fontSize = 18.0f;// *2.0f;
+		f32 fontSize = 18.0f;// *2.0f;
 		//io.Fonts->AddFontFromFileTTF("assets/fonts/CaviarDreams/Caviar_Dreams_Bold.ttf", fontSize);
 		//io.Fonts->AddFontFromFileTTF("assets/fonts/CaviarDreams/CaviarDreams.ttf", fontSize);
 
@@ -99,7 +99,7 @@ namespace Labyrinth {
 		ImGuiIO& io = ImGui::GetIO();
 
 		Application& app = Application::Get();
-		io.DisplaySize = ImVec2(static_cast<float>(app.getWindow().getWidth()), static_cast<float>(app.getWindow().getHeight()));
+		io.DisplaySize = ImVec2(static_cast<f32>(app.getWindow().getWidth()), static_cast<f32>(app.getWindow().getHeight()));
 
 		// Rendering
 		ImGui::Render();

@@ -104,8 +104,8 @@ namespace Labyrinth {
 			case ShaderDataType::Mat3:
 			case ShaderDataType::Mat4:
 			{
-				uint8_t count = element.getComponentCount();
-				for (uint8_t i = 0; i < count; i++)
+				u8 count = element.getComponentCount();
+				for (u8 i = 0; i < count; i++)
 				{
 					glEnableVertexAttribArray(mVertexBufferIndex);
 					glVertexAttribPointer(mVertexBufferIndex,
@@ -113,7 +113,7 @@ namespace Labyrinth {
 						ShaderDataTypetoOpenGLType(element.type),
 						element.normalised ? GL_TRUE : GL_FALSE,
 						layout.getStride(),
-						(const void*)(sizeof(float) * count * i));
+						(const void*)(sizeof(f32) * count * i));
 					glVertexAttribDivisor(mVertexBufferIndex, 1);
 					mVertexBufferIndex++;
 				}

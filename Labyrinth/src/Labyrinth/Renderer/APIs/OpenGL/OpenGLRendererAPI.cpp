@@ -10,7 +10,7 @@ namespace Labyrinth {
 		unsigned type,
 		unsigned id,
 		unsigned severity,
-		int length,
+		i32 length,
 		const char* message,
 		const void* userParam)
 	{
@@ -46,7 +46,7 @@ namespace Labyrinth {
 		glEnable(GL_LINE_SMOOTH);
 	}
 
-	void OpenGLRendererAPI::setViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+	void OpenGLRendererAPI::setViewport(u32 x, u32 y, u32 w, u32 h)
 	{
 		glViewport(x, y, w, h);
 	}
@@ -61,9 +61,9 @@ namespace Labyrinth {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
+	void OpenGLRendererAPI::drawIndexed(const Ref<VertexArray>& vertexArray, u32 indexCount)
 	{
-		uint32_t count = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
+		u32 count = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
 		vertexArray->bind();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 #if LAB_DEBUG
@@ -71,7 +71,7 @@ namespace Labyrinth {
 #endif
 	}
 
-	void OpenGLRendererAPI::drawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+	void OpenGLRendererAPI::drawLines(const Ref<VertexArray>& vertexArray, u32 vertexCount)
 	{
 		vertexArray->bind();
 		glDrawArrays(GL_LINES, 0, vertexCount);
@@ -80,7 +80,7 @@ namespace Labyrinth {
 #endif
 	}
 
-	void OpenGLRendererAPI::setLineWidth(float width)
+	void OpenGLRendererAPI::setLineWidth(f32 width)
 	{
 		glLineWidth(width);
 	}

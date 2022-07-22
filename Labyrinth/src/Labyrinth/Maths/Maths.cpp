@@ -11,12 +11,12 @@ namespace Labyrinth::Math{
 		// From glm::decompose in matrix_decompose.inl
 
 		using namespace glm;
-		using T = float;
+		using T = f32;
 
 		mat4 LocalMatrix(transform);
 
 		// Normalize the matrix.
-		if (epsilonEqual(LocalMatrix[3][3], static_cast<float>(0), epsilon<T>()))
+		if (epsilonEqual(LocalMatrix[3][3], static_cast<f32>(0), epsilon<T>()))
 			return false;
 
 		// First, isolate perspective.  This is the messiest.

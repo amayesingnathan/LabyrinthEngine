@@ -17,12 +17,12 @@ namespace Labyrinth {
 			mStart = std::chrono::high_resolution_clock::now();
 		}
 
-		float elapsed()
+		f32 elapsed()
 		{
 			return std::chrono::duration_cast<std::chrono::nanoseconds>(std::chrono::high_resolution_clock::now() - mStart).count() * 0.001f * 0.001f * 0.001f;
 		}
 
-		float elapsedMillis()
+		f32 elapsedMillis()
 		{
 			return elapsed() * 1000.0f;
 		}

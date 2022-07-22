@@ -11,18 +11,18 @@ namespace Labyrinth {
 	class LAB_API OrthographicCameraController
 	{
 	public:
-		OrthographicCameraController(float aspectRatio, bool rotation = false, bool dragging = false);
+		OrthographicCameraController(f32 aspectRatio, bool rotation = false, bool dragging = false);
 
 		void onUpdate(Timestep ts);
 		void onEvent(Event& e);
 
-		void onResize(float width, float height);
+		void onResize(f32 width, f32 height);
 
 		OrthographicCamera& getCamera() { return mCamera; }
 		const OrthographicCamera& getCamera() const { return mCamera; }
 
-		float getZoom() const { return mZoom; }
-		void setZoom(float zoom) { mZoom = zoom; }
+		f32 getZoom() const { return mZoom; }
+		void setZoom(f32 zoom) { mZoom = zoom; }
 
 	private:
 		bool onMouseScrolled(MouseScrolledEvent& e);
@@ -31,8 +31,8 @@ namespace Labyrinth {
 		bool onMouseButtonReleased(MouseButtonReleasedEvent& e);
 
 	private:
-		float mAspectRatio;
-		float mZoom = 1.0f;
+		f32 mAspectRatio;
+		f32 mZoom = 1.0f;
 		OrthographicCamera mCamera;
 
 		bool mRotation;
@@ -42,8 +42,8 @@ namespace Labyrinth {
 		bool mLockCam = false;
 
 		glm::vec3 mCameraPosition = { 0.0f, 0.0f, 0.0f };
-		float mCameraRotation = 0.0f;
-		float mCameraTranslationSpeed = 2.5f, mCameraRotationSpeed = 90.0f;
+		f32 mCameraRotation = 0.0f;
+		f32 mCameraTranslationSpeed = 2.5f, mCameraRotationSpeed = 90.0f;
 
 		glm::vec2 mLastMousePos;
 	};

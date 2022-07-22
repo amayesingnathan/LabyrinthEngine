@@ -26,8 +26,8 @@ namespace Labyrinth {
 
 		size_t mSheetWidth = 0;
 		size_t mSheetHeight = 0;
-		int mTileWidth = 0;
-		int mTileHeight = 0;
+		i32 mTileWidth = 0;
+		i32 mTileHeight = 0;
 
 		const std::string noSubTex = "None";
 	};

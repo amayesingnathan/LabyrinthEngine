@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	Ref<VertexBuffer> VertexBuffer::Create(uint32_t size)
+	Ref<VertexBuffer> VertexBuffer::Create(u32 size)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -19,7 +19,7 @@ namespace Labyrinth {
 		return nullptr;
 	}
 
-	Ref<VertexBuffer> Labyrinth::VertexBuffer::Create(float* vertices, uint32_t size)
+	Ref<VertexBuffer> Labyrinth::VertexBuffer::Create(f32* vertices, u32 size)
 	{
 		switch (Renderer::GetAPI())
 		{
@@ -31,7 +31,7 @@ namespace Labyrinth {
 		return nullptr;
 	}
 
-	Ref<IndexBuffer> Labyrinth::IndexBuffer::Create(uint32_t* indices, uint32_t count)
+	Ref<IndexBuffer> Labyrinth::IndexBuffer::Create(u32* indices, u32 count)
 	{
 		switch (Renderer::GetAPI())
 		{

@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	EditorCamera::EditorCamera(float fov, float aspectRatio, float nearClip, float farClip)
+	EditorCamera::EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip, f32 farClip)
 		: mFOV(fov), mAspectRatio(aspectRatio), mNearClip(nearClip), mFarClip(farClip), Camera(glm::perspective(glm::radians(fov), aspectRatio, nearClip, farClip))
 	{
 		UpdateView();
@@ -46,25 +46,25 @@ namespace Labyrinth {
 
 	glm::vec2 EditorCamera::PanSpeed() const
 	{
-		float x = std::min(mViewportWidth / 1000.0f, 2.4f); // max = 2.4f
-		float xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
+		f32 x = std::min(mViewportWidth / 1000.0f, 2.4f); // max = 2.4f
+		f32 xFactor = 0.0366f * (x * x) - 0.1778f * x + 0.3021f;
 
-		float y = std::min(mViewportHeight / 1000.0f, 2.4f); // max = 2.4f
-		float yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
+		f32 y = std::min(mViewportHeight / 1000.0f, 2.4f); // max = 2.4f
+		f32 yFactor = 0.0366f * (y * y) - 0.1778f * y + 0.3021f;
 
 		return { xFactor, yFactor };
 	}
 
-	float EditorCamera::RotationSpeed() const
+	f32 EditorCamera::RotationSpeed() const
 	{
 		return 0.8f;
 	}
 
-	float EditorCamera::ZoomSpeed() const
+	f32 EditorCamera::ZoomSpeed() const
 	{
-		float distance = mDistance * 0.2f;
+		f32 distance = mDistance * 0.2f;
 		distance = std::max(distance, 0.0f);
-		float speed = distance * distance;
+		f32 speed = distance * distance;
 		speed = std::min(speed, 100.0f); // max speed = 100
 		return speed;
 	}
@@ -96,7 +96,7 @@ namespace Labyrinth {
 
 	bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
 	{
-		float delta = e.getYOffset() * 0.1f;
+		f32 delta = e.getYOffset() * 0.1f;
 		MouseZoom(delta);
 		UpdateView();
 		return false;
@@ -111,12 +111,12 @@ namespace Labyrinth {
 
 	void EditorCamera::MouseRotate(const glm::vec2& delta)
 	{
-		float yawSign = getUpDirection().y < 0 ? -1.0f : 1.0f;
+		f32 yawSign = getUpDirection().y < 0 ? -1.0f : 1.0f;
 		mYaw += yawSign * delta.x * RotationSpeed();
 		mPitch += delta.y * RotationSpeed();
 	}
 
-	void EditorCamera::MouseZoom(float delta)
+	void EditorCamera::MouseZoom(f32 delta)
 	{
 		mDistance -= delta * ZoomSpeed();
 		if (mDistance < 1.0f)

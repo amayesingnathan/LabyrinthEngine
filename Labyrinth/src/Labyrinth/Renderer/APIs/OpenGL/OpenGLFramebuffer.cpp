@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	static const uint32_t sMaxFramebufferSize = 8192;
+	static const u32 sMaxFramebufferSize = 8192;
 
 	namespace Utils {
 
@@ -14,17 +14,17 @@ namespace Labyrinth {
 			return multisampled ? GL_TEXTURE_2D_MULTISAMPLE : GL_TEXTURE_2D;
 		}
 
-		static void CreateTextures(bool multisampled, uint32_t* outID, size_t count)
+		static void CreateTextures(bool multisampled, u32* outID, i32 count)
 		{
 			glCreateTextures(TextureTarget(multisampled), count, outID);
 		}
 
-		static void BindTexture(bool multisampled, uint32_t id)
+		static void BindTexture(bool multisampled, u32 id)
 		{
 			glBindTexture(TextureTarget(multisampled), id);
 		}
 
-		static void AttachColorTexture(uint32_t id, int samples, GLenum internalFormat, GLenum format, size_t width, size_t height, size_t index)
+		static void AttachColorTexture(u32 id, i32 samples, GLenum internalFormat, GLenum format, i32 width, i32 height, i32 index)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -45,7 +45,7 @@ namespace Labyrinth {
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + index, TextureTarget(multisampled), id, 0);
 		}
 
-		static void AttachDepthTexture(uint32_t id, int samples, GLenum format, GLenum attachmentType, size_t width, size_t height)
+		static void AttachDepthTexture(u32 id, i32 samples, GLenum format, GLenum attachmentType, i32 width, i32 height)
 		{
 			bool multisampled = samples > 1;
 			if (multisampled)
@@ -133,7 +133,7 @@ namespace Labyrinth {
 			mColourAttachments.resize(mColourAttachmentSpecs.size());
 			Utils::CreateTextures(multisample, mColourAttachments.data(), mColourAttachments.size());
 
-			for (size_t i = 0; i < mColourAttachments.size(); i++)
+			for (usize i = 0; i < mColourAttachments.size(); i++)
 			{
 				Utils::BindTexture(multisample, mColourAttachments[i]);
 				switch (mColourAttachmentSpecs[i].textureFormat)
@@ -188,7 +188,7 @@ namespace Labyrinth {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void OpenGLFramebuffer::resize(size_t width, size_t height)
+	void OpenGLFramebuffer::resize(usize width, usize height)
 	{
 		mSpecification.width = width;
 		mSpecification.height = height;
@@ -196,17 +196,17 @@ namespace Labyrinth {
 		Invalidate();
 	}
 
-	int OpenGLFramebuffer::readPixel(uint32_t attachmentIndex, int x, int y)
+	i32 OpenGLFramebuffer::readPixel(u32 attachmentIndex, i32 x, i32 y)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		int pixelData;
+		i32 pixelData;
 		glReadPixels(x, y, 1, 1, GL_RED_INTEGER, GL_INT, &pixelData);
 		return pixelData;
 	}
 
-	void OpenGLFramebuffer::readData(uint32_t attachmentIndex, void* data)
+	void OpenGLFramebuffer::readData(u32 attachmentIndex, void* data)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
@@ -214,7 +214,7 @@ namespace Labyrinth {
 		glReadPixels(0, 0, mSpecification.width, mSpecification.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
 	}
 
-	void OpenGLFramebuffer::clearAttachment(uint32_t attachmentIndex, int value)
+	void OpenGLFramebuffer::clearAttachment(u32 attachmentIndex, i32 value)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
@@ -223,7 +223,7 @@ namespace Labyrinth {
 			Utils::LabyrinthFBTextureFormatToGL(spec.textureFormat), GL_INT, &value);
 	}
 
-	void OpenGLFramebuffer::bindColourAttachment(uint32_t index)
+	void OpenGLFramebuffer::bindColourAttachment(u32 index)
 	{
 		LAB_CORE_ASSERT(index < mColourAttachments.size(), "Binding attachment out of range!");
 

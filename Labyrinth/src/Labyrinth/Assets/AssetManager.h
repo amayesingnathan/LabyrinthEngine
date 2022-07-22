@@ -30,9 +30,9 @@ namespace Labyrinth {
         }
 
         template<typename... AssetType>
-        static size_t GetGroupRefCount(const Ref<IAsset>& asset)
+        static usize GetGroupRefCount(const Ref<IAsset>& asset)
         {
-            size_t result = 0;
+            usize result = 0;
             ([&result, &asset]()
             {
                 // Check each possible asset type to see if this is an AssetGroup of each type.
@@ -44,11 +44,11 @@ namespace Labyrinth {
             return result;
         }
         template<typename... AssetType>
-        static size_t GetGroupRefCount(AssetTypeGroup<AssetType...>, const Ref<IAsset>& asset)
+        static usize GetGroupRefCount(AssetTypeGroup<AssetType...>, const Ref<IAsset>& asset)
         {
             return GetGroupRefCount<AssetType...>(asset);
         }
-        static size_t GetSubTexRefCount(const Ref<IAsset>& asset);
+        static usize GetSubTexRefCount(const Ref<IAsset>& asset);
 
         template<typename... AssetType>
         static bool IsGroup(const Ref<IAsset>& asset)
@@ -224,9 +224,9 @@ namespace Labyrinth {
         /// <summary>
         /// Get the number of strong references to 'asset'.
         /// </summary>
-        static size_t GetRefCount(const Ref<IAsset>& asset)
+        static usize GetRefCount(const Ref<IAsset>& asset)
         {
-            size_t count = asset.use_count() - 1;
+            usize count = asset.use_count() - 1;
             count += GetGroupRefCount(AllAssetTypes{}, asset); // Will add zero if not a group
             count += GetSubTexRefCount(asset); // Will add zero if not a texture sheet
             return count;
@@ -235,7 +235,7 @@ namespace Labyrinth {
         /// Get the number of strong references to 'asset'.
         /// </summary>
         /// <returns>Return zero if 'id' does not exist in cache</returns>
-        static size_t GetRefCount(const std::string& id)
+        static usize GetRefCount(const std::string& id)
         {
             if (!Exists(id)) return 0;
             return GetRefCount(Get(id));

@@ -29,42 +29,42 @@ namespace Labyrinth {
 
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour);
 		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour);
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
-		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
-		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
+		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<SubTexture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
+		static void DrawQuad(const glm::vec3& position, const glm::vec2& size, const Ref<SubTexture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
 
-		static void DrawQuad(const glm::mat4& transform, const glm::vec4& colour, int entityID = -1);
-		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr, int entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const glm::vec4& colour, i32 entityID = -1);
+		static void DrawQuad(const glm::mat4& transform, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr, i32 entityID = -1);
 
-		static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, int entityID);
+		static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, i32 entityID);
 
-		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const glm::vec4& colour);
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const glm::vec4& colour);
-		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<Texture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
-		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
-		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, float rotation, const Ref<SubTexture2D>& texture, float tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour);
+		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour);
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
+		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);
+		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<SubTexture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
+		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const Ref<SubTexture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f));
 
-		static void DrawCircle(const glm::mat4& transform, const glm::vec4& colour, float thickness = 1.0f, int entityID = -1);
-		static void DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, int entityID = -1);
+		static void DrawCircle(const glm::mat4& transform, const glm::vec4& colour, f32 thickness = 1.0f, i32 entityID = -1);
+		static void DrawCircle(const glm::mat4& transform, const CircleRendererComponent& src, i32 entityID = -1);
 
-		static void DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, int entityID = -1);
+		static void DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, i32 entityID = -1);
 
-		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, int entityID = -1);
-		static void DrawRect(const glm::mat4& transform, const glm::vec4& colour, int entityID = -1);
+		static void DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID = -1);
+		static void DrawRect(const glm::mat4& transform, const glm::vec4& colour, i32 entityID = -1);
 
-		static float GetLineWidth();
-		static void SetLineWidth(float width);
+		static f32 GetLineWidth();
+		static void SetLineWidth(f32 width);
 
 		// Stats
 		struct Statistics
 		{
-			uint32_t drawCalls = 0;
-			uint32_t quadCount = 0;
+			u32 drawCalls = 0;
+			u32 quadCount = 0;
 
-			uint32_t getTotalVertexCount() const { return quadCount * 4; }
-			uint32_t getTotalIndexCount() const { return quadCount * 6; }
+			u32 getTotalVertexCount() const { return quadCount * 4; }
+			u32 getTotalIndexCount() const { return quadCount * 6; }
 		};
 		static void ResetStats();
 		static Statistics GetStats();

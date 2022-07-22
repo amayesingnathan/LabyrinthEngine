@@ -10,22 +10,22 @@ namespace Labyrinth {
 		struct MessageHeader
 		{
 			MessageType id{};
-			uint32_t size = 0;
+			u32 size = 0;
 		};
 
 		struct LAB_API Message
 		{
 			MessageHeader header{};
-			std::vector<uint8_t> body;
+			std::vector<u8> body;
 
-			uint32_t size() const
+			u32 size() const
 			{
-				return Cast<uint32_t>(body.size());
+				return Cast<u32>(body.size());
 			}
 
 			friend std::ostream& operator << (std::ostream& os, const Message& msg)
 			{
-				os << "ID:" << int(msg.header.id) << " Size:" << msg.header.size;
+				os << "ID:" << i32(msg.header.id) << " Size:" << msg.header.size;
 				return os;
 			}
 
@@ -34,7 +34,7 @@ namespace Labyrinth {
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pushed into vector");
 
-				size_t i = msg.body.size();
+				usize i = msg.body.size();
 
 				msg.body.resize(msg.body.size() + sizeof(DataType));
 
@@ -50,7 +50,7 @@ namespace Labyrinth {
 			{
 				static_assert(std::is_standard_layout<DataType>::value, "Data is too complex to be pulled from vector");
 
-				size_t i = msg.body.size() - sizeof(DataType);
+				usize i = msg.body.size() - sizeof(DataType);
 
 				std::memcpy(&data, msg.body.data() + i, sizeof(DataType));
 

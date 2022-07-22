@@ -23,7 +23,7 @@ namespace Labyrinth {
 	private:
 		Entity& mEntity;
 		std::string mMapName;
-		uint8_t mLayer = 0;
+		u8 mLayer = 0;
 	};
 
 }

@@ -13,7 +13,7 @@
 
 namespace Labyrinth {
 
-	static uint8_t sGLFWWindowCount = 0;
+	static u8 sGLFWWindowCount = 0;
 
 	static void GLFWErrorCallback(int error, const char* description)
 	{
@@ -149,19 +149,19 @@ namespace Labyrinth {
 				}
 			});
 
-		glfwSetScrollCallback(mWindow, [](GLFWwindow* window, double xOffset, double yOffset)
+		glfwSetScrollCallback(mWindow, [](GLFWwindow* window, f64 xOffset, f64 yOffset)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-				MouseScrolledEvent event((float)xOffset, (float)yOffset);
+				MouseScrolledEvent event((f32)xOffset, (f32)yOffset);
 				data.eventCallback(event);
 			});
 
-		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, double xPos, double yPos)
+		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, f64 xPos, f64 yPos)
 			{
 				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-				MouseMovedEvent event((float)xPos, (float)yPos);
+				MouseMovedEvent event((f32)xPos, (f32)yPos);
 				data.eventCallback(event);
 			});
 	}

@@ -27,7 +27,7 @@ namespace Labyrinth {
 
 				if (mOwnerType == Owner::Server)
 				{
-					mHandshakeOut = uint64_t(std::chrono::system_clock::now().time_since_epoch().count());
+					mHandshakeOut = u64(std::chrono::system_clock::now().time_since_epoch().count());
 
 					mHandshakeCheck = Scramble(mHandshakeOut);
 				}
@@ -42,10 +42,10 @@ namespace Labyrinth {
 			{
 			}
 
-			uint32_t getID() const { return mID; }
+			u32 getID() const { return mID; }
 
 		public:
-			void connectToClient(ServerLayer* server, uint32_t uid = 0)
+			void connectToClient(ServerLayer* server, u32 uid = 0)
 			{
 				if (mOwnerType != Owner::Server) return;
 				if (!mSocket.is_open()) return;
@@ -112,10 +112,10 @@ namespace Labyrinth {
 			// ASYNC
 			void AddToIncomingMessageQueue();
 
-			uint64_t Scramble(uint64_t input)
+			u64 Scramble(u64 input)
 			{
-				uint64_t out = input ^ 0xA86DEBA86581;
-				constexpr int ver = Labyrinth::Cast<int>(LABYRINTH_VER * 100);
+				u64 out = input ^ 0xA86DEBA86581;
+				constexpr i32 ver = Labyrinth::Cast<i32>(LABYRINTH_VER * 100);
 				out = (out & ver) >> 4 | (out & ver) << 4;
 				return out ^ 0xA88DABE51581;
 			}
@@ -125,7 +125,7 @@ namespace Labyrinth {
 
 		protected:
 			Owner mOwnerType = Owner::Server;
-			uint32_t mID = 0;
+			u32 mID = 0;
 
 			asio::ip::tcp::socket mSocket;
 			asio::io_context& mIOContext;
@@ -135,9 +135,9 @@ namespace Labyrinth {
 
 			Message mMsgTemporaryIn;
 
-			uint64_t mHandshakeIn = 0;
-			uint64_t mHandshakeOut = 0;
-			uint64_t mHandshakeCheck = 0;
+			u64 mHandshakeIn = 0;
+			u64 mHandshakeOut = 0;
+			u64 mHandshakeCheck = 0;
 		};
 	}
 }

@@ -26,7 +26,7 @@ namespace Labyrinth {
 			virtual void onDetach() override { Disconnect(); }
 
 			// onUpdate() should generally not be overriden, only onMessage(). onUpdate() will call onMessage() for each message in the incoming queue.
-			// onUpdate() can be override if you wish to limit the number of messages read from the queue per game tick. Just call Update(size_t maxMessages) within onUpdate().
+			// onUpdate() can be override if you wish to limit the number of messages read from the queue per game tick. Just call Update(usize maxMessages) within onUpdate().
 			virtual void onUpdate(Timestep ts) override { Update(); }
 
 		protected:
@@ -73,11 +73,11 @@ namespace Labyrinth {
 
 		private:
 			// Generic update function. Reads all waiting messages and calls onMessage for each message.
-			void Update(size_t maxMessages = std::numeric_limits<size_t>::max())
+			void Update(usize maxMessages = std::numeric_limits<usize>::max())
 			{
 				if (!isConnected()) return;
 
-				size_t messageCount = 0;
+				usize messageCount = 0;
 				while (messageCount < maxMessages && !mQMessagesIn.empty())
 				{
 					auto msg = mQMessagesIn.pop_front();

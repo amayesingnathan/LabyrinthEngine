@@ -16,7 +16,7 @@ namespace Labyrinth {
 		return std::find(mLayers.begin(), mLayers.end(), layer) != mLayers.end();
 	}
 
-	bool RenderStack::hasLayer(uint8_t layer)
+	bool RenderStack::hasLayer(u8 layer)
 	{
 		return std::find_if(mLayers.begin(), mLayers.end(), [&](const RenderLayer* rLayer) 
 			{
@@ -24,7 +24,7 @@ namespace Labyrinth {
 			}) != mLayers.end();
 	}
 
-	RenderLayer* RenderStack::getLayer(uint8_t layer)
+	RenderLayer* RenderStack::getLayer(u8 layer)
 	{
 		auto it = std::find_if(mLayers.begin(), mLayers.end(), [&](const RenderLayer* rLayer)
 			{
@@ -63,7 +63,7 @@ namespace Labyrinth {
 			layer->clear();
 	}
 
-	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, int entID)
+	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID)
 	{
 		RenderLayer* targetLayer = getLayer(srComp.layer);
 
@@ -76,7 +76,7 @@ namespace Labyrinth {
 		targetLayer->addQuad(trComp, srComp, entID);
 	}
 
-	void RenderStack::addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, int entID)
+	void RenderStack::addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID)
 	{
 		RenderLayer* targetLayer = getLayer(crComp.layer);
 

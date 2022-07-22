@@ -86,18 +86,18 @@ namespace Labyrinth {
 			return scene->mRegistry.all_of<T>(mEntID);
 		}
 
-		uint32_t getEntID() const
+		u32 getEntID() const
 		{
-			return Cast<uint32_t>(mEntID);
+			return Cast<u32>(mEntID);
 		}
 
 		const UUID& getUUID() const;
 
 		operator entt::entity() const { return mEntID; }
-		operator uint32_t() const { return Cast<uint32_t>(mEntID); }
+		operator u32() const { return Cast<u32>(mEntID); }
 
 		operator UUID() const { return getUUID(); }
-		operator uint64_t() const { return getUUID(); }
+		operator u64() const { return getUUID(); }
 
 		operator bool() const { return (mEntID != entt::null && !mScene.expired()); }
 
@@ -128,7 +128,7 @@ namespace Labyrinth {
 		std::vector<Entity>& getChildren();
 		const std::vector<Entity>& getChildren() const;
     
-		const size_t getChildCount() const { return getChildren().size(); }
+		const usize getChildCount() const { return getChildren().size(); }
 		bool hasChild(const Entity& child) const;
 
 		bool isRelated(const Entity& filter) const;
@@ -155,7 +155,7 @@ namespace Labyrinth {
 	{
 		// Seem to need some actual data to be able to use as template parameter in addComponent
 		// so just added a random zero byte.
-		uint8_t data = 0x0;
+		u8 data = 0x0;
 		RootComponent() = default;
 	};
 

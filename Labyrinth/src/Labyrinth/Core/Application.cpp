@@ -52,7 +52,7 @@ namespace Labyrinth {
 		{
 			LAB_PROFILE_SCOPE("RunLoop");
 
-			float time = Stopwatch::GetTime();
+			f32 time = Stopwatch::GetTime();
 			Timestep timestep = time - mLastFrameTime;
 			mLastFrameTime = time;
 

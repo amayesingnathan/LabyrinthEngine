@@ -92,7 +92,7 @@ bool Vector2D::isNull() const
 	return false;
 }
 
-float Vector2D::lerp(float a, float b, float t)
+f32 Vector2D::lerp(f32 a, f32 b, f32 t)
 {
 	if ((t >= 0) && (t <= 1))
 	{
@@ -106,6 +106,6 @@ void Vector2D::normalise()
 {
 	if (isNull()) return;
 
-	float norm = 1 / sqrt((x * x) + (y * y));
+	f32 norm = 1 / sqrt((x * x) + (y * y));
 	*this *= norm;
 }

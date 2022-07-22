@@ -28,7 +28,7 @@ namespace Labyrinth {
 
 	private:
 		std::vector<Layer*> mLayers;
-		unsigned int mLayerInsertIndex = 0;
+		u32 mLayerInsertIndex = 0;
 	};
 
 }

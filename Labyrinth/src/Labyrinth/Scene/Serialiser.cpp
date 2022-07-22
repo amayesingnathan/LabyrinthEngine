@@ -28,8 +28,8 @@ namespace YAML {
 			if (!node.IsSequence() || node.size() != 2)
 				return false;
 
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
+			rhs.x = node[0].as<f32>();
+			rhs.y = node[1].as<f32>();
 			return true;
 		}
 	};
@@ -52,9 +52,9 @@ namespace YAML {
 			if (!node.IsSequence() || node.size() != 3)
 				return false;
 
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
-			rhs.z = node[2].as<float>();
+			rhs.x = node[0].as<f32>();
+			rhs.y = node[1].as<f32>();
+			rhs.z = node[2].as<f32>();
 			return true;
 		}
 	};
@@ -78,10 +78,10 @@ namespace YAML {
 			if (!node.IsSequence() || node.size() != 4)
 				return false;
 
-			rhs.x = node[0].as<float>();
-			rhs.y = node[1].as<float>();
-			rhs.z = node[2].as<float>();
-			rhs.w = node[3].as<float>();
+			rhs.x = node[0].as<f32>();
+			rhs.y = node[1].as<f32>();
+			rhs.z = node[2].as<f32>();
+			rhs.w = node[3].as<f32>();
 			return true;
 		}
 	};
@@ -178,7 +178,7 @@ namespace Labyrinth {
 		auto& camera = cameraComponent.camera;
 
 		BeginObject("Camera");
-		ObjectProperty("ProjectionType", (int)camera.getProjectionType());
+		ObjectProperty("ProjectionType", (i32)camera.getProjectionType());
 		ObjectProperty("PerspectiveFOV", camera.getPerspectiveVerticalFOV());
 		ObjectProperty("PerspectiveNear", camera.getPerspectiveNearClip());
 		ObjectProperty("PerspectiveFar", camera.getPerspectiveFarClip());
@@ -198,8 +198,8 @@ namespace Labyrinth {
 	{
 		BeginObject("SpriteRendererComponent");
 
-		ObjectProperty("Type", Cast<int>(srComponent.type));
-		ObjectProperty("Layer", Cast<int>(srComponent.layer)); //Cast to int so it is encoded as number not char
+		ObjectProperty("Type", Cast<i32>(srComponent.type));
+		ObjectProperty("Layer", Cast<i32>(srComponent.layer)); //Cast to i32 so it is encoded as number not i8
 
 		ObjectProperty("Colour", srComponent.colour);
 
@@ -221,7 +221,7 @@ namespace Labyrinth {
 			ObjectProperty("SubTexName", tex->getName());
 
 			BeginSequence("Coordinates");
-			for (size_t i = 0; i < 4; i++)
+			for (usize i = 0; i < 4; i++)
 			{
 				BeginObject();
 				ObjectProperty(std::to_string(i), tex->getTexCoords()[i]);
@@ -245,7 +245,7 @@ namespace Labyrinth {
 	{
 		BeginObject("SpriteRendererComponent");
 
-		ObjectProperty("Layer", Cast<int>(srComponent.layer)); //Cast to int so it is encoded as number not char
+		ObjectProperty("Layer", Cast<i32>(srComponent.layer)); //Cast to i32 so it is encoded as number not i8
 		ObjectProperty("Colour", srComponent.colour);
 		ObjectProperty("Thickness", srComponent.thickness);
 
@@ -257,7 +257,7 @@ namespace Labyrinth {
 	{
 		BeginObject("RigidBodyComponent");
 
-		ObjectProperty("Type", Cast<int>(rbComponent.type));
+		ObjectProperty("Type", Cast<i32>(rbComponent.type));
 		ObjectProperty("FixedRotation", rbComponent.fixedRotation);
 
 		EndObject();
@@ -360,7 +360,7 @@ namespace Labyrinth {
 		auto sheetsNode = mIn["SpriteSheets"];
 		if (sheetsNode)
 		{
-			size_t count = 0;
+			usize count = 0;
 			for (auto sheet : sheetsNode)
 				count++;
 
@@ -395,8 +395,8 @@ namespace Labyrinth {
 
 			auto childCount = nodeComponent["ChildCount"];
 			if (childCount)
-				if (childCount.as<size_t>() != 0)
-					nc.children.reserve(childCount.as<size_t>());
+				if (childCount.as<usize>() != 0)
+					nc.children.reserve(childCount.as<usize>());
 
 			auto children = nodeComponent["Children"];
 			if (children)
@@ -443,15 +443,15 @@ namespace Labyrinth {
 		{
 			auto cameraProps = cameraComponent["Camera"];
 			auto& cc = entity.addComponent<CameraComponent>();
-			cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<int>());
+			cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
 
-			cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<float>());
-			cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<float>());
-			cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<float>());
+			cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+			cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
+			cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
 
-			cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<float>());
-			cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<float>());
-			cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<float>());
+			cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+			cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+			cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
 
 			cc.primary = cameraComponent["Primary"].as<bool>();
 			cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -468,8 +468,8 @@ namespace Labyrinth {
 		{
 			auto& src = entity.addComponent<SpriteRendererComponent>();
 
-			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<int>();
-			src.layer = spriteRendererComponent["Layer"].as<uint8_t>();
+			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
+			src.layer = spriteRendererComponent["Layer"].as<u8>();
 			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 
 			src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
@@ -502,7 +502,7 @@ namespace Labyrinth {
 					auto coordsSeq = texture["Coordinates"];
 					if (coordsSeq)
 					{
-						int i = 0;
+						i32 i = 0;
 						for (auto coord : coordsSeq)
 						{
 							if (i >= 4) break;
@@ -536,11 +536,11 @@ namespace Labyrinth {
 		{
 			auto& src = entity.addComponent<CircleRendererComponent>();
 
-			src.layer = circleRendererComponent["Layer"].as<uint8_t>();
+			src.layer = circleRendererComponent["Layer"].as<u8>();
 			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 
 			src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
-			src.thickness = circleRendererComponent["Thickness"].as<float>();
+			src.thickness = circleRendererComponent["Thickness"].as<f32>();
 		}			
 
 		return nullptr;
@@ -553,7 +553,7 @@ namespace Labyrinth {
 		if (rbComponent)
 		{
 			auto& rbc = entity.addComponent<RigidBodyComponent>();
-			rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<int>();
+			rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
 			rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
 			return CreateRef<RigidBodyComponent>(rbc);
 		}
@@ -569,10 +569,10 @@ namespace Labyrinth {
 			auto& rbc = entity.addComponent<BoxColliderComponent>();
 			rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
 			rbc.offset = bcComponent["Offset"].as<glm::vec2>();
-			rbc.density = bcComponent["Density"].as<float>();
-			rbc.friction = bcComponent["Friction"].as<float>();
-			rbc.restitution = bcComponent["Restitution"].as<float>();
-			rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<float>();
+			rbc.density = bcComponent["Density"].as<f32>();
+			rbc.friction = bcComponent["Friction"].as<f32>();
+			rbc.restitution = bcComponent["Restitution"].as<f32>();
+			rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
 			return CreateRef<BoxColliderComponent>(rbc);
 		}
 		return nullptr;
@@ -585,12 +585,12 @@ namespace Labyrinth {
 		if (ccComponent)
 		{
 			auto& rbc = entity.addComponent<CircleColliderComponent>();
-			rbc.radius = ccComponent["Radius"].as<float>();
+			rbc.radius = ccComponent["Radius"].as<f32>();
 			rbc.offset = ccComponent["Offset"].as<glm::vec2>();
-			rbc.density = ccComponent["Density"].as<float>();
-			rbc.friction = ccComponent["Friction"].as<float>();
-			rbc.restitution = ccComponent["Restitution"].as<float>();
-			rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<float>();
+			rbc.density = ccComponent["Density"].as<f32>();
+			rbc.friction = ccComponent["Friction"].as<f32>();
+			rbc.restitution = ccComponent["Restitution"].as<f32>();
+			rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
 			return CreateRef<CircleColliderComponent>(rbc);
 		}
 		return nullptr;
@@ -599,7 +599,7 @@ namespace Labyrinth {
 	template<>
 	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
 	{
-		UUID uuid(entity["Entity"].as<uint64_t>()); 
+		UUID uuid(entity["Entity"].as<u64>()); 
 
 		std::string name;
 		auto tagComponent = entity["TagComponent"];

@@ -5,18 +5,18 @@ namespace Labyrinth {
 	class LAB_API Timestep
 	{
 	public:
-		Timestep(float time = 0.0f)
+		Timestep(f32 time = 0.0f)
 			: mTime(time)
 		{
 		}
 
-		operator float() const { return mTime; }
+		operator f32() const { return mTime; }
 
-		float getSeconds() const { return mTime; }
-		float getMilliseconds() const { return mTime * 1000.f; }
+		f32 getSeconds() const { return mTime; }
+		f32 getMilliseconds() const { return mTime * 1000.f; }
 
 	private:
-		float mTime;
+		f32 mTime;
 	};
 
 }

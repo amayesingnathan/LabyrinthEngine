@@ -13,12 +13,12 @@ namespace Labyrinth {
 
 	struct LAB_API WindowProps {
 		std::string title;
-		uint32_t width;
-		uint32_t height;
+		u32 width;
+		u32 height;
 
 		WindowProps(const std::string& t = "Labyrinth Engine",
-			uint32_t w = 1600,
-			uint32_t h = 900)
+			u32 w = 1600,
+			u32 h = 900)
 			: title(t), width(w), height(h) {}
 	};
 
@@ -33,8 +33,8 @@ namespace Labyrinth {
 		void onUpdate();
 
 		inline glm::vec2 getSize() const { return { mData.width, mData.height }; }
-		inline uint32_t getWidth() const { return mData.width; }
-		inline uint32_t getHeight() const { return mData.height; }
+		inline u32 getWidth() const { return mData.width; }
+		inline u32 getHeight() const { return mData.height; }
 
 		void setTitle(const std::string& title);
 
@@ -59,7 +59,7 @@ namespace Labyrinth {
 		struct WindowData
 		{
 			std::string title;
-			unsigned int width, height;
+			u32 width, height;
 			bool vSync;
 
 			EventCallbackFunc eventCallback;

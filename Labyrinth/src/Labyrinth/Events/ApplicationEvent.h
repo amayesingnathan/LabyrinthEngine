@@ -7,11 +7,11 @@ namespace Labyrinth {
 	class LAB_API WindowResizeEvent : public Event
 	{
 	public:
-		WindowResizeEvent(uint32_t width, uint32_t height)
+		WindowResizeEvent(u32 width, u32 height)
 			: mWidth(width), mHeight(height) {}
 
-		uint32_t getWidth() const { return mWidth; }
-		uint32_t getHeight() const { return mHeight; }
+		u32 getWidth() const { return mWidth; }
+		u32 getHeight() const { return mHeight; }
 
 		std::string toString() const override
 		{
@@ -23,7 +23,7 @@ namespace Labyrinth {
 		EVENT_CLASS_TYPE(WindowResize)
 		EVENT_CLASS_CATEGORY(EventCategoryApplication)
 	private:
-		uint32_t mWidth, mHeight;
+		u32 mWidth, mHeight;
 	};
 
 	class LAB_API WindowCloseEvent : public Event

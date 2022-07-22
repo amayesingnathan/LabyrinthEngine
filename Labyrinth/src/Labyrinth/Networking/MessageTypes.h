@@ -6,7 +6,7 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		using MessageType = uint32_t;
+		using MessageType = u32;
 
 		namespace MessageTypes {
 

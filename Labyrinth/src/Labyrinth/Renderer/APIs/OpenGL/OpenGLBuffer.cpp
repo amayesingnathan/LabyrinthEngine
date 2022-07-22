@@ -9,7 +9,7 @@ namespace Labyrinth {
 	/// OpenGL Vertex Buffer
 	/// 
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(u32 size)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -18,7 +18,7 @@ namespace Labyrinth {
 		glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
 	}
 
-	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
+	OpenGLVertexBuffer::OpenGLVertexBuffer(f32* vertices, u32 size)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -48,7 +48,7 @@ namespace Labyrinth {
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
-	void OpenGLVertexBuffer::setData(const void* data, uint32_t size)
+	void OpenGLVertexBuffer::setData(const void* data, u32 size)
 	{
 		LAB_PROFILE_FUNCTION();
 
@@ -63,7 +63,7 @@ namespace Labyrinth {
 	/// OpenGL Index Buffer
 	/// 
 
-	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
+	OpenGLIndexBuffer::OpenGLIndexBuffer(u32* indices, u32 count)
 		: mCount(count)
 	{
 		LAB_PROFILE_FUNCTION();
@@ -72,7 +72,7 @@ namespace Labyrinth {
 		// Binding with GL_ARRAY_BUFFER allows the data to be loaded regardless of VAO state. 
 		glGenBuffers(1, &mRendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, mRendererID);
-		glBufferData(GL_ARRAY_BUFFER, count * sizeof(uint32_t), indices, GL_STATIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, count * sizeof(u32), indices, GL_STATIC_DRAW);
 	}
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()

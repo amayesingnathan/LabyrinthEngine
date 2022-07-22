@@ -13,15 +13,15 @@ namespace Labyrinth {
 	{
 	public:
 		EditorCamera() = default;
-		EditorCamera(float fov, float aspectRatio, float nearClip, float farClip);
+		EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip, f32 farClip);
 
 		void onUpdate(Timestep ts);
 		void onEvent(Event& e);
 
-		inline float getDistance() const { return mDistance; }
-		inline void setDistance(float distance) { mDistance = distance; }
+		inline f32 getDistance() const { return mDistance; }
+		inline void setDistance(f32 distance) { mDistance = distance; }
 
-		inline void setViewportSize(float width, float height) { mViewportWidth = width; mViewportHeight = height; UpdateProjection(); }
+		inline void setViewportSize(f32 width, f32 height) { mViewportWidth = width; mViewportHeight = height; UpdateProjection(); }
 
 		const glm::mat4& getViewMatrix() const { return mViewMatrix; }
 		glm::mat4 getViewProjection() const { return mProjection * mViewMatrix; }
@@ -32,8 +32,8 @@ namespace Labyrinth {
 		const glm::vec3& getPosition() const { return mPosition; }
 		glm::quat getOrientation() const;
 
-		float getPitch() const { return mPitch; }
-		float getYaw() const { return mYaw; }
+		f32 getPitch() const { return mPitch; }
+		f32 getYaw() const { return mYaw; }
 
 		void resetPosition();
 		void resetAngle();
@@ -46,16 +46,16 @@ namespace Labyrinth {
 
 		void MousePan(const glm::vec2& delta);
 		void MouseRotate(const glm::vec2& delta);
-		void MouseZoom(float delta);
+		void MouseZoom(f32 delta);
 
 		glm::vec3 CalculatePosition() const;
 
 		glm::vec2 PanSpeed() const;
-		float RotationSpeed() const;
-		float ZoomSpeed() const;
+		f32 RotationSpeed() const;
+		f32 ZoomSpeed() const;
 
 	private:
-		float mFOV = 45.0f, mAspectRatio = 1.778f, mNearClip = 0.1f, mFarClip = 1000.0f;
+		f32 mFOV = 45.0f, mAspectRatio = 1.778f, mNearClip = 0.1f, mFarClip = 1000.0f;
 
 		glm::mat4 mViewMatrix;
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };
@@ -63,10 +63,10 @@ namespace Labyrinth {
 
 		glm::vec2 mInitialMousePosition = { 0.0f, 0.0f };
 
-		float mDistance = 10.0f;
-		float mPitch = 0.0f, mYaw = 0.0f;
+		f32 mDistance = 10.0f;
+		f32 mPitch = 0.0f, mYaw = 0.0f;
 
-		float mViewportWidth = 1280, mViewportHeight = 720;
+		f32 mViewportWidth = 1280, mViewportHeight = 720;
 	};
 
 }

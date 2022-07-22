@@ -46,7 +46,7 @@ namespace Labyrinth {
 
             return *this;
         }
-        AssetGroupIterator operator++(int)
+        AssetGroupIterator operator++(i32)
         {
             IteratorType temp = *this;
             std::visit([&temp](auto& arg)
@@ -73,7 +73,7 @@ namespace Labyrinth {
 
             return *this;
         }
-        AssetGroupIterator operator--(int)
+        AssetGroupIterator operator--(i32)
         {
             IteratorType temp = *this;
             std::visit([&temp](auto& arg)
@@ -184,7 +184,7 @@ namespace Labyrinth {
 
             return *this;
         }
-        AssetGroupConstIterator operator++(int)
+        AssetGroupConstIterator operator++(i32)
         {
             IteratorType temp = *this;
             std::visit([&temp](auto& arg)
@@ -211,7 +211,7 @@ namespace Labyrinth {
 
             return *this;
         }
-        AssetGroupConstIterator operator--(int)
+        AssetGroupConstIterator operator--(i32)
         {
             IteratorType temp = *this;
             std::visit([&temp](auto& arg)
@@ -386,7 +386,7 @@ namespace Labyrinth {
             }, mAssets);
         }
 
-        AssetRef operator[](size_t index)
+        AssetRef operator[](usize index)
         {
             AssetRef result = nullptr;
             std::visit([&result, index](auto& arg)
@@ -445,9 +445,9 @@ namespace Labyrinth {
             return asset;
         }
 
-        size_t count(const std::string& id) const
+        usize count(const std::string& id) const
         {
-            size_t count = 0;;
+            usize count = 0;;
             std::visit([&id, &count](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
@@ -466,9 +466,9 @@ namespace Labyrinth {
             return count;
         }
 
-        constexpr size_t size() const
+        constexpr usize size() const
         {
-            size_t size = 0;
+            usize size = 0;
             std::visit([&size](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;
@@ -483,9 +483,9 @@ namespace Labyrinth {
             return size;
         }
 
-        size_t capacity() const
+        usize capacity() const
         {
-            size_t capacity = 0;
+            usize capacity = 0;
             std::visit([&capacity](auto& arg)
                 {
                     using T = std::decay_t<decltype(arg)>;
@@ -500,7 +500,7 @@ namespace Labyrinth {
             return capacity;
         }
 
-        void reserve(size_t newCapacity)
+        void reserve(usize newCapacity)
         {
             std::visit([&newCapacity](auto& arg)
                 {
@@ -514,9 +514,9 @@ namespace Labyrinth {
                 }, mAssets);
         }
 
-        constexpr size_t ref_count() const
+        constexpr usize ref_count() const
         {
-            size_t ref_count = 0;
+            usize ref_count = 0;
             std::visit([&ref_count](auto& arg)
             {
                 using T = std::decay_t<decltype(arg)>;

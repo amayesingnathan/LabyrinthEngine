@@ -152,8 +152,8 @@ namespace Labyrinth {
 		newEnt.setParent(nodeCopy.parent);
 
 		// Use counting loop to prevent iterator invalidation
-		size_t copyChildCount = nodeCopy.children.size();
-		for (size_t i = 0; i < copyChildCount; i++)
+		usize copyChildCount = nodeCopy.children.size();
+		for (usize i = 0; i < copyChildCount; i++)
 			CloneChild(nodeCopy.children[i], newEnt);
 
 		CopyAllComponents(copy, newEnt);
@@ -170,8 +170,8 @@ namespace Labyrinth {
 		newEnt.setParent(newParent);
 
 		// Use counting loop to prevent iterator invalidation
-		size_t copyChildCount = nodeCopy.children.size();
-		for (size_t i = 0; i < copyChildCount; i++)
+		usize copyChildCount = nodeCopy.children.size();
+		for (usize i = 0; i < copyChildCount; i++)
 			CloneChild(nodeCopy.children[i], newEnt);
 		
 		CopyAllComponents(copy, newEnt);
@@ -269,11 +269,11 @@ namespace Labyrinth {
 	{
 		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
-			mRenderStack->addQuad(trComponent, srComponent, Cast<int>(entity));
+			mRenderStack->addQuad(trComponent, srComponent, Cast<i32>(entity));
 		});
 		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
-			mRenderStack->addCircle(trComponent, crComponent, Cast<int>(entity));
+			mRenderStack->addCircle(trComponent, crComponent, Cast<i32>(entity));
 		});
 		mRegistry.view<TilemapComponent, TransformComponent>().each([this](auto entity, const auto& tmComponent, const auto& trComponent)
 		{
@@ -419,7 +419,7 @@ namespace Labyrinth {
 		DrawScene(camera);
 	}
 
-	void Scene::onViewportResize(uint32_t width, uint32_t height)
+	void Scene::onViewportResize(u32 width, u32 height)
 	{
 		mViewportWidth = width;
 		mViewportHeight = height;

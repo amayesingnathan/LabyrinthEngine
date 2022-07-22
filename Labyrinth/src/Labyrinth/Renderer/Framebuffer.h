@@ -42,9 +42,9 @@ namespace Labyrinth {
 
 	struct LAB_API FramebufferSpec
 	{
-		size_t width, height;
+		i32 width, height;
 		FramebufferAttachmentSpec attachments;
-		uint32_t samples = 1;
+		u32 samples = 1;
 
 		bool swapChainTarget = true;
 	};
@@ -57,14 +57,14 @@ namespace Labyrinth {
 		virtual void bind() = 0;
 		virtual void unbind() = 0;
 
-		virtual void resize(size_t width, size_t height) = 0;
-		virtual int readPixel(uint32_t attachmentIndex, int x, int y) = 0;
-		virtual void readData(uint32_t attachmentIndex, void* data) = 0;
+		virtual void resize(usize width, usize height) = 0;
+		virtual i32 readPixel(u32 attachmentIndex, i32 x, i32 y) = 0;
+		virtual void readData(u32 attachmentIndex, void* data) = 0;
 
-		virtual void clearAttachment(uint32_t attachmentIndex, int value) = 0;
+		virtual void clearAttachment(u32 attachmentIndex, i32 value) = 0;
 
-		virtual void bindColourAttachment(uint32_t index = 0) = 0;
-		virtual uint32_t getColourAttachmentRendererID(uint32_t index = 0) const = 0;
+		virtual void bindColourAttachment(u32 index = 0) = 0;
+		virtual u32 getColourAttachmentRendererID(u32 index = 0) const = 0;
 
 		virtual const FramebufferSpec& getSpecification() const = 0;
 

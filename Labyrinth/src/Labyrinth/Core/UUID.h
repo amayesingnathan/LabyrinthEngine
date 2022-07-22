@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Labyrinth/Core/System/Types.h>
+
 #include <string>
 
 namespace Labyrinth {
@@ -8,15 +10,15 @@ namespace Labyrinth {
 	{
 	public:
 		UUID();
-		UUID(uint64_t id);
+		UUID(u64 id);
 		UUID(const UUID&) = default;
 
-		operator uint64_t() const { return mID; }
+		operator u64() const { return mID; }
 
 		std::string to_string() const { return std::to_string(mID); }
 
 	private:
-		uint64_t mID;
+		u64 mID;
 
 	};
 
@@ -30,7 +32,7 @@ namespace std {
 	{
 		std::size_t operator()(const Labyrinth::UUID& uuid) const
 		{
-			return (uint64_t)uuid;
+			return (u64)uuid;
 		}
 	};
 

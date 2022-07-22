@@ -14,13 +14,13 @@ namespace Labyrinth {
 
 		TiledIO::Open(mapPath, mLayers, mSheets);
 
-		size_t width = mLayers[0].getWidth();
-		size_t height = mLayers[0].getHeight();
+		usize width = mLayers[0].getWidth();
+		usize height = mLayers[0].getHeight();
 		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
 
 		FramebufferSpec fbSpec;
-		mWidth = fbSpec.width = width * Cast<size_t>(tileSize.x);
-		mHeight = fbSpec.height = height * Cast<size_t>(tileSize.y);
+		mWidth = fbSpec.width = width * Cast<usize>(tileSize.x);
+		mHeight = fbSpec.height = height * Cast<usize>(tileSize.y);
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 
@@ -38,8 +38,8 @@ namespace Labyrinth {
 
 		TiledIO::Open(mapPath, mLayers, mSheets);
 
-		size_t width = mLayers[0].getWidth();
-		size_t height = mLayers[0].getHeight();
+		usize width = mLayers[0].getWidth();
+		usize height = mLayers[0].getHeight();
 		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
 
 		mFramebuffer->resize(width, height);
@@ -59,17 +59,17 @@ namespace Labyrinth {
 
 		for (const MapLayer& layer : mLayers)
 		{
-			size_t width = layer.getWidth();
-			size_t height = layer.getHeight();
-			for (size_t y = 0; y < height; y++)
+			usize width = layer.getWidth();
+			usize height = layer.getHeight();
+			for (usize y = 0; y < height; y++)
 			{
-				for (size_t x = 0; x < width; x++)
+				for (usize x = 0; x < width; x++)
 				{
-					size_t tileID = layer(x, height - y - 1);
+					usize tileID = layer(x, height - y - 1);
 					if (tileID == 0) continue;
 
 					Ref<Texture2DSheet> sheet = GetSheet(tileID);
-					glm::vec2 tiletexSize = { 2.f / (float)width, 2.f / (float)height };
+					glm::vec2 tiletexSize = { 2.f / (f32)width, 2.f / (f32)height };
 					glm::vec2 pos = { x * tiletexSize.x, y * tiletexSize.y };
 					pos -= 1.f;
 
@@ -83,7 +83,7 @@ namespace Labyrinth {
 
 		mTexture = Texture2D::Create(mWidth, mHeight);
 
-		uint8_t* texData = new uint8_t[4 * mWidth * mHeight];
+		u8* texData = new u8[4 * mWidth * mHeight];
 		mFramebuffer->readData(0, texData);
 		mTexture->setData(texData, 4 * mWidth * mHeight);
 		delete[] texData;
@@ -91,7 +91,7 @@ namespace Labyrinth {
 		mFramebuffer->unbind();
 	}
 
-	const Ref<Texture2DSheet>& Tilemap::GetSheet(size_t tileID) const
+	const Ref<Texture2DSheet>& Tilemap::GetSheet(usize tileID) const
 	{
 		auto it = std::find_if(mSheets.rbegin(), mSheets.rend(), [tileID](const SheetData& sheetData)
 			{

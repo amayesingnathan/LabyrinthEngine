@@ -88,7 +88,7 @@ namespace Labyrinth {
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };
 		std::array<glm::vec2, 2> mViewportBounds = {};
 
-		int mGizmoType = -1;
+		i32 mGizmoType = -1;
 
 		enum class SceneState
 		{

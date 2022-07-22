@@ -12,7 +12,7 @@ namespace Labyrinth {
 			sRendererAPI->init();
 		}
 
-		static void SetViewport(uint32_t x, uint32_t y, uint32_t w, uint32_t h)
+		static void SetViewport(u32 x, u32 y, u32 w, u32 h)
 		{
 			sRendererAPI->setViewport(x, y, w, h);
 		}
@@ -47,17 +47,17 @@ namespace Labyrinth {
 			sRendererAPI->disableBlend();
 		}
 
-		static void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0)
+		static void DrawIndexed(const Ref<VertexArray>& vertexArray, u32 indexCount = 0)
 		{
 			sRendererAPI->drawIndexed(vertexArray, indexCount);
 		}
 
-		static void DrawLines(const Ref<VertexArray>& vertexArray, uint32_t vertexCount)
+		static void DrawLines(const Ref<VertexArray>& vertexArray, u32 vertexCount)
 		{
 			sRendererAPI->drawLines(vertexArray, vertexCount);
 		}
 
-		static void SetLineWidth(float width)
+		static void SetLineWidth(f32 width)
 		{
 			sRendererAPI->setLineWidth(width);
 		}
