@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IAsset.h"
+#include "Asset.h"
 #include <Labyrinth/Renderer/SubTexture.h>
 
 #include <variant>
@@ -16,7 +16,7 @@ namespace Labyrinth {
     class AssetGroupIterator
     {
     public:
-        using TypeVal = typename AssetGroup::AssetType;
+        using TypeVal = typename AssetGroup::AssetVal;
         using TypeRef = typename Ref<TypeVal>;
         using IteratorType = typename AssetGroup::AssetGroupItem;
 
@@ -154,7 +154,7 @@ namespace Labyrinth {
     public:
         using Type = AssetGroupIterator<AssetGroup>;
 
-        using TypeVal = typename AssetGroup::AssetType;
+        using TypeVal = typename AssetGroup::AssetVal;
         using TypeRef = typename Ref<TypeVal>;
         using IteratorType = typename AssetGroup::AssetGroupItem;
 
@@ -286,10 +286,13 @@ namespace Labyrinth {
     };
 
     template<typename T>
-    class AssetGroup : public IAsset
+    class AssetGroup : public Asset
     {
     public:
-        using AssetType = T;
+        ASSET_STATIC_TYPE(AssetType::Group)
+
+    public:
+        using AssetVal = T;
         using AssetRef = Ref<T>;
         using GroupRef = Ref<AssetGroup>;
         using AssetGroupItem = std::pair<const std::string, AssetRef>;
@@ -612,7 +615,7 @@ namespace Labyrinth {
         Tex2DGroup, SubTex2DGroup, Tex2DSheetGroup
     >;
 
-    struct NotGroup : IAsset {};
+    class NotGroup : public Asset { public: ASSET_STATIC_TYPE(AssetType::None) };
     using AssetGroupVariant = std::variant<
         NotGroup, Ref<Tex2DGroup>, Ref<SubTex2DGroup>, Ref<Tex2DSheetGroup>
     >;

@@ -6,7 +6,8 @@ namespace Labyrinth {
 
 	SubTexModal::SubTexModal(SpriteSheetData& data) : Modal(), mPayload(data)
 	{
-		mSheet = AssetManager::Get<Texture2DSheet>(data.sheetName);
+		AssetHandle handle = AssetManager::GetAssetHandleFromPath(data.sheetName);
+		mSheet = AssetManager::GetAsset<Texture2DSheet>(handle);
 		mMaxWidthCount = mSheet->getTileCountX();
 		mMaxHeightCount = mSheet->getTileCountY();
 

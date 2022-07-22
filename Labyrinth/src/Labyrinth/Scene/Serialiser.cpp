@@ -336,7 +336,8 @@ namespace Labyrinth {
 		BeginObject();
 		ObjectProperty("Scene", scene->getName());
 
-		EncodeObject(*AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets", StorageType::Map));
+		AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
+		EncodeObject(*AssetManager::GetAsset<Tex2DSheetGroup>(handle));
 
 		BeginSequence("Entities");
 
@@ -484,7 +485,8 @@ namespace Labyrinth {
 			auto texture = spriteRendererComponent["Texture"];
 			std::string sheetName = texture["Sheet"].as<std::string>();
 
-			auto spriteSheets = AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets", StorageType::Map);
+			AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
+			auto spriteSheets = AssetManager::GetAsset<Tex2DSheetGroup>(handle);
 			auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
 				{
 					return match.second->getName() == sheetName;
@@ -498,7 +500,7 @@ namespace Labyrinth {
 				auto coordsSeq = texture["Coordinates"];
 				if (coordsSeq)
 				{
-					i32 i = 0;
+					int i = 0;
 					for (auto coord : coordsSeq)
 					{
 						if (i >= 4) break;
@@ -514,8 +516,8 @@ namespace Labyrinth {
 				else
 					src.texture = it->second->getSubTex(subTexName);
 			}
-			break;
 		}
+		break;
 		}
 
 		return true;
@@ -626,7 +628,8 @@ namespace Labyrinth {
 		if (!mIn["Scene"]) return false;
 
 		// Load spritesheets
-		DecodeObject<Ref<Tex2DSheetGroup>>(AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets"));
+		AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
+		DecodeObject<Ref<Tex2DSheetGroup>(AssetManager::GetAsset<Tex2DSheetGroup>(handle));
 
 		// Initialise current parent entity to null entity as first entity
 		// read should have no parent.

@@ -43,7 +43,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		Ref<Tex2DGroup> iconGroup = AssetManager::Create<Tex2DGroup>("Icons", StorageType::Map);
+		Ref<Tex2DGroup> iconGroup = AssetManager::CreateAsset<Tex2DGroup>("Icons.ltg", "Icons/", StorageType::Map);
 		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
 		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
 		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");

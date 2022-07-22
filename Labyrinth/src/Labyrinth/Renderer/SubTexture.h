@@ -12,8 +12,11 @@ namespace Labyrinth {
 
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
 	//It also provides an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
-	class Texture2DSheet : public IAsset
+	class Texture2DSheet : public Asset
 	{
+	public:
+		ASSET_STATIC_TYPE(AssetType::Texture)
+
 	public:
 		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name);
 		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name);
@@ -66,8 +69,11 @@ namespace Labyrinth {
 		friend class SubTexture2D;
 	};
 
-	class SubTexture2D : public IAsset
+	class SubTexture2D : public Asset
 	{
+	public:
+		ASSET_STATIC_TYPE(AssetType::Texture)
+
 	public:
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
 		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
