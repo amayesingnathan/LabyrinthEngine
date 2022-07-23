@@ -21,7 +21,7 @@ namespace Labyrinth {
 		}
 	};
 
-	class Tilemap
+	class Tilemap : public RefCounted
 	{
 	private:
 		Tilemap() = default;

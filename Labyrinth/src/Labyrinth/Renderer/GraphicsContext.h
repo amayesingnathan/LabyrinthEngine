@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API GraphicsContext
+	class GraphicsContext : public RefCounted
 	{
 	public:
 		virtual ~GraphicsContext() = default;

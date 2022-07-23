@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class IAsset 
+	class IAsset : public RefCounted
 	{
 	public:
 		virtual ~IAsset() {}

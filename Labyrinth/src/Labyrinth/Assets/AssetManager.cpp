@@ -10,11 +10,11 @@ namespace Labyrinth {
         usize count = 0;
 
         // If this is not a sheet then no subtextures to count.
-        Ref<Texture2DSheet> isSheet = CastRefToRelative<Texture2DSheet>(asset);
+        Ref<Texture2DSheet> isSheet = asset;
         if (!isSheet) return count;
 
         for (const auto& [name, tex] : isSheet->getSubTexList())
-            count += (tex.use_count() - 1);
+            count += (tex->getRefCount() - 1);
 
         return count;
     }

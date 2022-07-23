@@ -5,6 +5,7 @@
 #include "Labyrinth/Core/System/Log.h"
 #include "Labyrinth/Core/System/Assert.h"
 #include "Labyrinth/Core/System/Platforms.h"
+#include "Labyrinth/Core/System/Ref.h"
 #include "Labyrinth/Core/System/Cast.h"
 #include "Labyrinth/Core/System/Types.h"
 

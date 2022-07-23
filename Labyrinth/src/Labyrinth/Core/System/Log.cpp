@@ -6,8 +6,8 @@
 
 namespace Labyrinth {
 
-	Ref<spdlog::logger> Log::sCoreLogger;
-	Ref<spdlog::logger> Log::sClientLogger;
+	std::shared_ptr<spdlog::logger> Log::sCoreLogger;
+	std::shared_ptr<spdlog::logger> Log::sClientLogger;
 
 	void Log::Init(const std::string& appName)
 	{

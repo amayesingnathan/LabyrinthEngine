@@ -543,7 +543,7 @@ namespace Labyrinth {
 		if (mSceneState != SceneState::Edit)
 			return;
 
-		mEditorScene = CreateRef<Scene>();
+		mEditorScene = Ref<Scene>::Create();
 		mEditorData.currentFile = std::string();
 		SetCurrentScene(mEditorScene);
 	}
@@ -568,7 +568,7 @@ namespace Labyrinth {
 			return false;
 		}
 
-		Ref<Scene> newScene = CreateRef<Scene>();
+		Ref<Scene> newScene = Ref<Scene>::Create();
 		if (!Serialiser::Deserialise<Scene>(path.string(), newScene))
 			return false;
 

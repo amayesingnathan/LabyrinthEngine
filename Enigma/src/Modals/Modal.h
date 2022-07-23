@@ -6,7 +6,7 @@
 
 namespace Labyrinth
 {
-	class Modal
+	class Modal : public RefCounted
 	{
 	public:
 		Modal() { Application::BlockEsc(); }

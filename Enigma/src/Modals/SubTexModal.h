@@ -18,7 +18,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<SubTexModal> Create(SpriteSheetData& data) { return CreateRef<SubTexModal>(data); }
+		static Ref<SubTexModal> Create(SpriteSheetData& data) { return Ref<SubTexModal>::Create(data); }
 
 	private:
 		//Verify this is a valid subtexture i.e. a quad

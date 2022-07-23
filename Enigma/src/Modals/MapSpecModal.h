@@ -18,7 +18,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<MapSpecModal> Create(Entity& data) { return CreateRef<MapSpecModal>(data); }
+		static Ref<MapSpecModal> Create(Entity& data) { return Ref<MapSpecModal>::Create(data); }
 
 	private:
 		Entity& mEntity;

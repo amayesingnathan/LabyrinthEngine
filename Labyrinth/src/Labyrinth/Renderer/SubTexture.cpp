@@ -60,7 +60,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::Create(CreateRef(this), coords, spriteSize, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::Create(Ref<Texture2DSheet>(this), coords, spriteSize, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -73,7 +73,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = SubTexture2D::Create(CreateRef(this), coords, name);
+		Ref<SubTexture2D> subTex = SubTexture2D::Create(Ref<Texture2DSheet>(this), coords, name);
 		mSubTextures.emplace(name, subTex);
 		return subTex;
 	}
@@ -119,12 +119,12 @@ namespace Labyrinth {
 
 	Ref<Texture2DSheet> Texture2DSheet::Create(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
 	{
-		return CreateRef<Texture2DSheet>(filepath, tileSize, name);
+		return Ref<Texture2DSheet>::Create(filepath, tileSize, name);
 	}
 
 	Ref<Texture2DSheet> Texture2DSheet::Create(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name)
 	{
-		return CreateRef<Texture2DSheet>(spriteSheet, tileSize, name);
+		return Ref<Texture2DSheet>::Create(spriteSheet, tileSize, name);
 	}
 
 
@@ -168,16 +168,16 @@ namespace Labyrinth {
 		//Calculate y coord as Sheet Height - y so that "coords" parameter can be given as position from top right
 		glm::vec2 min = { ((coords.x * tex->mTileSize.x) / sheetWidth), ((sheetHeight - (coords.y * tex->mTileSize.y)) / sheetHeight) };
 		glm::vec2 max = { (((coords.x + spriteSize.x) * tex->mTileSize.x) / sheetWidth), ((sheetHeight - ((coords.y + spriteSize.y) * tex->mTileSize.y)) / sheetHeight) };
-		return CreateRef<SubTexture2D>(tex, min, max, name);
+		return Ref<SubTexture2D>::Create(tex, min, max, name);
 	}
 
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2DSheet>& tex, const glm::vec2 coords[4], const std::string& name)
 	{
-		return CreateRef<SubTexture2D>(tex, coords, name);
+		return Ref<SubTexture2D>::Create(tex, coords, name);
 	}
 
 	Ref<SubTexture2D> SubTexture2D::Create(const Ref<Texture2D>& tex, const std::string& name)
 	{
-		return CreateRef<SubTexture2D>(tex, name);
+		return Ref<SubTexture2D>::Create(tex, name);
 	}
 }

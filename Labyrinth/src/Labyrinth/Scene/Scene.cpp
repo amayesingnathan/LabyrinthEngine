@@ -84,7 +84,7 @@ namespace Labyrinth {
 
 	Ref<Scene> Scene::Clone()
 	{
-		Ref<Scene> newScene = CreateRef<Scene>(mName);
+		Ref<Scene> newScene = Ref<Scene>::Create(mName);
 		newScene->mViewportWidth = mViewportWidth;
 		newScene->mViewportHeight = mViewportHeight;
 
@@ -128,7 +128,7 @@ namespace Labyrinth {
 
 	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity parent)
 	{
-		Entity newEnt(mRegistry.create(), CreateRef(this));
+		Entity newEnt(mRegistry.create(), Ref<Scene>(this));
 
 		newEnt.addComponent<IDComponent>(id);
 		newEnt.addComponent<TransformComponent>();
@@ -214,7 +214,7 @@ namespace Labyrinth {
 
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
 			{
-				Entity entity(e, CreateRef(this));
+				Entity entity(e, Ref<Scene>(this));
 
 				b2BodyDef bodyDef;
 				bodyDef.type = BodyTypeToBox2D(rbComponent.type);
@@ -328,7 +328,7 @@ namespace Labyrinth {
 				if (!nsc.complete && !nsc.instance)
 				{
 					nsc.instance = nsc.instantiateScript();
-					nsc.instance->mScriptEntity = { entity, CreateRef(this) };
+					nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
 					nsc.instance->onStart();
 				}
 
@@ -351,7 +351,7 @@ namespace Labyrinth {
 		{
 			auto& idc = IDs.get<IDComponent>(entity);
 			if (idc.id == findID)
-				return { entity, CreateRef(this) };
+				return { entity, Ref<Scene>(this) };
 		}
 		return Entity();
 	}
@@ -436,7 +436,7 @@ namespace Labyrinth {
 		Entity primaryCam;
 		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent){
 			if (cameraComponent.primary)
-				primaryCam = { entity, CreateRef(this)};
+				primaryCam = { entity, Ref<Scene>(this)};
 		});
 		return primaryCam;
 	}

@@ -34,7 +34,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<BodySpecModal> Create(Ref<Scene>& data) { return CreateRef<BodySpecModal>(data); }
+		static Ref<BodySpecModal> Create(Ref<Scene>& data) { return Ref<BodySpecModal>::Create(data); }
 
 	private:
 		void ShapeOptions();

@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API VertexArray
+	class VertexArray : public RefCounted
 	{
 	public:
 		virtual ~VertexArray() = default;

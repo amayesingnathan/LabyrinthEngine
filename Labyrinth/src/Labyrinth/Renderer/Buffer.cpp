@@ -12,7 +12,7 @@ namespace Labyrinth {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(size);
+			case RendererAPI::API::OpenGL:	return Ref<OpenGLVertexBuffer>::Create(size);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown renderer API");
@@ -24,7 +24,7 @@ namespace Labyrinth {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLVertexBuffer>(vertices, size);
+			case RendererAPI::API::OpenGL:	return Ref<OpenGLVertexBuffer>::Create(vertices, size);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown renderer API");
@@ -36,7 +36,7 @@ namespace Labyrinth {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:	LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:	return CreateRef<OpenGLIndexBuffer>(indices, count);
+			case RendererAPI::API::OpenGL:	return Ref<OpenGLIndexBuffer>::Create(indices, count);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown renderer API");

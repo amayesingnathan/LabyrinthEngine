@@ -106,6 +106,6 @@ namespace Labyrinth {
 
 	Ref<Tilemap> Tilemap::Create(const std::string& name)
 	{
-		return CreateRef<Tilemap>(name);
+		return Ref<Tilemap>::Create(name);
 	}
 }

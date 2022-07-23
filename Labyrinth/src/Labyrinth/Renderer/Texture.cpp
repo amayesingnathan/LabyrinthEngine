@@ -13,7 +13,7 @@ namespace Labyrinth {
 		switch (Renderer::GetAPI())
 		{
 			case RendererAPI::API::None:    LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-			case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(width, height);
+			case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(width, height);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown RendererAPI!");
@@ -25,7 +25,7 @@ namespace Labyrinth {
 		switch (Renderer::GetAPI())
 		{
 		case RendererAPI::API::None:    LAB_CORE_ASSERT(false, "RendererAPI::None is currently not supported!"); return nullptr;
-		case RendererAPI::API::OpenGL:  return CreateRef<OpenGLTexture2D>(path);
+		case RendererAPI::API::OpenGL:  return Ref<OpenGLTexture2D>::Create(path);
 		}
 
 		LAB_CORE_ASSERT(false, "Unknown RendererAPI!");

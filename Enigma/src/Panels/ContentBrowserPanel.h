@@ -15,7 +15,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<ContentBrowserPanel> Create() { return CreateRef<ContentBrowserPanel>(); }
+		static Ref<ContentBrowserPanel> Create() { return Ref<ContentBrowserPanel>::Create(); }
 
 	private:
 		std::filesystem::path mCurrentDirectory; 

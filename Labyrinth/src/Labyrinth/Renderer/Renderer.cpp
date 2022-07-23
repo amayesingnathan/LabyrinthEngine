@@ -33,7 +33,7 @@ namespace Labyrinth {
 	{
 	}
 
-	void Renderer::Send(const Ref<Shader>& shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
+	void Renderer::Send(Ref<Shader> shader, const Ref<VertexArray>& vertexArray, const glm::mat4& transform)
 	{
 		shader->bind();
 		shader->setMat4("uViewProjection", sSceneData->ViewProjectionMatrix);

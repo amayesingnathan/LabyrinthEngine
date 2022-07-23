@@ -111,7 +111,7 @@ namespace Labyrinth {
 		return mOut;
 	}
 
-	template<> 
+	template<>
 	void YAMLParser::EncodeObject<Tex2DSheetGroup>(const Tex2DSheetGroup& sheets, bool flag)
 	{
 		BeginSequence("SpriteSheets");
@@ -353,253 +353,242 @@ namespace Labyrinth {
 	static Entity CurrentParent = Entity();
 
 	template<>
-	void YAMLParser::DecodeObject<Ref<Tex2DSheetGroup>>(Ref<Tex2DSheetGroup>& sheetsOut)
+	bool YAMLParser::DecodeObject<Ref<Tex2DSheetGroup>>(Ref<Tex2DSheetGroup> sheetsOut)
 	{
-		if (!mIn["SpriteSheets"]) return;
+		if (!mIn["SpriteSheets"]) return false;
 
 		auto sheetsNode = mIn["SpriteSheets"];
-		if (sheetsNode)
+		if (!sheetsNode) return false;
+
+		usize count = 0;
+		for (auto sheet : sheetsNode)
+			count++;
+
+		if (sheetsOut->capacity() < count)
+			sheetsOut->reserve(count);
+
+		for (auto sheet : sheetsNode)
 		{
-			usize count = 0;
-			for (auto sheet : sheetsNode)
-				count++;
+			std::string name = sheet["Name"].as<std::string>();
+			std::string path = sheet["Source"].as<std::string>();
+			glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
 
-			if (sheetsOut->capacity() < count)
-				sheetsOut->reserve(count);
-
-			for (auto sheet : sheetsNode)
-			{
-				std::string name = sheet["Name"].as<std::string>();
-				std::string path = sheet["Source"].as<std::string>();
-				glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
-
-				sheetsOut->addOrGet(name, Texture2DSheet::Create(path, tileSize, name));
-			}
+			sheetsOut->addOrGet(name, Texture2DSheet::Create(path, tileSize, name));
 		}
+
+		return true;
 	}
 
-	template<>	
-	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
+	template<>
+	bool YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
 
 	template<>
-	Ref<NodeComponent> YAMLParser::DecodeObject<NodeComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<NodeComponent>(Entity entity, YAML::Node node)
 	{
 		auto nodeComponent = node["NodeComponent"];
-		if (nodeComponent)
+		if (!nodeComponent) return false;
+
+		// Entities always have node components
+		auto& nc = entity.getComponent<NodeComponent>();
+
+		if (CurrentParent)
+			entity.setParent(CurrentParent, nc);
+
+		auto childCount = nodeComponent["ChildCount"];
+		if (childCount)
+			if (childCount.as<usize>() != 0)
+				nc.children.reserve(childCount.as<usize>());
+
+		auto children = nodeComponent["Children"];
+		if (children)
 		{
-			// Entities always have node components
-			auto& nc = entity.getComponent<NodeComponent>();
+			// Save and then set new currentParent entity for setting 
+			// the parent of all created child entities.
+			Entity holdParent = CurrentParent;
+			CurrentParent = entity;
 
-			if (CurrentParent)
-				entity.setParent(CurrentParent, nc);
+			for (auto child : children)
+				DecodeObject<Entity>(entity.getScene(), child);
 
-			auto childCount = nodeComponent["ChildCount"];
-			if (childCount)
-				if (childCount.as<usize>() != 0)
-					nc.children.reserve(childCount.as<usize>());
-
-			auto children = nodeComponent["Children"];
-			if (children)
-			{
-				// Save and then set new currentParent entity for setting 
-				// the parent of all created child entities.
-				Entity holdParent = CurrentParent;
-				CurrentParent = entity;
-
-				for (auto child : children)
-					DecodeObject<Entity>(entity.getScene(), child);
-
-				// Once all children have had parent set, restore the currentParent entity
-				// to this entity's parent.
-				CurrentParent = holdParent;
-			}
-
-			return CreateRef<NodeComponent>(nc);
+			// Once all children have had parent set, restore the currentParent entity
+			// to this entity's parent.
+			CurrentParent = holdParent;
 		}
-		return nullptr;
+
+		return true;
 	}
 
 	template<>
-	Ref<TransformComponent> YAMLParser::DecodeObject<TransformComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<TransformComponent>(Entity entity, YAML::Node node)
 	{
 		auto transformComponent = node["TransformComponent"];
-		if (transformComponent)
-		{
-			// Entities always have transforms
-			auto& tc = entity.getComponent<TransformComponent>();
-			tc.translation = transformComponent["Translation"].as<glm::vec3>();
-			tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
-			tc.scale = transformComponent["Scale"].as<glm::vec3>();
-			return CreateRef<TransformComponent>(tc);
-		}
-		return nullptr;
+		if (!transformComponent) return false;
+
+		// Entities always have transforms
+		auto& tc = entity.getComponent<TransformComponent>();
+		tc.translation = transformComponent["Translation"].as<glm::vec3>();
+		tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
+		tc.scale = transformComponent["Scale"].as<glm::vec3>();
+		return true;
 	}
 
 	template<>
-	Ref<CameraComponent> YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
 	{
 		auto cameraComponent = node["CameraComponent"];
-		if (cameraComponent)
-		{
-			auto cameraProps = cameraComponent["Camera"];
-			auto& cc = entity.addComponent<CameraComponent>();
-			cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
+		if (!cameraComponent) return false;
 
-			cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
-			cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
-			cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
+		auto cameraProps = cameraComponent["Camera"];
+		auto& cc = entity.addComponent<CameraComponent>();
+		cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
 
-			cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
-			cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
-			cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
+		cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+		cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
+		cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
 
-			cc.primary = cameraComponent["Primary"].as<bool>();
-			cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-			return CreateRef<CameraComponent>(cc);
-		}
-		return nullptr;
+		cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+		cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+		cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
+
+		cc.primary = cameraComponent["Primary"].as<bool>();
+		cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+
+		return true;
 	}
 
 	template<>
-	Ref<SpriteRendererComponent> YAMLParser::DecodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
 	{
 		auto spriteRendererComponent = node["SpriteRendererComponent"];
-		if (spriteRendererComponent)
+		if (!spriteRendererComponent) return false;
+
+		auto& src = entity.addComponent<SpriteRendererComponent>();
+
+		src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
+		src.layer = spriteRendererComponent["Layer"].as<u8>();
+		entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
+
+		src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
+
+		switch (src.type)
 		{
-			auto& src = entity.addComponent<SpriteRendererComponent>();
+		case SpriteRendererComponent::TexType::None: break;
+		case SpriteRendererComponent::TexType::Texture:
+		{
+			auto texture = spriteRendererComponent["Texture"];
+			src.texture = Texture2D::Create(texture["Source"].as<std::string>());
+		}
+		break;
+		case SpriteRendererComponent::TexType::SubTexture:
+		{
+			auto texture = spriteRendererComponent["Texture"];
+			std::string sheetName = texture["Sheet"].as<std::string>();
 
-			src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
-			src.layer = spriteRendererComponent["Layer"].as<u8>();
-			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
-
-			src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
-
-			switch (src.type)
-			{
-			case SpriteRendererComponent::TexType::None: break;
-			case SpriteRendererComponent::TexType::Texture: 
-			{
-				auto texture = spriteRendererComponent["Texture"];
-				src.texture = Texture2D::Create(texture["Source"].as<std::string>());
-			}				
-			break;
-			case SpriteRendererComponent::TexType::SubTexture:
-			{
-				auto texture = spriteRendererComponent["Texture"];
-				std::string sheetName = texture["Sheet"].as<std::string>();
-
-				const auto& spriteSheets = AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets", StorageType::Map);
-				auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
+			auto spriteSheets = AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets", StorageType::Map);
+			auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
 				{
 					return match.second->getName() == sheetName;
 				});
 
-				if (it != spriteSheets->end())
+			if (it != spriteSheets->end())
+			{
+				std::string subTexName = texture["SubTexName"].as<std::string>();
+
+				glm::vec2 subtexCoords[4];
+				auto coordsSeq = texture["Coordinates"];
+				if (coordsSeq)
 				{
-					std::string subTexName = texture["SubTexName"].as<std::string>();
-
-					glm::vec2 subtexCoords[4];
-					auto coordsSeq = texture["Coordinates"];
-					if (coordsSeq)
+					i32 i = 0;
+					for (auto coord : coordsSeq)
 					{
-						i32 i = 0;
-						for (auto coord : coordsSeq)
-						{
-							if (i >= 4) break;
+						if (i >= 4) break;
 
-							subtexCoords[i] = coord[std::to_string(i)].as<glm::vec2>();
-							i++;
-						}
+						subtexCoords[i] = coord[std::to_string(i)].as<glm::vec2>();
+						i++;
 					}
-
-
-					if (!it->second->hasSubTex(subTexName))
-						src.texture = it->second->createSubTex(subTexName, subtexCoords);
-					else
-						src.texture = it->second->getSubTex(subTexName);
 				}
-				break;
-			}
-			}
 
-			return CreateRef<SpriteRendererComponent>(src);
+
+				if (!it->second->hasSubTex(subTexName))
+					src.texture = it->second->createSubTex(subTexName, subtexCoords);
+				else
+					src.texture = it->second->getSubTex(subTexName);
+			}
+			break;
+		}
 		}
 
-		return nullptr;
+		return true;
 	}
 
 	template<>
-	Ref<CircleRendererComponent> YAMLParser::DecodeObject<CircleRendererComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<CircleRendererComponent>(Entity entity, YAML::Node node)
 	{
 		auto circleRendererComponent = node["CircleRendererComponent"];
-		if (circleRendererComponent)
-		{
-			auto& src = entity.addComponent<CircleRendererComponent>();
+		if (!circleRendererComponent) return false;
 
-			src.layer = circleRendererComponent["Layer"].as<u8>();
-			entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
+		auto& src = entity.addComponent<CircleRendererComponent>();
 
-			src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
-			src.thickness = circleRendererComponent["Thickness"].as<f32>();
-		}			
+		src.layer = circleRendererComponent["Layer"].as<u8>();
+		entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 
-		return nullptr;
+		src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
+		src.thickness = circleRendererComponent["Thickness"].as<f32>();
+
+		return true;
 	}
 
 	template<>
-	Ref<RigidBodyComponent> YAMLParser::DecodeObject<RigidBodyComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<RigidBodyComponent>(Entity entity, YAML::Node node)
 	{
 		auto rbComponent = node["RigidBodyComponent"];
-		if (rbComponent)
-		{
-			auto& rbc = entity.addComponent<RigidBodyComponent>();
-			rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
-			rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
-			return CreateRef<RigidBodyComponent>(rbc);
-		}
-		return nullptr;
+		if (!rbComponent) return false;
+
+		auto& rbc = entity.addComponent<RigidBodyComponent>();
+		rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
+		rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
+
+		return true;
 	}
 
 	template<>
-	Ref<BoxColliderComponent> YAMLParser::DecodeObject<BoxColliderComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<BoxColliderComponent>(Entity entity, YAML::Node node)
 	{
 		auto bcComponent = node["BoxColliderComponent"];
-		if (bcComponent)
-		{
-			auto& rbc = entity.addComponent<BoxColliderComponent>();
-			rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
-			rbc.offset = bcComponent["Offset"].as<glm::vec2>();
-			rbc.density = bcComponent["Density"].as<f32>();
-			rbc.friction = bcComponent["Friction"].as<f32>();
-			rbc.restitution = bcComponent["Restitution"].as<f32>();
-			rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
-			return CreateRef<BoxColliderComponent>(rbc);
-		}
-		return nullptr;
+		if (!bcComponent) return false;
+
+		auto& rbc = entity.addComponent<BoxColliderComponent>();
+		rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
+		rbc.offset = bcComponent["Offset"].as<glm::vec2>();
+		rbc.density = bcComponent["Density"].as<f32>();
+		rbc.friction = bcComponent["Friction"].as<f32>();
+		rbc.restitution = bcComponent["Restitution"].as<f32>();
+		rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+
+		return true;
 	}
 
 	template<>
-	Ref<CircleColliderComponent> YAMLParser::DecodeObject<CircleColliderComponent>(Entity entity, YAML::Node node)
+	bool YAMLParser::DecodeObject<CircleColliderComponent>(Entity entity, YAML::Node node)
 	{
 		auto ccComponent = node["CircleColliderComponent"];
-		if (ccComponent)
-		{
-			auto& rbc = entity.addComponent<CircleColliderComponent>();
-			rbc.radius = ccComponent["Radius"].as<f32>();
-			rbc.offset = ccComponent["Offset"].as<glm::vec2>();
-			rbc.density = ccComponent["Density"].as<f32>();
-			rbc.friction = ccComponent["Friction"].as<f32>();
-			rbc.restitution = ccComponent["Restitution"].as<f32>();
-			rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
-			return CreateRef<CircleColliderComponent>(rbc);
-		}
-		return nullptr;
+		if (!ccComponent) return false;
+
+		auto& rbc = entity.addComponent<CircleColliderComponent>();
+		rbc.radius = ccComponent["Radius"].as<f32>();
+		rbc.offset = ccComponent["Offset"].as<glm::vec2>();
+		rbc.density = ccComponent["Density"].as<f32>();
+		rbc.friction = ccComponent["Friction"].as<f32>();
+		rbc.restitution = ccComponent["Restitution"].as<f32>();
+		rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
+
+		return true;
 	}
 
 	template<>
-	Ref<Entity> YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
+	bool YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
 	{
-		UUID uuid(entity["Entity"].as<u64>()); 
+		UUID uuid(entity["Entity"].as<u64>());
 
 		std::string name;
 		auto tagComponent = entity["TagComponent"];
@@ -611,33 +600,33 @@ namespace Labyrinth {
 		Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
 
 		//Must add new components here as they are added.
-		if (!DecodeObject<NodeComponent>(deserializedEntity, entity)) return nullptr;
-		if (!DecodeObject<TransformComponent>(deserializedEntity, entity)) return nullptr;
+		DecodeObject<NodeComponent>(deserializedEntity, entity);
+		DecodeObject<TransformComponent>(deserializedEntity, entity);
 		DecodeObject<CameraComponent>(deserializedEntity, entity);
 		DecodeObject<SpriteRendererComponent>(deserializedEntity, entity);
 		DecodeObject<RigidBodyComponent>(deserializedEntity, entity);
 		DecodeObject<BoxColliderComponent>(deserializedEntity, entity);
 		DecodeObject<CircleColliderComponent>(deserializedEntity, entity);
 
-		return CreateRef<Entity>(deserializedEntity);
+		return true;
 	}
 
 	template<>
-	Ref<Entity> YAMLParser::DecodeObject<Entity>(Ref<Scene> scene)
+	bool YAMLParser::DecodeObject<Entity>(Ref<Scene> scene)
 	{
-		if (!mIn["Entity"]) return nullptr;
+		if (!mIn["Entity"]) return false;
 
 		auto entity = mIn["Entity"];
 		return DecodeObject<Entity>(scene, entity);
 	}
 
 	template<>
-	Ref<Scene> YAMLParser::DecodeObject<Scene>(Ref<Scene> scene)
+	bool YAMLParser::DecodeObject<Scene>(Ref<Scene> scene)
 	{
-		if (!mIn["Scene"]) return nullptr;
+		if (!mIn["Scene"]) return false;
 
 		// Load spritesheets
-		DecodeObject(AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets"));
+		DecodeObject<Ref<Tex2DSheetGroup>>(AssetManager::GetOrCreate<Tex2DSheetGroup>("SpriteSheets"));
 
 		// Initialise current parent entity to null entity as first entity
 		// read should have no parent.
@@ -648,15 +637,11 @@ namespace Labyrinth {
 		scene->setName(sceneName);
 
 		auto entities = mIn["Entities"];
-		if (entities)
-		{
-			for (auto entity : entities)
-			{
-				Ref<Entity> deserialisedEntity = DecodeObject<Entity>(scene, entity);
-				if (!deserialisedEntity) return nullptr;
-			}
-		}
+		if (!entities) return false;
 
-		return scene;
+		for (auto entity : entities)
+			if (!DecodeObject<Entity>(scene, entity)) return false;
+
+		return true;
 	}
 }

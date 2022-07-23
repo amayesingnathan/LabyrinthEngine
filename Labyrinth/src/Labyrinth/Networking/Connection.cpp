@@ -92,7 +92,7 @@ namespace Labyrinth {
 		void Connection::AddToIncomingMessageQueue()
 		{
 			if (mOwnerType == Owner::Server)
-				mQMessagesIn.push_back({ CreateRef(this), mMsgTemporaryIn });
+				mQMessagesIn.push_back({ Ref<Connection>(this), mMsgTemporaryIn });
 			else
 				mQMessagesIn.push_back({ nullptr, mMsgTemporaryIn });
 
@@ -129,7 +129,7 @@ namespace Labyrinth {
 							if (mHandshakeIn == mHandshakeCheck)
 							{
 								LAB_CORE_INFO("Client Validated");
-								server->onClientValidated(CreateRef(this));
+								server->onClientValidated(Ref<Connection>(this));
 
 								ReadHeader();
 							}

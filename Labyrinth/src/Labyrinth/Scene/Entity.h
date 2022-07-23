@@ -99,7 +99,7 @@ namespace Labyrinth {
 		operator UUID() const { return getUUID(); }
 		operator u64() const { return getUUID(); }
 
-		operator bool() const { return (mEntID != entt::null && !mScene.expired()); }
+		operator bool() const { return (mEntID != entt::null && mScene.valid()); }
 
 		bool operator==(const Entity& other) const
 		{

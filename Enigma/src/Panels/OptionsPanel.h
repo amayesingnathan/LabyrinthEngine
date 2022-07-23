@@ -13,7 +13,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<OptionsPanel> Create(EditorData& data) { return CreateRef<OptionsPanel>(data); }
+		static Ref<OptionsPanel> Create(EditorData& data) { return Ref<OptionsPanel>::Create(data); }
 
 	private:
 		EditorData* mEditorData = nullptr;

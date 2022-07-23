@@ -71,19 +71,6 @@ namespace Labyrinth {
 		}
 	}
 
-	template<typename To, typename From>
-	constexpr Ref<To> CastRef(Ref<From> target)
-	{
-		return std::static_pointer_cast<To>(target);
-	}
-
-	template<typename To, typename From>
-	constexpr Ref<To> CastRefToRelative(Ref<From> target)
-	{
-		LAB_STATIC_ASSERT(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
-		return std::dynamic_pointer_cast<To>(target);
-	}
-
 	template<typename Base, typename Derived>
 	constexpr bool IsDerivedFrom() { return std::is_base_of<Base, Derived>::value; }
 }

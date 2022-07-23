@@ -30,8 +30,7 @@ namespace Labyrinth {
 		static bool Deserialise(const std::string& filepath, Target target = nullptr)
 		{
 			YAMLParser parser(filepath);
-			if (parser.DecodeObject<T>(target)) return true;
-			return false;
+			return parser.DecodeObject<T>(target);
 		}
 		static bool DeserialiseRuntime(const std::string& filepath)
 		{

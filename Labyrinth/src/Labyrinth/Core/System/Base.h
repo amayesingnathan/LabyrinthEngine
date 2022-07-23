@@ -5,6 +5,7 @@
 #include <memory>
 #include "Labyrinth/Core/System/API.h"
 #include <Labyrinth/Core/System/Types.h>
+#include <Labyrinth/Core/System/Ref.h>
 
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)
@@ -41,25 +42,4 @@ namespace Labyrinth {
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
-
-	template<typename T>
-	using Ref = std::shared_ptr<T>;
-
-	template<typename T>
-	using AllowRefFromThis = std::enable_shared_from_this<T>;
-
-	template<typename T, typename ... Args>
-	constexpr inline Ref<T> CreateRef(Args&& ... args)
-	{
-		return std::make_shared<T>(std::forward<Args>(args)...);
-	}
-	// Object T must inherit from AllowRefFromThis<T>
-	template<typename T>
-	constexpr inline Ref<T> CreateRef(T* raw_ptr)
-	{
-		return raw_ptr->shared_from_this(); 
-	}
-
-	template<typename T>
-	using WeakRef = std::weak_ptr<T>;
 }

@@ -13,7 +13,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<AssetPanel> Create() { return CreateRef<AssetPanel>(); }
+		static Ref<AssetPanel> Create() { return Ref<AssetPanel>::Create(); }
 
 	private:
 		Ref<Texture2D> mAssetIcon, mGroupIcon;

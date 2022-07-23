@@ -14,7 +14,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<StatsPanel> Create(Entity& entity) { return CreateRef<StatsPanel>(entity); }
+		static Ref<StatsPanel> Create(Entity& entity) { return Ref<StatsPanel>::Create(entity); }
 
 	private:
 		Entity& mHoveredEntity;

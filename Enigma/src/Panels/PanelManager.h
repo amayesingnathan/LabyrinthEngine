@@ -9,7 +9,7 @@
 
 namespace Labyrinth {
 
-	class IPanel
+	class IPanel : public RefCounted
 	{
 	public:
 		virtual ~IPanel() {}
@@ -95,7 +95,7 @@ namespace Labyrinth {
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			Ref<T> newPanel = T::Create();
-			panels.emplace_back(name, CastRefToRelative<IPanel>(newPanel), display);
+			panels.emplace_back(name, newPanel, display);
 
 			return newPanel;
 		}
@@ -110,7 +110,7 @@ namespace Labyrinth {
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			Ref<T> newPanel = T::Create(std::forward<Args>(args)...);
-			panels.emplace_back(name, CastRefToRelative<IPanel>(newPanel), display);
+			panels.emplace_back(name, newPanel, display);
 
 			return newPanel;
 		}

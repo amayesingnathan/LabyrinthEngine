@@ -15,7 +15,7 @@ namespace Labyrinth {
 		void onUpdate() override;
 		void onImGuiRender() override;
 
-		static Ref<SpriteSheetPanel> Create() { return CreateRef<SpriteSheetPanel>(); }
+		static Ref<SpriteSheetPanel> Create() { return Ref<SpriteSheetPanel>::Create(); }
 
 	private:
 		Ref<Texture2D> mNoTex = nullptr;

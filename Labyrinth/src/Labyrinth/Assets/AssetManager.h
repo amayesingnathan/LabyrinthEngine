@@ -36,7 +36,7 @@ namespace Labyrinth {
             ([&result, &asset]()
             {
                 // Check each possible asset type to see if this is an AssetGroup of each type.
-                const Ref<AssetGroup<AssetType>>& isGroup = CastRefToRelative<AssetGroup<AssetType>>(asset);
+                const Ref<AssetGroup<AssetType>>& isGroup = asset;
                 if (isGroup)
                     result += isGroup->ref_count();
             }(), ...);
@@ -57,7 +57,7 @@ namespace Labyrinth {
             ([&result, &asset]()
             {
                 // Check each possible asset type to see if this is an AssetGroup of each type.
-                Ref<AssetGroup<AssetType>> isGroup = CastRefToRelative<AssetGroup<AssetType>>(asset);
+                Ref<AssetGroup<AssetType>> isGroup = asset;
                 if (isGroup)
                     result = true;
             }(), ...);
@@ -77,7 +77,7 @@ namespace Labyrinth {
             ([&result, &asset]()
             {
                 // Check each possible asset type to see if this is an AssetGroup of each type.
-                if (Ref<AssetGroupType> isGroup = CastRefToRelative<AssetGroupType>(asset))
+                if (Ref<AssetGroupType> isGroup = asset)
                     result = isGroup;
             }(), ...);
 
@@ -109,7 +109,7 @@ namespace Labyrinth {
             LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
 
             Ref<AssetType> newAsset = AssetType::Create();
-            assets[id] = CastRefToRelative<IAsset>(newAsset);
+            assets[id] = newAsset;
 
             return newAsset;
         }
@@ -129,7 +129,7 @@ namespace Labyrinth {
             LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
 
             Ref<AssetType> newAsset = AssetType::Create(std::forward<Args>(args)...);
-            assets[id] = CastRefToRelative<IAsset>(newAsset);
+            assets[id] = newAsset;
 
             return newAsset;
         }
@@ -145,7 +145,7 @@ namespace Labyrinth {
             AssetCache& assets = GetAssets();
             LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
 
-            assets[id] = CastRefToRelative<IAsset>(newAsset);
+            assets[id] = newAsset;
         }
 
         /// <summary>
@@ -169,7 +169,7 @@ namespace Labyrinth {
             AssetCache& assets = GetAssets();
             LAB_CORE_ASSERT(assets.count(id) != 0, "Asset doesn't exist in manager!");
 
-            return CastRefToRelative<IAsset>(assets[id]);
+            return assets[id];
         }
 
         /// <summary>
@@ -182,7 +182,7 @@ namespace Labyrinth {
             AssetCache& assets = GetAssets();
             LAB_CORE_ASSERT(assets.count(id) != 0, "Asset doesn't exist in manager!");
 
-            return CastRefToRelative<AssetType>(assets[id]);
+            return assets[id];
         }
 
         /// <summary>
@@ -213,7 +213,7 @@ namespace Labyrinth {
             if (assets.count(id) != 0)
                 return nullptr;
 
-            return CastRefToRelative<AssetType>(assets[id]);
+            return assets[id];
         }
 
         /// <summary>
@@ -226,9 +226,9 @@ namespace Labyrinth {
         /// </summary>
         static usize GetRefCount(const Ref<IAsset>& asset)
         {
-            usize count = asset.use_count() - 1;
-            count += GetGroupRefCount(AllAssetTypes{}, asset); // Will add zero if not a group
-            count += GetSubTexRefCount(asset); // Will add zero if not a texture sheet
+            usize count = asset->getRefCount() - 1;
+            //count += GetGroupRefCount(AllAssetTypes{}, asset); // Will add zero if not a group
+            //count += GetSubTexRefCount(asset); // Will add zero if not a texture sheet
             return count;
         }
         /// <summary>

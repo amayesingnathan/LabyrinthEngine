@@ -110,7 +110,7 @@ namespace Labyrinth {
 		u32 mStride = 0;
 	};
 
-	class LAB_API VertexBuffer
+	class VertexBuffer : public RefCounted
 	{
 	public:
 		virtual ~VertexBuffer() = default;
@@ -127,7 +127,7 @@ namespace Labyrinth {
 		static Ref<VertexBuffer> Create(f32* vertices, u32 size);
 	};
 
-	class IndexBuffer
+	class IndexBuffer : public RefCounted
 	{
 	public:
 		virtual ~IndexBuffer() = default;

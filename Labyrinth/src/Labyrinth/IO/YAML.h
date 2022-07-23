@@ -33,16 +33,12 @@ namespace Labyrinth {
 		template<typename T>
 		void EncodeObject(const T& data, bool flag = true);
 
-		template<typename T>
-		T DecodeObject();
-		template<typename T>
-		void DecodeObject(T& output);
 		template<typename T, typename Target>
-		Ref<T> DecodeObject(Target target);
+		bool DecodeObject(Target target);
 
 	private:
 		template<typename T, typename Target>
-		Ref<T> DecodeObject(Target target, YAML::Node node);
+		bool DecodeObject(Target target, YAML::Node node);
 
 	private: //Output API
 		void BeginObject(const std::string& name)

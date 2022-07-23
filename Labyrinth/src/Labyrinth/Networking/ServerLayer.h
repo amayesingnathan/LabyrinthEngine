@@ -81,7 +81,7 @@ namespace Labyrinth {
 						{
 							LAB_CORE_TRACE("New Connection {0}", socket.remote_endpoint());
 
-							Ref<Connection> newConn = CreateRef<Connection>(Connection::Owner::Server, mIOContext, std::move(socket), mQMessagesIn);
+							Ref<Connection> newConn = Ref<Connection>::Create(Connection::Owner::Server, mIOContext, std::move(socket), mQMessagesIn);
 
 							if (onClientConnect(newConn))
 							{

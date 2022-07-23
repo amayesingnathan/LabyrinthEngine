@@ -16,7 +16,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<TileWidthModal> Create(SpriteSheetData& data) { return CreateRef<TileWidthModal>(data); }
+		static Ref<TileWidthModal> Create(SpriteSheetData& data) { return Ref<TileWidthModal>::Create(data); }
 
 	private:
 		void LoadSheet();

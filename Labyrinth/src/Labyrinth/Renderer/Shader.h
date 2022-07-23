@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Shader
+	class Shader : public RefCounted
 	{
 	public:
 		virtual ~Shader() = default;

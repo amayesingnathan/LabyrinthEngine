@@ -21,7 +21,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 
-		static Ref<SettingsModal> Create() { return CreateRef<SettingsModal>(); }
+		static Ref<SettingsModal> Create() { return Ref<SettingsModal>::Create(); }
 
 	private:
 		void Save();

@@ -13,7 +13,7 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class LAB_API Scene : public AllowRefFromThis<Scene>
+	class Scene : public RefCounted
 	{
 	public:
 		Scene(const std::string& name = "Untitled");

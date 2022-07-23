@@ -524,7 +524,7 @@ namespace Labyrinth {
                     LAB_STATIC_ASSERT(false, "non-exhaustive visitor!");
 
                 for (const auto& [key, asset] : arg)
-                    ref_count += AssetManager::GetRefCount(CastRefToRelative<IAsset>(asset));
+                    ref_count += AssetManager::GetRefCount(asset);
 
             }, mAssets);
 
@@ -590,12 +590,12 @@ namespace Labyrinth {
 
         static GroupRef Create()
         {
-            return CreateRef<AssetGroup>();
+            return Ref<AssetGroup>::Create();
             
         }
         static GroupRef Create(StorageType storageType)
         {
-            return CreateRef<AssetGroup>(storageType);
+            return Ref<AssetGroup>::Create(storageType);
         }
 
     private:
