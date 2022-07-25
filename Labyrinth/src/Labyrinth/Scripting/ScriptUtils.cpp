@@ -1,5 +1,5 @@
 #include "Lpch.h"
-#include "Scripting.h"
+#include "ScriptUtils.h"
 
 #include <Labyrinth/IO/File.h>
 
@@ -10,7 +10,7 @@
 
 namespace Labyrinth {
 
-	MonoAssembly* Scripting::LoadMonoAssembly(const std::filesystem::path& assemblyPath)
+	MonoAssembly* ScriptUtils::LoadMonoAssembly(const std::filesystem::path& assemblyPath)
 	{
 		size_t fileSize = 0;
 		char* fileData = FileUtils::Read(assemblyPath, &fileSize);
@@ -35,7 +35,7 @@ namespace Labyrinth {
 		return assembly;
 	}
 
-	void Scripting::PrintAssemblyTypes(MonoAssembly* assembly)
+	void ScriptUtils::PrintAssemblyTypes(MonoAssembly* assembly)
 	{
 		MonoImage* image = mono_assembly_get_image(assembly);
 		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
@@ -53,7 +53,7 @@ namespace Labyrinth {
 		}
 	}
 
-	MonoClass* Scripting::GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className)
+	MonoClass* ScriptUtils::GetClassInAssembly(MonoAssembly* assembly, const char* namespaceName, const char* className)
 	{
 		MonoImage* image = mono_assembly_get_image(assembly);
 		MonoClass* klass = mono_class_from_name(image, namespaceName, className);
@@ -67,7 +67,7 @@ namespace Labyrinth {
 		return klass;
 	}
 
-	MonoObject* Scripting::InstantiateClass(MonoDomain* domain, MonoClass* classInstance)
+	MonoObject* ScriptUtils::InstantiateClass(MonoDomain* domain, MonoClass* classInstance)
 	{
 		// Allocate an instance of our class
 		MonoObject* instance = mono_object_new(domain, classInstance);
@@ -84,7 +84,7 @@ namespace Labyrinth {
 	}
 
 
-	bool Scripting::CheckMonoError(MonoError& error)
+	bool ScriptUtils::CheckMonoError(MonoError& error)
 	{
 		bool hasError = !mono_error_ok(&error);
 		if (hasError)
@@ -99,12 +99,12 @@ namespace Labyrinth {
 		return hasError;
 	}
 
-	MonoMethod* Scripting::GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc)
+	MonoMethod* ScriptUtils::GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc)
 	{
 		return mono_class_get_method_from_name(classInstance, methodName, argc);;
 	}
 
-	MonoObject* Scripting::CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc)
+	MonoObject* ScriptUtils::CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc)
 	{
 		MonoMethod* method = GetMethodInternal(mono_object_get_class(instance), methodName, argc);
 
@@ -117,7 +117,7 @@ namespace Labyrinth {
 		return CallMethodInternal(instance, method, argv);
 	}
 
-	MonoObject* Scripting::CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv)
+	MonoObject* ScriptUtils::CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv)
 	{
 		MonoObject* exception = nullptr;
 		MonoObject* result = mono_runtime_invoke(method, instance, argv, &exception);
@@ -127,7 +127,7 @@ namespace Labyrinth {
 		return result;
 	}
 
-	MonoObject* Scripting::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc)
+	MonoObject* ScriptUtils::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc)
 	{
 		// Allocate an instance of our class
 		MonoObject* instance = mono_object_new(domain, classInstance);

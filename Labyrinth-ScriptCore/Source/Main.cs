@@ -2,16 +2,16 @@ using System;
 
 namespace Labyrinth
 {
-    public class Entity
+    public class Main
     {
         public float FloatVar { get; set; }
 
-        public Entity()
+        public Main()
         {
             Console.WriteLine("Main constructor");
             Internal.LogInfo("Main constructor");
         }
-        public Entity(float x)
+        public Main(float x)
         {
             FloatVar = x;
             Console.WriteLine($"Main constructor + {FloatVar}");
