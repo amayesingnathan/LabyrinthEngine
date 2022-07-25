@@ -19,7 +19,7 @@ namespace Labyrinth {
 		};
 	}
 
-	class Scripting
+	class ScriptUtils
 	{
 	public:
 		template<typename T, typename Func, typename... Args>
@@ -59,7 +59,7 @@ namespace Labyrinth {
 		template<typename... Args>
 		static MonoObject* InstantiateClass(MonoDomain* domain, MonoClass* classInstance, Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
+			return ScriptUtils::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return InstantiateClassInternal(domain, classInstance, argv, argc);
 				}, std::forward<Args>(args)...);
 		}
@@ -67,14 +67,14 @@ namespace Labyrinth {
 		template<typename... Args>
 		static MonoObject* CallMethod(MonoObject* instance, const char* methodName, Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
+			return ScriptUtils::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return CallMethodInternal(instance, methodName, argv, argc);
 				}, std::forward<Args>(args)...);
 		}
 		template<typename... Args>
 		static MonoObject* CallMethod(MonoObject* instance, MonoMethod* method, Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
+			return ScriptUtils::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return CallMethodInternal(instance, method, argv);
 				}, std::forward<Args>(args)...);
 		}

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scripting.h"
+#include "ScriptFwd.h"
 
 namespace Labyrinth {
 
@@ -15,5 +15,7 @@ namespace Labyrinth {
 	private:
 		static void InitMono();
 		static void ShutdownMono();
+
+		static void LoadAssemblyClasses(MonoAssembly* assembly);
 	};
 }

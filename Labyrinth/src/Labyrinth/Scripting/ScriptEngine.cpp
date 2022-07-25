@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "ScriptEngine.h"
 
-#include "Scripting.h"
+#include "ScriptUtils.h"
 #include "ScriptGlue.h"
 #include "ScriptClass.h"
 #include "ScriptObject.h"
@@ -20,6 +20,8 @@ namespace Labyrinth {
 		MonoImage* coreAssemblyImage = nullptr;
 
 		Ref<ScriptClass> entityClass;
+
+		std::unordered_map<std::string, Ref<ScriptClass>> entityClasses;
 	};
 
 	static ScriptEngineData* sData = nullptr;
@@ -30,10 +32,11 @@ namespace Labyrinth {
 
 		InitMono();
 		LoadCoreAssembly("Resources/Scripts/Labyrinth-ScriptCore.dll");
+		LoadAssemblyClasses(sData->coreAssembly);
 
 		ScriptGlue::RegisterFunctions();
 
-		sData->entityClass = ScriptClass::Create("Labyrinth", "Entity");
+		sData->entityClass = ScriptClass::Create("Labyrinth", "Main");
 		ScriptObject instance(sData->entityClass);
 		ScriptObject instance2(sData->entityClass, 2.4f);
 		instance.invokeMethod("PrintMessage");
@@ -52,11 +55,11 @@ namespace Labyrinth {
 		sData->appDomain = mono_domain_create_appdomain("LabScriptRuntime", nullptr);
 		mono_domain_set(sData->appDomain, true);
 
-		sData->coreAssembly = Scripting::LoadMonoAssembly(path);
+		sData->coreAssembly = ScriptUtils::LoadMonoAssembly(path);
 		sData->coreAssemblyImage = mono_assembly_get_image(sData->coreAssembly);
 
 #ifdef LAB_DEBUG
-		Scripting::PrintAssemblyTypes(sData->coreAssembly);
+		ScriptUtils::PrintAssemblyTypes(sData->coreAssembly);
 #endif
 	}
 
@@ -80,6 +83,36 @@ namespace Labyrinth {
 		sData->rootDomain = nullptr;
 	}
 
+	void ScriptEngine::LoadAssemblyClasses(MonoAssembly* assembly)
+	{
+		sData->entityClasses.clear();
+
+		MonoImage* image = mono_assembly_get_image(assembly);
+		const MonoTableInfo* typeDefinitionsTable = mono_image_get_table_info(image, MONO_TABLE_TYPEDEF);
+		int32_t numTypes = mono_table_info_get_rows(typeDefinitionsTable);
+
+		MonoClass* entityClass = mono_class_from_name(image, "Labyrinth", "Entity");
+
+		for (int32_t i = 0; i < numTypes; i++)
+		{
+			uint32_t cols[MONO_TYPEDEF_SIZE];
+			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
+
+			std::string nameSpace = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAMESPACE]);
+			std::string name = mono_metadata_string_heap(image, cols[MONO_TYPEDEF_NAME]);
+			std::string fullname;
+
+			if (nameSpace.empty())
+				fullname = name;
+			else
+				fullname = fmt::format("{}.{}", nameSpace, name);
+
+			MonoClass* monoClass = mono_class_from_name(image, nameSpace.c_str(), name.c_str());
+			if (mono_class_is_subclass_of(monoClass, entityClass, false))
+				sData->entityClasses[fullname] = ScriptClass::Create(monoClass);
+		}
+	}
+
 	ScriptClass::ScriptClass(const std::string& classNamespace, const std::string& className)
 		: mClassNamespace(classNamespace), mClassName(className)
 	{
@@ -100,6 +133,8 @@ namespace Labyrinth {
 
 	ScriptClass::ScriptClass(MonoObject* instance)
 	{
+		if (!instance) return;
+
 		mMonoClass = mono_object_get_class(instance);
 		mClassNamespace = mono_class_get_namespace(mMonoClass);
 		mClassName = mono_class_get_name(mMonoClass);
@@ -111,7 +146,7 @@ namespace Labyrinth {
 
 	MonoObject* ScriptClass::instantiate() const
 	{
-		return Scripting::InstantiateClass(sData->appDomain, mMonoClass);
+		return ScriptUtils::InstantiateClass(sData->appDomain, mMonoClass);
 	}
 
 	MonoMethod* ScriptClass::getMethod(const std::string& name)
@@ -122,7 +157,7 @@ namespace Labyrinth {
 
 	MonoObject* ScriptClass::InstantiateInternal(void** argv, int argc)
 	{
-		return Scripting::InstantiateClassInternal(sData->appDomain, mMonoClass, argv, argc);
+		return ScriptUtils::InstantiateClassInternal(sData->appDomain, mMonoClass, argv, argc);
 	}
 
 

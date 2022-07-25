@@ -19,7 +19,7 @@ namespace Labyrinth {
 		template<typename... Args>
 		MonoObject* instantiate(Args&&... args)
 		{
-			return Scripting::WrapArgs<MonoObject*>([=](void** argv, int argc) {
+			return ScriptUtils::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return InstantiateInternal(argv, argc);
 				}, std::forward<Args>(args)...);
 		}
@@ -29,8 +29,10 @@ namespace Labyrinth {
 		template<typename... Args>
 		MonoObject* invokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
 		{
-			return Scripting::CallMethod(instance, name.c_str(), std::forward<Args>(args)...);
+			return ScriptUtils::CallMethod(instance, name.c_str(), std::forward<Args>(args)...);
 		}
+
+		operator MonoClass* () { return mMonoClass; }
 
 		static Ref<ScriptClass> Create(const std::string& classNamespace, const std::string& className) { return CreateRef<ScriptClass>(classNamespace, className); }
 		static Ref<ScriptClass> Create(MonoClass* klass) { return CreateRef<ScriptClass>(klass); }

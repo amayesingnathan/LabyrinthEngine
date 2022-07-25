@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Scripting.h"
+#include "ScriptUtils.h"
 #include "ScriptClass.h"
 
 namespace Labyrinth {
@@ -8,8 +8,11 @@ namespace Labyrinth {
 	class ScriptObject
 	{
 	public:
+		ScriptObject(std::nullptr_t) {}
 		ScriptObject::ScriptObject(MonoObject* instance)
-			: mClass(ScriptClass::Create(instance)), mInstance(instance) {}
+			: mClass(ScriptClass::Create(instance)), mInstance(instance)
+		{
+		}
 
 		ScriptObject(const Ref<ScriptClass>& type)
 		: mClass(type)
@@ -26,11 +29,14 @@ namespace Labyrinth {
 		template<typename... Args>
 		ScriptObject invokeMethod(const std::string& name, Args&&... args)
 		{
-			return Scripting::CallMethod(mInstance, mClass->getMethod(name), std::forward<Args>(args)...);
+			MonoObject* result = ScriptUtils::CallMethod(mInstance, mClass->getMethod(name), std::forward<Args>(args)...);
+			if (result) return result;
+
+			return nullptr;
 		}
 
 	private:
-		Ref<ScriptClass> mClass;
+		Ref<ScriptClass> mClass = nullptr;
 		MonoObject* mInstance = nullptr;
 	};
 
