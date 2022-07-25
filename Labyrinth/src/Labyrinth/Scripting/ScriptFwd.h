@@ -1,26 +1,12 @@
 #pragma once
 
-struct _MonoDomain;
-typedef struct _MonoDomain MonoDomain;
-
-struct _MonoAssembly;
-typedef struct _MonoAssembly MonoAssembly;
-
-struct _MonoClass;
-typedef struct _MonoClass MonoClass;
-
-struct _MonoObject;
-typedef struct _MonoObject MonoObject;
-
-struct _MonoMethod;
-typedef struct _MonoMethod MonoMethod;
-
-struct _MonoClassField;
-typedef struct _MonoClassField MonoClassField;
-
-struct _MonoProperty;
-typedef struct _MonoProperty MonoProperty;
-
-union _MonoError;
-typedef union _MonoError MonoErrorExternal;
-typedef MonoErrorExternal MonoError;
+extern "C" {
+	typedef struct _MonoDomain MonoDomain;
+	typedef struct _MonoAssembly MonoAssembly;
+	typedef struct _MonoClass MonoClass;
+	typedef struct _MonoObject MonoObject;
+	typedef struct _MonoMethod MonoMethod;
+	typedef struct _MonoClassField MonoClassField;
+	typedef struct _MonoProperty MonoProperty;
+	typedef union _MonoError MonoError;
+}
