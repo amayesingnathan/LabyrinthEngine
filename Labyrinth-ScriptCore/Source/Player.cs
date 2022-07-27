@@ -15,9 +15,21 @@ namespace Sandbox
             Internal.LogInfo("Player.OnCreate");
         }
 
-        public override void OnUpdate()
+        public override void OnUpdate(float ts)
         {
-            Internal.LogInfo("Player.OnUpdate");
+            Internal.LogInfo($"Player.OnUpdate: {ts}");
+        }
+    }
+    public class Player2 : Entity
+    {
+        public override void OnCreate()
+        {
+            Internal.LogInfo("Player2.OnCreate");
+        }
+
+        public override void OnUpdate(float ts)
+        {
+            Internal.LogInfo($"Player2.OnUpdate: {ts}");
         }
     }
 }

@@ -29,7 +29,7 @@ namespace Labyrinth {
 		template<typename... Args>
 		MonoObject* invokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
 		{
-			return ScriptUtils::CallMethod(instance, name.c_str(), std::forward<Args>(args)...);
+			return ScriptUtils::CallMethod(instance, getMethod(name), std::forward<Args>(args)...);
 		}
 
 		operator MonoClass* () { return mMonoClass; }
@@ -40,6 +40,8 @@ namespace Labyrinth {
 
 	private:
 		MonoObject* InstantiateInternal(void** argv, int argc);
+
+		void LoadMethods();
 
 	private:
 		std::string mClassNamespace;

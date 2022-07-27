@@ -42,4 +42,24 @@ namespace Labyrinth {
 	{
 		return std::make_unique<T>(std::forward<Args>(args)...);
 	}
+
+
+	/*
+		Raw Pointer Tools
+	*/
+
+	namespace PointerUtils {
+
+		template<typename T>
+		struct IsPointerInternal { static const bool value = false; };
+
+		template<typename T>
+		struct IsPointerInternal<T*> { static const bool value = true; };
+	}
+
+	template<typename T>
+	constexpr bool IsPointer() { return PointerUtils::IsPointerInternal<T>::value; };
+
+	template<typename T>
+	constexpr bool IsConst() { return std::is_const<T>::value; };
 }

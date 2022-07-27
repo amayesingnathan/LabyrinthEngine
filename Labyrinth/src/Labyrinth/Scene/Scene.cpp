@@ -5,6 +5,7 @@
 #include "Components.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
+#include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Scripting/NativeScript.h"
 
 #include <glm/glm.hpp>
@@ -339,6 +340,11 @@ namespace Labyrinth {
 				nsc.destroyScript();
 			}
 		});
+
+		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		{
+			sc.instance->onUpdate(ts);
+		});
 	}
 
 	Entity Scene::FindEntity(UUID findID)
@@ -374,11 +380,27 @@ namespace Labyrinth {
 	void Scene::onRuntimeStart()
 	{
 		OnPhysicsStart();
+
+		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		{
+			Entity e = { entity, CreateRef(this) };
+			if (ScriptEngine::EntityClassExists(sc.className))
+			{
+				sc.instance = ScriptObject::Create(ScriptEngine::GetEntityClass(sc.className));
+				sc.instance->onStart();
+			}
+
+		});
 	}
 
 	void Scene::onRuntimeStop()
 	{
 		OnPhysicsStop();
+
+		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		{
+			sc.instance = nullptr;
+		});
 	}
 
 	void Scene::onSimulationStart()
@@ -393,10 +415,11 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
+		UpdateScripts(ts);
+		StepPhysics2D(ts);
+
 		Entity camera = getPrimaryCameraEntity();
 		if (!camera) return;
-
-		StepPhysics2D(ts);
 
 		BuildScene();
 		DrawScene(camera.getComponent<CameraComponent>(), camera.getComponent<TransformComponent>());
@@ -506,6 +529,16 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<CircleColliderComponent>(Entity entity, CircleColliderComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 	}
 

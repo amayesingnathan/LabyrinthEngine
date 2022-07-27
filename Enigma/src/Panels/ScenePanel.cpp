@@ -11,8 +11,7 @@
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -378,59 +377,13 @@ namespace Labyrinth {
 		bool addTileMap = false;
 		if (ImGui::BeginPopup("AddComponent"))
 		{
-			if (!mSelectedEntity.hasComponent<CameraComponent>())
-			{
-				if (ImGui::MenuItem("Camera"))
-				{
-					auto& cam = mSelectedEntity.addComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
-			{
-				if (ImGui::MenuItem("Sprite Renderer"))
-				{
-					mSelectedEntity.addComponent<SpriteRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<CircleRendererComponent>())
-			{
-				if (ImGui::MenuItem("Circle Renderer"))
-				{
-					mSelectedEntity.addComponent<CircleRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<RigidBodyComponent>())
-			{
-				if (ImGui::MenuItem("Rigid Body"))
-				{
-					mSelectedEntity.addComponent<RigidBodyComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<BoxColliderComponent>())
-			{
-				if (ImGui::MenuItem("Box Collider"))
-				{
-					mSelectedEntity.addComponent<BoxColliderComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<CircleColliderComponent>())
-			{
-				if (ImGui::MenuItem("Circle Collider"))
-				{
-					mSelectedEntity.addComponent<CircleColliderComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
+			DrawAddComponentEntry<CameraComponent>("Camera");
+			DrawAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+			DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
+			DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
+			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
+			DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
+			DrawAddComponentEntry<ScriptComponent>("Script");
 
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
 			{
@@ -723,6 +676,30 @@ namespace Labyrinth {
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
+		{
+			if (ImGui::BeginCombo("Class", component.className.c_str()))
+			{
+				// Display "None" at the top of the list
+				bool clear = component.className.empty();
+				if (ImGui::Selectable("None", clear))
+					component.className.clear();
+
+				for (const auto& [key, klass] : ScriptEngine::GetEntityClasses())
+				{
+					bool isSelected = component.className == key;
+
+					if (ImGui::Selectable(key.c_str(), isSelected))
+						component.className = key;
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
 		});
 
 		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)

@@ -9,7 +9,7 @@ namespace Labyrinth
     public class Entity
     {
         public virtual void OnCreate() { }
-        public virtual void OnUpdate() { }
+        public virtual void OnUpdate(float ts) { }
     }
 
 }

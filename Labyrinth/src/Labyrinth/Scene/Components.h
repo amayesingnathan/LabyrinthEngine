@@ -138,6 +138,16 @@ namespace Labyrinth {
 		}
 	};
 
+	class ScriptObject;
+
+	struct ScriptComponent
+	{
+		std::string className;
+		Ref<ScriptObject> instance = nullptr;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+	};
 
 	class NativeScript;
 
@@ -155,6 +165,10 @@ namespace Labyrinth {
 			instantiateScript = []() { return static_cast<NativeScript*>(new T()); };
 			destroyScript = [this]() { delete this->instance; this->instance = nullptr; };
 		}
+
+		NativeScriptComponent() = default;
+		NativeScriptComponent(const NativeScriptComponent& other)
+			: instantiateScript(other.instantiateScript), destroyScript(other.destroyScript) {}
 	};
 
 
@@ -231,6 +245,8 @@ namespace Labyrinth {
 		RigidBodyComponent,
 		BoxColliderComponent,
 		CircleColliderComponent,
-		TilemapComponent
+		TilemapComponent,
+		NativeScriptComponent,
+		ScriptComponent
 	>;
 }

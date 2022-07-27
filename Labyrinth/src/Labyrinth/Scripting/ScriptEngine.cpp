@@ -6,6 +6,10 @@
 #include "ScriptClass.h"
 #include "ScriptObject.h"
 
+#include <Labyrinth/Scene/Scene.h>
+#include <Labyrinth/Scene/Entity.h>
+#include <Labyrinth/Scene/Components.h>
+
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
@@ -35,11 +39,6 @@ namespace Labyrinth {
 		LoadAssemblyClasses(sData->coreAssembly);
 
 		ScriptGlue::RegisterFunctions();
-
-		sData->entityClass = ScriptClass::Create("Labyrinth", "Main");
-		ScriptObject instance(sData->entityClass);
-		ScriptObject instance2(sData->entityClass, 2.4f);
-		instance.invokeMethod("PrintMessage");
 	}
 
 	void ScriptEngine::Shutdown()
@@ -58,9 +57,28 @@ namespace Labyrinth {
 		sData->coreAssembly = ScriptUtils::LoadMonoAssembly(path);
 		sData->coreAssemblyImage = mono_assembly_get_image(sData->coreAssembly);
 
+		sData->entityClass = ScriptClass::Create("Labyrinth", "Entity");
+
 #ifdef LAB_DEBUG
 		ScriptUtils::PrintAssemblyTypes(sData->coreAssembly);
 #endif
+	}
+
+	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetEntityClasses()
+	{
+		return sData->entityClasses;
+	}
+
+	Ref<ScriptClass> ScriptEngine::GetEntityClass(const std::string& className)
+	{
+		LAB_CORE_ASSERT(sData->entityClasses.count(className) != 0);
+
+		return sData->entityClasses[className];
+	}
+
+	bool ScriptEngine::EntityClassExists(const std::string& className)
+	{
+		return sData->entityClasses.count(className) != 0;
 	}
 
 	void ScriptEngine::InitMono()
@@ -108,6 +126,10 @@ namespace Labyrinth {
 				fullname = fmt::format("{}.{}", nameSpace, name);
 
 			MonoClass* monoClass = mono_class_from_name(image, nameSpace.c_str(), name.c_str());
+
+			if (monoClass == entityClass)
+				continue;
+
 			if (mono_class_is_subclass_of(monoClass, entityClass, false))
 				sData->entityClasses[fullname] = ScriptClass::Create(monoClass);
 		}
@@ -118,17 +140,13 @@ namespace Labyrinth {
 	{
 		mMonoClass = mono_class_from_name(sData->coreAssemblyImage, classNamespace.c_str(), className.c_str());
 
-		void* iter = nullptr;
-		while (MonoMethod* method = mono_class_get_methods(mMonoClass, &iter))
-			mMethods.emplace(mono_method_get_name(method), method);
+		LoadMethods();
 	}
 
 	ScriptClass::ScriptClass(MonoClass* klass)
 		: mClassNamespace(mono_class_get_namespace(klass)),mClassName(mono_class_get_name(klass)), mMonoClass(klass)
 	{
-		void* iter = nullptr;
-		while (MonoMethod* method = mono_class_get_methods(mMonoClass, &iter))
-			mMethods.emplace(mono_method_get_name(method), method);
+		LoadMethods();
 	}
 
 	ScriptClass::ScriptClass(MonoObject* instance)
@@ -139,9 +157,7 @@ namespace Labyrinth {
 		mClassNamespace = mono_class_get_namespace(mMonoClass);
 		mClassName = mono_class_get_name(mMonoClass);
 
-		void* iter = nullptr;
-		while (MonoMethod* method = mono_class_get_methods(mMonoClass, &iter))
-			mMethods.emplace(mono_method_get_name(method), method);
+		LoadMethods();
 	}
 
 	MonoObject* ScriptClass::instantiate() const
@@ -158,6 +174,16 @@ namespace Labyrinth {
 	MonoObject* ScriptClass::InstantiateInternal(void** argv, int argc)
 	{
 		return ScriptUtils::InstantiateClassInternal(sData->appDomain, mMonoClass, argv, argc);
+	}
+
+	void ScriptClass::LoadMethods()
+	{
+		void* iter = nullptr;
+		while (MonoMethod* method = mono_class_get_methods(mMonoClass, &iter))
+		{
+			std::string name = mono_method_get_name(method);
+			mMethods.emplace(name, method);
+		}
 	}
 
 
