@@ -29,13 +29,13 @@ namespace Labyrinth {
 			
 			if constexpr (argc != 0)
 			{
-				void* argv[argc] = { nullptr };
+				const void* argv[argc] = { nullptr };
 
 				size_t i = 0;
 				([&]()
 					{
-						void* tmp = nullptr;
-						if constexpr (IsPointer<Args>::value)
+						const void* tmp = nullptr;
+						if constexpr (IsPointer<Args>())
 							tmp = args;
 						else
 							tmp = &args;
@@ -44,7 +44,7 @@ namespace Labyrinth {
 						i++;
 					}(), ...);
 
-				return function(argv, Cast<int>(argc));
+				return function((void**)argv, Cast<int>(argc));
 			}
 			else return function(nullptr, 0);
 		}
