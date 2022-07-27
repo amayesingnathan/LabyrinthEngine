@@ -26,6 +26,8 @@ namespace Labyrinth {
 		Ref<ScriptClass> entityClass;
 
 		std::unordered_map<std::string, Ref<ScriptClass>> entityClasses;
+
+		Ref<Scene> context;
 	};
 
 	static ScriptEngineData* sData = nullptr;
@@ -62,6 +64,21 @@ namespace Labyrinth {
 #ifdef LAB_DEBUG
 		ScriptUtils::PrintAssemblyTypes(sData->coreAssembly);
 #endif
+	}
+
+	void ScriptEngine::OnRuntimeStart(Ref<Scene> context)
+	{
+		sData->context = context;
+	}
+
+	void ScriptEngine::OnRuntimeStop()
+	{
+		sData->context = nullptr;
+	}
+
+	Ref<Scene> ScriptEngine::GetContext()
+	{
+		return sData->context;
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetEntityClasses()

@@ -10,9 +10,10 @@ namespace Sandbox
 {
     public class Player : Entity
     {
+        public Player(ulong UUID) : base(UUID) { }
         public override void OnCreate()
         {
-            Internal.LogInfo("Player.OnCreate");
+            Internal.LogInfo($"Player.OnCreate {ID}");
         }
 
         public override void OnUpdate(float ts)
@@ -22,9 +23,10 @@ namespace Sandbox
     }
     public class Player2 : Entity
     {
+        public Player2(ulong UUID) : base(UUID) { }
         public override void OnCreate()
         {
-            Internal.LogInfo("Player2.OnCreate");
+            Internal.LogInfo($"Player2.OnCreate {ID}");
         }
 
         public override void OnUpdate(float ts)

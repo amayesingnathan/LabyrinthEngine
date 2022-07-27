@@ -1,13 +1,19 @@
 #include "Lpch.h"
 #include "ScriptGlue.h"
 
+#include "ScriptEngine.h"
+
+#include <Labyrinth/Scene/Scene.h>
+
 #include "mono/metadata/object.h"
+
+#include <glm/glm.hpp>
 
 namespace Labyrinth {
 
 #define LAB_ADD_INTERNAL_CALL(funcName) mono_add_internal_call("Labyrinth.Internal::" #funcName, funcName)
 
-#pragma region Logging
+#pragma region LoggingFunctions
 
 	static void LogTrace(MonoString* string)
 	{
@@ -41,16 +47,30 @@ namespace Labyrinth {
 	}
 #pragma endregion
 
+#pragma region ComponentFunctions
+	static void Entity_GetTranslation(UUID* id, glm::vec3* outTranslation)
+	{
+		Ref<Scene> context = ScriptEngine::GetContext();
+	}
+	static void Entity_SetTranslation(UUID* id, glm::vec3* outTranslation)
+	{
+		Ref<Scene> context = ScriptEngine::GetContext();
+	}
+#pragma endregion
+
 	void ScriptGlue::RegisterFunctions()
 	{
-#pragma region Logging
+#pragma region LoggingMacros
 		LAB_ADD_INTERNAL_CALL(LogTrace);
 		LAB_ADD_INTERNAL_CALL(LogInfo);
 		LAB_ADD_INTERNAL_CALL(LogWarning);
 		LAB_ADD_INTERNAL_CALL(LogError);
 		LAB_ADD_INTERNAL_CALL(LogCritical);
 #pragma endregion
-
+#pragma region ComponentMacros
+		LAB_ADD_INTERNAL_CALL(Entity_GetTranslation);
+		LAB_ADD_INTERNAL_CALL(Entity_SetTranslation);
+#pragma endregion
 	}
 
 }

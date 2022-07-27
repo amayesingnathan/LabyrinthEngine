@@ -16,6 +16,11 @@ namespace Labyrinth {
 
 		static void LoadCoreAssembly(const std::filesystem::path& path);
 
+		static void OnRuntimeStart(Ref<Scene> context);
+		static void OnRuntimeStop();
+
+		static Ref<Scene> GetContext();
+
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
 		static Ref<ScriptClass> GetEntityClass(const std::string& className);
 		static bool EntityClassExists(const std::string& className);

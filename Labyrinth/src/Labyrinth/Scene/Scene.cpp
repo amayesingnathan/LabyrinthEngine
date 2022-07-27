@@ -381,12 +381,14 @@ namespace Labyrinth {
 	{
 		OnPhysicsStart();
 
+		ScriptEngine::OnRuntimeStart(CreateRef(this));
+
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
 			Entity e = { entity, CreateRef(this) };
 			if (ScriptEngine::EntityClassExists(sc.className))
 			{
-				sc.instance = ScriptObject::Create(ScriptEngine::GetEntityClass(sc.className));
+				sc.instance = ScriptObject::Create(ScriptEngine::GetEntityClass(sc.className), e.getUUID());
 				sc.instance->onStart();
 			}
 
@@ -396,6 +398,8 @@ namespace Labyrinth {
 	void Scene::onRuntimeStop()
 	{
 		OnPhysicsStop();
+
+		ScriptEngine::OnRuntimeStop();
 
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
