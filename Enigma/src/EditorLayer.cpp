@@ -18,7 +18,7 @@
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
-#include "Labyrinth/Scene/Serialiser.h"
+#include "Labyrinth/Scene/SceneSerialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
 
@@ -43,7 +43,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		Ref<Tex2DGroup> iconGroup = AssetManager::CreateAsset<Tex2DGroup>("Icons.ltg", "Icons/", StorageType::Map);
+		Ref<Tex2DGroup> iconGroup = AssetManager::CreateNewAsset<Tex2DGroup>("Icons.ltg", "Icons/", StorageType::Map);
 		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
 		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
 		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");
@@ -569,7 +569,8 @@ namespace Labyrinth {
 		}
 
 		Ref<Scene> newScene = Ref<Scene>::Create();
-		if (!Serialiser::Deserialise<Scene>(path.string(), newScene))
+		SceneSerialiser serialiser(mCurrentScene);
+		if (!serialiser.deserialise(path))
 			return false;
 
 		mEditorScene = newScene;
@@ -586,7 +587,10 @@ namespace Labyrinth {
 		SyncWindowTitle();
 
 		if (!mEditorData.currentFile.empty())
-			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(mEditorData.currentFile);
+		}
 		else SaveSceneAs();
 	}
 
@@ -596,7 +600,10 @@ namespace Labyrinth {
 
 		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
 		if (!mEditorData.currentFile.empty())
-			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(mEditorData.currentFile);
+		}
 	}
 	
 	void EditorLayer::OnScenePlay()

@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "StringUtils.h"
 
-namespace Hazel::Utils {
+namespace Labyrinth::Utils {
 
 	namespace String {
 

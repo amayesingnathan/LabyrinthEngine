@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Labyrinth/Assets/Asset.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
@@ -13,11 +14,13 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class Scene : public RefCounted
+	class Scene : public Asset
 	{
 	public:
 		Scene(const std::string& name = "Untitled");
 		~Scene();
+
+		ASSET_STATIC_TYPE(AssetType::Scene)
 
 		Ref<Scene> Clone();
 

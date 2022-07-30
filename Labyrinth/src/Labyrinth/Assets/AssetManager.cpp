@@ -1,9 +1,11 @@
 #include "Lpch.h"
 #include "AssetManager.h"
 
-#include <Labyrinth/Tools/StringUtils.h>
+#include "AssetExtensions.h"
 
-#include "yaml-cpp/yaml.h"
+#include <Labyrinth/Core/Application.h>
+#include <Labyrinth/IO/YAML.h>
+#include <Labyrinth/Tools/StringUtils.h>
 
 namespace Labyrinth {
 
@@ -11,7 +13,10 @@ namespace Labyrinth {
 
 	void AssetManager::Init()
 	{
+		sAssetDirPath = Application::Get().getSpec().workingDir + "assets";
+		sAssetRegPath = sAssetDirPath / "AssetRegistry.lreg";
 		LoadRegistry();
+		ReloadAssets();
 	}
 
 	void AssetManager::Shutdown()
@@ -21,6 +26,64 @@ namespace Labyrinth {
 		sMemoryAssets.clear();
 		sAssetRegistry.clear();
 		sLoadedAssets.clear();
+	}
+
+	AssetType AssetManager::GetAssetTypeFromExtension(const std::string& extension)
+	{
+		std::string ext = Utils::String::ToLowerCopy(extension);
+		if (sAssetExtensionMap.count(ext) == 0)
+			return AssetType::None;
+
+		return sAssetExtensionMap.at(ext.c_str());
+	}
+
+	AssetType AssetManager::GetAssetTypeFromPath(const std::filesystem::path& path)
+	{
+		return GetAssetTypeFromExtension(path.extension().string());
+	}
+
+	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath)
+	{
+		std::filesystem::path path = GetRelativePath(filepath);
+
+		if (auto& metadata = GetMetadata(path); metadata.valid())
+			return metadata.handle;
+
+		AssetType type = GetAssetTypeFromPath(path);
+		if (type == AssetType::None)
+			return 0;
+
+		AssetMetadata metadata;
+		metadata.handle = AssetHandle();
+		metadata.filepath = path;
+		metadata.type = type;
+		sAssetRegistry[metadata.handle] = metadata;
+
+		return metadata.handle;
+	}
+
+	bool AssetManager::ReloadData(AssetHandle assetHandle)
+	{
+		auto& metadata = GetMetadataInternal(assetHandle);
+		if (!metadata.valid())
+		{
+			LAB_CORE_ERROR("Trying to reload invalid asset");
+			return false;
+		}
+
+		if (!metadata.dataLoaded)
+		{
+			LAB_CORE_WARN("Trying to reload asset that was never loaded");
+
+			Ref<Asset> asset;
+			metadata.dataLoaded = AssetImporter::Deserialise(metadata, asset);
+			return metadata.dataLoaded;
+		}
+
+		LAB_CORE_ASSERT(sLoadedAssets.count(assetHandle) != 0);
+		Ref<Asset>& asset = sLoadedAssets.at(assetHandle);
+		metadata.dataLoaded = AssetImporter::Deserialise(metadata, asset);
+		return metadata.dataLoaded;
 	}
 
 	void AssetManager::LoadRegistry()
@@ -69,8 +132,75 @@ namespace Labyrinth {
 		}
 	}
 
+	void AssetManager::ProcessDirectory(const std::filesystem::path& directoryPath)
+	{
+		for (auto entry : std::filesystem::directory_iterator(directoryPath))
+		{
+			if (entry.is_directory())
+				ProcessDirectory(entry.path());
+			else
+				ImportAsset(entry.path());
+		}
+	}
+
+	void AssetManager::ReloadAssets()
+	{
+		ProcessDirectory(sAssetDirPath);
+		SaveRegistry();
+	}
+
 	void AssetManager::SaveRegistry()
 	{
+		// Sort assets by UUID to make project managment easier
+		struct AssetRegistryEntry
+		{
+			std::string filepath;
+			AssetType type;
+		};
+
+		std::map<UUID, AssetRegistryEntry> sortedMap;
+		for (auto& [filepath, metadata] : sAssetRegistry)
+		{
+			if (!std::filesystem::exists(GetFileSystemPath(metadata)))
+				continue;
+
+			if (metadata.memoryAsset)
+				continue;
+
+			std::string pathToSerialize = metadata.filepath.string();
+#ifdef LAB_PLATFORM_WINDOWS
+			std::replace(pathToSerialize.begin(), pathToSerialize.end(), '\\', '/');
+#endif
+			sortedMap[metadata.handle] = { pathToSerialize, metadata.type };
+		}
+
+		LAB_CORE_INFO("[AssetManager] serializing asset registry with {0} entries", sortedMap.size());
+
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+
+		out << YAML::Key << "Assets" << YAML::BeginSeq;
+		for (auto& [handle, entry] : sortedMap)
+		{
+			out << YAML::BeginMap;
+			LAB_SERIALISE_PROPERTY(Handle, handle, out);
+			LAB_SERIALISE_PROPERTY(Filepath, entry.filepath, out);
+			LAB_SERIALISE_PROPERTY(Type, AssetUtils::AssetTypeToString(entry.type), out);
+			out << YAML::EndMap;
+		}
+		out << YAML::EndSeq;
+		out << YAML::EndMap;
+
+		std::ofstream fout(sAssetRegPath);
+		fout << out.c_str();
+	}
+
+	AssetMetadata& AssetManager::GetMetadataInternal(AssetHandle handle)
+	{
+		if (sAssetRegistry.contains(handle))
+			return sAssetRegistry[handle];
+
+		return sEmptyMetadata; // make sure to check return value before you go changing it!
 	}
 
 	const AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)
@@ -103,9 +233,9 @@ namespace Labyrinth {
 	{
 		std::filesystem::path relativePath = filepath.lexically_normal();
 		std::string temp = filepath.string();
-		if (temp.find(sAssetRegPath.string()) != std::string::npos)
+		if (temp.find(sAssetDirPath.string()) != std::string::npos)
 		{
-			relativePath = std::filesystem::relative(filepath, sAssetRegPath);
+			relativePath = std::filesystem::relative(filepath, sAssetDirPath);
 			if (relativePath.empty())
 			{
 				relativePath = filepath.lexically_normal();

@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Texture : public Asset
+	class Texture : public Asset
 	{
 	public:
 		ASSET_STATIC_TYPE(AssetType::Texture)
@@ -29,10 +29,12 @@ namespace Labyrinth {
 
 	};
 
-	class LAB_API Texture2D : public Texture
+	class Texture2D : public Texture
 	{
 	public:
 		virtual ~Texture2D() = default;
+
+		virtual bool loaded() const { return false; };
 
 		static Ref<Texture2D> Create(i32 width, i32 height);
 		static Ref<Texture2D> Create(const std::string& path);
@@ -40,7 +42,7 @@ namespace Labyrinth {
 		static const std::regex GetSuppTypes() { return mSuppImgTypes; }
 
 	private:
-		static const std::regex mSuppImgTypes;
+		static inline const std::regex mSuppImgTypes = std::regex(".png|.svg");;
 	};
 
 }

@@ -14,7 +14,7 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1;
@@ -78,15 +78,15 @@ namespace Labyrinth {
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
 			{
-				const std::string& key = *Cast<std::string>(payload->Data);
-				if (const Ref<Texture2DSheet>& sheet = AssetManager::Get<Texture2DSheet>(key))
+				const AssetHandle& handle = *Cast<AssetHandle>(payload->Data);
+				if (const Ref<Texture2DSheet>& sheet = AssetManager::GetAsset<Texture2DSheet>(handle))
 				{
 					mPanelData.currentSheet = sheet;
 					mSheetWidth = mPanelData.currentSheet->getWidth();
 					mSheetHeight = mPanelData.currentSheet->getHeight();
 					mPanelData.framebuffer->resize(Cast<u32>(mPanelData.viewportSize.x - 15.0f), 200);
 				}
-				else if (const Ref<Texture2D>& asset = AssetManager::Get<Texture2D>(key))
+				else if (const Ref<Texture2D>& asset = AssetManager::GetAsset<Texture2D>(handle))
 				{
 					mPanelData.addType = SheetAddType::Texture;
 					mPanelData.newSheetVar = asset;

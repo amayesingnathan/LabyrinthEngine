@@ -12,19 +12,39 @@ namespace Labyrinth {
 	using AssetHandle = UUID;
 
 #define ASSET_STATIC_TYPE(type)	static AssetType GetStaticType() { return type; }\
-								virtual AssetType GetAssetType() const override { return GetStaticType(); }
+								virtual AssetType getAssetType() const override { return GetStaticType(); }
 
 	class Asset : public RefCounted
 	{
 	public:
+		AssetHandle handle;
+		u16 flags = (u16)AssetFlag::None;
+
 		virtual ~Asset() {}
 
-		virtual AssetType GetAssetType() const { return AssetType::None; };
+		static AssetType GetStaticType() { return AssetType::None; }
+		virtual AssetType getAssetType() const { return GetStaticType(); };
 
-	private:
-		AssetHandle handle;
+		bool valid() const { return ((flags & (u16)AssetFlag::Missing) | (flags & (u16)AssetFlag::Invalid)) == 0; }
 
-		friend class AssetManager;
+		bool isFlagSet(AssetFlag flag) const { return (uint16_t)flag & flags; }
+		void setFlag(AssetFlag flag, bool value = true)
+		{
+			if (value)
+				flags |= (uint16_t)flag;
+			else
+				flags &= ~(uint16_t)flag;
+		}
+
+		virtual bool operator==(const Asset& other) const
+		{
+			return handle == other.handle;
+		}
+
+		virtual bool operator!=(const Asset& other) const
+		{
+			return !(*this == other);
+		}
 	};
 
 	class AssetSerialiser

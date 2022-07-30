@@ -1,115 +1,15 @@
 #include "Lpch.h"
-#include "Serialiser.h"
+#include "SceneSerialiser.h"
 
 #include "Entity.h"
 #include "Components.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
+#include "Labyrinth/IO/YAML.h"
 
 #include <fstream>
 
-
-namespace YAML {
-
-	template<>
-	struct convert<glm::vec2>
-	{
-		static Node encode(const glm::vec2& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			//node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec2& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 2)
-				return false;
-
-			rhs.x = node[0].as<f32>();
-			rhs.y = node[1].as<f32>();
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<glm::vec3>
-	{
-		static Node encode(const glm::vec3& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			node.push_back(rhs.z);
-			//node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec3& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 3)
-				return false;
-
-			rhs.x = node[0].as<f32>();
-			rhs.y = node[1].as<f32>();
-			rhs.z = node[2].as<f32>();
-			return true;
-		}
-	};
-
-	template<>
-	struct convert<glm::vec4>
-	{
-		static Node encode(const glm::vec4& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			node.push_back(rhs.z);
-			node.push_back(rhs.w);
-			//node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		static bool decode(const Node& node, glm::vec4& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 4)
-				return false;
-
-			rhs.x = node[0].as<f32>();
-			rhs.y = node[1].as<f32>();
-			rhs.z = node[2].as<f32>();
-			rhs.w = node[3].as<f32>();
-			return true;
-		}
-	};
-}
-
-
 namespace Labyrinth {
-
-	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec2& v)
-	{
-		mOut << YAML::Flow;
-		mOut << YAML::BeginSeq << v.x << v.y << YAML::EndSeq;
-		return mOut;
-	}
-
-	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec3& v)
-	{
-		mOut << YAML::Flow;
-		mOut << YAML::BeginSeq << v.x << v.y << v.z << YAML::EndSeq;
-		return mOut;
-	}
-
-	YAML::Emitter& operator<<(YAML::Emitter& mOut, const glm::vec4& v)
-	{
-		mOut << YAML::Flow;
-		mOut << YAML::BeginSeq << v.x << v.y << v.z << v.w << YAML::EndSeq;
-		return mOut;
-	}
 
 	template<>
 	void YAMLParser::EncodeObject<Tex2DSheetGroup>(const Tex2DSheetGroup& sheets, bool flag)
@@ -629,7 +529,7 @@ namespace Labyrinth {
 
 		// Load spritesheets
 		AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
-		DecodeObject<Ref<Tex2DSheetGroup>(AssetManager::GetAsset<Tex2DSheetGroup>(handle));
+		DecodeObject<Ref<Tex2DSheetGroup>>(AssetManager::GetAsset<Tex2DSheetGroup>(handle));
 
 		// Initialise current parent entity to null entity as first entity
 		// read should have no parent.
@@ -646,5 +546,26 @@ namespace Labyrinth {
 			if (!DecodeObject<Entity>(scene, entity)) return false;
 
 		return true;
+	}
+
+	SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene)
+		: mScene(scene)
+	{
+	}
+
+	void SceneSerialiser::serialise(const std::filesystem::path& filepath)
+	{
+		YAMLParser parser;
+
+		parser.EncodeObject(mScene);
+
+		std::ofstream fout(filepath);
+		fout << parser.getData();
+	}
+
+	bool SceneSerialiser::deserialise(const std::filesystem::path& filepath)
+	{
+		YAMLParser parser(filepath.string());
+		return parser.DecodeObject<Scene>(mScene);
 	}
 }

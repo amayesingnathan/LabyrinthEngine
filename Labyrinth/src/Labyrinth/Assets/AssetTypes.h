@@ -16,6 +16,8 @@ namespace Labyrinth {
 		None = 0,
 		Scene,
 		Texture,
+		SubTexture,
+		TextureSheet,
 		Group
 	};
 
@@ -23,10 +25,12 @@ namespace Labyrinth {
 
 		inline AssetType AssetTypeFromString(const std::string& assetType)
 		{
-			if (assetType == "None")			return AssetType::None;
-			else if (assetType == "Scene")		return AssetType::Scene;
-			else if (assetType == "Texture")	return AssetType::Texture;
-			else if (assetType == "Group")		return AssetType::Group;
+			if (assetType == "None")				return AssetType::None;
+			else if (assetType == "Scene")			return AssetType::Scene;
+			else if (assetType == "Texture")		return AssetType::Texture;
+			else if (assetType == "SubTexture")		return AssetType::SubTexture;
+			else if (assetType == "TextureSheet")	return AssetType::TextureSheet;
+			else if (assetType == "Group")			return AssetType::Group;
 
 			LAB_CORE_ASSERT(false, "Unknown Asset Type!");
 			return AssetType::None;
@@ -36,10 +40,12 @@ namespace Labyrinth {
 		{
 			switch (assetType)
 			{
-			case AssetType::None:       return "None";
-			case AssetType::Scene:      return "Scene";
-			case AssetType::Texture:    return "Texture";
-			case AssetType::Group:		return "Group";
+			case AssetType::None:			return "None";
+			case AssetType::Scene:			return "Scene";
+			case AssetType::Texture:		return "Texture";
+			case AssetType::SubTexture:		return "SubTexture";
+			case AssetType::TextureSheet:	return "TextureSheet";
+			case AssetType::Group:			return "Group";
 			}
 
 			LAB_CORE_ASSERT(false, "Unknown Asset Type");

@@ -21,13 +21,13 @@ namespace Labyrinth {
 
 	ScenePanel::ScenePanel()
 	{
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(EditorData& options)
 	{
 		mEditorData = &options;
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData& options)
@@ -35,7 +35,7 @@ namespace Labyrinth {
 		mContext = scene;
 		mEditorData = &options;
 
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
+		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene)
@@ -648,7 +648,7 @@ namespace Labyrinth {
 					SpriteSheetData& data = *Cast<SpriteSheetData>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::SubTexture;
-					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
+					component.texture = data.currentSheet->getSubTex(data.subTexName);
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -657,6 +657,7 @@ namespace Labyrinth {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
 				{
 					const std::string& key = *Cast<std::string>(payload->Data);
+					AssetHandle handle = AssetManager::GetAssetHandleFromPath(key);
 
 					switch (component.type)
 					{
@@ -666,7 +667,7 @@ namespace Labyrinth {
 
 					case SpriteRendererComponent::TexType::Texture:
 					{
-						Ref<Texture2D> tex = AssetManager::Get<Texture2D>(key);
+						Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(handle);
 						if (tex) 
 							component.texture = tex; 
 						else 
@@ -675,7 +676,7 @@ namespace Labyrinth {
 					}
 
 					case SpriteRendererComponent::TexType::SubTexture:
-						Ref<SubTexture2D> tex = AssetManager::Get<SubTexture2D>(key);
+						Ref<SubTexture2D> tex = AssetManager::GetAsset<SubTexture2D>(handle);
 						if (tex)
 							component.texture = tex;
 						else

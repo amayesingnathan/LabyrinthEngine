@@ -54,14 +54,14 @@ namespace Labyrinth {
 		template<typename Other>
 		Ref(const Ref<Other>& other)
 		{
-			mData = Cast<T>(other.mData);
+			mData = CastToRelative<T>(other.mData);
 			IncRef();
 		}
 
 		template<typename Other>
 		Ref(Ref<Other>&& other)
 		{
-			mData = Cast<T>(other.mData);
+			mData = CastToRelative<T>(other.mData);
 			other.mData = nullptr;
 		}
 
@@ -95,7 +95,7 @@ namespace Labyrinth {
 			other.IncRef();
 			DecRef();
 
-			mData = other.mData;
+			mData = CastToRelative<T>(other.mData);
 			return *this;
 		}
 
@@ -104,7 +104,7 @@ namespace Labyrinth {
 		{
 			DecRef();
 
-			mData = other.mData;
+			mData = CastToRelative<T>(other.mData);
 			other.mData = nullptr;
 			return *this;
 		}

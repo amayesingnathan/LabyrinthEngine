@@ -132,7 +132,7 @@ namespace Labyrinth {
 		SubTexture2D
 	*/
 
-	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name)
+	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name)
 		: mSheet(sheet), mName(name)
 	{
 		//Y coordinates are flipped compared to usual so that sub texture coordinates are given from top left of sheet.
@@ -140,13 +140,17 @@ namespace Labyrinth {
 		mTexCoords[1] = { max.x , max.y };
 		mTexCoords[2] = { max.x , min.y };
 		mTexCoords[3] = { min.x , min.y };
+
+		sheet->addSubTex(name, Ref<SubTexture2D>(this));
 	}
 
-	SubTexture2D::SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name)
+	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name)
 		: mSheet(sheet), mName(name)
 	{
 		for (usize i = 0; i < 4; i++)
 			mTexCoords[i] = coords[i];
+
+		sheet->addSubTex(name, Ref<SubTexture2D>(this));
 	}
 
 	SubTexture2D::SubTexture2D(const Ref<Texture2D> tex, const std::string& name)

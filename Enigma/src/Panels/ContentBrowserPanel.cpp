@@ -12,9 +12,10 @@ namespace Labyrinth {
 	ContentBrowserPanel::ContentBrowserPanel()
 		: mCurrentDirectory(gAssetPath)
 	{
-		Ref<Tex2DGroup> iconGroup = AssetManager::Get<Tex2DGroup>("Icons");
-		mDirectoryIcon = iconGroup->add("Directory", "resources/icons/content-browser/directoryIcon.png");
-		mFileIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
+		//AssetHandle handle = AssetManager::GetAssetHandleFromPath()
+		//Ref<Tex2DGroup> iconGroup = AssetManager::GetAsset<Tex2DGroup>("Icons");
+		//mDirectoryIcon = iconGroup->add("Directory", "resources/icons/content-browser/directoryIcon.png");
+		//mFileIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
 	}
 
 	void ContentBrowserPanel::onImGuiRender()

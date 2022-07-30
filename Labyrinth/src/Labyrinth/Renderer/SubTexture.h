@@ -75,8 +75,8 @@ namespace Labyrinth {
 		ASSET_STATIC_TYPE(AssetType::Texture)
 
 	public:
-		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
-		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
+		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
+		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
 		SubTexture2D(const Ref<Texture2D> sheet, const std::string& name);
 		SubTexture2D(const SubTexture2D&) = default;
 		virtual ~SubTexture2D() = default;
