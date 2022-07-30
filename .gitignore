@@ -25,6 +25,9 @@ Makefile.in
 #Profiling files
 **.json
 
+#Asset Registries
+**.lreg
+
 # Directories
 Labyrinth/dependencies/VulkanSDK
 */assets/cache

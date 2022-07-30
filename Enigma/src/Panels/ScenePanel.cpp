@@ -7,6 +7,7 @@
 #include "../Modals/MapSpecModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
@@ -21,21 +22,17 @@ namespace Labyrinth {
 
 	ScenePanel::ScenePanel()
 	{
-		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(EditorData& options)
 	{
 		mEditorData = &options;
-		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData& options)
 	{
 		mContext = scene;
 		mEditorData = &options;
-
-		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene)
@@ -80,7 +77,7 @@ namespace Labyrinth {
 		switch (component.type)
 		{
 		case SpriteRendererComponent::TexType::None:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mNoTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, EditorResources::NoTexture);
 			break;
 
 		case SpriteRendererComponent::TexType::Texture:
@@ -610,8 +607,8 @@ namespace Labyrinth {
 						switch (type)
 						{
 						case SpriteRendererComponent::TexType::None:       component.texture = SpriteRendererComponent::NoTex(); break;
-						case SpriteRendererComponent::TexType::Texture:    component.texture = mNoTex; break;
-						case SpriteRendererComponent::TexType::SubTexture: component.texture = SubTexture2D::Create(mNoTex, "NoTex"); break;
+						case SpriteRendererComponent::TexType::Texture:    component.texture = EditorResources::NoTexture; break;
+						case SpriteRendererComponent::TexType::SubTexture: component.texture = SubTexture2D::Create(EditorResources::NoTexture, "NoTex"); break;
 						}
 					}
 
@@ -624,7 +621,7 @@ namespace Labyrinth {
 
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			ImTextureID tex = (ImTextureID)(intptr_t)(mTexture ? mTexture->getColourAttachmentRendererID() : mNoTex->getRendererID());
+			ImTextureID tex = (ImTextureID)(intptr_t)(mTexture ? mTexture->getColourAttachmentRendererID() : EditorResources::NoTexture->getRendererID());
 			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropTarget())
 			{

@@ -1,6 +1,6 @@
 #include "ContentBrowserPanel.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Editor/EditorResources.h>
 
 #include <imgui/imgui.h>
 
@@ -12,10 +12,6 @@ namespace Labyrinth {
 	ContentBrowserPanel::ContentBrowserPanel()
 		: mCurrentDirectory(gAssetPath)
 	{
-		//AssetHandle handle = AssetManager::GetAssetHandleFromPath()
-		//Ref<Tex2DGroup> iconGroup = AssetManager::GetAsset<Tex2DGroup>("Icons");
-		//mDirectoryIcon = iconGroup->add("Directory", "resources/icons/content-browser/directoryIcon.png");
-		//mFileIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
 	}
 
 	void ContentBrowserPanel::onImGuiRender()
@@ -45,7 +41,7 @@ namespace Labyrinth {
 			std::string filenameStr = filepath.string();
 
 			ImGui::PushID(filenameStr.c_str());
-			Ref<Texture2D> icon = dirEntry.is_directory() ? mDirectoryIcon : mFileIcon;
+			Ref<Texture2D> icon = dirEntry.is_directory() ? EditorResources::DirectoryIcon : EditorResources::FileIcon;
 			ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 
 			ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), { thumbnailSize, thumbnailSize }, { 0, 1 }, { 1, 0 });

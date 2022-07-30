@@ -46,7 +46,6 @@ namespace Labyrinth {
 
 		Ref<Framebuffer> mTexture = nullptr;
 
-		Ref<Texture2D> mNoTex = nullptr;
 		struct TexTypes { std::string label;  SpriteRendererComponent::TexType type; };
 		const std::vector<TexTypes> mTexTypes =
 		{

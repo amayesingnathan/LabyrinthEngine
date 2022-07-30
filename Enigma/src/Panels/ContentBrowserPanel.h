@@ -18,10 +18,7 @@ namespace Labyrinth {
 		static Ref<ContentBrowserPanel> Create() { return Ref<ContentBrowserPanel>::Create(); }
 
 	private:
-		std::filesystem::path mCurrentDirectory; 
-		
-		Ref<Texture2D> mDirectoryIcon;
-		Ref<Texture2D> mFileIcon;
+		std::filesystem::path mCurrentDirectory;
 	};
 
 }

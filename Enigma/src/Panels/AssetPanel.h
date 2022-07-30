@@ -15,8 +15,6 @@ namespace Labyrinth {
 
 		static Ref<AssetPanel> Create() { return Ref<AssetPanel>::Create(); }
 
-	private:
-		Ref<Texture2D> mAssetIcon, mGroupIcon;
 	};
 
 }

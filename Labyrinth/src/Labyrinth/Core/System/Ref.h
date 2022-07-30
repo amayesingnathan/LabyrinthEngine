@@ -95,7 +95,7 @@ namespace Labyrinth {
 			other.IncRef();
 			DecRef();
 
-			mData = CastToRelative<T>(other.mData);
+			mData = other.mData;
 			return *this;
 		}
 
@@ -104,7 +104,7 @@ namespace Labyrinth {
 		{
 			DecRef();
 
-			mData = CastToRelative<T>(other.mData);
+			mData = other.mData;
 			other.mData = nullptr;
 			return *this;
 		}

@@ -8,9 +8,6 @@ namespace Labyrinth {
 
 	AssetPanel::AssetPanel()
 	{
-		//Ref<Tex2DGroup> iconGroup = AssetManager::Get<Tex2DGroup>("Icons");
-		//mAssetIcon = iconGroup->addOrGet("File", "resources/icons/content-browser/fileIcon.png");
-		//mGroupIcon = iconGroup->addOrGet("Group", "resources/icons/content-browser/groupIcon.png");
 	}
 
 	void AssetPanel::onImGuiRender()

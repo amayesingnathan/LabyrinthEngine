@@ -5,6 +5,8 @@
 #include "../Modals/SubTexModal.h"
 #include "../Modals/TileWidthModal.h"
 
+#include <Labyrinth/Editor/EditorResources.h>
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
@@ -14,8 +16,6 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		//mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
-
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1;
 		fbSpec.height = 1;
@@ -52,7 +52,7 @@ namespace Labyrinth {
 		if (mPanelData.currentSheet)
 			ImGui::Image((ImTextureID)(intptr_t)mPanelData.currentSheet->getBaseTex()->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)EditorResources::NoTexture->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -159,7 +159,7 @@ namespace Labyrinth {
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		else ImGui::Image((ImTextureID)(intptr_t)EditorResources::NoTexture->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		ImGui::End();
 	}

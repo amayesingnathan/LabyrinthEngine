@@ -13,6 +13,8 @@
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Assets/AssetGroup.h"
 
+#include "Labyrinth/Editor/EditorResources.h"
+
 #include "Labyrinth/IO/Input.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
@@ -43,11 +45,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		Ref<Tex2DGroup> iconGroup = AssetManager::CreateNewAsset<Tex2DGroup>("Icons.ltg", "Icons/", StorageType::Map);
-		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
-		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
-		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");
-		mIconSim = iconGroup->add("Sim", "resources/icons/simbutton.png");
+		EditorResources::Init();
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -81,6 +79,8 @@ namespace Labyrinth {
 	void EditorLayer::onDetach()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		EditorResources::Shutdown();
 
 		WriteSettings();
 
@@ -356,7 +356,7 @@ namespace Labyrinth {
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		{
-			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate) ? mIconPlay : mIconStop;
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate) ? EditorResources::PlayIcon : EditorResources::StopIcon;
 			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 			{
@@ -368,7 +368,7 @@ namespace Labyrinth {
 		}
 		ImGui::SameLine();
 		{
-			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Play) ? mIconSim : mIconStop;
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Play) ? EditorResources::SimulateIcon : EditorResources::StopIcon;
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 			{
 				if (mSceneState == SceneState::Edit)
