@@ -30,20 +30,26 @@ namespace Sandbox
             }
             if (Input.IsKeyPressed(KeyCode.W))
             {
-                velocity.Z = 1.0f;
+                velocity.Y = 1.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.S))
             {
-                velocity.Z = -1.0f;
+                velocity.Y = -1.0f;
             }
 
             float speed = 3.0f;
             velocity *= speed;
 
-            Vector3 translation = Translation;
-            Log.Info($"Vx: {velocity.X}\tVy: {velocity.Y}");
-            translation += velocity * ts;
-            Translation = translation;
+            //Log.Info($"From C++:  X: {Translation.X}\tY: {Translation.Y}\tZ: {Translation.Z}");
+            //Log.Info($"From C# :  X: {translation.X}\tY: {translation.Y}\tZ: {translation.Z}");
+            //Log.Info($"Vx: {velocity.X}\tVy: {velocity.Y}");
+
+            if (!velocity.IsZero())
+            {
+                Vector3 translation = Translation;
+                translation += velocity * ts;
+                Translation = translation;
+            }
         }   
     }
     public class Player2 : Entity
