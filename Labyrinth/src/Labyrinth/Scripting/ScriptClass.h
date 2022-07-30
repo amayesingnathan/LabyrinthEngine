@@ -2,12 +2,14 @@
 
 #include "ScriptFwd.h"
 
+#include <Labyrinth/Core/System/Ref.h>
+
 #include <string>
 #include <unordered_map>
 
 namespace Labyrinth {
 
-	class ScriptClass
+	class ScriptClass : public RefCounted
 	{
 	public:
 		ScriptClass() = default;
@@ -24,7 +26,7 @@ namespace Labyrinth {
 				}, std::forward<Args>(args)...);
 		}
 
-		MonoMethod* getMethod(const std::string& name);
+		MonoMethod* getMethod(const std::string& name, int argc);
 
 		template<typename... Args>
 		MonoObject* invokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
@@ -34,21 +36,18 @@ namespace Labyrinth {
 
 		operator MonoClass* () { return mMonoClass; }
 
-		static Ref<ScriptClass> Create(const std::string& classNamespace, const std::string& className) { return CreateRef<ScriptClass>(classNamespace, className); }
-		static Ref<ScriptClass> Create(MonoClass* klass) { return CreateRef<ScriptClass>(klass); }
-		static Ref<ScriptClass> Create(MonoObject* instance) { return CreateRef<ScriptClass>(instance); }
+		static Ref<ScriptClass> Create(const std::string& classNamespace, const std::string& className) { return Ref<ScriptClass>::Create(classNamespace, className); }
+		static Ref<ScriptClass> Create(MonoClass* klass) { return Ref<ScriptClass>::Create(klass); }
+		static Ref<ScriptClass> Create(MonoObject* instance) { return Ref<ScriptClass>::Create(instance); }
 
 	private:
 		MonoObject* InstantiateInternal(void** argv, int argc);
-
-		void LoadMethods();
 
 	private:
 		std::string mClassNamespace;
 		std::string mClassName;
 
 		MonoClass* mMonoClass = nullptr;
-		std::unordered_map<std::string, MonoMethod*> mMethods;
 	};
 
 }

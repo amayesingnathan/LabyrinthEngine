@@ -15,6 +15,7 @@ namespace Labyrinth {
 		static void Shutdown();
 
 		static void LoadCoreAssembly(const std::filesystem::path& path);
+		static void ReloadCoreAssembly();
 
 		static void OnRuntimeStart(Ref<Scene> context);
 		static void OnRuntimeStop();

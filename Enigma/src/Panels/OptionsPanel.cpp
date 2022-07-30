@@ -2,6 +2,8 @@
 
 #include "../EditorLayer.h"
 
+#include <Labyrinth/Scripting/ScriptEngine.h>
+
 #include <imgui/imgui.h>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -22,6 +24,8 @@ namespace Labyrinth {
 		if (ImGui::Button("Reset Camera Position"))
 			mEditorData->camera.resetPosition();
 		ImGui::Checkbox("Link Children On Destroy", &mEditorData->linkOnDestroy);
+		if (ImGui::Button("Reload Script Core"))
+			ScriptEngine::ReloadCoreAssembly();
 
 		ImGui::End();
 	}

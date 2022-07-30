@@ -139,6 +139,8 @@ namespace Labyrinth {
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
+		mEntityMap[id] = (entt::entity)newEnt.getEntID();
+
 		return newEnt;
 	}
 
@@ -148,12 +150,12 @@ namespace Labyrinth {
 		Entity newEnt = CreateEntity(tag.tag);
 
 		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(FindEntity(nodeCopy.parent));
+		newEnt.setParent(findEntity(nodeCopy.parent));
 
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
 
 		CopyAllComponents(copy, newEnt);
 
@@ -171,7 +173,7 @@ namespace Labyrinth {
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
 		
 		CopyAllComponents(copy, newEnt);
 
@@ -194,7 +196,7 @@ namespace Labyrinth {
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
-			Entity childEnt = FindEntity(child);
+			Entity childEnt = findEntity(child);
 			if (linkChildren)
 			{
 				if (parent)
@@ -205,6 +207,7 @@ namespace Labyrinth {
 			else DestroyEntityR(childEnt, entity);
 		}
 
+		mEntityMap.erase(entity.getUUID());
 		mRegistry.destroy(entity);
 	}
 
@@ -347,16 +350,11 @@ namespace Labyrinth {
 		});
 	}
 
-	Entity Scene::FindEntity(UUID findID)
+	Entity Scene::findEntity(UUID findID)
 	{
-		auto IDs = mRegistry.view<IDComponent>();
-		for (auto entity : IDs)
-		{
-			auto& idc = IDs.get<IDComponent>(entity);
-			if (idc.id == findID)
-				return { entity, Ref<Scene>(this) };
-		}
-		return Entity();
+		if (mEntityMap.count(findID) == 0) return Entity();
+
+		return { mEntityMap.at(findID), Ref<Scene>::Create(this) };
 	}
 
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
@@ -381,7 +379,7 @@ namespace Labyrinth {
 	{
 		OnPhysicsStart();
 
-		ScriptEngine::OnRuntimeStart(CreateRef(this));
+		ScriptEngine::OnRuntimeStart(Ref<Scene>::Create(this));
 
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{

@@ -3,17 +3,19 @@
 #include "ScriptUtils.h"
 #include "ScriptClass.h"
 
+#include <Labyrinth/Core/System/Ref.h>
+
 namespace Labyrinth {
 
-	class ScriptObject
+	class ScriptObject : public RefCounted
 	{
 	public:
 		ScriptObject(std::nullptr_t) {}
 		ScriptObject(MonoObject* instance)
 			: mClass(ScriptClass::Create(instance)), mInstance(instance)
 		{
-			mOnStartMethod = mClass->getMethod("OnCreate");
-			mOnUpdateMethod = mClass->getMethod("OnUpdate");
+			mOnStartMethod = mClass->getMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
 		}
 
 		ScriptObject(const Ref<ScriptClass>& type)
@@ -21,8 +23,8 @@ namespace Labyrinth {
 		{
 			mInstance = mClass->instantiate();
 
-			mOnStartMethod = mClass->getMethod("OnCreate");
-			mOnUpdateMethod = mClass->getMethod("OnUpdate");
+			mOnStartMethod = mClass->getMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
 		}
 		template<typename... Args>
 		ScriptObject(const Ref<ScriptClass>& type, Args&&... args)
@@ -30,8 +32,8 @@ namespace Labyrinth {
 		{
 			mInstance = mClass->instantiate(std::forward<Args>(args)...);
 
-			mOnStartMethod = mClass->getMethod("OnCreate");
-			mOnUpdateMethod = mClass->getMethod("OnUpdate");
+			mOnStartMethod = mClass->getMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
 		}
 
 		void onStart() { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }

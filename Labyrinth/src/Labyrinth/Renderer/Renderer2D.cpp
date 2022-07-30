@@ -1,10 +1,11 @@
 #include "Lpch.h"
 #include "Renderer2D.h"
 
-#include "Labyrinth/Renderer/VertexArray.h"
-#include "Labyrinth/Renderer/Shader.h"
-#include "Labyrinth/Renderer/UniformBuffer.h"
-#include "Labyrinth/Renderer/RenderCommand.h"
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/VertexArray.h>
+#include <Labyrinth/Renderer/Shader.h>
+#include <Labyrinth/Renderer/UniformBuffer.h>
+#include <Labyrinth/Renderer/RenderCommand.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>

@@ -223,7 +223,7 @@ namespace Labyrinth {
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode(mContext->FindEntity(node.children[i]));
+				DrawEntityNode(mContext->findEntity(node.children[i]));
 			ImGui::TreePop();
 		}
 		if (entityCreated)

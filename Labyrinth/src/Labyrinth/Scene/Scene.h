@@ -35,7 +35,7 @@ namespace Labyrinth {
 
 		void DestroyEntity(Entity entity, bool linkChildren = false);
 
-		Entity FindEntity(UUID id);
+		Entity findEntity(UUID id);
 
 		template<typename Component, typename... Other, typename... Exclude>
 		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})
@@ -98,6 +98,8 @@ namespace Labyrinth {
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
 
+		std::unordered_map<UUID, entt::entity> mEntityMap;
+        
 		u32 mViewportWidth = 0, mViewportHeight = 0;
 
 		friend Entity;

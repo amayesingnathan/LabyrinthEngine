@@ -11,22 +11,27 @@ namespace Labyrinth
     {
         #region Logging
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void LogTrace(string text);
+        internal extern static void Log_Trace(string text);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void LogInfo(string text);
+        internal extern static void Log_Info(string text);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void LogWarning(string text);
+        internal extern static void Log_Warning(string text);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void LogError(string text);
+        internal extern static void Log_Error(string text);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
-        internal extern static void LogCritical(string text);
-        #endregion // Logging
+        internal extern static void Log_Critical(string text);
+        #endregion
 
-        #region Components
+        #region Input
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static bool Input_IsKeyPressed(KeyCode key);
+        #endregion
+
+        #region Entity
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Entity_GetTranslation(ulong entUUID, out Vector3 translation);

@@ -10,7 +10,7 @@ namespace Labyrinth {
 	{
 	}
 
-	Entity Entity::getParent() const { return mScene.lock()->FindEntity(getComponent<NodeComponent>().parent); }
+	Entity Entity::getParent() const { return mScene.lock()->findEntity(getComponent<NodeComponent>().parent); }
 	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
 
 	void Entity::destroy()
@@ -26,7 +26,7 @@ namespace Labyrinth {
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
-		Entity currentParent = mScene.lock()->FindEntity(node.parent); 
+		Entity currentParent = mScene.lock()->findEntity(node.parent); 
 		if (currentParent == newParent) return false;
 
 		if (newParent)
@@ -85,7 +85,7 @@ namespace Labyrinth {
 		// Cycles every child
 		for (const auto& child : children)
 		{
-			Entity childEnt = mScene.lock()->FindEntity(child);
+			Entity childEnt = mScene.lock()->findEntity(child);
 			if (childEnt == filter)
 			{
 				// Found the child

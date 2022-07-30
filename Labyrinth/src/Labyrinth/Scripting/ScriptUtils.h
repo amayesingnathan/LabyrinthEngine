@@ -86,6 +86,7 @@ namespace Labyrinth {
 		static MonoObject* CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
 		static MonoObject* CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv);
 		static MonoObject* InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, void** argv, int argc);
+		static MonoObject* InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, MonoMethod* constructor, void** argv);
 
 		friend class ScriptClass;
 	};

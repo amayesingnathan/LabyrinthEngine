@@ -145,4 +145,20 @@ namespace Labyrinth {
 		return instance;
 	}
 
+	MonoObject* ScriptUtils::InstantiateClassInternal(MonoDomain* domain, MonoClass* classInstance, MonoMethod* constructor, void** argv)
+	{
+		// Allocate an instance of our class
+		MonoObject* instance = mono_object_new(domain, classInstance);
+
+		if (!classInstance)
+		{
+			LAB_CORE_ERROR("The class could not be instantiated!");
+			return nullptr;
+		}
+
+		mono_runtime_invoke(constructor, instance, argv, nullptr);
+
+		return instance;
+	}
+
 }
