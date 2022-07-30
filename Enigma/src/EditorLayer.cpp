@@ -60,7 +60,6 @@ namespace Labyrinth {
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", true, mEditorData);
-		PanelManager::Register<AssetPanel>("Asset Manager");
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);

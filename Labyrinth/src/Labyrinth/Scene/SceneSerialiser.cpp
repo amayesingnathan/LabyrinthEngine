@@ -30,229 +30,6 @@ namespace Labyrinth {
 		EndSequence();
 	}
 
-	//Forward declare entity encoding for use in Node component encoding
-	template<>
-	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps);
-
-	template<>
-	void YAMLParser::EncodeObject<NodeComponent>(const NodeComponent& node, bool flag)
-	{
-		BeginObject("NodeComponent");
-
-		ObjectProperty("ChildCount", node.children.size());
-
-		BeginSequence("Children");
-		for (auto& child : node.children)
-			EncodeObject(child);
-
-		EndSequence();
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<TagComponent>(const TagComponent& tag, bool flag)
-	{
-		BeginObject("TagComponent");
-		ObjectProperty("Tag", tag.tag);
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<TransformComponent>(const TransformComponent& transform, bool flag)
-	{
-		BeginObject("TransformComponent");
-
-		ObjectProperty("Translation", transform.translation);
-		ObjectProperty("Rotation", transform.rotation);
-		ObjectProperty("Scale", transform.scale);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<CameraComponent>(const CameraComponent& cameraComponent, bool flag)
-	{
-		BeginObject("CameraComponent");
-
-		auto& camera = cameraComponent.camera;
-
-		BeginObject("Camera");
-		ObjectProperty("ProjectionType", (i32)camera.getProjectionType());
-		ObjectProperty("PerspectiveFOV", camera.getPerspectiveVerticalFOV());
-		ObjectProperty("PerspectiveNear", camera.getPerspectiveNearClip());
-		ObjectProperty("PerspectiveFar", camera.getPerspectiveFarClip());
-		ObjectProperty("OrthographicSize", camera.getOrthographicSize());
-		ObjectProperty("OrthographicNear", camera.getOrthographicNearClip());
-		ObjectProperty("OrthographicFar", camera.getOrthographicFarClip());
-		EndObject();
-
-		ObjectProperty("Primary", cameraComponent.primary);
-		ObjectProperty("FixedAspectRatio", cameraComponent.fixedAspectRatio);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<SpriteRendererComponent>(const SpriteRendererComponent& srComponent, bool flag)
-	{
-		BeginObject("SpriteRendererComponent");
-
-		ObjectProperty("Type", Cast<i32>(srComponent.type));
-		ObjectProperty("Layer", Cast<i32>(srComponent.layer)); //Cast to i32 so it is encoded as number not i8
-
-		ObjectProperty("Colour", srComponent.colour);
-
-		switch (srComponent.type)
-		{
-		case SpriteRendererComponent::TexType::Texture:
-		{
-			BeginObject("Texture");
-			ObjectProperty("Source", srComponent.getTex<Texture2D>()->getPath());
-			EndObject();
-			break;
-		}
-		case SpriteRendererComponent::TexType::SubTexture:
-		{
-			BeginObject("Texture");
-
-			const Ref<SubTexture2D>& tex = srComponent.getTex<SubTexture2D>();
-			ObjectProperty("Sheet", tex->getSheet()->getName());
-			ObjectProperty("SubTexName", tex->getName());
-
-			BeginSequence("Coordinates");
-			for (usize i = 0; i < 4; i++)
-			{
-				BeginObject();
-				ObjectProperty(std::to_string(i), tex->getTexCoords()[i]);
-				EndObject();
-			}
-
-			EndSequence();
-
-			EndObject();
-			break;
-		}
-		default:
-			break;
-		}
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<CircleRendererComponent>(const CircleRendererComponent& srComponent, bool flag)
-	{
-		BeginObject("SpriteRendererComponent");
-
-		ObjectProperty("Layer", Cast<i32>(srComponent.layer)); //Cast to i32 so it is encoded as number not i8
-		ObjectProperty("Colour", srComponent.colour);
-		ObjectProperty("Thickness", srComponent.thickness);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<RigidBodyComponent>(const RigidBodyComponent& rbComponent, bool flag)
-	{
-		BeginObject("RigidBodyComponent");
-
-		ObjectProperty("Type", Cast<i32>(rbComponent.type));
-		ObjectProperty("FixedRotation", rbComponent.fixedRotation);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<BoxColliderComponent>(const BoxColliderComponent& bcComponent, bool flag)
-	{
-		BeginObject("BoxColliderComponent");
-
-		ObjectProperty("HalfExtents", bcComponent.halfExtents);
-		ObjectProperty("Offset", bcComponent.offset);
-		ObjectProperty("Density", bcComponent.density);
-		ObjectProperty("Friction", bcComponent.friction);
-		ObjectProperty("Restitution", bcComponent.restitution);
-		ObjectProperty("RestitutionThreshold", bcComponent.restitutionThreshold);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<CircleColliderComponent>(const CircleColliderComponent& bcComponent, bool flag)
-	{
-		BeginObject("CircleColliderComponent");
-
-		ObjectProperty("Radius", bcComponent.radius);
-		ObjectProperty("Offset", bcComponent.offset);
-		ObjectProperty("Density", bcComponent.density);
-		ObjectProperty("Friction", bcComponent.friction);
-		ObjectProperty("Restitution", bcComponent.restitution);
-		ObjectProperty("RestitutionThreshold", bcComponent.restitutionThreshold);
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<Entity>(const Entity& entity, bool includeComps)
-	{
-		LAB_CORE_ASSERT(entity.hasComponent<IDComponent>());
-
-		BeginObject();
-		ObjectProperty("Entity", entity.getUUID());
-
-		if (!includeComps)
-		{
-			EndObject();
-			return;
-		}
-
-		// Components guranteed to be on entity
-		EncodeObject(entity.getComponent<TagComponent>());
-		EncodeObject(entity.getComponent<NodeComponent>());
-		EncodeObject(entity.getComponent<TransformComponent>());
-
-		if (entity.hasComponent<CameraComponent>())
-			EncodeObject(entity.getComponent<CameraComponent>());
-
-		if (entity.hasComponent<SpriteRendererComponent>())
-			EncodeObject(entity.getComponent<SpriteRendererComponent>());
-
-		if (entity.hasComponent<RigidBodyComponent>())
-			EncodeObject(entity.getComponent<RigidBodyComponent>());
-
-		if (entity.hasComponent<BoxColliderComponent>())
-			EncodeObject(entity.getComponent<BoxColliderComponent>());
-
-		if (entity.hasComponent<CircleColliderComponent>())
-			EncodeObject(entity.getComponent<CircleColliderComponent>());
-
-		EndObject();
-	}
-
-	template<>
-	void YAMLParser::EncodeObject<Ref<Scene>>(const Ref<Scene>& scene, bool flag)
-	{
-		BeginObject();
-		ObjectProperty("Scene", scene->getName());
-
-		AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
-		EncodeObject(*AssetManager::GetAsset<Tex2DSheetGroup>(handle));
-
-		BeginSequence("Entities");
-
-		scene->getEntitiesWith<RootComponent>().each([&](auto entityID, const auto& rc)
-		{
-			Entity entity = { entityID, scene };
-			EncodeObject(entity);
-		});
-
-		EndSequence();
-		EndObject();
-	}
-
-	static Entity CurrentParent = Entity();
-
 	template<>
 	bool YAMLParser::DecodeObject<Ref<Tex2DSheetGroup>>(Ref<Tex2DSheetGroup> sheetsOut)
 	{
@@ -280,274 +57,6 @@ namespace Labyrinth {
 		return true;
 	}
 
-	template<>
-	bool YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity);
-
-	template<>
-	bool YAMLParser::DecodeObject<NodeComponent>(Entity entity, YAML::Node node)
-	{
-		auto nodeComponent = node["NodeComponent"];
-		if (!nodeComponent) return false;
-
-		// Entities always have node components
-		auto& nc = entity.getComponent<NodeComponent>();
-
-		if (CurrentParent)
-			entity.setParent(CurrentParent, nc);
-
-		auto childCount = nodeComponent["ChildCount"];
-		if (childCount)
-			if (childCount.as<usize>() != 0)
-				nc.children.reserve(childCount.as<usize>());
-
-		auto children = nodeComponent["Children"];
-		if (children)
-		{
-			// Save and then set new currentParent entity for setting 
-			// the parent of all created child entities.
-			Entity holdParent = CurrentParent;
-			CurrentParent = entity;
-
-			for (auto child : children)
-				DecodeObject<Entity>(entity.getScene(), child);
-
-			// Once all children have had parent set, restore the currentParent entity
-			// to this entity's parent.
-			CurrentParent = holdParent;
-		}
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<TransformComponent>(Entity entity, YAML::Node node)
-	{
-		auto transformComponent = node["TransformComponent"];
-		if (!transformComponent) return false;
-
-		// Entities always have transforms
-		auto& tc = entity.getComponent<TransformComponent>();
-		tc.translation = transformComponent["Translation"].as<glm::vec3>();
-		tc.rotation = transformComponent["Rotation"].as<glm::vec3>();
-		tc.scale = transformComponent["Scale"].as<glm::vec3>();
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<CameraComponent>(Entity entity, YAML::Node node)
-	{
-		auto cameraComponent = node["CameraComponent"];
-		if (!cameraComponent) return false;
-
-		auto cameraProps = cameraComponent["Camera"];
-		auto& cc = entity.addComponent<CameraComponent>();
-		cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
-
-		cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
-		cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
-		cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
-
-		cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
-		cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
-		cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
-
-		cc.primary = cameraComponent["Primary"].as<bool>();
-		cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<SpriteRendererComponent>(Entity entity, YAML::Node node)
-	{
-		auto spriteRendererComponent = node["SpriteRendererComponent"];
-		if (!spriteRendererComponent) return false;
-
-		auto& src = entity.addComponent<SpriteRendererComponent>();
-
-		src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
-		src.layer = spriteRendererComponent["Layer"].as<u8>();
-		entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
-
-		src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
-
-		switch (src.type)
-		{
-		case SpriteRendererComponent::TexType::None: break;
-		case SpriteRendererComponent::TexType::Texture:
-		{
-			auto texture = spriteRendererComponent["Texture"];
-			src.texture = Texture2D::Create(texture["Source"].as<std::string>());
-		}
-		break;
-		case SpriteRendererComponent::TexType::SubTexture:
-		{
-			auto texture = spriteRendererComponent["Texture"];
-			std::string sheetName = texture["Sheet"].as<std::string>();
-
-			AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
-			auto spriteSheets = AssetManager::GetAsset<Tex2DSheetGroup>(handle);
-			auto it = std::find_if(spriteSheets->begin(), spriteSheets->end(), [&](const std::pair<std::string, Ref<Texture2DSheet>>& match)
-				{
-					return match.second->getName() == sheetName;
-				});
-
-			if (it != spriteSheets->end())
-			{
-				std::string subTexName = texture["SubTexName"].as<std::string>();
-
-				glm::vec2 subtexCoords[4];
-				auto coordsSeq = texture["Coordinates"];
-				if (coordsSeq)
-				{
-					int i = 0;
-					for (auto coord : coordsSeq)
-					{
-						if (i >= 4) break;
-
-						subtexCoords[i] = coord[std::to_string(i)].as<glm::vec2>();
-						i++;
-					}
-				}
-
-
-				if (!it->second->hasSubTex(subTexName))
-					src.texture = it->second->createSubTex(subTexName, subtexCoords);
-				else
-					src.texture = it->second->getSubTex(subTexName);
-			}
-		}
-		break;
-		}
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<CircleRendererComponent>(Entity entity, YAML::Node node)
-	{
-		auto circleRendererComponent = node["CircleRendererComponent"];
-		if (!circleRendererComponent) return false;
-
-		auto& src = entity.addComponent<CircleRendererComponent>();
-
-		src.layer = circleRendererComponent["Layer"].as<u8>();
-		entity.getComponent<TransformComponent>().translation.z = src.getNLayer();
-
-		src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
-		src.thickness = circleRendererComponent["Thickness"].as<f32>();
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<RigidBodyComponent>(Entity entity, YAML::Node node)
-	{
-		auto rbComponent = node["RigidBodyComponent"];
-		if (!rbComponent) return false;
-
-		auto& rbc = entity.addComponent<RigidBodyComponent>();
-		rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
-		rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<BoxColliderComponent>(Entity entity, YAML::Node node)
-	{
-		auto bcComponent = node["BoxColliderComponent"];
-		if (!bcComponent) return false;
-
-		auto& rbc = entity.addComponent<BoxColliderComponent>();
-		rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
-		rbc.offset = bcComponent["Offset"].as<glm::vec2>();
-		rbc.density = bcComponent["Density"].as<f32>();
-		rbc.friction = bcComponent["Friction"].as<f32>();
-		rbc.restitution = bcComponent["Restitution"].as<f32>();
-		rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<CircleColliderComponent>(Entity entity, YAML::Node node)
-	{
-		auto ccComponent = node["CircleColliderComponent"];
-		if (!ccComponent) return false;
-
-		auto& rbc = entity.addComponent<CircleColliderComponent>();
-		rbc.radius = ccComponent["Radius"].as<f32>();
-		rbc.offset = ccComponent["Offset"].as<glm::vec2>();
-		rbc.density = ccComponent["Density"].as<f32>();
-		rbc.friction = ccComponent["Friction"].as<f32>();
-		rbc.restitution = ccComponent["Restitution"].as<f32>();
-		rbc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<Entity, Ref<Scene>>(Ref<Scene> scene, YAML::Node entity)
-	{
-		UUID uuid(entity["Entity"].as<u64>());
-
-		std::string name;
-		auto tagComponent = entity["TagComponent"];
-		if (tagComponent)
-			name = tagComponent["Tag"].as<std::string>();
-
-		LAB_CORE_TRACE("Deserialized entity with ID = {0}, name = {1}", uuid, name);
-
-		Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
-
-		//Must add new components here as they are added.
-		DecodeObject<NodeComponent>(deserializedEntity, entity);
-		DecodeObject<TransformComponent>(deserializedEntity, entity);
-		DecodeObject<CameraComponent>(deserializedEntity, entity);
-		DecodeObject<SpriteRendererComponent>(deserializedEntity, entity);
-		DecodeObject<RigidBodyComponent>(deserializedEntity, entity);
-		DecodeObject<BoxColliderComponent>(deserializedEntity, entity);
-		DecodeObject<CircleColliderComponent>(deserializedEntity, entity);
-
-		return true;
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<Entity>(Ref<Scene> scene)
-	{
-		if (!mIn["Entity"]) return false;
-
-		auto entity = mIn["Entity"];
-		return DecodeObject<Entity>(scene, entity);
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<Scene>(Ref<Scene> scene)
-	{
-		if (!mIn["Scene"]) return false;
-
-		// Load spritesheets
-		AssetHandle handle = AssetManager::GetAssetHandleFromPath("SpriteSheets.lss");
-		DecodeObject<Ref<Tex2DSheetGroup>>(AssetManager::GetAsset<Tex2DSheetGroup>(handle));
-
-		// Initialise current parent entity to null entity as first entity
-		// read should have no parent.
-		CurrentParent = Entity();
-
-		std::string sceneName = mIn["Scene"].as<std::string>();
-		LAB_CORE_TRACE("Deserializing scene '{0}'", sceneName);
-		scene->setName(sceneName);
-
-		auto entities = mIn["Entities"];
-		if (!entities) return false;
-
-		for (auto entity : entities)
-			if (!DecodeObject<Entity>(scene, entity)) return false;
-
-		return true;
-	}
-
 	SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene)
 		: mScene(scene)
 	{
@@ -555,17 +64,309 @@ namespace Labyrinth {
 
 	void SceneSerialiser::serialise(const std::filesystem::path& filepath)
 	{
-		YAMLParser parser;
+		YAML::Emitter out;
+		out << YAML::BeginMap;
+		out << YAML::Key << "Scene";
+		out << YAML::Value << mScene->getName();
 
-		parser.EncodeObject(mScene);
+		out << YAML::Key << "Entities";
+		out << YAML::Value << YAML::BeginSeq;
+
+		// Sort entities by UUID (for better serializing)
+		std::map<UUID, entt::entity> sortedEntityMap;
+		mScene->getEntitiesWith<IDComponent>().each([&](auto entity, auto& idComp) 
+		{
+			sortedEntityMap[idComp.id] = entity;
+		});
+
+		// Serialize sorted entities
+		for (auto [id, entity] : sortedEntityMap)
+			SerializeEntity(out, { entity, mScene });
+
+		out << YAML::EndSeq;
+
+		out << YAML::EndMap;
 
 		std::ofstream fout(filepath);
-		fout << parser.getData();
+		fout << out.c_str();
 	}
 
 	bool SceneSerialiser::deserialise(const std::filesystem::path& filepath)
 	{
-		YAMLParser parser(filepath.string());
-		return parser.DecodeObject<Scene>(mScene);
+		std::ifstream stream(filepath);
+		LAB_CORE_ASSERT(stream);
+		std::stringstream strStream;
+		strStream << stream.rdbuf();
+
+		YAML::Node data = YAML::Load(strStream.str());
+		if (!data["Scene"])
+			return false;
+
+		std::string sceneName = data["Scene"].as<std::string>();
+		LAB_CORE_INFO("Deserializing scene '{0}'", sceneName);
+
+		if (sceneName == "Untitled")
+		{
+			std::filesystem::path path = filepath;
+			sceneName = path.stem().string();
+		}
+
+		mScene->setName(sceneName);
+
+		auto entities = data["Entities"];
+		if (entities)
+			DeserializeEntities(entities, mScene);
+
+		return true;
+	}
+
+	void SceneSerialiser::SerializeEntity(YAML::Emitter& out, Entity entity)
+	{
+		UUID uuid = entity.getComponent<IDComponent>().id;
+		out << YAML::BeginMap; // Entity
+		out << YAML::Key << "Entity";
+		out << YAML::Value << uuid;
+
+		if (entity.hasComponent<TagComponent>())
+		{
+			out << YAML::Key << "TagComponent";
+			out << YAML::BeginMap; // TagComponent
+
+			const auto& tag = entity.getComponent<TagComponent>().tag;
+			out << YAML::Key << "Tag" << YAML::Value << tag;
+
+			out << YAML::EndMap; // TagComponent
+		}
+
+
+		if (entity.hasComponent<NodeComponent>())
+		{
+			auto& nodeComponent = entity.getComponent<NodeComponent>();
+			out << YAML::Key << "Parent" << YAML::Value << nodeComponent.parent;
+
+			out << YAML::Key << "Children";
+			out << YAML::Value << YAML::BeginSeq;
+
+			for (UUID child : nodeComponent.children)
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(Handle, child, out);
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
+		}
+
+		if (entity.hasComponent<TransformComponent>())
+		{
+			out << YAML::Key << "TransformComponent";
+			out << YAML::BeginMap; // TransformComponent
+
+			auto& transform = entity.getComponent<TransformComponent>();
+			LAB_SERIALISE_PROPERTY(Position, transform.translation, out);
+			LAB_SERIALISE_PROPERTY(Rotation, transform.rotation, out);
+			LAB_SERIALISE_PROPERTY(Scale, transform.scale, out);
+
+			out << YAML::EndMap; // TransformComponent
+		}
+
+		if (entity.hasComponent<SpriteRendererComponent>())
+		{
+			out << YAML::Key << "SpriteRendererComponent";
+			out << YAML::BeginMap; // SpriteRendererComponent
+
+			auto& sprite = entity.getComponent<SpriteRendererComponent>();
+			LAB_SERIALISE_PROPERTY(Ty[e], (i32)sprite.type, out);
+			LAB_SERIALISE_PROPERTY(Layer, (i32)sprite.layer, out);
+			LAB_SERIALISE_PROPERTY(Handle, sprite.handle, out);
+			LAB_SERIALISE_PROPERTY(Colour, sprite.colour, out);
+			LAB_SERIALISE_PROPERTY(TilingFactor, sprite.tilingFactor, out);
+
+			out << YAML::EndMap; // SpriteRendererComponent
+		}
+
+		if (entity.hasComponent<CameraComponent>())
+		{
+			out << YAML::Key << "CameraComponent";
+			out << YAML::BeginMap; // CameraComponent
+
+			auto& cameraComponent = entity.getComponent<CameraComponent>();
+
+			out << YAML::BeginMap; // Camera
+			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera.getProjectionType(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera.getPerspectiveVerticalFOV(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveNear, cameraComponent.camera.getPerspectiveNearClip(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFar, cameraComponent.camera.getPerspectiveFarClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicSize, cameraComponent.camera.getOrthographicSize(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicNear, cameraComponent.camera.getOrthographicNearClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicFar, cameraComponent.camera.getOrthographicFarClip(), out);
+			out << YAML::EndMap; // Camera
+
+			LAB_SERIALISE_PROPERTY(Primary, cameraComponent.primary, out);
+			LAB_SERIALISE_PROPERTY(FixedAspectRatio, cameraComponent.fixedAspectRatio, out);
+
+			out << YAML::EndMap; // CameraComponent
+		}
+
+		if (entity.hasComponent<RigidBodyComponent>())
+		{
+			out << YAML::Key << "RigidBodyComponent";
+			out << YAML::BeginMap; // RigidBodyComponent
+
+			auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+			LAB_SERIALISE_PROPERTY(Type, (i32)rbComponent.type, out);
+			LAB_SERIALISE_PROPERTY(FixedRotation, rbComponent.fixedRotation, out);
+
+			out << YAML::EndMap; // RigidBodyComponent
+		}
+
+		if (entity.hasComponent<BoxColliderComponent>())
+		{
+			out << YAML::Key << "BoxColliderComponent";
+			out << YAML::BeginMap; // BoxColliderComponent
+
+			auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+			LAB_SERIALISE_PROPERTY(HalfExtents, bcComponent.halfExtents, out);
+			LAB_SERIALISE_PROPERTY(Offset, bcComponent.offset, out);
+			LAB_SERIALISE_PROPERTY(Density, bcComponent.density, out);
+			LAB_SERIALISE_PROPERTY(Friction, bcComponent.friction, out);
+			LAB_SERIALISE_PROPERTY(Restitution, bcComponent.restitution, out);
+			LAB_SERIALISE_PROPERTY(RestitutionThreshold, bcComponent.restitutionThreshold, out);
+
+			out << YAML::EndMap; // BoxColliderComponent
+		}
+
+		if (entity.hasComponent<CircleColliderComponent>())
+		{
+			out << YAML::Key << "CircleColliderComponent";
+			out << YAML::BeginMap; // CircleColliderComponent
+
+			auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+			LAB_SERIALISE_PROPERTY(Radius, ccComponent.radius, out);
+			LAB_SERIALISE_PROPERTY(Offset, ccComponent.offset, out);
+			LAB_SERIALISE_PROPERTY(Density, ccComponent.density, out);
+			LAB_SERIALISE_PROPERTY(Friction, ccComponent.friction, out);
+			LAB_SERIALISE_PROPERTY(Restitution, ccComponent.restitution, out);
+			LAB_SERIALISE_PROPERTY(RestitutionThreshold, ccComponent.restitutionThreshold, out);
+
+			out << YAML::EndMap; // CircleColliderComponent
+		}
+	}
+
+	void SceneSerialiser::DeserializeEntities(YAML::Node& entitiesNode, Ref<Scene> scene)
+	{
+		for (auto entity : entitiesNode)
+		{
+			u64 uuid = entity["Entity"].as<u64>();
+
+			std::string name;
+			auto tagComponent = entity["TagComponent"];
+			if (tagComponent)
+				name = tagComponent["Tag"].as<std::string>();
+
+			//HZ_CORE_INFO("Deserialized Entity '{0}' with ID '{1}'", name, uuid);
+
+			Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
+
+			auto& nodeComponent = deserializedEntity.getComponent<NodeComponent>();
+			u64 parentHandle = entity["Parent"] ? entity["Parent"].as<u64>() : 0;
+			nodeComponent.parent = parentHandle;
+
+			auto children = entity["Children"];
+			if (children)
+			{
+				for (auto child : children)
+				{
+					u64 childHandle = child["Handle"].as<u64>();
+					nodeComponent.children.push_back(childHandle);
+				}
+			}
+
+			auto transformComponent = entity["TransformComponent"];
+			if (transformComponent)
+			{
+				// Entities always have transforms
+				auto& transform = deserializedEntity.getComponent<TransformComponent>();
+				LAB_DESERIALISE_PROPERTY(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
+			}
+
+			auto cameraComponent = entity["CameraComponent"];
+			if (cameraComponent)
+			{
+				auto cameraProps = cameraComponent["Camera"];
+
+				auto& cc = deserializedEntity.addComponent<CameraComponent>();
+				cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
+
+				cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+				cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
+				cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
+
+				cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+				cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+				cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
+
+				cc.primary = cameraComponent["Primary"].as<bool>();
+				cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
+			}
+
+			auto spriteRendererComponent = entity["SpriteRendererComponent"];
+			if (spriteRendererComponent)
+			{
+				auto& src = deserializedEntity.addComponent<SpriteRendererComponent>();
+
+				src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
+				src.layer = spriteRendererComponent["Layer"].as<u8>();
+				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
+				src.handle = spriteRendererComponent["Handle"].as<u64>();
+				src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
+			}
+
+			auto circleRendererComponent = entity["CircleRendererComponent"];
+			if (circleRendererComponent)
+			{
+				auto& src = deserializedEntity.addComponent<CircleRendererComponent>();
+
+				src.layer = circleRendererComponent["Layer"].as<u8>();
+				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
+
+				src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
+				src.thickness = circleRendererComponent["Thickness"].as<f32>();
+			}
+
+			auto rbComponent = entity["RigidBodyComponent"];
+			if (rbComponent)
+			{
+				auto& rbc = deserializedEntity.addComponent<RigidBodyComponent>();
+				rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
+				rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
+			}
+
+			auto bcComponent = entity["BoxColliderComponent"];
+			if (bcComponent)
+			{
+
+				auto& rbc = deserializedEntity.addComponent<BoxColliderComponent>();
+				rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
+				rbc.offset = bcComponent["Offset"].as<glm::vec2>();
+				rbc.density = bcComponent["Density"].as<f32>();
+				rbc.friction = bcComponent["Friction"].as<f32>();
+				rbc.restitution = bcComponent["Restitution"].as<f32>();
+				rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+			}
+
+			auto ccComponent = entity["CircleColliderComponent"];
+			if (ccComponent)
+			{
+				auto& rbc = deserializedEntity.addComponent<CircleColliderComponent>();
+				rbc.radius = bcComponent["Radius"].as<f32>();
+				rbc.offset = bcComponent["Offset"].as<glm::vec2>();
+				rbc.density = bcComponent["Density"].as<f32>();
+				rbc.friction = bcComponent["Friction"].as<f32>();
+				rbc.restitution = bcComponent["Restitution"].as<f32>();
+				rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+			}
+		}
 	}
 }

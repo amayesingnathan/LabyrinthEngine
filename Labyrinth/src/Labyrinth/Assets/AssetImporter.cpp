@@ -8,7 +8,16 @@ namespace Labyrinth {
 	{
 		sSerialisers[AssetType::Scene] = CreateSingle<SceneAssetSerializer>();
 		sSerialisers[AssetType::Texture] = CreateSingle<TextureSerializer>();
-		sSerialisers[AssetType::SubTexture] = CreateSingle<TextureSerializer>();
+		sSerialisers[AssetType::TextureSheet] = CreateSingle<TextureSheetSerializer>();
+		sSerialisers[AssetType::SubTexture] = CreateSingle<SubTextureSerializer>();
+	}
+
+	void AssetImporter::Shutdown()
+	{
+		sSerialisers[AssetType::Scene].reset();
+		sSerialisers[AssetType::Texture].reset();
+		sSerialisers[AssetType::TextureSheet].reset();
+		sSerialisers[AssetType::SubTexture].reset();
 	}
 
 	void AssetImporter::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset)

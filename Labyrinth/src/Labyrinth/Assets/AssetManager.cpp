@@ -13,6 +13,8 @@ namespace Labyrinth {
 
 	void AssetManager::Init()
 	{
+		AssetImporter::Init();
+
 		sAssetDirPath = Application::Get().getSpec().workingDir + "assets";
 		sAssetRegPath = sAssetDirPath / "AssetRegistry.lreg";
 		LoadRegistry();
@@ -26,6 +28,8 @@ namespace Labyrinth {
 		sMemoryAssets.clear();
 		sAssetRegistry.clear();
 		sLoadedAssets.clear();
+
+		AssetImporter::Shutdown();
 	}
 
 	AssetType AssetManager::GetAssetTypeFromExtension(const std::string& extension)
@@ -40,6 +44,14 @@ namespace Labyrinth {
 	AssetType AssetManager::GetAssetTypeFromPath(const std::filesystem::path& path)
 	{
 		return GetAssetTypeFromExtension(path.extension().string());
+	}
+
+	bool AssetManager::IsExtensionValid(const std::string& extension, AssetType type)
+	{
+		std::string ext = Utils::String::ToLowerCopy(extension);
+		if (sAssetExtensionMap.count(ext) == 0)
+			return false;
+		return sAssetExtensionMap[ext] == type;
 	}
 
 	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath)
@@ -109,7 +121,7 @@ namespace Labyrinth {
 			std::string filepath = entry["Filepath"].as<std::string>();
 
 			AssetMetadata metadata;
-			metadata.handle = entry["Handle"].as<uint64_t>();
+			metadata.handle = entry["Handle"].as<u64>();
 			metadata.filepath = filepath;
 			metadata.type = (AssetType)AssetUtils::AssetTypeFromString(entry["Type"].as<std::string>());
 

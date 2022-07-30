@@ -38,11 +38,6 @@ namespace Labyrinth {
 
 		static Ref<Texture2D> Create(i32 width, i32 height);
 		static Ref<Texture2D> Create(const std::string& path);
-
-		static const std::regex GetSuppTypes() { return mSuppImgTypes; }
-
-	private:
-		static inline const std::regex mSuppImgTypes = std::regex(".png|.svg");;
 	};
 
 }

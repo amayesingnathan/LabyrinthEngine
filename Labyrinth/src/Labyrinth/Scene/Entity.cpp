@@ -10,7 +10,7 @@ namespace Labyrinth {
 	{
 	}
 
-	const Entity& Entity::getParent() const { return getComponent<NodeComponent>().parent; }
+	Entity Entity::getParent() const { return mScene.lock()->FindEntity(getComponent<NodeComponent>().parent); }
 	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
 
 	void Entity::destroy()
@@ -21,13 +21,13 @@ namespace Labyrinth {
 		scene = nullptr;
 	}
 
-	Entity& Entity::getParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
-		if (node.parent == newParent) return false;
+		Entity currentParent = mScene.lock()->FindEntity(newParent ? newParent : 0);
+		if (currentParent == newParent) return false;
 
 		if (newParent)
 		{
@@ -37,8 +37,8 @@ namespace Labyrinth {
 		}
 		else { addComponent<RootComponent>(); };
 
-		if (node.parent)
-			node.parent.removeChild(*this);
+		if (currentParent)
+			currentParent.removeChild(*this);
 		else
 			removeComponent<RootComponent>(); //No longer root entity (will have parent)
 
@@ -51,46 +51,47 @@ namespace Labyrinth {
 		return setParent(newParent, getComponent<NodeComponent>());
 	}
 
-	std::vector<Entity>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
-	const std::vector<Entity>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
+	std::vector<UUID>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
+	const std::vector<UUID>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
 
-	bool Entity::hasChild(const Entity& child) const 
+	bool Entity::hasChild(Entity child) const 
 	{ 
-		const std::vector<Entity>& children = getChildren();
-		auto it = std::find(children.begin(), children.end(), child);
+		const std::vector<UUID>& children = getChildren();
+		auto it = std::find(children.begin(), children.end(), child.getUUID());
 		return it != getChildren().end();
 	}
 
-	void Entity::addChild(const Entity& child, NodeComponent& node)
+	void Entity::addChild(Entity child, NodeComponent& node)
 	{
 		node.children.emplace_back(child);
 	}
 
-	void Entity::addChild(const Entity& child)
+	void Entity::addChild(Entity child)
 	{
 		addChild(child, getComponent<NodeComponent>());
 	}
 
-	void Entity::removeChild(const Entity& child)
+	void Entity::removeChild(Entity child)
 	{
-		std::vector<Entity>& children = getChildren();
-		auto it = std::find(children.begin(), children.end(), child);
+		std::vector<UUID>& children = getChildren();
+		auto it = std::find(children.begin(), children.end(), child.getUUID());
 		if (it != children.end())
 			children.erase(it);
 	}
 
-	bool Entity::isRelated(const Entity& filter) const
+	bool Entity::isRelated(Entity filter) const
 	{
 		const auto& children = getComponent<NodeComponent>().children;
 		// Cycles every child
 		for (const auto& child : children)
 		{
-			if (child == filter)
+			Entity childEnt = mScene.lock()->FindEntity(child);
+			if (childEnt == filter)
 			{
 				// Found the child
 				return true;
 			}
-			bool found = child.isRelated(filter);
+			bool found = childEnt.isRelated(filter);
 			if (found)
 				return found;
 		}

@@ -8,13 +8,16 @@ namespace Labyrinth {
 
 	inline static std::unordered_map<std::string, AssetType> sAssetExtensionMap =
 	{
-		// Hazel types
-		{ ".laby", AssetType::Scene },
+		// Labyrinth types
+		{ ".lscene", AssetType::Scene },
+		{ ".lss", AssetType::TextureSheet },
+		{ ".lstex", AssetType::SubTexture },
 
 		// Textures
 		{ ".png", AssetType::Texture },
 		{ ".jpg", AssetType::Texture },
 		{ ".jpeg", AssetType::Texture },
+		{ ".svg", AssetType::Texture },
 	};
 
 }

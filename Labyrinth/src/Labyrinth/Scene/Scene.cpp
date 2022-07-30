@@ -95,17 +95,6 @@ namespace Labyrinth {
 			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
 		});
 
-		// Parent/child relations require more care to clone as parent/children are stored using entt::entity so need to find corresponding entities in cloned scene.
-		mRegistry.view<IDComponent, NodeComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& nodeComp)
-		{
-			if (nodeComp.parent) {
-				const auto& parentID = nodeComp.parent.getComponent<IDComponent>();
-				Entity newEnt = { entMap.at(idComp), newScene };
-				Entity newParent = { entMap.at(parentID), newScene };
-				newEnt.setParent(newParent);
-			}
-		});
-
 		CopyAllComponents(mRegistry, newScene->mRegistry, entMap);
 
 		return newScene;
@@ -149,12 +138,12 @@ namespace Labyrinth {
 		Entity newEnt = CreateEntity(tag.tag);
 
 		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(nodeCopy.parent);
+		newEnt.setParent(FindEntity(nodeCopy.parent));
 
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(nodeCopy.children[i], newEnt);
+			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
 
 		CopyAllComponents(copy, newEnt);
 
@@ -172,7 +161,7 @@ namespace Labyrinth {
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(nodeCopy.children[i], newEnt);
+			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
 		
 		CopyAllComponents(copy, newEnt);
 
@@ -195,14 +184,15 @@ namespace Labyrinth {
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
+			Entity childEnt = FindEntity(child);
 			if (linkChildren)
 			{
 				if (parent)
-					child.setParent(parent);
+					childEnt.setParent(parent);
 				else
-					DestroyEntityR(child, entity);
+					DestroyEntityR(childEnt, entity);
 			}
-			else DestroyEntityR(child, entity);
+			else DestroyEntityR(childEnt, entity);
 		}
 
 		mRegistry.destroy(entity);
@@ -363,13 +353,13 @@ namespace Labyrinth {
 		{
 			if (srComponent.type == SpriteRendererComponent::TexType::SubTexture)
 			{
-				Ref<SubTexture2D> subTex = srComponent.getTex<SubTexture2D>();
+				Ref<Texture2DSheet> texSheet = AssetManager::GetAsset<SubTexture2D>(srComponent.handle)->getSheet();
 				if (std::find_if(sheets.begin(), sheets.end(),
-					[&subTex](const Ref<Texture2DSheet>& match) {
-						return subTex->getBaseTex()->getPath() == match->getBaseTex()->getPath();
+					[&texSheet](const Ref<Texture2DSheet>& match) {
+						return texSheet == match;
 					})
 					== sheets.end())
-					sheets.emplace_back(subTex->getSheet());
+					sheets.emplace_back(texSheet);
 			}
 		});
 	}

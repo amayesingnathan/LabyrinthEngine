@@ -3,6 +3,7 @@
 #include "Labyrinth/Maths/Vector2D.h"
 
 #include "Labyrinth/Assets/AssetGroup.h"
+#include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"
@@ -49,38 +50,28 @@ namespace Labyrinth {
 
 	struct SpriteRendererComponent
 	{
-		enum class TexType { None = -1, Texture, SubTexture };
-		struct NoTex {};
-		using TextureComponent = std::variant<NoTex, Ref<Texture2D>, Ref<SubTexture2D>>;
-
-		TexType type = TexType::None;
+		enum class TexType
+		{
+			None, Texture, SubTexture
+		};
 
 		u8 layer = 0;
 		static const u8 MaxLayers = std::numeric_limits<u8>::max();
 
-		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
-		TextureComponent texture = NoTex();
+		TexType type = TexType::None;
+		glm::vec4 colour = { 1.0f, 1.0f, 1.0f, 1.0f };
+		AssetHandle handle = 0;
 		f32 tilingFactor = 1.0f;
 
 		SpriteRendererComponent() = default;
 		SpriteRendererComponent(u8 layer)
-			: type(TexType::None), layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
+			: layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
 		SpriteRendererComponent(const glm::vec4& rgba, u8 layer = 0)
-			: type(TexType::None), layer(layer), colour(rgba) {}
-		SpriteRendererComponent(Ref<Texture2D> tex, f32 tf, u8 layer = 0)
-			: type(TexType::Texture), layer(layer), texture(tex), tilingFactor(tf) {}
-		SpriteRendererComponent(Ref<SubTexture2D> subtex, f32 tf, u8 layer = 0)
-			: type(TexType::SubTexture), layer(layer), texture(subtex), tilingFactor(tf) {}
+			: layer(layer), colour(rgba) {}
 
 		bool hasTex() const 
 		{ 
-			return type != TexType::None; 
-		}
-
-		template<typename TexType>
-		Ref<TexType> getTex() const
-		{
-			return std::get<Ref<TexType>>(texture);
+			return handle != 0;
 		}
 
 		// Get normalised layer value
@@ -228,10 +219,13 @@ namespace Labyrinth {
 		const Ref<Texture2D>& getTex() const { return tilemap->getTex(); }
 	};
 
+	struct NodeComponent;
+
 	template<typename... Component>
 	struct ComponentGroup {};
 	using AllComponents = ComponentGroup
 		<
+		NodeComponent,
 		TransformComponent,
 		SpriteRendererComponent,
 		CircleRendererComponent,

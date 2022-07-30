@@ -506,15 +506,16 @@ namespace Labyrinth {
 			{
 			case SpriteRendererComponent::TexType::Texture:
 			{
-				DrawQuad(transform, src.getTex<Texture2D>(),
+				DrawQuad(transform, AssetManager::GetAsset<Texture2D>(src.handle),
 					src.tilingFactor, src.colour, nullptr, entityID);
 				break;
 			}
 			case SpriteRendererComponent::TexType::SubTexture:
 			{
-				DrawQuad(transform, src.getTex<SubTexture2D>()->getBaseTex(),
+				Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(src.handle);
+				DrawQuad(transform, subtex->getBaseTex(),
 					src.tilingFactor, src.colour,
-					std::get<Ref<SubTexture2D>>(src.texture)->getTexCoords(),
+					subtex->getTexCoords(),
 					entityID);
 				break;
 			}

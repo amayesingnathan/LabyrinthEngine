@@ -44,13 +44,10 @@ namespace Labyrinth {
 	{
 		switch (mPayload.addType)
 		{
-		case SheetAddType::Path: break;
-		//case SheetAddType::Path:	mPayload.currentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName); break;
-		//case SheetAddType::Texture: mPayload.currentSheet = AssetManager::GetOrCreate<Texture2DSheet>(mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{ mTileWidth, mTileHeight }, mPayload.sheetName); break;
+			case SheetAddType::Path:	mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Texture: mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
 		}
 
-		mSheetWidth = mPayload.currentSheet->getWidth();
-		mSheetHeight = mPayload.currentSheet->getHeight();
 		mPayload.framebuffer->resize(Cast<size_t>(mPayload.viewportSize.x) - 15, 200);
 
 		Close();

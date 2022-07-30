@@ -37,6 +37,8 @@ namespace Labyrinth {
         static AssetType GetAssetTypeFromExtension(const std::string& extension);
         static AssetType GetAssetTypeFromPath(const std::filesystem::path& path);
 
+        static bool IsExtensionValid(const std::string& extension, AssetType type);
+
         static AssetHandle ImportAsset(const std::filesystem::path& filepath);
         static bool ReloadData(AssetHandle assetHandle);
 
@@ -128,9 +130,9 @@ namespace Labyrinth {
         }
 
         template<typename T>
-        static Ref<T> GetAsset(const std::string& filepath)
+        static Ref<T> GetAsset(const std::filesystem::path& filepath)
         {
-            return GetAsset<T>(GetAssetHandleFromFilePath(filepath));
+            return GetAsset<T>(GetAssetHandleFromPath(filepath));
         }
 
         static bool FileExists(AssetMetadata& metadata)
@@ -140,7 +142,7 @@ namespace Labyrinth {
 
         static AssetHandle GetAssetHandleFromPath(const std::filesystem::path& path)
         {
-            return AssetHandle();
+            return GetMetadata(path).handle;
         }
 
         static const AssetCache& GetLoadedAssets() { return sLoadedAssets; }

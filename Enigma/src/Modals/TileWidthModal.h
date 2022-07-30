@@ -24,8 +24,6 @@ namespace Labyrinth {
 	private:
 		SpriteSheetData& mPayload;
 
-		size_t mSheetWidth = 0;
-		size_t mSheetHeight = 0;
 		i32 mTileWidth = 0;
 		i32 mTileHeight = 0;
 

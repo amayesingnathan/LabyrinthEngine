@@ -81,11 +81,11 @@ namespace Labyrinth {
 			break;
 
 		case SpriteRendererComponent::TexType::Texture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<Texture2D>());
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, AssetManager::GetAsset<Texture2D>(component.handle));
 			break;
 
 		case SpriteRendererComponent::TexType::SubTexture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<SubTexture2D>());
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, AssetManager::GetAsset<SubTexture2D>(component.handle));
 			break;
 		}
 
@@ -218,7 +218,7 @@ namespace Labyrinth {
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode({ node.children[i], mContext });
+				DrawEntityNode(mContext->FindEntity(node.children[i]));
 			ImGui::TreePop();
 		}
 		if (entityCreated)
@@ -604,12 +604,7 @@ namespace Labyrinth {
 					if (ImGui::Selectable(label.c_str(), isSelected))
 					{
 						component.type = type;
-						switch (type)
-						{
-						case SpriteRendererComponent::TexType::None:       component.texture = SpriteRendererComponent::NoTex(); break;
-						case SpriteRendererComponent::TexType::Texture:    component.texture = EditorResources::NoTexture; break;
-						case SpriteRendererComponent::TexType::SubTexture: component.texture = SubTexture2D::Create(EditorResources::NoTexture, "NoTex"); break;
-						}
+						component.handle = 0;
 					}
 
 					if (isSelected)
@@ -629,11 +624,17 @@ namespace Labyrinth {
 				{
 					const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+					std::string extension = texturePath.extension().string();
 
-					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
+					if (AssetManager::IsExtensionValid(extension, AssetType::Texture))
 					{
 						component.type = SpriteRendererComponent::TexType::Texture;
-						component.texture = Texture2D::Create(texturePath.string());
+						component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+					}
+					else if (AssetManager::IsExtensionValid(extension, AssetType::SubTexture))
+					{
+						component.type = SpriteRendererComponent::TexType::SubTexture;
+						component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
 					}
 				}
 				ImGui::EndDragDropTarget();
@@ -645,7 +646,7 @@ namespace Labyrinth {
 					SpriteSheetData& data = *Cast<SpriteSheetData>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::SubTexture;
-					component.texture = data.currentSheet->getSubTex(data.subTexName);
+					component.handle = data.currentSubTex->handle;
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -653,8 +654,7 @@ namespace Labyrinth {
 			{
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
 				{
-					const std::string& key = *Cast<std::string>(payload->Data);
-					AssetHandle handle = AssetManager::GetAssetHandleFromPath(key);
+					AssetHandle handle = *Cast<AssetHandle>(payload->Data);
 
 					switch (component.type)
 					{
@@ -663,21 +663,8 @@ namespace Labyrinth {
 						break;
 
 					case SpriteRendererComponent::TexType::Texture:
-					{
-						Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(handle);
-						if (tex) 
-							component.texture = tex; 
-						else 
-							ImGui::OpenPopup("InvalidAsset");
-						break;
-					}
-
 					case SpriteRendererComponent::TexType::SubTexture:
-						Ref<SubTexture2D> tex = AssetManager::GetAsset<SubTexture2D>(handle);
-						if (tex)
-							component.texture = tex;
-						else
-							ImGui::OpenPopup("InvalidAsset");
+						component.handle = handle;
 						break;
 					}
 

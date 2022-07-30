@@ -4,6 +4,11 @@
 
 #include "Labyrinth/Renderer/SubTexture.h"
 
+namespace YAML {
+	class Emitter;
+	class Node;
+}
+
 namespace Labyrinth {
 
 	class SceneSerialiser
@@ -25,6 +30,14 @@ namespace Labyrinth {
 			LAB_CORE_ASSERT(false);
 			return false;
 		}
+
+	public:
+		static void SerializeEntity(YAML::Emitter& out, Entity entity);
+		static void DeserializeEntities(YAML::Node& entitiesNode, Ref<Scene> scene);
+
+	public:
+		inline static std::string_view FileFilter = "Hazel Scene (*.hscene)\0*.hscene\0";
+		inline static std::string_view DefaultExtension = ".hscene";
 
 	private:
 		Ref<Scene> mScene;

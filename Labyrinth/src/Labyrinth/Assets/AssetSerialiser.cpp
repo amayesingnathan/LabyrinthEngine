@@ -36,31 +36,20 @@ namespace Labyrinth {
 			LAB_SERIALISE_PROPERTY_ASSET(TextureSheet, subtex->getSheet(), out);
 			LAB_SERIALISE_PROPERTY(SubTexName, subtex->getName(), out);
 
-			out << YAML::Key << "Coordinates" << YAML::Value << YAML::BeginSeq;
 			glm::vec2* texCoords = subtex->getTexCoords();
 
-			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(0, texCoords[0], out);
-			out << YAML::EndMap;
-
-			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(1, texCoords[1], out);
-			out << YAML::EndMap;
-
-			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(2, texCoords[2], out);
-			out << YAML::EndMap;
-
-			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(3, texCoords[3], out);
-			out << YAML::EndMap;
-
-			out << YAML::EndSeq; // Coordinates
 
 			out << YAML::EndMap;
 		}
 
 		out << YAML::EndMap; // Subtexture
+
+		std::ofstream fout(AssetManager::GetFileSystemPath(metadata));
+		fout << out.c_str();
 	}
 
 	bool SubTextureSerializer::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
@@ -88,13 +77,10 @@ namespace Labyrinth {
 
 		LAB_DESERIALISE_PROPERTY(SubTexName, subtexName, subtexNode, defaultName);
 
-		auto coordsNode = subtexNode["Coordinates"];
-		if (!coordsNode) return false;
-
-		LAB_DESERIALISE_PROPERTY(0, coords[0], coordsNode, defaultCoord);
-		LAB_DESERIALISE_PROPERTY(1, coords[1], coordsNode, defaultCoord);
-		LAB_DESERIALISE_PROPERTY(2, coords[2], coordsNode, defaultCoord);
-		LAB_DESERIALISE_PROPERTY(3, coords[3], coordsNode, defaultCoord);
+		LAB_DESERIALISE_PROPERTY(0, coords[0], subtexNode, defaultCoord);
+		LAB_DESERIALISE_PROPERTY(1, coords[1], subtexNode, defaultCoord);
+		LAB_DESERIALISE_PROPERTY(2, coords[2], subtexNode, defaultCoord);
+		LAB_DESERIALISE_PROPERTY(3, coords[3], subtexNode, defaultCoord);
 
 		asset = Ref<SubTexture2D>::Create(sheet, coords, subtexName);
 		asset->handle = metadata.handle;
@@ -106,9 +92,15 @@ namespace Labyrinth {
 	{
 		Ref<Texture2DSheet> sheet = asset.to<Texture2DSheet>();
 
+		std::filesystem::path sheetPath = "assets" / metadata.filepath.parent_path();
+		if (!std::filesystem::exists(sheetPath))
+			std::filesystem::create_directories(sheetPath);
+
+		std::filesystem::create_directories(sheetPath / "subtextures");
+
 		YAML::Emitter out;
 		out << YAML::BeginMap; // Subtexture
-		out << YAML::Key << "SubTexture" << YAML::Value;
+		out << YAML::Key << "TextureSheet" << YAML::Value;
 		{
 			out << YAML::BeginMap;
 
@@ -116,10 +108,26 @@ namespace Labyrinth {
 			LAB_SERIALISE_PROPERTY(Name, sheet->getName(), out);
 			LAB_SERIALISE_PROPERTY(TileSize, sheet->getTileSize(), out);
 
+			out << YAML::Key << "SubTextures";
+			out << YAML::Value << YAML::BeginSeq;
+
+			for (const auto& [name, handle] : sheet->getSubTexList())
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(Name, name, out);
+				LAB_SERIALISE_PROPERTY(Handle, handle, out);
+				out << YAML::EndMap;
+			}
+
+			out << YAML::EndSeq;
+
 			out << YAML::EndMap;
 		}
 
 		out << YAML::EndMap; // TextureSheet
+
+		std::ofstream fout(AssetManager::GetFileSystemPath(metadata));
+		fout << out.c_str();
 	}
 
 	bool TextureSheetSerializer::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
@@ -132,7 +140,7 @@ namespace Labyrinth {
 		strStream << stream.rdbuf();
 
 		YAML::Node root = YAML::Load(strStream.str());
-		YAML::Node texNode = root["Texture"];
+		YAML::Node texNode = root["TextureSheet"];
 
 		Ref<Texture2D> tex = nullptr;
 		std::string texName;
@@ -148,7 +156,18 @@ namespace Labyrinth {
 		LAB_DESERIALISE_PROPERTY(Name, texName, texNode, defaultName);
 		LAB_DESERIALISE_PROPERTY(TileSize, tileSize, texNode, defaultSize);
 
-		asset = Ref<Texture2DSheet>::Create(tex, tileSize, texName);
+		Ref<Texture2DSheet> sheet = Ref<Texture2DSheet>::Create(tex, tileSize, texName);
+
+		auto subtextures = texNode["SubTextures"];
+		for (auto subtex : subtextures)
+		{
+			std::string name = subtex["Name"].as<std::string>();
+			AssetHandle handle = subtex["Handle"].as<u64>();
+
+			sheet->addSubTex(name, handle);
+		}
+
+		asset = sheet;
 		asset->handle = metadata.handle;
 
 		return true;
