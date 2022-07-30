@@ -245,7 +245,7 @@ namespace Labyrinth {
 			ImGui::EndDragDropTarget();
 		}
 
-		UI_Gizmos();
+		if (mSceneState == SceneState::Edit) UI_Gizmos();
 
 		ImGui::End();
 		ImGui::PopStyleVar();

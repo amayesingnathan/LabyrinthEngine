@@ -14,6 +14,7 @@ namespace Labyrinth {
 		struct StartupSettings
 		{
 			bool fullscreen = false;
+			std::filesystem::path workingDir;
 		};
 
 	public:

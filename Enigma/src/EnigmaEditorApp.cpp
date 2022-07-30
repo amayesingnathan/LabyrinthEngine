@@ -27,9 +27,7 @@ namespace Labyrinth {
 		spec.name = "Enigma";
 		spec.commandLineArgs = args;
 
-		JsonObj settings = JSON::Open("enigma.ini");
-		if (settings.contains("Startup"))
-			spec.fullscreen = settings["Startup"]["Fullscreen"];
+		Application::GetSettings("enigma.ini", spec);
 
 		return new EnigmaEditor(spec);
 	}

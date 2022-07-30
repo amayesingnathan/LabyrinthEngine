@@ -5,6 +5,7 @@
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Renderer/Renderer.h"
 #include "Labyrinth/IO/Input.h"
+#include "Labyrinth/IO/JSON.h"
 #include "Labyrinth/Renderer/Renderer.h"
 #include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
@@ -143,5 +144,16 @@ namespace Labyrinth {
 		}
 
 		return false;
+	}
+
+	void Application::GetSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)
+	{
+		JsonObj settings = JSON::Open("enigma.ini");
+		if (settings.contains("Startup"))
+		{
+			auto startup = settings["Startup"];
+			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"];
+			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"];
+		}
 	}
 }

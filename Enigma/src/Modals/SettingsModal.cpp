@@ -23,6 +23,12 @@ namespace Labyrinth {
 
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
+        char buffer[256];
+        memset(buffer, 0, sizeof(buffer));
+        STR_COPY(buffer, mSettings.workingDir.string());
+        if (ImGui::InputText("Working Directory", buffer, sizeof(buffer)))
+            mSettings.workingDir = buffer;
+
         ImGui::NewLine();
 
         if (ImGui::Button("OK"))

@@ -59,6 +59,8 @@ namespace Labyrinth {
 
 		const ApplicationSpec& getSpec() const { return mSpecification; }
 
+		static void GetSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
+
 	private:
 		void run();
 

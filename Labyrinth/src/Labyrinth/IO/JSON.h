@@ -9,7 +9,7 @@ namespace Labyrinth {
 	class JSON
 	{
 	public:
-		static JsonObj Open(const std::string& path)
+		static JsonObj Open(const std::filesystem::path& path)
 		{
 			std::ifstream i(path);
 			JsonObj j;
@@ -17,7 +17,7 @@ namespace Labyrinth {
 			return j;
 		}
 
-		static void Write(const std::string& path, const JsonObj& obj)
+		static void Write(const std::filesystem::path& path, const JsonObj& obj)
 		{
 			std::ofstream o(path);
 			o << std::setw(4) << obj << std::endl;
