@@ -14,6 +14,10 @@ namespace Labyrinth {
 
         if (startupSettings.contains("Fullscreen"))
             mSettings.fullscreen = startupSettings["Fullscreen"].get<bool>();
+        if (startupSettings.contains("WorkingDir"))
+            mSettings.workingDir = startupSettings["WorkingDir"].get<std::filesystem::path>();
+        else
+            mSettings.workingDir = std::filesystem::current_path();
     }
 
     void SettingsModal::onImGuiRender()
@@ -37,7 +41,6 @@ namespace Labyrinth {
             Close();
         }
 
-        ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
         if (ImGui::Button("Apply"))
             Save();
@@ -53,6 +56,7 @@ namespace Labyrinth {
         JsonObj& startupSettings = mSettingsJSON["Startup"];
 
         startupSettings["Fullscreen"] = mSettings.fullscreen;
+        startupSettings["WorkingDir"] = mSettings.workingDir;
 
         JSON::Write("enigma.ini", mSettingsJSON);
     }

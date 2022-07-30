@@ -37,6 +37,9 @@ Makefile.in
 **.lss
 **.lstex
 
+#Editor init files
+Enigma/enigma.ini
+
 # Directories
 Labyrinth/dependencies/VulkanSDK
 */assets/cache
