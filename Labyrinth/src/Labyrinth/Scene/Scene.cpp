@@ -4,6 +4,7 @@
 #include "Entity.h"
 #include "Components.h"
 
+#include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Scripting/NativeScript.h"
@@ -330,7 +331,7 @@ namespace Labyrinth {
 			if (!nsc.complete && !nsc.instance)
 			{
 				nsc.instance = nsc.instantiateScript();
-				nsc.instance->mScriptEntity = { entity, CreateRef(this) };
+				nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
 				nsc.instance->onStart();
 			}
 
@@ -354,7 +355,7 @@ namespace Labyrinth {
 	{
 		if (mEntityMap.count(findID) == 0) return Entity();
 
-		return { mEntityMap.at(findID), Ref<Scene>::Create(this) };
+		return { mEntityMap.at(findID), Ref<Scene>(this) };
 	}
 
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
@@ -379,17 +380,16 @@ namespace Labyrinth {
 	{
 		OnPhysicsStart();
 
-		ScriptEngine::OnRuntimeStart(Ref<Scene>::Create(this));
+		ScriptEngine::OnRuntimeStart(Ref<Scene>(this));
 
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
-			Entity e = { entity, CreateRef(this) };
+			Entity e = { entity, Ref<Scene>(this) };
 			if (ScriptEngine::EntityClassExists(sc.className))
 			{
 				sc.instance = ScriptObject::Create(ScriptEngine::GetEntityClass(sc.className), e.getUUID());
 				sc.instance->onStart();
 			}
-
 		});
 	}
 

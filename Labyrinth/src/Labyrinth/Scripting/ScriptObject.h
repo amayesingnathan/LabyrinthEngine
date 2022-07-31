@@ -50,7 +50,7 @@ namespace Labyrinth {
 		}
 
 		template<typename... Args>
-		static Ref<ScriptObject> Create(Args&&... args) { return CreateRef<ScriptObject>(std::forward<Args>(args)...); }
+		static Ref<ScriptObject> Create(Args&&... args) { return Ref<ScriptObject>::Create(std::forward<Args>(args)...); }
 
 	private:
 		Ref<ScriptClass> mClass = nullptr;

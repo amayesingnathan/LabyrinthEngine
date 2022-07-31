@@ -4,6 +4,7 @@
 
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
+#include "Labyrinth/Scripting/ScriptObject.h"
 #include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Tilemap/Tilemap.h"
 
@@ -137,8 +138,6 @@ namespace Labyrinth {
 				* glm::scale(glm::mat4(1.0f), scale);
 		}
 	};
-
-	class ScriptObject;
 
 	struct ScriptComponent
 	{

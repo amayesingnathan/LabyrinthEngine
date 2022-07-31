@@ -24,7 +24,7 @@ Entities:
       Offset: [0, 0]
       Density: 0.5
       Friction: 0.25999999
-      Restitution: 0.540000021
+      Restitution: 0.930000007
       RestitutionThreshold: 0.5
   - Entity: 2745792129234407209
     TagComponent:
@@ -59,7 +59,7 @@ Entities:
       Offset: [0, 0]
       Density: 0.5
       Friction: 0.25999999
-      Restitution: 0.540000021
+      Restitution: 1.10000002
       RestitutionThreshold: 0.5
   - Entity: 5374550657693883073
     TagComponent:
@@ -153,7 +153,7 @@ Entities:
       Offset: [0, 0]
       Density: 0.5
       Friction: 0.25999999
-      Restitution: 0.74000001
+      Restitution: 0.860000014
       RestitutionThreshold: 0.5
   - Entity: 7946784054779200465
     TagComponent:
