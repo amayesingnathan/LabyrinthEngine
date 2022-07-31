@@ -15,22 +15,6 @@
 
 namespace Labyrinth {
 
-	struct ScriptEngineData
-	{
-		MonoDomain* rootDomain = nullptr;
-		MonoDomain* appDomain = nullptr;
-
-		MonoAssembly* coreAssembly = nullptr;
-		MonoImage* coreAssemblyImage = nullptr;
-		std::filesystem::path assemblyPath;
-
-		Ref<ScriptClass> entityClass;
-
-		std::unordered_map<std::string, Ref<ScriptClass>> entityClasses;
-
-		Ref<Scene> context;
-	};
-
 	static ScriptEngineData* sData = nullptr;
 
 	void ScriptEngine::Init()
@@ -41,7 +25,7 @@ namespace Labyrinth {
 		LoadCoreAssembly("Resources/Scripts/Labyrinth-ScriptCore.dll");
 		LoadAssemblyClasses(sData->coreAssembly);
 
-		ScriptGlue::RegisterFunctions();
+		ScriptGlue::Register();
 	}
 
 	void ScriptEngine::Shutdown()
@@ -82,7 +66,7 @@ namespace Labyrinth {
 
 		LoadAssemblyClasses(sData->coreAssembly);
 
-		ScriptGlue::RegisterFunctions();
+		ScriptGlue::Register();
 	}
 
 	void ScriptEngine::OnRuntimeStart(Ref<Scene> context)
@@ -115,6 +99,11 @@ namespace Labyrinth {
 	bool ScriptEngine::EntityClassExists(const std::string& className)
 	{
 		return sData->entityClasses.count(className) != 0;
+	}
+
+	ScriptEngineData* ScriptEngine::GetData()
+	{
+		return sData;
 	}
 
 	void ScriptEngine::InitMono()

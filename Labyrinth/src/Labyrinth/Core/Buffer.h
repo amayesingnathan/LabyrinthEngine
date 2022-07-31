@@ -13,6 +13,7 @@ namespace Labyrinth {
 
 		Buffer() = default;
 		Buffer(void* _data, usize _size) : data(_data), size(_size) {}
+		Buffer(usize _size) { allocate(_size); }
 		Buffer(const Buffer& buffer)
 		{
 			LAB_CORE_ASSERT(buffer.data && buffer.size);
@@ -49,7 +50,7 @@ namespace Labyrinth {
 			size = _size;
 		}
 
-		void free()
+		void release()
 		{
 			delete[](byte*)data;
 			data = nullptr;
@@ -94,15 +95,13 @@ namespace Labyrinth {
 		{
 			return (T*)data;
 		}
-
-		inline usize size() const { return size; }
 	};
 
 	struct ScopedBuffer : public Buffer
 	{
 		~ScopedBuffer()
 		{
-			free();
+			release();
 		}
 
 		static ScopedBuffer Copy(const void* _data, usize size)

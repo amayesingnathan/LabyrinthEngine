@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ScriptObject.h"
+#include "ScriptEngineInternal.h"
 
 namespace Labyrinth {
 
@@ -25,6 +26,8 @@ namespace Labyrinth {
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
 		static Ref<ScriptClass> GetEntityClass(const std::string& className);
 		static bool EntityClassExists(const std::string& className);
+
+		static ScriptEngineData* GetData();
 
 	private:
 		static void InitMono();

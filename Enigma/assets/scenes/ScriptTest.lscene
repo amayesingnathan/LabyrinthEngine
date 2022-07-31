@@ -1,5 +1,21 @@
 Scene: ScriptTest
 Entities:
+  - Entity: 3816683950833690681
+    TagComponent:
+      Tag: Rigid Body
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, -2.68000007, 0]
+      Rotation: [0, 0, 0]
+      Scale: [8.51000023, 0.340000004, 1]
+    SpriteRendererComponent:
+      Type: 0
+      Layer: 0
+      Handle: 0
+      Colour: [1, 1, 1, 1]
+      TilingFactor: 1
   - Entity: 6740068165607382742
     TagComponent:
       Tag: Camera

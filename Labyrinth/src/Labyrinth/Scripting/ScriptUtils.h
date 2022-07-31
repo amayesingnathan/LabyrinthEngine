@@ -79,9 +79,9 @@ namespace Labyrinth {
 				}, std::forward<Args>(args)...);
 		}
 
-	private:
 		static bool CheckMonoError(MonoError& error);
 
+	private:
 		static MonoMethod* GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc);
 		static MonoObject* CallMethodInternal(MonoObject* instance, const char* methodName, void** argv, int argc);
 		static MonoObject* CallMethodInternal(MonoObject* instance, MonoMethod* method, void** argv);

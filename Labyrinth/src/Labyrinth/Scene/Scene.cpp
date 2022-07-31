@@ -219,47 +219,58 @@ namespace Labyrinth {
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
 		{
 			Entity entity(e, Ref<Scene>(this));
+			UUID entityID = entity.getComponent<IDComponent>().id;
 
 			b2BodyDef bodyDef;
 			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
 			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
 			bodyDef.angle = trComponent.rotation.z;
 			bodyDef.fixedRotation = rbComponent.fixedRotation;
+
 			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+			b2MassData massData = body->GetMassData();;
+			massData.mass = rbComponent.mass;
+			body->SetMassData(&massData);
+			body->SetGravityScale(rbComponent.gravityScale);
+			body->SetLinearDamping(rbComponent.linearDrag);
+			body->SetAngularDamping(rbComponent.angularDrag);
+			body->GetUserData().pointer = (uintptr_t)entityID;
 
 			rbComponent.runtimeBody = body;
+		});
 
-			if (entity.hasComponent<BoxColliderComponent>())
-			{
-				auto& bcc = entity.getComponent<BoxColliderComponent>();
+		mRegistry.view<TransformComponent, BoxColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& bcComponent, const auto& rbComponent)
+		{
+			Entity entity = { e, this };
 
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bcc.halfExtents.x * trComponent.scale.x, bcc.halfExtents.y * trComponent.scale.y, b2Vec2(bcc.offset.x, bcc.offset.y), 0.0f);
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = bcc.density;
-				fixtureDef.friction = bcc.friction;
-				fixtureDef.restitution = bcc.restitution;
-				fixtureDef.restitutionThreshold = bcc.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-			if (entity.hasComponent<CircleColliderComponent>())
-			{
-				auto& ccc = entity.getComponent<CircleColliderComponent>();
+			b2PolygonShape polygonShape;
+			polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
 
-				b2CircleShape circleShape;
-				circleShape.m_radius = ccc.radius * trComponent.scale.x;
-				circleShape.m_p = b2Vec2(ccc.offset.x, ccc.offset.y);
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &polygonShape;
+			fixtureDef.density = bcComponent.density;
+			fixtureDef.friction = bcComponent.friction;
+			body->CreateFixture(&fixtureDef);
+		});
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = ccc.density;
-				fixtureDef.friction = ccc.friction;
-				fixtureDef.restitution = ccc.restitution;
-				fixtureDef.restitutionThreshold = ccc.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
+		mRegistry.view<TransformComponent, CircleColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
+		{
+			Entity entity = { e, this };
+
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
+
+			b2CircleShape circleShape;
+			circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = ccComponent.density;
+			fixtureDef.friction = ccComponent.friction;
+			body->CreateFixture(&fixtureDef);
 		});
 	}
 

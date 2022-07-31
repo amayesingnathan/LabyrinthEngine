@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/Buffer.h"
 #include "Labyrinth/Assets/Asset.h"
 
 #include <string>
@@ -19,9 +20,12 @@ namespace Labyrinth {
 		virtual const std::string& getPath() const = 0;
 		virtual i32 getWidth() const = 0;
 		virtual i32 getHeight() const = 0;
+		virtual u32 getSize() const = 0;
 		virtual u32 getRendererID() const = 0;
 
-		virtual void setData(void* data, i32 size) = 0;
+		virtual void setData(void* data, usize size) = 0;
+		virtual void setData(Buffer buffer) = 0;
+		virtual Buffer getData() = 0;
 
 		virtual void bind(u32 slot = 0) const = 0;
 

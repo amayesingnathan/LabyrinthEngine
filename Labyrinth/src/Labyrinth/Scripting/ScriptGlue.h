@@ -5,7 +5,11 @@ namespace Labyrinth {
 	class ScriptGlue
 	{
 	public:
-		static void RegisterFunctions();
+		static void Register();
+
+	private:
+		static void RegisterComponentTypes();
+		static void RegisterInternalCalls();
 	};
 
 }

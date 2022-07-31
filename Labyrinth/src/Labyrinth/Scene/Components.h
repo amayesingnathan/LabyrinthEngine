@@ -175,9 +175,13 @@ namespace Labyrinth {
 
 	struct RigidBodyComponent
 	{
-		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		enum class BodyType { None = -1, Static = 0, Dynamic, Kinematic };
 		BodyType type = BodyType::Static;
 		bool fixedRotation = false;
+		float mass = 1.0f;
+		float linearDrag = 0.01f;
+		float angularDrag = 0.05f;
+		float gravityScale = 1.0f;
 
 		void* runtimeBody = nullptr;
 
