@@ -37,6 +37,9 @@ namespace Labyrinth {
 		{
 			auto relativePath = std::filesystem::relative(dirEntry.path(), gAssetPath);
 
+			if (relativePath.extension().string() == ".lreg")
+				continue;
+
 			const auto& filepath = dirEntry.path().filename();
 			std::string filenameStr = filepath.string();
 
