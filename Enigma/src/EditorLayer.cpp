@@ -11,7 +11,6 @@
 #include "Panels/StatsPanel.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Assets/AssetGroup.h"
 
 #include "Labyrinth/Editor/EditorResources.h"
 

@@ -15,9 +15,7 @@ void Sandbox2D::onAttach()
 {
 	LAB_PROFILE_FUNCTION();
 
-	//mCheckerboardTexture = Labyrinth::AssetManager::CreateAsset<Labyrinth::Texture2D>("Checkerboard.ltex", "Textures/", "assets/textures/checkerboard.png");
-
-	// mSpriteSheet = Labyrinth::Texture2DSheet::CreateFromPath("assets/textures/minecraft.png", { 64.0f, 64.0f });
+	// mSpriteSheet = Labyrinth::Texture2DSheet::Create("assets/textures/minecraft.png", { 64.0f, 64.0f });
 	// //mTNT = Labyrinth::SubTexture2D::CreateFromCoords(mSpriteSheet, { 8.0f, 0.0f }, { 1.0f, 1.0f });
 	// mSpriteSheet->createSubTex("TNT", { 8.0f, 0.0f }, {1.0f, 1.0f});
 }

@@ -2,7 +2,6 @@
 
 #include "Labyrinth/Maths/Vector2D.h"
 
-#include "Labyrinth/Assets/AssetGroup.h"
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
@@ -216,7 +215,7 @@ namespace Labyrinth {
 		TilemapComponent(const std::string& name, u8 _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
 
-		const Ref<Texture2D>& getTex() const { return tilemap->getTex(); }
+		Ref<Texture2D> getTex() const { return tilemap->getTex(); }
 	};
 
 	struct NodeComponent;

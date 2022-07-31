@@ -17,8 +17,7 @@ namespace Labyrinth {
 		Scene,
 		Texture,
 		SubTexture,
-		TextureSheet,
-		Group
+		TextureSheet
 	};
 
 	namespace AssetUtils {
@@ -30,7 +29,6 @@ namespace Labyrinth {
 			else if (assetType == "Texture")		return AssetType::Texture;
 			else if (assetType == "SubTexture")		return AssetType::SubTexture;
 			else if (assetType == "TextureSheet")	return AssetType::TextureSheet;
-			else if (assetType == "Group")			return AssetType::Group;
 
 			LAB_CORE_ASSERT(false, "Unknown Asset Type!");
 			return AssetType::None;
@@ -45,7 +43,6 @@ namespace Labyrinth {
 			case AssetType::Texture:		return "Texture";
 			case AssetType::SubTexture:		return "SubTexture";
 			case AssetType::TextureSheet:	return "TextureSheet";
-			case AssetType::Group:			return "Group";
 			}
 
 			LAB_CORE_ASSERT(false, "Unknown Asset Type");

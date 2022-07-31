@@ -36,6 +36,7 @@ namespace Labyrinth {
 	Application::~Application()
 	{
 		LAB_PROFILE_FUNCTION();
+
 		Renderer::Shutdown();
 		AssetManager::Shutdown();
 	}

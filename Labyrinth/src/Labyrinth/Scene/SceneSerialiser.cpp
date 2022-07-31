@@ -11,52 +11,6 @@
 
 namespace Labyrinth {
 
-	template<>
-	void YAMLParser::EncodeObject<Tex2DSheetGroup>(const Tex2DSheetGroup& sheets, bool flag)
-	{
-		BeginSequence("SpriteSheets");
-
-		for (const auto& [key, sheet] : sheets)
-		{
-			BeginObject();
-
-			ObjectProperty("Name", sheet->getName());
-			ObjectProperty("Source", sheet->getBaseTex()->getPath());
-			ObjectProperty("TileSize", sheet->getTileSize());
-
-			EndObject();
-		}
-
-		EndSequence();
-	}
-
-	template<>
-	bool YAMLParser::DecodeObject<Ref<Tex2DSheetGroup>>(Ref<Tex2DSheetGroup> sheetsOut)
-	{
-		if (!mIn["SpriteSheets"]) return false;
-
-		auto sheetsNode = mIn["SpriteSheets"];
-		if (!sheetsNode) return false;
-
-		usize count = 0;
-		for (auto sheet : sheetsNode)
-			count++;
-
-		if (sheetsOut->capacity() < count)
-			sheetsOut->reserve(count);
-
-		for (auto sheet : sheetsNode)
-		{
-			std::string name = sheet["Name"].as<std::string>();
-			std::string path = sheet["Source"].as<std::string>();
-			glm::vec2 tileSize = sheet["TileSize"].as<glm::vec2>();
-
-			sheetsOut->addOrGet(name, Texture2DSheet::Create(path, tileSize, name));
-		}
-
-		return true;
-	}
-
 	SceneSerialiser::SceneSerialiser(const Ref<Scene>& scene)
 		: mScene(scene)
 	{

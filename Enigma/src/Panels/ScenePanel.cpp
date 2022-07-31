@@ -81,12 +81,18 @@ namespace Labyrinth {
 			break;
 
 		case SpriteRendererComponent::TexType::Texture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, AssetManager::GetAsset<Texture2D>(component.handle));
-			break;
+		{
+			Ref<Texture2D> tex = component.handle ? AssetManager::GetAsset<Texture2D>(component.handle) : EditorResources::NoTexture;
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex);
+		}
+		break;
 
 		case SpriteRendererComponent::TexType::SubTexture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, AssetManager::GetAsset<SubTexture2D>(component.handle));
-			break;
+		{
+			Ref<SubTexture2D> subtex = component.handle ? AssetManager::GetAsset<SubTexture2D>(component.handle) : EditorResources::NoSubTexture;
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex);
+		}
+		break;
 		}
 
 		Renderer2D::EndState();
@@ -650,27 +656,6 @@ namespace Labyrinth {
 				}
 				ImGui::EndDragDropTarget();
 			}
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
-				{
-					AssetHandle handle = *Cast<AssetHandle>(payload->Data);
-
-					switch (component.type)
-					{
-					case SpriteRendererComponent::TexType::None:
-						ImGui::OpenPopup("InvalidAsset");
-						break;
-
-					case SpriteRendererComponent::TexType::Texture:
-					case SpriteRendererComponent::TexType::SubTexture:
-						component.handle = handle;
-						break;
-					}
-
-				}
-				ImGui::EndDragDropTarget();
-			}
 
 			ImGui::DragFloat("Tiling Factor", &component.tilingFactor, 0.1f, 0.0f, 100.0f);
 		});
@@ -744,7 +729,8 @@ namespace Labyrinth {
 		{
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			ImGui::Image((ImTextureID)(intptr_t)component.tilemap->getFB()->getColourAttachmentRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
+			Ref<Texture> tilemapTex = component.tilemap->getTex() ? component.tilemap->getTex() : EditorResources::NoTexture;
+			ImGui::Image((ImTextureID)(intptr_t)tilemapTex->getRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
 		});
 
 	}

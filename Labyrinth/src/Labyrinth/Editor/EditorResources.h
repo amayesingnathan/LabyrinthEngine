@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Renderer/Texture.h>
+#include <Labyrinth/Renderer/SubTexture.h>
 
 namespace Labyrinth {
 
@@ -19,6 +19,7 @@ namespace Labyrinth {
 
 		// Textures
 		inline static Ref<Texture2D> NoTexture = nullptr;
+		inline static Ref<SubTexture2D> NoSubTexture = nullptr;
 
 		static void Init()
 		{
@@ -31,6 +32,7 @@ namespace Labyrinth {
 			GroupIcon = LoadTexture("content-browser/groupIcon.png");
 
 			NoTexture = LoadTexture("checkerboard.png");
+			NoSubTexture = Ref<SubTexture2D>::Create(NoTexture);
 		}
 
 		static void Shutdown()
@@ -44,7 +46,7 @@ namespace Labyrinth {
 			GroupIcon.reset();
 
 			NoTexture.reset();
-
+			NoSubTexture.reset();
 		}
 
 	private:

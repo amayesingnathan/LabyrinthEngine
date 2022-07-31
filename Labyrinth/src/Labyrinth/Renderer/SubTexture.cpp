@@ -18,7 +18,7 @@ namespace Labyrinth {
 	}
 
 	Texture2DSheet::Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
-		: mTexture(AssetManager::GetAsset<Texture2D>(AssetManager::GetAssetHandleFromPath(filepath))), mTileSize(tileSize), mName(name)
+		: mTexture(AssetManager::GetAsset<Texture2D>(filepath)), mTileSize(tileSize), mName(name)
 	{
 		mTileCountX = (u32)(round(mTexture->getWidth() / tileSize.x));
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
@@ -114,7 +114,7 @@ namespace Labyrinth {
 				count++;
 			}
 		}
-		AssetImporter::Serialise(AssetManager::GetMetadata(handle), Ref<Texture2DSheet>(this));
+		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 	}
 
 	Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key)

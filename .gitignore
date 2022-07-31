@@ -33,6 +33,10 @@ Makefile.in
 #Asset Registries
 **.lreg
 
+#Labyrinth Assets
+**.lss
+**.lstex
+
 # Directories
 Labyrinth/dependencies/VulkanSDK
 */assets/cache

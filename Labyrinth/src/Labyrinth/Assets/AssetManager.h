@@ -1,7 +1,6 @@
 #pragma once
 
 #include "AssetRegistry.h"
-#include "AssetGroup.h"
 #include "AssetImporter.h"
 
 #include "Labyrinth/Core/System/Assert.h"

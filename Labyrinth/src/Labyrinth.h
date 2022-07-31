@@ -30,7 +30,6 @@
 #include "Labyrinth/Scene/NativeScript.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Assets/AssetGroup.h"
 
 // ---Renderer------------------------
 #include "Labyrinth/Renderer/Renderer.h"

@@ -2,9 +2,8 @@
 
 #include "MapLayer.h"
 
-#include <Labyrinth/Assets/AssetGroup.h>
 #include <Labyrinth/Core/System/Base.h>
-#include <Labyrinth/Renderer/Framebuffer.h>
+#include <Labyrinth/Renderer/SubTexture.h>
 
 namespace Labyrinth {
 
@@ -33,8 +32,6 @@ namespace Labyrinth {
 
 		const Ref<Texture2D>& getTex() const { return mTexture; };
 
-		Ref<Framebuffer> getFB() { return mFramebuffer; } // For debug purposes
-
 		static Ref<Tilemap> Create(const std::string& name);
 
 	private:
@@ -48,7 +45,6 @@ namespace Labyrinth {
 		usize mWidth, mHeight;
 		std::vector<SheetData> mSheets;
 		std::vector<MapLayer> mLayers;
-		Ref<Framebuffer> mFramebuffer;
 		Ref<Texture2D> mTexture = nullptr;
 
 	};
