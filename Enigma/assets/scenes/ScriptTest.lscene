@@ -16,6 +16,16 @@ Entities:
       Handle: 0
       Colour: [1, 1, 1, 1]
       TilingFactor: 1
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
   - Entity: 6740068165607382742
     TagComponent:
       Tag: Camera
@@ -53,5 +63,15 @@ Entities:
       Handle: 14559131145027010282
       Colour: [1, 1, 1, 1]
       TilingFactor: 1
+    RigidBodyComponent:
+      Type: 1
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: Sandbox.Player

@@ -19,30 +19,29 @@ namespace Sandbox
         {
             //Log.Info($"Player.OnUpdate: {ts}");
 
-            Vector3 force = Vector3.Zero;
+            Vector2 force = Vector2.Zero;
             if (Input.IsKeyPressed(KeyCode.A))
             {
-                force.X = -1.0f;
+                force.X = -10.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.D))
             {
-                force.X = 1.0f;
+                force.X = 10.0f;
             }
             if (Input.IsKeyPressed(KeyCode.W))
             {
-                force.Y = 1.0f;
+                force.Y = 10.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.S))
             {
-                force.Y = -1.0f;
+                force.Y = -10.0f;
             }
 
             if (!force.IsZero())
             {
-                Translation += force * ts;
-                //force = force * ts;
-                //RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
-                //rigidBody.ApplyLinearImpulse(force, Vector2.Zero, true);
+                force *= ts;
+                RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
+                rigidBody.ApplyLinearImpulse(force, Vector2.Zero, true);
             }
         }   
     }

@@ -822,6 +822,9 @@ namespace Labyrinth {
 		LAB_ADD_INTERNAL_CALL(Entity_GetParent);
 		LAB_ADD_INTERNAL_CALL(Entity_SetParent);
 		LAB_ADD_INTERNAL_CALL(Entity_GetChildren);
+		LAB_ADD_INTERNAL_CALL(Entity_CreateComponent);
+		LAB_ADD_INTERNAL_CALL(Entity_HasComponent);
+		LAB_ADD_INTERNAL_CALL(Entity_RemoveComponent);
 
 		LAB_ADD_INTERNAL_CALL(Tag_GetTag);
 		LAB_ADD_INTERNAL_CALL(Tag_SetTag);
