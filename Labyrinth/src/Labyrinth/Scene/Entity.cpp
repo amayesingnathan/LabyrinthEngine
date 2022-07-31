@@ -26,7 +26,7 @@ namespace Labyrinth {
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
-		Entity currentParent = mScene.lock()->FindEntity(newParent ? newParent : 0);
+		Entity currentParent = mScene.lock()->FindEntity(node.parent); 
 		if (currentParent == newParent) return false;
 
 		if (newParent)

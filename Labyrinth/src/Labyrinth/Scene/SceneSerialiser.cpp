@@ -129,7 +129,7 @@ namespace Labyrinth {
 			out << YAML::BeginMap; // SpriteRendererComponent
 
 			auto& sprite = entity.getComponent<SpriteRendererComponent>();
-			LAB_SERIALISE_PROPERTY(Ty[e], (i32)sprite.type, out);
+			LAB_SERIALISE_PROPERTY(Type, (i32)sprite.type, out);
 			LAB_SERIALISE_PROPERTY(Layer, (i32)sprite.layer, out);
 			LAB_SERIALISE_PROPERTY(Handle, sprite.handle, out);
 			LAB_SERIALISE_PROPERTY(Colour, sprite.colour, out);
@@ -145,6 +145,7 @@ namespace Labyrinth {
 
 			auto& cameraComponent = entity.getComponent<CameraComponent>();
 
+			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
 			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera.getProjectionType(), out);
 			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera.getPerspectiveVerticalFOV(), out);
@@ -204,6 +205,8 @@ namespace Labyrinth {
 
 			out << YAML::EndMap; // CircleColliderComponent
 		}
+
+		out << YAML::EndMap; // Entity
 	}
 
 	void SceneSerialiser::DeserializeEntities(YAML::Node& entitiesNode, Ref<Scene> scene)
@@ -217,13 +220,15 @@ namespace Labyrinth {
 			if (tagComponent)
 				name = tagComponent["Tag"].as<std::string>();
 
-			//HZ_CORE_INFO("Deserialized Entity '{0}' with ID '{1}'", name, uuid);
+			LAB_CORE_INFO("Deserialized Entity '{0}' with ID '{1}'", name, uuid);
 
 			Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
 
 			auto& nodeComponent = deserializedEntity.getComponent<NodeComponent>();
 			u64 parentHandle = entity["Parent"] ? entity["Parent"].as<u64>() : 0;
 			nodeComponent.parent = parentHandle;
+			if (parentHandle)
+				deserializedEntity.removeComponent<RootComponent>();
 
 			auto children = entity["Children"];
 			if (children)
@@ -244,6 +249,8 @@ namespace Labyrinth {
 				LAB_DESERIALISE_PROPERTY(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
 			}
+			else
+				deserializedEntity.removeComponent<TransformComponent>();
 
 			auto cameraComponent = entity["CameraComponent"];
 			if (cameraComponent)
@@ -301,25 +308,25 @@ namespace Labyrinth {
 			if (bcComponent)
 			{
 
-				auto& rbc = deserializedEntity.addComponent<BoxColliderComponent>();
-				rbc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
-				rbc.offset = bcComponent["Offset"].as<glm::vec2>();
-				rbc.density = bcComponent["Density"].as<f32>();
-				rbc.friction = bcComponent["Friction"].as<f32>();
-				rbc.restitution = bcComponent["Restitution"].as<f32>();
-				rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+				auto& bcc = deserializedEntity.addComponent<BoxColliderComponent>();
+				bcc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
+				bcc.offset = bcComponent["Offset"].as<glm::vec2>();
+				bcc.density = bcComponent["Density"].as<f32>();
+				bcc.friction = bcComponent["Friction"].as<f32>();
+				bcc.restitution = bcComponent["Restitution"].as<f32>();
+				bcc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
 			}
 
 			auto ccComponent = entity["CircleColliderComponent"];
 			if (ccComponent)
 			{
-				auto& rbc = deserializedEntity.addComponent<CircleColliderComponent>();
-				rbc.radius = bcComponent["Radius"].as<f32>();
-				rbc.offset = bcComponent["Offset"].as<glm::vec2>();
-				rbc.density = bcComponent["Density"].as<f32>();
-				rbc.friction = bcComponent["Friction"].as<f32>();
-				rbc.restitution = bcComponent["Restitution"].as<f32>();
-				rbc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+				auto& ccc = deserializedEntity.addComponent<CircleColliderComponent>();
+				ccc.radius = ccComponent["Radius"].as<f32>();
+				ccc.offset = ccComponent["Offset"].as<glm::vec2>();
+				ccc.density = ccComponent["Density"].as<f32>();
+				ccc.friction = ccComponent["Friction"].as<f32>();
+				ccc.restitution = ccComponent["Restitution"].as<f32>();
+				ccc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
 			}
 		}
 	}

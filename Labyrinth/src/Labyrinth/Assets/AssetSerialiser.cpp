@@ -177,14 +177,14 @@ namespace Labyrinth {
 	{
 		Ref<Scene> scene = asset.to<Scene>(); 
 		SceneSerialiser serialiser(scene);
-		serialiser.serialise(AssetManager::GetFileSystemPath(metadata).string());
+		serialiser.serialise(AssetManager::GetFileSystemPath(metadata));
 	}
 
 	bool SceneAssetSerializer::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		Ref<Scene> scene = Ref<Scene>::Create();
 		SceneSerialiser serialiser(scene);
-		bool result = serialiser.deserialise(metadata.filepath.string());
+		bool result = serialiser.deserialise(AssetManager::GetFileSystemPath(metadata));
 
 		if (!result)
 			return false;

@@ -41,7 +41,7 @@ namespace Labyrinth {
 		void RecalculateProjection();
 
 	private:
-		ProjectionType mProjectionType = ProjectionType::Orthographic;
+		ProjectionType mProjectionType = ProjectionType::Perspective;
 
 		f32 mPerspectiveFOV = glm::radians(LAB_ANG_45);
 		f32 mPerspectiveNear = 0.01f, mPerspectiveFar = 1000.0f;

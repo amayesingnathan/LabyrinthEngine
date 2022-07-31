@@ -239,7 +239,7 @@ namespace Labyrinth {
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
 				std::filesystem::path fullPath = gAssetPath / path;
-				if (std::regex_match(fullPath.extension().string(), std::regex(".laby")))
+				if (AssetManager::IsExtensionValid(fullPath.extension().string(), AssetType::Scene))
 					OpenScene(fullPath);
 			}
 			ImGui::EndDragDropTarget();
@@ -255,7 +255,7 @@ namespace Labyrinth {
 	{
 		// Gizmos
 		Entity selectedEntity = mScenePanel->getSelectedEntity();
-		if (selectedEntity && mGizmoType != -1 && mViewportFocused)
+		if (selectedEntity && mGizmoType != -1 && mViewportFocused && selectedEntity.hasComponent<TransformComponent>())
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -548,7 +548,7 @@ namespace Labyrinth {
 
 	bool EditorLayer::OpenScene()
 	{
-		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
+		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
 			return OpenScene(mEditorData.currentFile);
 
@@ -560,15 +560,14 @@ namespace Labyrinth {
 		if (mSceneState != SceneState::Edit)
 			OnSceneStop();
 
-		if (path.extension().string() != ".laby")
+		if (!AssetManager::IsExtensionValid(path.extension().string(), AssetType::Scene))
 		{
 			LAB_WARN("Could not load {0} - not a scene file", path.filename().string());
 			return false;
 		}
 
-		Ref<Scene> newScene = Ref<Scene>::Create();
-		SceneSerialiser serialiser(mCurrentScene);
-		if (!serialiser.deserialise(path))
+		Ref<Scene> newScene = AssetManager::GetAsset<Scene>(path);
+		if (!newScene)
 			return false;
 
 		mEditorScene = newScene;
@@ -596,7 +595,7 @@ namespace Labyrinth {
 	{
 		SyncWindowTitle();
 
-		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
+		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
 		{
 			SceneSerialiser serialiser(mCurrentScene);

@@ -2,7 +2,6 @@
 
 #include "Labyrinth/Maths/Vector2D.h"
 
-#include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Renderer/SubTexture.h"

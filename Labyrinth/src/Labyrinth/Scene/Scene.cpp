@@ -90,12 +90,21 @@ namespace Labyrinth {
 
 		std::unordered_map<UUID, entt::entity> entMap;
 
-		mRegistry.view<IDComponent, TagComponent>().each([this, &newScene, &entMap](const auto entity, const auto& idComp, const auto& tagComp)
+		mRegistry.view<IDComponent, TagComponent>().each([&](const auto& idComp, const auto& tagComp)
 		{
 			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
 		});
 
 		CopyAllComponents(mRegistry, newScene->mRegistry, entMap);
+
+		newScene->mRegistry.view<IDComponent, NodeComponent>().each([&](auto e, const auto& idComp, const auto& nodeComp)
+		{
+			if (nodeComp.parent)
+			{
+				Entity entity{ e, newScene };
+				entity.removeComponent<RootComponent>();
+			}
+		});
 
 		return newScene;
 	}
@@ -203,50 +212,50 @@ namespace Labyrinth {
 		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
 
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
+		{
+			Entity entity(e, Ref<Scene>(this));
+
+			b2BodyDef bodyDef;
+			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
+			bodyDef.angle = trComponent.rotation.z;
+			bodyDef.fixedRotation = rbComponent.fixedRotation;
+			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+
+			rbComponent.runtimeBody = body;
+
+			if (entity.hasComponent<BoxColliderComponent>())
 			{
-				Entity entity(e, Ref<Scene>(this));
+				auto& bcc = entity.getComponent<BoxColliderComponent>();
 
-				b2BodyDef bodyDef;
-				bodyDef.type = BodyTypeToBox2D(rbComponent.type);
-				bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
-				bodyDef.angle = trComponent.rotation.z;
-				bodyDef.fixedRotation = rbComponent.fixedRotation;
-				b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+				b2PolygonShape boxShape;
+				boxShape.SetAsBox(bcc.halfExtents.x * trComponent.scale.x, bcc.halfExtents.y * trComponent.scale.y, b2Vec2(bcc.offset.x, bcc.offset.y), 0.0f);
 
-				rbComponent.runtimeBody = body;
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &boxShape;
+				fixtureDef.density = bcc.density;
+				fixtureDef.friction = bcc.friction;
+				fixtureDef.restitution = bcc.restitution;
+				fixtureDef.restitutionThreshold = bcc.restitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+			if (entity.hasComponent<CircleColliderComponent>())
+			{
+				auto& ccc = entity.getComponent<CircleColliderComponent>();
 
-				if (entity.hasComponent<BoxColliderComponent>())
-				{
-					auto& bcc = entity.getComponent<BoxColliderComponent>();
+				b2CircleShape circleShape;
+				circleShape.m_radius = ccc.radius * trComponent.scale.x;
+				circleShape.m_p = b2Vec2(ccc.offset.x, ccc.offset.y);
 
-					b2PolygonShape boxShape;
-					boxShape.SetAsBox(bcc.halfExtents.x * trComponent.scale.x, bcc.halfExtents.y * trComponent.scale.y, b2Vec2(bcc.offset.x, bcc.offset.y), 0.0f);
-
-					b2FixtureDef fixtureDef;
-					fixtureDef.shape = &boxShape;
-					fixtureDef.density = bcc.density;
-					fixtureDef.friction = bcc.friction;
-					fixtureDef.restitution = bcc.restitution;
-					fixtureDef.restitutionThreshold = bcc.restitutionThreshold;
-					body->CreateFixture(&fixtureDef);
-				}
-				if (entity.hasComponent<CircleColliderComponent>())
-				{
-					auto& ccc = entity.getComponent<CircleColliderComponent>();
-
-					b2CircleShape circleShape;
-					circleShape.m_radius = ccc.radius * trComponent.scale.x;
-					circleShape.m_p = b2Vec2(ccc.offset.x, ccc.offset.y);
-
-					b2FixtureDef fixtureDef;
-					fixtureDef.shape = &circleShape;
-					fixtureDef.density = ccc.density;
-					fixtureDef.friction = ccc.friction;
-					fixtureDef.restitution = ccc.restitution;
-					fixtureDef.restitutionThreshold = ccc.restitutionThreshold;
-					body->CreateFixture(&fixtureDef);
-				}
-			});
+				b2FixtureDef fixtureDef;
+				fixtureDef.shape = &circleShape;
+				fixtureDef.density = ccc.density;
+				fixtureDef.friction = ccc.friction;
+				fixtureDef.restitution = ccc.restitution;
+				fixtureDef.restitutionThreshold = ccc.restitutionThreshold;
+				body->CreateFixture(&fixtureDef);
+			}
+		});
 	}
 
 	void Scene::OnPhysicsStop()

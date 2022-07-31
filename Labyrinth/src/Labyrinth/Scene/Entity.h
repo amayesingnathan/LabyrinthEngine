@@ -161,7 +161,7 @@ namespace Labyrinth {
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
-		UUID parent = {};
+		UUID parent = 0;
 		std::vector<UUID> children = {};
 
 		NodeComponent() = default;
