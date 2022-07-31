@@ -2,6 +2,7 @@
 #include "Tilemap.h"
 
 #include "Labyrinth/IO/Tiled.h"
+#include <Labyrinth/Renderer/Framebuffer.h>
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
@@ -14,6 +15,23 @@ namespace Labyrinth {
 
 		TiledIO::Open(mapPath, mLayers, mSheets);
 
+		GenTex();
+	}
+
+	void Tilemap::loadMap(const std::string& name)
+	{
+		std::filesystem::path mapPath = "assets/tilemaps/" + name;
+
+		mLayers.clear();
+		mSheets.clear();
+		mTexture.reset();
+
+		TiledIO::Open(mapPath, mLayers, mSheets);
+		GenTex();
+	}
+
+	void Tilemap::GenTex()
+	{
 		usize width = mLayers[0].getWidth();
 		usize height = mLayers[0].getHeight();
 		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
@@ -24,32 +42,8 @@ namespace Labyrinth {
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 
-		mFramebuffer = Framebuffer::Create(fbSpec);
-
-		GenTex();
-	}
-
-	void Tilemap::loadMap(const std::string& name)
-	{
-		std::filesystem::path mapPath = "assets/tilemaps/" + name;
-
-		mLayers.clear();
-		mSheets.clear();
-
-		TiledIO::Open(mapPath, mLayers, mSheets);
-
-		usize width = mLayers[0].getWidth();
-		usize height = mLayers[0].getHeight();
-		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
-
-		mFramebuffer->resize(width, height);
-
-		GenTex();
-	}
-
-	void Tilemap::GenTex()
-	{
-		mFramebuffer->bind();
+		Ref<Framebuffer> textureFB = Framebuffer::Create(fbSpec);
+		textureFB->bind();
 
 		RenderCommand::SetClearColor({ 0.f, 0.f, 0.f, 1 });
 		RenderCommand::Clear();
@@ -84,11 +78,11 @@ namespace Labyrinth {
 		mTexture = Texture2D::Create(mWidth, mHeight);
 
 		u8* texData = new u8[4 * mWidth * mHeight];
-		mFramebuffer->readData(0, texData);
+		textureFB->readData(0, texData);
 		mTexture->setData(texData, 4 * mWidth * mHeight);
 		delete[] texData;
 
-		mFramebuffer->unbind();
+		textureFB->unbind();
 	}
 
 	const Ref<Texture2DSheet>& Tilemap::GetSheet(usize tileID) const

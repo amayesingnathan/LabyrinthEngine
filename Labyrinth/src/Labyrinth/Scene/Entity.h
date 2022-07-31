@@ -12,7 +12,7 @@ namespace Labyrinth {
 	struct RootComponent;
 	struct NodeComponent;
 
-	class LAB_API Entity
+	class Entity
 	{
 	public:
 		Entity() : mEntID(entt::null) {}
@@ -118,24 +118,23 @@ namespace Labyrinth {
 		void destroy();
 		Ref<Scene> getScene() { return mScene.lock(); }
 
-		Entity& getParent();
-		const Entity& getParent() const;
+		Entity getParent() const;
 		bool hasParent();
 
 		bool setParent(Entity newParent, NodeComponent& node);
 		bool setParent(Entity newParent);
 
-		std::vector<Entity>& getChildren();
-		const std::vector<Entity>& getChildren() const;
+		std::vector<UUID>& getChildren();
+		const std::vector<UUID>& getChildren() const;
     
 		const usize getChildCount() const { return getChildren().size(); }
-		bool hasChild(const Entity& child) const;
+		bool hasChild(Entity child) const;
 
-		bool isRelated(const Entity& filter) const;
+		bool isRelated(Entity filter) const;
 
-		void addChild(const Entity& child, NodeComponent& node);
-		void addChild(const Entity& child);
-		void removeChild(const Entity& child);
+		void addChild(Entity child, NodeComponent& node);
+		void addChild(Entity child);
+		void removeChild(Entity child);
 
 	private:
 		entt::entity mEntID{ entt::null };
@@ -162,12 +161,10 @@ namespace Labyrinth {
 	//Node component for use in parent/child relations
 	struct NodeComponent
 	{
-		Entity parent = {};
-		std::vector<Entity> children = {};
+		UUID parent = 0;
+		std::vector<UUID> children = {};
 
 		NodeComponent() = default;
-		NodeComponent(const Entity& _parent, const std::vector<Entity>& _children = {})
-			: parent(_parent), children(_children) {}
 
 		operator bool() { return parent; }
 	};

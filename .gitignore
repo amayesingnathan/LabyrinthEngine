@@ -2,6 +2,9 @@
 bin/
 obj/
 !dependencies/premake/bin/
+Intermediates
+**/Labyrinth-ScriptCore.dll
+**/Labyrinth-ScriptCore.pdb
 
 #Branch Test Spaces
 Chess/
@@ -14,6 +17,8 @@ NetTest/
 **.vcxproj
 **.vcxproj.filters
 **.vcxproj.user
+**.csproj
+**.csproj.user
 
 #Makefiles
 Makefile
@@ -24,6 +29,13 @@ Makefile.in
 
 #Profiling files
 **.json
+
+#Asset Registries
+**.lreg
+
+#Labyrinth Assets
+**.lss
+**.lstex
 
 # Directories
 Labyrinth/dependencies/VulkanSDK

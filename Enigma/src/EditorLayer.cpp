@@ -11,14 +11,15 @@
 #include "Panels/StatsPanel.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Assets/AssetGroup.h"
+
+#include "Labyrinth/Editor/EditorResources.h"
 
 #include "Labyrinth/IO/Input.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
-#include "Labyrinth/Scene/Serialiser.h"
+#include "Labyrinth/Scene/SceneSerialiser.h"
 
 #include "Labyrinth/Tools/PlatformUtils.h"
 
@@ -43,11 +44,7 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
-		Ref<Tex2DGroup> iconGroup = AssetManager::Create<Tex2DGroup>("Icons", StorageType::Map);
-		//mHighlight = iconGroup->add("Highlight", "resources/icons/highlight.png");
-		mIconPlay = iconGroup->add("Play", "resources/icons/playbutton.png");
-		mIconStop = iconGroup->add("Stop", "resources/icons/stopbutton.png");
-		mIconSim = iconGroup->add("Sim", "resources/icons/simbutton.png");
+		EditorResources::Init();
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1600;
@@ -62,7 +59,6 @@ namespace Labyrinth {
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", true, mEditorData);
-		PanelManager::Register<AssetPanel>("Asset Manager");
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);
@@ -81,6 +77,8 @@ namespace Labyrinth {
 	void EditorLayer::onDetach()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		EditorResources::Shutdown();
 
 		WriteSettings();
 
@@ -241,7 +239,7 @@ namespace Labyrinth {
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
 				std::filesystem::path fullPath = gAssetPath / path;
-				if (std::regex_match(fullPath.extension().string(), std::regex(".laby")))
+				if (AssetManager::IsExtensionValid(fullPath.extension().string(), AssetType::Scene))
 					OpenScene(fullPath);
 			}
 			ImGui::EndDragDropTarget();
@@ -257,7 +255,7 @@ namespace Labyrinth {
 	{
 		// Gizmos
 		Entity selectedEntity = mScenePanel->getSelectedEntity();
-		if (selectedEntity && mGizmoType != -1 && mViewportFocused)
+		if (selectedEntity && mGizmoType != -1 && mViewportFocused && selectedEntity.hasComponent<TransformComponent>())
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -356,7 +354,7 @@ namespace Labyrinth {
 
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		{
-			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate) ? mIconPlay : mIconStop;
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate) ? EditorResources::PlayIcon : EditorResources::StopIcon;
 			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 			{
@@ -368,7 +366,7 @@ namespace Labyrinth {
 		}
 		ImGui::SameLine();
 		{
-			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Play) ? mIconSim : mIconStop;
+			Ref<Texture2D> icon = (mSceneState == SceneState::Edit || mSceneState == SceneState::Play) ? EditorResources::SimulateIcon : EditorResources::StopIcon;
 			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getRendererID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
 			{
 				if (mSceneState == SceneState::Edit)
@@ -550,7 +548,7 @@ namespace Labyrinth {
 
 	bool EditorLayer::OpenScene()
 	{
-		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene", "*.laby", "Labyrinth Entity", "*.lbent"});
+		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
 			return OpenScene(mEditorData.currentFile);
 
@@ -562,14 +560,14 @@ namespace Labyrinth {
 		if (mSceneState != SceneState::Edit)
 			OnSceneStop();
 
-		if (path.extension().string() != ".laby")
+		if (!AssetManager::IsExtensionValid(path.extension().string(), AssetType::Scene))
 		{
 			LAB_WARN("Could not load {0} - not a scene file", path.filename().string());
 			return false;
 		}
 
-		Ref<Scene> newScene = Ref<Scene>::Create();
-		if (!Serialiser::Deserialise<Scene>(path.string(), newScene))
+		Ref<Scene> newScene = AssetManager::GetAsset<Scene>(path);
+		if (!newScene)
 			return false;
 
 		mEditorScene = newScene;
@@ -586,7 +584,10 @@ namespace Labyrinth {
 		SyncWindowTitle();
 
 		if (!mEditorData.currentFile.empty())
-			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(mEditorData.currentFile);
+		}
 		else SaveSceneAs();
 	}
 
@@ -594,9 +595,12 @@ namespace Labyrinth {
 	{
 		SyncWindowTitle();
 
-		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.laby)", "*.laby", "Labyrinth Entity (.lent)", "*.lent"});
+		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
-			Serialiser::Serialise(mCurrentScene, mEditorData.currentFile);
+		{
+			SceneSerialiser serialiser(mCurrentScene);
+			serialiser.serialise(mEditorData.currentFile);
+		}
 	}
 	
 	void EditorLayer::OnScenePlay()

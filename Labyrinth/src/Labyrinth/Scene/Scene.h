@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Labyrinth/Assets/Asset.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
@@ -13,11 +14,13 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class Scene : public RefCounted
+	class Scene : public Asset
 	{
 	public:
 		Scene(const std::string& name = "Untitled");
 		~Scene();
+
+		ASSET_STATIC_TYPE(AssetType::Scene)
 
 		Ref<Scene> Clone();
 
@@ -43,6 +46,12 @@ namespace Labyrinth {
 		const auto getEntitiesWith(entt::exclude_t<Exclude...> = {}) const
 		{
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
+		}
+
+		template<typename Component, typename Compare, typename Sort = entt::std_sort, typename... Args>
+		void sort(Compare compare, Sort algo = Sort{}, Args&&... args)
+		{
+			m_Registry.sort<Component>(compare, algo, std::forward<Args>(args)...);
 		}
 
 		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);

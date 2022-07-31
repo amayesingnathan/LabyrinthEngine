@@ -1,262 +1,189 @@
 #pragma once
 
-#include "IAsset.h"
-#include "AssetGroup.h"
+#include "AssetRegistry.h"
+#include "AssetImporter.h"
 
 #include "Labyrinth/Core/System/Assert.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
+#include "Labyrinth/Tools/Profiling.h"
 
 #include <unordered_map>
-#include <unordered_set>
 
 namespace Labyrinth {
 
     class AssetManager
     {
-    private:
-        AssetManager() = default;
-        AssetManager(const AssetManager&) = delete;
-        void operator=(const AssetManager&) = delete;
-
-    private:
-        using AssetCache = std::unordered_map<std::string, Ref<IAsset>>;
-        AssetCache mCache;
-
-    private:
-        static AssetManager& GetSingleton()
-        {
-            static AssetManager mAssetManager;
-            return mAssetManager;
-        }
-
-        template<typename... AssetType>
-        static usize GetGroupRefCount(const Ref<IAsset>& asset)
-        {
-            usize result = 0;
-            ([&result, &asset]()
-            {
-                // Check each possible asset type to see if this is an AssetGroup of each type.
-                const Ref<AssetGroup<AssetType>>& isGroup = asset;
-                if (isGroup)
-                    result += isGroup->ref_count();
-            }(), ...);
-
-            return result;
-        }
-        template<typename... AssetType>
-        static usize GetGroupRefCount(AssetTypeGroup<AssetType...>, const Ref<IAsset>& asset)
-        {
-            return GetGroupRefCount<AssetType...>(asset);
-        }
-        static usize GetSubTexRefCount(const Ref<IAsset>& asset);
-
-        template<typename... AssetType>
-        static bool IsGroup(const Ref<IAsset>& asset)
-        {
-            bool result = false;
-            ([&result, &asset]()
-            {
-                // Check each possible asset type to see if this is an AssetGroup of each type.
-                Ref<AssetGroup<AssetType>> isGroup = asset;
-                if (isGroup)
-                    result = true;
-            }(), ...);
-
-            return result;
-        }
-        template<typename... AssetType>
-        static bool IsGroup(AssetTypeGroup<AssetType...>, const Ref<IAsset>& asset)
-        {
-            return IsGroup<AssetType...>(asset);
-        }
-
-        template<typename... AssetGroupType>
-        static AssetGroupVariant GetGroup(const Ref<IAsset>& asset)
-        {
-            AssetGroupVariant result;
-            ([&result, &asset]()
-            {
-                // Check each possible asset type to see if this is an AssetGroup of each type.
-                if (Ref<AssetGroupType> isGroup = asset)
-                    result = isGroup;
-            }(), ...);
-
-            return result;
-        }
-        template<typename... AssetGroupType>
-        static AssetGroupVariant GetGroup(AssetGroups<AssetGroupType...>, const Ref<IAsset>& asset)
-        {
-            return GetGroup<AssetGroupType...>(asset);
-        }
+    public:
+        using AssetCache = std::unordered_map<AssetHandle, Ref<Asset>>;
 
     public:
-        /// <summary>
-        /// The main access function for the whole cache of assets.
-        /// </summary>
-        /// <returns>Unordered map to IAsset refs with string keys</returns>
-        static AssetCache& GetAssets() { return GetSingleton().mCache; }
+        static void Init();
+        static void Shutdown();
 
-        /// <summary>
-        /// Creates a new asset of type AssetType in the cache, against the key 'id'.
-        /// Stored as a Ref to an IAsset, retrieve using AssetManager::Get(id) with the same AssetType template.
-        /// </summary>
-        /// <typeparam name="AssetType">The type of asset to create</typeparam>
-        /// <returns>A Ref to the newly created asset</returns>
-        template<typename AssetType>
-        static Ref<AssetType> Create(const std::string& id)
-        {
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
+        static const AssetMetadata& GetMetadata(AssetHandle handle);
+        static const AssetMetadata& GetMetadata(const std::filesystem::path filepath);
 
-            Ref<AssetType> newAsset = AssetType::Create();
-            assets[id] = newAsset;
+        static AssetHandle GetHandleFromPath(const std::filesystem::path& filepath);
 
-            return newAsset;
-        }
+        static std::filesystem::path GetRelativePath(const std::filesystem::path& filepath);
+        static std::filesystem::path GetFileSystemPath(const AssetMetadata& metadata) { return sAssetDirPath / metadata.filepath; }
+        static std::string GetFileSystemPathString(const AssetMetadata& metadata) { return GetFileSystemPath(metadata).string(); }
 
-        /// <summary>
-        /// Creates a new asset of type AssetType in the cache against the key 'id', using the supplied constructor arguments.
-        /// Stored as a Ref to an IAsset, retrieve using AssetManager::Get(id) with the same AssetType template.
-        /// </summary>
-        /// <param name="...args">AssetType constructor arguments</param>
-        /// <returns>A Ref to the newly created asset</returns>
+        static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }
+
+        static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.count(handle) != 0; }
+
+        static AssetType GetAssetTypeFromExtension(const std::string& extension);
+        static AssetType GetAssetTypeFromPath(const std::filesystem::path& path);
+
+        static bool IsExtensionValid(const std::string& extension, AssetType type);
+
+        static AssetHandle ImportAsset(const std::filesystem::path& filepath);
+        static bool ReloadData(AssetHandle assetHandle);
+
+    private:
+        static void LoadRegistry();
+        static void ProcessDirectory(const std::filesystem::path& directoryPath);
+        static void ReloadAssets();
+        static void SaveRegistry();
+
+        static AssetMetadata& GetMetadataInternal(AssetHandle handle);
+
+    public:
         template<typename AssetType, typename... Args>
-        static Ref<AssetType> Create(const std::string& id, Args&&... args)
+        static Ref<AssetType> CreateNewAsset(const std::string& filename, const std::string& directoryPath, Args&&... args)
         {
-            LAB_STATIC_ASSERT(IsDerivedFrom<IAsset, AssetType>());
+            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
 
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
-
-            Ref<AssetType> newAsset = AssetType::Create(std::forward<Args>(args)...);
-            assets[id] = newAsset;
-
-            return newAsset;
-        }
-
-        /// <summary>
-        /// Add an existing asset to the cache, against the key 'id'.
-        /// Stored as a Ref to an IAsset, retrieve using AssetManager::Get(id) with the same AssetType template.
-        /// </summary>
-        /// <typeparam name="AssetType">The type of asset being added</typeparam>
-        template<typename AssetType>
-        static void Add(const std::string& id, const Ref<AssetType>& newAsset)
-        {
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) == 0, "Asset already exists in manager!");
-
-            assets[id] = newAsset;
-        }
-
-        /// <summary>
-        /// Delete asset from cache with key 'id'. Asserts if it does not exist.
-        /// Any instances of the asset in use will keep the asset loaded, they will just no longer be kept alive by the asset manager.
-        /// </summary>
-        static void Delete(const std::string& id)
-        {
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) != 0, "Asset does not exist in manager!");
-
-            assets.erase(id);
-        }
-
-        /// <summary>
-        /// Get asset from cache with key 'id'.
-        /// </summary>
-        /// <returns>Ref to the base IAsset</returns>
-        static Ref<IAsset> Get(const std::string& id)
-        {
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) != 0, "Asset doesn't exist in manager!");
-
-            return assets[id];
-        }
-
-        /// <summary>
-        /// Get asset from cache with key 'id'.
-        /// </summary>
-        /// <typeparam name="AssetType">The type of asset to get from cache</typeparam>
-        template<typename AssetType>
-        static Ref<AssetType> Get(const std::string& id)
-        {
-            AssetCache& assets = GetAssets();
-            LAB_CORE_ASSERT(assets.count(id) != 0, "Asset doesn't exist in manager!");
-
-            return assets[id];
-        }
-
-        /// <summary>
-        /// Gets or creates an asset in the cache with key 'id' and constructor arguments 'args'.
-        /// Constructor arguments are discarded if the asset already exists
-        /// </summary>
-        /// <typeparam name="AssetType">The type of asset to create or get</typeparam>
-        /// <param name="...args">AssetType constructor arguments</param>
-        /// <returns>The new asset or requested asset</returns>
-        template<typename AssetType, typename... Args>
-        static Ref<AssetType> GetOrCreate(const std::string& id, Args&&... args)
-        {
-            AssetCache& assets = GetAssets();
-            if (assets.count(id) == 0)
-                return Create<AssetType>(id, std::forward<Args>(args)...);
+            AssetMetadata metadata;
+            metadata.handle = AssetHandle();
+            if (directoryPath.empty() || directoryPath == ".")
+                metadata.filepath = filename;
             else
-                return Get<AssetType>(id);
+                metadata.filepath = AssetManager::GetRelativePath(directoryPath + "/" + filename);
+            metadata.dataLoaded = true;
+            metadata.type = AssetType::GetStaticType();
+
+            if (AssetManager::FileExists(metadata))
+            {
+                bool foundAvailableFileName = false;
+                int current = 1;
+
+                while (!foundAvailableFileName)
+                {
+                    std::string nextFilePath = directoryPath + "/" + metadata.filepath.stem().string();
+
+                    if (current < 10)
+                        nextFilePath += " (0" + std::to_string(current) + ")";
+                    else
+                        nextFilePath += " (" + std::to_string(current) + ")";
+                    nextFilePath += metadata.filepath.extension().string();
+
+                    if (!std::filesystem::exists(nextFilePath))
+                    {
+                        foundAvailableFileName = true;
+                        metadata.filepath = AssetManager::GetRelativePath(nextFilePath);
+                        break;
+                    }
+
+                    current++;
+                }
+            }
+
+            sAssetRegistry[metadata.handle] = metadata;
+
+            SaveRegistry();
+
+            Ref<AssetType> asset = Ref<AssetType>::Create(std::forward<Args>(args)...);
+            asset->handle = metadata.handle;
+            sLoadedAssets[asset->handle] = asset;
+            AssetImporter::Serialise(metadata, asset);
+
+            return asset;
         }
 
-        /// <summary>
-        /// Get asset from cache with key 'id'. Returns an empty ref if it does not exist.
-        /// </summary>
-        /// <typeparam name="AssetType">The type of asset to get</typeparam>
         template<typename AssetType>
-        static Ref<AssetType> GetOrNull(const std::string& id)
+        static Ref<AssetType> GetAsset(const AssetHandle& assetHandle)
         {
-            AssetCache& assets = GetAssets();
-            if (assets.count(id) != 0)
+            LAB_PROFILE_FUNCTION();
+
+            if (IsMemoryAsset(assetHandle))
+                return sMemoryAssets[assetHandle].to<AssetType>();
+
+            auto& metadata = GetMetadataInternal(assetHandle);
+            if (!metadata.valid())
                 return nullptr;
 
-            return assets[id];
+            Ref<Asset> asset = nullptr;
+            if (!metadata.dataLoaded)
+            {
+                metadata.dataLoaded = AssetImporter::Deserialise(metadata, asset);
+                if (!metadata.dataLoaded)
+                    return nullptr;
+
+                sLoadedAssets[assetHandle] = asset;
+            }
+            else asset = sLoadedAssets[assetHandle];
+
+            return asset.to<AssetType>();
         }
 
-        /// <summary>
-        /// Returns check if asset with key 'id' exists in cache.
-        /// </summary>
-        static bool Exists(const std::string& id) { return GetAssets().count(id) != 0; }
-
-        /// <summary>
-        /// Get the number of strong references to 'asset'.
-        /// </summary>
-        static usize GetRefCount(const Ref<IAsset>& asset)
+        template<typename T>
+        static Ref<T> GetAsset(const std::filesystem::path& filepath)
         {
-            usize count = asset->getRefCount() - 1;
-            //count += GetGroupRefCount(AllAssetTypes{}, asset); // Will add zero if not a group
-            //count += GetSubTexRefCount(asset); // Will add zero if not a texture sheet
-            return count;
-        }
-        /// <summary>
-        /// Get the number of strong references to 'asset'.
-        /// </summary>
-        /// <returns>Return zero if 'id' does not exist in cache</returns>
-        static usize GetRefCount(const std::string& id)
-        {
-            if (!Exists(id)) return 0;
-            return GetRefCount(Get(id));
+            return GetAsset<T>(GetAssetHandleFromPath(filepath));
         }
 
-        /// <summary>
-        /// Checks if given asset is an AssetGroup.
-        /// </summary>
-        static bool IsGroup(const Ref<IAsset>& asset)
+        static bool FileExists(AssetMetadata& metadata)
         {
-            return IsGroup(AllAssetTypes{}, asset);
+            return std::filesystem::exists(sAssetRegPath / metadata.filepath);
         }
 
-        /// <summary>
-        /// Gets a variant of all asset group types.
-        /// If 'asset' is an AssetGroup then the variant contains that group.
-        /// Otherwise it contains the empty struct NotGroup 
-        /// </summary>
-        static AssetGroupVariant GetGroup(const Ref<IAsset>& asset)
+        static AssetHandle GetAssetHandleFromPath(const std::filesystem::path& path)
         {
-            return GetGroup(AllAssetGroups{}, asset);
+            return GetMetadata(path).handle;
         }
+
+        static const AssetCache& GetLoadedAssets() { return sLoadedAssets; }
+        static const AssetRegistry& GetAssetRegistry() { return sAssetRegistry; }
+        static const AssetCache& GetMemoryOnlyAssets() { return sMemoryAssets; }
+
+        template<typename AssetType, typename... Args>
+        static AssetHandle CreateMemoryOnlyAsset(Args&&... args)
+        {
+            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>(), "CreateMemoryOnlyAsset only works for types derived from Asset");
+
+            Ref<AssetType> asset = Ref<AssetType>::Create(std::forward<Args>(args)...);
+            asset->handle = AssetHandle();
+
+            sMemoryAssets[asset->handle] = asset;
+            return asset->handle;
+        }
+
+    private:
+        template<typename AssetType, typename... Args>
+        static Ref<AssetType> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
+        {
+            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
+
+            AssetCache& assets = GetAssets();
+
+            AssetMetaData metadata;
+            metadata.filepath = directory + filename;
+            metadata.handle = handle;
+
+            Ref<AssetType> newAsset = AssetType::Create(std::forward<Args>(args)...);
+            newAsset->handle = metadata.handle;
+
+            assets[metadata.handle] = newAsset;
+            return newAsset;
+        }
+
+
+    private:
+        inline static AssetCache sLoadedAssets;
+        inline static AssetCache sMemoryAssets;
+        inline static AssetRegistry sAssetRegistry;
+        inline static std::filesystem::path sAssetDirPath, sAssetRegPath;
     };
 }

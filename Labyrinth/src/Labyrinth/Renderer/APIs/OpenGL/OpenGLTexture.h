@@ -22,6 +22,8 @@ namespace Labyrinth {
 
 		virtual void bind(u32 slot = 0) const override;
 
+		virtual bool loaded() const override { return mRendererID != -1; }
+
 		virtual bool operator==(const Texture& other) const override
 		{
 			return mRendererID == other.getRendererID();
@@ -30,7 +32,7 @@ namespace Labyrinth {
 	private:
 		std::string mPath;
 		i32 mWidth, mHeight;
-		u32 mRendererID;
+		u32 mRendererID = -1;
 		GLenum mInternalFormat, mDataFormat;
 	};
 

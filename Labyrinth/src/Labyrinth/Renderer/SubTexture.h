@@ -11,9 +11,11 @@
 namespace Labyrinth {
 
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
-	//It also provides an API for creating and deleting sub textures and binding the lifetime of sub textures to the sprite sheet.
-	class Texture2DSheet : public IAsset
+	class Texture2DSheet : public Asset
 	{
+	public:
+		ASSET_STATIC_TYPE(AssetType::TextureSheet)
+
 	public:
 		Texture2DSheet(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name);
 		Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name);
@@ -40,10 +42,11 @@ namespace Labyrinth {
 		bool hasSubTex(const std::string& name) const;
 		Ref<SubTexture2D> getSubTex(const std::string& name);
 
-		std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() { return mSubTextures; }
-		const std::unordered_map<std::string, Ref<SubTexture2D>>& getSubTexList() const { return mSubTextures; }
+		std::unordered_map<std::string, AssetHandle>& getSubTexList() { return mSubTextures; }
+		const std::unordered_map<std::string, AssetHandle>& getSubTexList() const { return mSubTextures; }
 
 		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
+		void addSubTex(const std::string& name, AssetHandle handle);
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
 		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
 		void deleteSubTex(const std::string& name);
@@ -61,17 +64,20 @@ namespace Labyrinth {
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
 		u32 mTileCountX, mTileCountY;
-		std::unordered_map<std::string, Ref<SubTexture2D>> mSubTextures;
+		std::unordered_map<std::string, AssetHandle> mSubTextures;
 		
 		friend class SubTexture2D;
 	};
 
-	class SubTexture2D : public IAsset
+	class SubTexture2D : public Asset
 	{
 	public:
-		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2& min, const glm::vec2& max, const std::string& name);
-		SubTexture2D(const Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
-		SubTexture2D(const Ref<Texture2D> sheet, const std::string& name);
+		ASSET_STATIC_TYPE(AssetType::SubTexture)
+
+	public:
+		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& coords, const glm::vec2& spriteSize, const std::string& name);
+		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4], const std::string& name);
+		SubTexture2D(const Ref<Texture2D> sheet, const std::string& name = "");
 		SubTexture2D(const SubTexture2D&) = default;
 		virtual ~SubTexture2D() = default;
 

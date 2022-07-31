@@ -7,6 +7,7 @@
 #include "../Modals/MapSpecModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
@@ -21,21 +22,17 @@ namespace Labyrinth {
 
 	ScenePanel::ScenePanel()
 	{
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(EditorData& options)
 	{
 		mEditorData = &options;
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	ScenePanel::ScenePanel(const Ref<Scene>& scene, EditorData& options)
 	{
 		mContext = scene;
 		mEditorData = &options;
-
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene)
@@ -80,16 +77,22 @@ namespace Labyrinth {
 		switch (component.type)
 		{
 		case SpriteRendererComponent::TexType::None:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, mNoTex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, EditorResources::NoTexture);
 			break;
 
 		case SpriteRendererComponent::TexType::Texture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<Texture2D>());
-			break;
+		{
+			Ref<Texture2D> tex = component.handle ? AssetManager::GetAsset<Texture2D>(component.handle) : EditorResources::NoTexture;
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex);
+		}
+		break;
 
 		case SpriteRendererComponent::TexType::SubTexture:
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, component.getTex<SubTexture2D>());
-			break;
+		{
+			Ref<SubTexture2D> subtex = component.handle ? AssetManager::GetAsset<SubTexture2D>(component.handle) : EditorResources::NoSubTexture;
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex);
+		}
+		break;
 		}
 
 		Renderer2D::EndState();
@@ -221,7 +224,7 @@ namespace Labyrinth {
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode({ node.children[i], mContext });
+				DrawEntityNode(mContext->FindEntity(node.children[i]));
 			ImGui::TreePop();
 		}
 		if (entityCreated)
@@ -607,12 +610,7 @@ namespace Labyrinth {
 					if (ImGui::Selectable(label.c_str(), isSelected))
 					{
 						component.type = type;
-						switch (type)
-						{
-						case SpriteRendererComponent::TexType::None:       component.texture = SpriteRendererComponent::NoTex(); break;
-						case SpriteRendererComponent::TexType::Texture:    component.texture = mNoTex; break;
-						case SpriteRendererComponent::TexType::SubTexture: component.texture = SubTexture2D::Create(mNoTex, "NoTex"); break;
-						}
+						component.handle = 0;
 					}
 
 					if (isSelected)
@@ -624,7 +622,7 @@ namespace Labyrinth {
 
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			ImTextureID tex = (ImTextureID)(intptr_t)(mTexture ? mTexture->getColourAttachmentRendererID() : mNoTex->getRendererID());
+			ImTextureID tex = (ImTextureID)(intptr_t)(mTexture ? mTexture->getColourAttachmentRendererID() : EditorResources::NoTexture->getRendererID());
 			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -632,11 +630,17 @@ namespace Labyrinth {
 				{
 					const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
 					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+					std::string extension = texturePath.extension().string();
 
-					if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
+					if (AssetManager::IsExtensionValid(extension, AssetType::Texture))
 					{
 						component.type = SpriteRendererComponent::TexType::Texture;
-						component.texture = Texture2D::Create(texturePath.string());
+						component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+					}
+					else if (AssetManager::IsExtensionValid(extension, AssetType::SubTexture))
+					{
+						component.type = SpriteRendererComponent::TexType::SubTexture;
+						component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
 					}
 				}
 				ImGui::EndDragDropTarget();
@@ -648,41 +652,7 @@ namespace Labyrinth {
 					SpriteSheetData& data = *Cast<SpriteSheetData>(payload->Data);
 
 					component.type = SpriteRendererComponent::TexType::SubTexture;
-					component.texture = AssetManager::Get<Texture2DSheet>(data.sheetName)->getSubTex(data.subTexName);
-				}
-				ImGui::EndDragDropTarget();
-			}
-			if (ImGui::BeginDragDropTarget())
-			{
-				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
-				{
-					const std::string& key = *Cast<std::string>(payload->Data);
-
-					switch (component.type)
-					{
-					case SpriteRendererComponent::TexType::None:
-						ImGui::OpenPopup("InvalidAsset");
-						break;
-
-					case SpriteRendererComponent::TexType::Texture:
-					{
-						Ref<Texture2D> tex = AssetManager::Get<Texture2D>(key);
-						if (tex) 
-							component.texture = tex; 
-						else 
-							ImGui::OpenPopup("InvalidAsset");
-						break;
-					}
-
-					case SpriteRendererComponent::TexType::SubTexture:
-						Ref<SubTexture2D> tex = AssetManager::Get<SubTexture2D>(key);
-						if (tex)
-							component.texture = tex;
-						else
-							ImGui::OpenPopup("InvalidAsset");
-						break;
-					}
-
+					component.handle = data.currentSubTex->handle;
 				}
 				ImGui::EndDragDropTarget();
 			}
@@ -759,7 +729,8 @@ namespace Labyrinth {
 		{
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			ImGui::Image((ImTextureID)(intptr_t)component.tilemap->getFB()->getColourAttachmentRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
+			Ref<Texture> tilemapTex = component.tilemap->getTex() ? component.tilemap->getTex() : EditorResources::NoTexture;
+			ImGui::Image((ImTextureID)(intptr_t)tilemapTex->getRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
 		});
 
 	}

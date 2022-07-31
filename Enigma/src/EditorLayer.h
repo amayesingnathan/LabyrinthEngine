@@ -79,10 +79,6 @@ namespace Labyrinth {
 		Entity mHoveredEntity;
 
 		Ref<class ScenePanel> mScenePanel = nullptr;
-		
-		// Editor resources
-		Ref<Texture2D> mIconPlay, mIconStop, mIconSim;
-		Ref<Texture2D> mHighlight;
 
 		bool mViewportFocused = false, mViewportHovered = false;
 		glm::vec2 mViewportSize = { 0.0f, 0.0f };

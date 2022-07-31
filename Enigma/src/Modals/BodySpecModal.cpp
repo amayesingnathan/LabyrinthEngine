@@ -14,7 +14,11 @@ namespace Labyrinth {
         ImGui::NewLine();
 
         ImGui::DragFloat2("Position", glm::value_ptr(mBodyDef.trans.translation), 0.01f);
-        ImGui::DragFloat("Rotation", &mBodyDef.trans.rotation.z, 0.1f, 0.0f, 360.f);
+
+        float rotation = glm::degrees(mBodyDef.trans.rotation.z);
+        ImGui::DragFloat("Rotation", &rotation, 0.1f, 0.0f, 360.f);
+        mBodyDef.trans.rotation.z = glm::radians(rotation);
+
         ImGui::DragFloat2("Size", glm::value_ptr(mBodyDef.trans.scale), 0.01f, 0.0f);
 
         std::string bodyType("Static");

@@ -5,6 +5,8 @@
 #include "../Modals/SubTexModal.h"
 #include "../Modals/TileWidthModal.h"
 
+#include <Labyrinth/Editor/EditorResources.h>
+
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
 
@@ -14,8 +16,6 @@ namespace Labyrinth {
 
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
-		mNoTex = AssetManager::GetOrCreate<Texture2D>("NoTex", "assets/textures/checkerboard.png");
-
 		FramebufferSpec fbSpec;
 		fbSpec.width = 1;
 		fbSpec.height = 1;
@@ -52,7 +52,7 @@ namespace Labyrinth {
 		if (mPanelData.currentSheet)
 			ImGui::Image((ImTextureID)(intptr_t)mPanelData.currentSheet->getBaseTex()->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 		else
-			ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image((ImTextureID)(intptr_t)EditorResources::NoTexture->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
 
 		if (ImGui::BeginDragDropTarget())
 		{
@@ -61,7 +61,7 @@ namespace Labyrinth {
 				const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
 				std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
 
-				if (std::regex_match(texturePath.extension().string(), Texture2D::GetSuppTypes()))
+				if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::Texture))
 				{
 					mPanelData.addType = SheetAddType::Path;
 					mPanelData.newSheetVar = texturePath.string();
@@ -70,32 +70,13 @@ namespace Labyrinth {
 
 					ModalManager::Open<TileWidthModal>("TileWidthModal", mPanelData);
 				}
-
-			}
-			ImGui::EndDragDropTarget();
-		}
-		if (ImGui::BeginDragDropTarget())
-		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ASSET_MANAGER_ITEM"))
-			{
-				const std::string& key = *Cast<std::string>(payload->Data);
-				if (const Ref<Texture2DSheet>& sheet = AssetManager::Get<Texture2DSheet>(key))
+				else if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::TextureSheet))
 				{
-					mPanelData.currentSheet = sheet;
-					mSheetWidth = mPanelData.currentSheet->getWidth();
-					mSheetHeight = mPanelData.currentSheet->getHeight();
-					mPanelData.framebuffer->resize(Cast<u32>(mPanelData.viewportSize.x - 15.0f), 200);
+					mPanelData.currentSheet = AssetManager::GetAsset<Texture2DSheet>(texturePath);
+					mPanelData.currentSubTex = nullptr;
+					mPanelData.subTexName = noSubTex;
+					mPanelData.framebuffer->resize(Cast<size_t>(mPanelData.viewportSize.x) - 15, 200);
 				}
-				else if (const Ref<Texture2D>& asset = AssetManager::Get<Texture2D>(key))
-				{
-					mPanelData.addType = SheetAddType::Texture;
-					mPanelData.newSheetVar = asset;
-					mPanelData.sheetName = "";
-					mTileWidth = 0; mTileHeight = 0;
-
-					ModalManager::Open<SubTexModal>("SubTexModal", mPanelData);
-				}
-				else { LAB_ERROR("Invalid asset type!"); }
 
 			}
 			ImGui::EndDragDropTarget();
@@ -159,7 +140,25 @@ namespace Labyrinth {
 				ImGui::EndDragDropSource();
 			}
 		}
-		else ImGui::Image((ImTextureID)(intptr_t)mNoTex->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+		else ImGui::Image((ImTextureID)(intptr_t)EditorResources::NoTexture->getRendererID(), { mPanelData.viewportSize.x - 15.0f, 200.0f }, { 0, 1 }, { 1, 0 });
+
+		if (ImGui::BeginDragDropTarget())
+		{
+			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+			{
+				const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
+				std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+
+				if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::SubTexture))
+				{
+					mPanelData.currentSubTex = AssetManager::GetAsset<SubTexture2D>(texturePath);
+					mPanelData.currentSheet = mPanelData.currentSubTex->getSheet();
+					mPanelData.subTexName = mPanelData.currentSubTex->getName();
+				}
+
+			}
+			ImGui::EndDragDropTarget();
+		}
 
 		ImGui::End();
 	}
