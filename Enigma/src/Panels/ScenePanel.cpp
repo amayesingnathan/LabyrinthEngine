@@ -102,11 +102,9 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mContext->getName());
+		StaticBuffer<256> buffer(mContext->getName());
 		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-			mContext->setName(buffer);
+			mContext->setName(buffer.string());
 
 		ImGui::SameLine();
 
@@ -359,13 +357,9 @@ namespace Labyrinth {
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
 
-			char buffer[256];
-			memset(buffer, 0, sizeof(buffer));
-			STR_COPY(buffer, tag);
+			StaticBuffer<256> buffer(tag);
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-			{
-				tag = std::string(buffer);
-			}
+				tag = buffer.string();
 		}
 
 		ImGui::SameLine();

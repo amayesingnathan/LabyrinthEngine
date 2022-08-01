@@ -1,5 +1,7 @@
 #include "SettingsModal.h"
 
+#include <Labyrinth/Core/Buffer.h>
+
 namespace Labyrinth {
 
     SettingsModal::SettingsModal() : Modal()
@@ -27,11 +29,9 @@ namespace Labyrinth {
 
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
-        char buffer[256];
-        memset(buffer, 0, sizeof(buffer));
-        STR_COPY(buffer, mSettings.workingDir.string());
+        StaticBuffer<256> buffer(mSettings.workingDir.string());
         if (ImGui::InputText("Working Directory", buffer, sizeof(buffer)))
-            mSettings.workingDir = buffer;
+            mSettings.workingDir = buffer.string();
 
         ImGui::NewLine();
 

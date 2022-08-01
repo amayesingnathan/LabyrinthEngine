@@ -10,6 +10,7 @@
 #include "Labyrinth/Core/System/Types.h"
 
 #include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Core/Buffer.h"
 #include "Labyrinth/Core/Layer.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/CameraController.h"
