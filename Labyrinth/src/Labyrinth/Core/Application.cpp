@@ -152,8 +152,9 @@ namespace Labyrinth {
 		if (settings.contains("Startup"))
 		{
 			auto startup = settings["Startup"];
-			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"];
-			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"];
+			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"].get<bool>();
+			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"].get<std::filesystem::path>();
+			if (startup.contains("ScriptModulePath")) outSpec.scriptModulePath = startup["ScriptModulePath"].get<std::filesystem::path>();
 		}
 	}
 }

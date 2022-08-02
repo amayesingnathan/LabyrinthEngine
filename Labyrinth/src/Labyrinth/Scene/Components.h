@@ -143,6 +143,7 @@ namespace Labyrinth {
 	{
 		std::string className;
 		Ref<ScriptObject> instance = nullptr;
+		bool initialised = false;
 
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;

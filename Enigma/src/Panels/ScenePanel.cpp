@@ -681,7 +681,7 @@ namespace Labyrinth {
 				if (ImGui::Selectable("None", clear))
 					component.className.clear();
 
-				for (const auto& [key, klass] : ScriptEngine::GetEntityClasses())
+				for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
 				{
 					bool isSelected = component.className == key;
 

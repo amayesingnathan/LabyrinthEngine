@@ -12,6 +12,7 @@ namespace Labyrinth {
 		usize size = 0;
 
 		Buffer() = default;
+		Buffer(std::nullptr_t) {}
 		Buffer(void* _data, usize _size) : data(_data), size(_size) {}
 		Buffer(usize _size) { allocate(_size); }
 		Buffer(const Buffer& buffer)
@@ -21,7 +22,7 @@ namespace Labyrinth {
 			allocate(buffer.size);
 			memcpy(data, buffer.data, buffer.size);
 		}
-		Buffer(Buffer&& buffer)
+		Buffer(Buffer&& buffer) noexcept
 		{
 			if (&buffer == this) return;
 
@@ -49,7 +50,7 @@ namespace Labyrinth {
 
 			return *this;
 		}
-		Buffer& operator=(Buffer&& buffer)
+		Buffer& operator=(Buffer&& buffer) noexcept
 		{
 			LAB_CORE_ASSERT(&buffer != this, "Cannot move assign an object to itself!");
 

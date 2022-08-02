@@ -36,7 +36,11 @@ namespace Labyrinth
         internal extern static bool AssetHandle_IsValid(ref AssetHandle handle);
         #endregion
 
-        #region Scene
+        #region Scene 
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static ulong Scene_FindEntityByTag(string tag);
+
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static bool Scene_IsEntityValid(ulong id);
 
@@ -45,6 +49,9 @@ namespace Labyrinth
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Scene_DestroyEntity(ulong id);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static Entity[] Scene_GetEntities();
         #endregion
 
         #region Entity
@@ -113,6 +120,13 @@ namespace Labyrinth
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static void Camera_SetVerticalFOV(ulong entUUID, float fov);
+
+        #endregion
+
+        #region ScriptComponent
+
+        [MethodImpl(MethodImplOptions.InternalCall)]
+        internal static extern object Script_GetInstance(ulong entityID);
 
         #endregion
 

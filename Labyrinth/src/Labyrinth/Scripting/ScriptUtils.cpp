@@ -12,12 +12,11 @@ namespace Labyrinth {
 
 	MonoAssembly* ScriptUtils::LoadMonoAssembly(const std::filesystem::path& assemblyPath)
 	{
-		size_t fileSize = 0;
-		char* fileData = FileUtils::Read(assemblyPath, &fileSize);
+		Buffer fileData = FileUtils::Read(assemblyPath);
 
 		// NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
 		MonoImageOpenStatus status;
-		MonoImage* image = mono_image_open_from_data_full(fileData, fileSize, 1, &status, 0);
+		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), fileData.size, 1, &status, 0);
 
 		if (status != MONO_IMAGE_OK)
 		{
@@ -28,9 +27,6 @@ namespace Labyrinth {
 
 		MonoAssembly* assembly = mono_assembly_load_from_full(image, assemblyPath.string().c_str(), &status, 0);
 		mono_image_close(image);
-
-		// Don't forget to free the file data
-		delete[] fileData;
 
 		return assembly;
 	}
@@ -60,7 +56,7 @@ namespace Labyrinth {
 
 		if (klass == nullptr)
 		{
-			LAB_CORE_ERROR("The class could not be loaded!");
+			LAB_CORE_ERROR("[ScriptEngine] The class could not be loaded!");
 			return nullptr;
 		}
 
@@ -74,7 +70,7 @@ namespace Labyrinth {
 
 		if (classInstance == nullptr)
 		{
-			LAB_CORE_ERROR("The class could not be instantiated!");
+			LAB_CORE_ERROR("[ScriptEngine] The class could not be instantiated!");
 			return nullptr;
 		}
 
@@ -110,7 +106,7 @@ namespace Labyrinth {
 
 		if (!method)
 		{
-			LAB_CORE_ERROR("Specified function with parameter count does not exist on object!");
+			LAB_CORE_ERROR("[ScriptEngine] Specified function with parameter count does not exist on object!");
 			return nullptr;
 		}
 
@@ -134,7 +130,7 @@ namespace Labyrinth {
 
 		if (!classInstance)
 		{
-			LAB_CORE_ERROR("The class could not be instantiated!");
+			LAB_CORE_ERROR("[ScriptEngine] The class could not be instantiated!");
 			return nullptr;
 		}
 
@@ -152,7 +148,7 @@ namespace Labyrinth {
 
 		if (!classInstance)
 		{
-			LAB_CORE_ERROR("The class could not be instantiated!");
+			LAB_CORE_ERROR("[ScriptEngine] The class could not be instantiated!");
 			return nullptr;
 		}
 

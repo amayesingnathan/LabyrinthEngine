@@ -31,7 +31,8 @@ namespace Labyrinth {
 	{
 		std::string name = "Labyrinth Application";
 		ApplicationCommandLineArgs commandLineArgs;
-		std::string workingDir;
+		std::filesystem::path workingDir;
+		std::filesystem::path scriptModulePath;
 		bool fullscreen = false;
 	};
 
@@ -57,6 +58,7 @@ namespace Labyrinth {
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
+		ApplicationSpec& getSpec() { return mSpecification; }
 		const ApplicationSpec& getSpec() const { return mSpecification; }
 
 		static void GetSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);

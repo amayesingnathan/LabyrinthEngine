@@ -11,13 +11,6 @@ namespace Labyrinth {
 	class SettingsModal : public Modal
 	{
 	public:
-		struct StartupSettings
-		{
-			bool fullscreen = false;
-			std::filesystem::path workingDir;
-		};
-
-	public:
 		SettingsModal();
 
 		void onImGuiRender() override;
@@ -28,7 +21,7 @@ namespace Labyrinth {
 		void Save();
 
 	private:
-		StartupSettings mSettings;
+		ApplicationSpec& mSettings;
 		JsonObj mSettingsJSON;
 	};
 

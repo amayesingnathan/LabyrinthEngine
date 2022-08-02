@@ -36,6 +36,7 @@ namespace Labyrinth {
 		void DestroyEntity(Entity entity, bool linkChildren = false);
 
 		Entity findEntity(UUID id);
+		Entity getEntityByTag(const std::string& tag);
 
 		template<typename Component, typename... Other, typename... Exclude>
 		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})

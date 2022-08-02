@@ -39,6 +39,9 @@ namespace Labyrinth {
 		void onStart() { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }
 		void onUpdate(float ts) { ScriptUtils::CallMethod(mInstance, mOnUpdateMethod, ts); }
 
+		bool valid() const { return mInstance; }
+		MonoObject* obj() { return mInstance; }
+
 		template<typename... Args>
 		ScriptObject invokeMethod(const std::string& name, Args&&... args)
 		{

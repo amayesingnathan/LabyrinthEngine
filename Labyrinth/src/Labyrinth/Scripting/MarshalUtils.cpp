@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "MarshalUtils.h"
 
-#include "ScriptEngine.h"
+#include "ScriptEngineInternal.h"
 #include "ScriptUtils.h"
 
 #include <mono/metadata/object.h>
@@ -25,7 +25,7 @@ namespace Labyrinth {
 
 	MonoString* MarshalUtils::UTF8StringToMono(const std::string& str)
 	{
-		return mono_string_new(ScriptEngine::GetData()->appDomain, str.c_str());
+		return mono_string_new(ScriptEngineInternal::GetAppDomain(), str.c_str());
 	}
 
 }

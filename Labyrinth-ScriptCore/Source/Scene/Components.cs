@@ -59,6 +59,10 @@ namespace Labyrinth
 			set => Internal.Camera_SetVerticalFOV(Entity.ID, value);
 		}
 	}
+	public class ScriptComponent : Component
+	{
+		public object Instance => Internal.Script_GetInstance(Entity.ID);
+	}
 	public class SpriteRendererComponent : Component
 	{
 		// TODO

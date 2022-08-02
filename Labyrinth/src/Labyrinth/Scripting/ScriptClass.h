@@ -36,6 +36,8 @@ namespace Labyrinth {
 
 		operator MonoClass* () { return mMonoClass; }
 
+		bool valid() { return mMonoClass; }
+
 		static Ref<ScriptClass> Create(const std::string& classNamespace, const std::string& className) { return Ref<ScriptClass>::Create(classNamespace, className); }
 		static Ref<ScriptClass> Create(MonoClass* klass) { return Ref<ScriptClass>::Create(klass); }
 		static Ref<ScriptClass> Create(MonoObject* instance) { return Ref<ScriptClass>::Create(instance); }

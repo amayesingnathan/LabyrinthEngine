@@ -1,13 +1,15 @@
 #pragma once
 
+#include <Labyrinth/Core/Buffer.h>
+
 namespace Labyrinth {
 
 	class FileUtils
 	{
 	public:
-		static char* Read(const std::filesystem::path& filepath, size_t* outSize);
+		static Buffer Read(const std::filesystem::path& filepath);
 		static void Read(const std::filesystem::path& filepath, std::string& string);
-		static void Write(const std::filesystem::path& filepath, char* data, size_t size);
+		static void Write(const std::filesystem::path& filepath, Buffer buffer);
 	};
 
 }

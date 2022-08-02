@@ -369,6 +369,20 @@ namespace Labyrinth {
 		return { mEntityMap.at(findID), Ref<Scene>(this) };
 	}
 
+	Entity Scene::getEntityByTag(const std::string& tag)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		auto entities = mRegistry.view<TagComponent>();
+		for (auto e : entities)
+		{
+			if (entities.get<TagComponent>(e).tag == tag)
+				return Entity(e, Ref<Scene>(this));
+		}
+
+		return Entity{};
+	}
+
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
 	{
 		sheets.clear();
@@ -391,17 +405,8 @@ namespace Labyrinth {
 	{
 		OnPhysicsStart();
 
-		ScriptEngine::OnRuntimeStart(Ref<Scene>(this));
-
-		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
-		{
-			Entity e = { entity, Ref<Scene>(this) };
-			if (ScriptEngine::EntityClassExists(sc.className))
-			{
-				sc.instance = ScriptObject::Create(ScriptEngine::GetEntityClass(sc.className), e.getUUID());
-				sc.instance->onStart();
-			}
-		});
+		ScriptEngine::SetContext(Ref<Scene>(this));
+		ScriptEngine::OnRuntimeStart();
 	}
 
 	void Scene::onRuntimeStop()
@@ -409,11 +414,7 @@ namespace Labyrinth {
 		OnPhysicsStop();
 
 		ScriptEngine::OnRuntimeStop();
-
-		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
-		{
-			sc.instance = nullptr;
-		});
+		ScriptEngine::SetContext(nullptr);
 	}
 
 	void Scene::onSimulationStart()

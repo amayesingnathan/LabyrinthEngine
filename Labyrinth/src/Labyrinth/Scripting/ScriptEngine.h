@@ -1,13 +1,10 @@
 #pragma once
 
 #include "ScriptObject.h"
-#include "ScriptEngineInternal.h"
 
 namespace Labyrinth {
 
 	class Scene;
-	class UUID;
-	struct ScriptComponent;
 
 	class ScriptEngine
 	{
@@ -15,24 +12,16 @@ namespace Labyrinth {
 		static void Init();
 		static void Shutdown();
 
-		static void LoadCoreAssembly(const std::filesystem::path& path);
-		static void ReloadCoreAssembly();
-
-		static void OnRuntimeStart(Ref<Scene> context);
+		static void OnRuntimeStart();
 		static void OnRuntimeStop();
 
+		static void SetContext(const Ref<Scene>& scene);
 		static Ref<Scene> GetContext();
 
-		static std::unordered_map<std::string, Ref<ScriptClass>>& GetEntityClasses();
-		static Ref<ScriptClass> GetEntityClass(const std::string& className);
-		static bool EntityClassExists(const std::string& className);
+		static void LoadAppAssembly();
+		static void ReloadAssembly(const std::filesystem::path& assemblyPath);
+		static void UnloadAppAssembly();
 
-		static ScriptEngineData* GetData();
-
-	private:
-		static void InitMono();
-		static void ShutdownMono();
-
-		static void LoadAssemblyClasses(MonoAssembly* assembly);
+		static std::unordered_map<std::string, Ref<ScriptClass>>& GetAppClasses();
 	};
 }

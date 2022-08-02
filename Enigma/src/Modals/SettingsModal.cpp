@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-    SettingsModal::SettingsModal() : Modal()
+    SettingsModal::SettingsModal() : Modal(), mSettings(Application::Get().getSpec())
     {
         mSettingsJSON = JSON::Open("enigma.ini");
         if (!mSettingsJSON.contains("Startup"))
@@ -18,8 +18,8 @@ namespace Labyrinth {
             mSettings.fullscreen = startupSettings["Fullscreen"].get<bool>();
         if (startupSettings.contains("WorkingDir"))
             mSettings.workingDir = startupSettings["WorkingDir"].get<std::filesystem::path>();
-        else
-            mSettings.workingDir = std::filesystem::current_path();
+        if (startupSettings.contains("ScriptModulePath"))
+            mSettings.scriptModulePath = startupSettings["ScriptModulePath"].get<std::filesystem::path>();
     }
 
     void SettingsModal::onImGuiRender()
@@ -29,9 +29,14 @@ namespace Labyrinth {
 
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
-        StaticBuffer<256> buffer(mSettings.workingDir.string());
-        if (ImGui::InputText("Working Directory", buffer, sizeof(buffer)))
-            mSettings.workingDir = buffer.string();
+        StaticBuffer<256> workingDirBuffer(mSettings.workingDir.string());
+        usize test = sizeof(workingDirBuffer);
+        if (ImGui::InputText("Working Directory", workingDirBuffer, sizeof(workingDirBuffer)))
+            mSettings.workingDir = workingDirBuffer.string();
+
+        StaticBuffer<256> scriptModuleBuffer(mSettings.scriptModulePath.string());
+        if (ImGui::InputText("Script Module Path", scriptModuleBuffer, sizeof(scriptModuleBuffer)))
+            mSettings.workingDir = scriptModuleBuffer.string();
 
         ImGui::NewLine();
 
@@ -57,6 +62,7 @@ namespace Labyrinth {
 
         startupSettings["Fullscreen"] = mSettings.fullscreen;
         startupSettings["WorkingDir"] = mSettings.workingDir;
+        startupSettings["ScriptModulePath"] = mSettings.scriptModulePath;
 
         JSON::Write("enigma.ini", mSettingsJSON);
     }

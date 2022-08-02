@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace Labyrinth
 {
     public class Entity
-    {
-        public readonly ulong ID;
+	{
+		public readonly ulong ID;
 		private Entity mParent;
 		private Dictionary<Type, Component> mComponentCache = new Dictionary<Type, Component>();
 
@@ -78,6 +78,18 @@ namespace Labyrinth
 
 			return mComponentCache[componentType] as T;
 		}
+		public bool Is<T>() where T : Entity, new()
+		{
+			ScriptComponent sc = GetComponent<ScriptComponent>();
+			object instance = sc?.Instance;
+			return instance is T;
+		}
+		public T As<T>() where T : Entity, new()
+		{
+			ScriptComponent sc = GetComponent<ScriptComponent>();
+			object instance = sc?.Instance;
+			return instance as T;
+		}
 		public bool RemoveComponent<T>() where T : Component
 		{
 			Type componentType = typeof(T);
@@ -88,6 +100,8 @@ namespace Labyrinth
 
 			return removed;
 		}
-    }
+		public void Destroy() => Scene.DestroyEntity(this);
+		public void Destroy(Entity other) => Scene.DestroyEntity(other);
+	}
 
 }

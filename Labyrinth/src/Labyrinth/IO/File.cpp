@@ -3,7 +3,7 @@
 
 namespace Labyrinth {
 
-	char* FileUtils::Read(const std::filesystem::path& filepath, size_t* outSize)
+	Buffer FileUtils::Read(const std::filesystem::path& filepath)
 	{
 		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
@@ -16,7 +16,7 @@ namespace Labyrinth {
 
 		std::streampos end = stream.tellg();
 		stream.seekg(0, std::ios::beg);
-		size_t size = end - stream.tellg();
+		usize size = end - stream.tellg();
 
 		if (size == 0)
 		{
@@ -25,12 +25,9 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		char* buffer = new char[size];
-		stream.read(buffer, size);
+		Buffer buffer(size);
+		stream.read(buffer.as<char>(), size);
 		stream.close();
-
-		if (outSize)
-			*outSize = size;
 
 		return buffer;
 	}
@@ -62,7 +59,7 @@ namespace Labyrinth {
 		stream.close();
 	}
 
-	void FileUtils::Write(const std::filesystem::path& filepath, char* data, size_t size)
+	void FileUtils::Write(const std::filesystem::path& filepath, Buffer buffer)
 	{
 		std::ofstream stream(filepath, std::ios::binary);
 
@@ -73,7 +70,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		stream.write(data, size);
+		stream.write(buffer.as<char>(), buffer.size);
 	}
 
 }
