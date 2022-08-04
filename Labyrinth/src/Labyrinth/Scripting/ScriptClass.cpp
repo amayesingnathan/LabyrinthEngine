@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "ScriptClass.h"
 
+#include "ScriptUtils.h"
 #include "ScriptEngineInternal.h"
 
 #include <mono/jit/jit.h>

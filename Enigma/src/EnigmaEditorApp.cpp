@@ -21,13 +21,12 @@ namespace Labyrinth {
 		}
 	};
 
-	Application* CreateApplication(ApplicationCommandLineArgs args)
+	Application* CreateApplication(int argc, char** argv)
 	{
 		ApplicationSpec spec;
 		spec.name = "Enigma";
-		spec.commandLineArgs = args;
 
-		Application::GetSettings("enigma.ini", spec);
+		Application::ReadSettings("enigma.ini", spec);
 
 		return new EnigmaEditor(spec);
 	}

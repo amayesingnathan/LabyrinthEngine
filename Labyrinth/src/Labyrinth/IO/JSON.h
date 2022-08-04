@@ -12,9 +12,12 @@ namespace Labyrinth {
 		static JsonObj Open(const std::filesystem::path& path)
 		{
 			std::ifstream i(path);
-			JsonObj j;
-			if (i) i >> j;
-			return j;
+			if (!i)
+				return JsonObj();
+
+			JsonObj out;
+			i >> out;
+			return out;
 		}
 
 		static void Write(const std::filesystem::path& path, const JsonObj& obj)

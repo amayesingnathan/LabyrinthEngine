@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ScriptEngine.h"
 #include "ScriptFwd.h"
 #include "ScriptClass.h"
 
@@ -14,7 +13,8 @@ namespace Labyrinth {
 
 	struct ScriptEngineConfig
 	{
-		std::filesystem::path coreAssemblyPath;
+		std::filesystem::path coreAssemblyPath = "resources/Scripts/Labyrinth-ScriptCore.dll";
+		std::filesystem::path appAssemblyPath;
 	};
 
 	struct AssemblyInfo : public RefCounted

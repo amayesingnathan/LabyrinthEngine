@@ -26,7 +26,7 @@ namespace Labyrinth {
 			mEditorData->camera.resetPosition();
 		ImGui::Checkbox("Link Children On Destroy", &mEditorData->linkOnDestroy);
 		if (ImGui::Button("Reload Scripts"))
-			ScriptEngine::ReloadAssembly(Application::Get().getSpec().scriptModulePath);
+			ScriptEngine::ReloadAssembly(Application::Get().getSpec().scriptConfig.appAssemblyPath);
 
 		ImGui::End();
 	}

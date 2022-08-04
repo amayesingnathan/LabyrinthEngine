@@ -21,8 +21,7 @@ namespace Labyrinth {
 		void Save();
 
 	private:
-		ApplicationSpec& mSettings;
-		JsonObj mSettingsJSON;
+		ApplicationSpec mSettings;
 	};
 
 }

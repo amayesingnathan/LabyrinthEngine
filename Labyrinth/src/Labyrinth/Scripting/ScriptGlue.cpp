@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "ScriptGlue.h"
 
-#include "ScriptEngineInternal.h"
+#include "ScriptEngine.h"
 #include "MarshalUtils.h"
 
 #include <Labyrinth/Assets/AssetManager.h>

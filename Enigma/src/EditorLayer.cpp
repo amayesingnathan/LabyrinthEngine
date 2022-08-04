@@ -14,6 +14,7 @@
 
 #include "Labyrinth/Editor/EditorResources.h"
 
+#include "Labyrinth/IO/File.h"
 #include "Labyrinth/IO/Input.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
@@ -65,11 +66,7 @@ namespace Labyrinth {
 		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
 
 		bool loadedScene = false;
-		auto commandLineArgs = Application::Get().getSpec().commandLineArgs;
-		if (commandLineArgs.count > 1)
-			loadedScene = OpenScene(commandLineArgs[1]);
-		if (!loadedScene)
-			NewScene();
+		NewScene();
 
 		LoadSettings();
 	}
@@ -506,6 +503,8 @@ namespace Labyrinth {
 	void EditorLayer::LoadSettings()
 	{
 		JsonObj settings = JSON::Open("enigma.ini");
+		if (settings.empty())
+			return;
 
 		// Panels
 		if (settings.contains("Panels"))
@@ -520,7 +519,10 @@ namespace Labyrinth {
 
 	void EditorLayer::WriteSettings()
 	{
+		Application::WriteSettings("enigma.ini");
+
 		JsonObj settings = JSON::Open("enigma.ini");
+
 		settings["Panels"] = {};
 
 		// Panels

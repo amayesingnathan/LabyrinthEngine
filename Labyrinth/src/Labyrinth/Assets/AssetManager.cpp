@@ -15,7 +15,7 @@ namespace Labyrinth {
 	{
 		AssetImporter::Init();
 
-		sAssetDirPath = Application::Get().getSpec().workingDir + "assets";
+		sAssetDirPath = Application::Get().getSpec().workingDir.string() + "assets";
 		sAssetRegPath = sAssetDirPath / "AssetRegistry.lreg";
 		LoadRegistry();
 		ReloadAssets();

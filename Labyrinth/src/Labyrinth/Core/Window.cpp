@@ -47,8 +47,6 @@ namespace Labyrinth {
 		mData.width = props.width;
 		mData.height = props.height;
 
-		LAB_CORE_INFO("Creating window {0} ({1}, {2})", props.title, props.width, props.height);
-
 		if (sGLFWWindowCount == 0)
 		{
 			LAB_PROFILE_SCOPE("glfwInit");
@@ -58,13 +56,24 @@ namespace Labyrinth {
 			glfwSetErrorCallback(GLFWErrorCallback);
 		}
 
+		if (props.fullscreen)
+		{	// Set Window size to be full size of primary monitor and set borderless (prefer this to actual fullscreen)
+			GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+			const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+			mData.width = mode->width;
+			mData.height = mode->height;
+			glfwWindowHint(GLFW_DECORATED, GLFW_FALSE);
+		}
+
+		LAB_CORE_INFO("Creating window {0} ({1}, {2})", mData.title, mData.width, mData.height);
+
 		{
 			LAB_PROFILE_SCOPE("glfwCreateWindow");
 #if defined(LAB_DEBUG)
 			if (Renderer::GetAPI() == RendererAPI::API::OpenGL)
 				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 #endif
-			mWindow = glfwCreateWindow((int)props.width, (int)props.height, mData.title.c_str(), nullptr, nullptr);
+			mWindow = glfwCreateWindow((int)mData.width, (int)mData.height, mData.title.c_str(), nullptr, nullptr);
 			++sGLFWWindowCount;
 		}
 		LAB_CORE_ASSERT(mWindow, "Could not create GLFW window!");

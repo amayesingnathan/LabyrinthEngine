@@ -7,7 +7,6 @@
 #include "Labyrinth/IO/Input.h"
 #include "Labyrinth/IO/JSON.h"
 #include "Labyrinth/Renderer/Renderer.h"
-#include "Labyrinth/Scripting/ScriptEngine.h"
 #include "Labyrinth/Tools/PlatformUtils.h"
 
 namespace Labyrinth {
@@ -25,12 +24,12 @@ namespace Labyrinth {
 		if (!mSpecification.workingDir.empty())
 			std::filesystem::current_path(mSpecification.workingDir);
 
-		mWindow = Window::Create(WindowProps(mSpecification.name));
+		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
 		AssetManager::Init();
-		ScriptEngine::Init();
+		ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
@@ -146,15 +145,44 @@ namespace Labyrinth {
 		return false;
 	}
 
-	void Application::GetSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)
+	void Application::ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)
 	{
-		JsonObj settings = JSON::Open("enigma.ini");
+		JsonObj settings = JSON::Open(settingsPath);
+		if (settings.empty())
+			return;
+
 		if (settings.contains("Startup"))
 		{
 			auto startup = settings["Startup"];
 			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"].get<bool>();
+			if (startup.contains("WindowWidth")) outSpec.resolution.width = startup["WindowWidth"].get<u32>();
+			if (startup.contains("WindowHeight")) outSpec.resolution.height = startup["WindowHeight"].get<u32>();
 			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"].get<std::filesystem::path>();
-			if (startup.contains("ScriptModulePath")) outSpec.scriptModulePath = startup["ScriptModulePath"].get<std::filesystem::path>();
+
+			auto scripting = startup["Scripting"];
+			if (scripting.contains("CoreAssemblyPath")) outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<std::filesystem::path>();
+			if (scripting.contains("ScriptModulePath")) outSpec.scriptConfig.appAssemblyPath = scripting["ScriptModulePath"].get<std::filesystem::path>();
 		}
+	}
+
+	void Application::WriteSettings(const std::filesystem::path& settingsPath)
+	{
+		JsonObj settingsJSON = JSON::Open(settingsPath);
+		if (settingsJSON.empty())
+			LAB_CORE_WARN("Settings file did not exist, creating from scratch...");
+
+		const ApplicationSpec& spec = Application::Get().getSpec();
+		JsonObj& startupSettings = settingsJSON["Startup"];
+
+		startupSettings["Fullscreen"] = spec.fullscreen;
+		startupSettings["WindowWidth"] = spec.resolution.width;
+		startupSettings["WindowHeight"] = spec.resolution.height;
+		startupSettings["WorkingDir"] = spec.workingDir;
+
+		JsonObj& scriptSettings = startupSettings["Scripting"];
+		scriptSettings["CoreAssemblyPath"] = spec.scriptConfig.coreAssemblyPath;
+		scriptSettings["ScriptModulePath"] = spec.scriptConfig.appAssemblyPath;
+
+		JSON::Write(settingsPath, settingsJSON);
 	}
 }

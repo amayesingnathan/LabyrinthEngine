@@ -4,28 +4,26 @@
 
 namespace Labyrinth {
 
+    struct ResolutionEntry
+    { 
+        std::string label;
+        Resolution resolution;
+    };
+
+    static const std::vector<ResolutionEntry> sResolutionTable
+    {
+        {"1280x720", {1280, 720}},
+        {"1600x900", {1600, 900}},
+        {"1920x1080", {1920, 1080}}
+    };
+
     SettingsModal::SettingsModal() : Modal(), mSettings(Application::Get().getSpec())
     {
-        mSettingsJSON = JSON::Open("enigma.ini");
-        if (!mSettingsJSON.contains("Startup"))
-        {
-            mSettingsJSON["Startup"]["Fullscreen"] = false;
-        }
-
-        JsonObj startupSettings = mSettingsJSON["Startup"];
-
-        if (startupSettings.contains("Fullscreen"))
-            mSettings.fullscreen = startupSettings["Fullscreen"].get<bool>();
-        if (startupSettings.contains("WorkingDir"))
-            mSettings.workingDir = startupSettings["WorkingDir"].get<std::filesystem::path>();
-        if (startupSettings.contains("ScriptModulePath"))
-            mSettings.scriptModulePath = startupSettings["ScriptModulePath"].get<std::filesystem::path>();
     }
 
     void SettingsModal::onImGuiRender()
     {
         ImGui::Text("Settings");
-        ImGui::NewLine();
 
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
@@ -34,9 +32,30 @@ namespace Labyrinth {
         if (ImGui::InputText("Working Directory", workingDirBuffer, sizeof(workingDirBuffer)))
             mSettings.workingDir = workingDirBuffer.string();
 
-        StaticBuffer<256> scriptModuleBuffer(mSettings.scriptModulePath.string());
+        StaticBuffer<256> coreAssemblyBuffer(mSettings.scriptConfig.coreAssemblyPath.string());
+        if (ImGui::InputText("Core Assembly Path", coreAssemblyBuffer, sizeof(coreAssemblyBuffer)))
+            mSettings.scriptConfig.coreAssemblyPath = coreAssemblyBuffer.string();
+
+        StaticBuffer<256> scriptModuleBuffer(mSettings.scriptConfig.appAssemblyPath.string());
         if (ImGui::InputText("Script Module Path", scriptModuleBuffer, sizeof(scriptModuleBuffer)))
-            mSettings.workingDir = scriptModuleBuffer.string();
+            mSettings.scriptConfig.appAssemblyPath = scriptModuleBuffer.string();
+
+        std::string resolutionStr = mSettings.resolution.toString();
+        if (ImGui::BeginCombo("Resolution", resolutionStr.c_str()))
+        {
+            for (const auto& resolutionEntry : sResolutionTable)
+            {
+                bool isSelected = resolutionStr == resolutionEntry.label;
+
+                if (ImGui::Selectable(resolutionEntry.label.c_str(), isSelected))
+                    mSettings.resolution = resolutionEntry.resolution;
+
+                if (isSelected)
+                    ImGui::SetItemDefaultFocus();
+            }
+
+            ImGui::EndCombo();
+        }
 
         ImGui::NewLine();
 
@@ -46,10 +65,6 @@ namespace Labyrinth {
             Close();
         }
 
-        ImGui::SameLine();
-        if (ImGui::Button("Apply"))
-            Save();
-
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
         if (ImGui::Button("Cancel"))
@@ -58,12 +73,6 @@ namespace Labyrinth {
 
     void SettingsModal::Save()
     {
-        JsonObj& startupSettings = mSettingsJSON["Startup"];
-
-        startupSettings["Fullscreen"] = mSettings.fullscreen;
-        startupSettings["WorkingDir"] = mSettings.workingDir;
-        startupSettings["ScriptModulePath"] = mSettings.scriptModulePath;
-
-        JSON::Write("enigma.ini", mSettingsJSON);
+        Application::Get().getSpec() = mSettings;
     }
 }

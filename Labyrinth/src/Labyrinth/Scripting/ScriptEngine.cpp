@@ -3,9 +3,6 @@
 
 #include "ScriptUtils.h"
 #include "ScriptGlue.h"
-#include "ScriptClass.h"
-#include "ScriptObject.h"
-#include "ScriptEngineInternal.h"
 #include "MarshalUtils.h"
 
 #include <Labyrinth/Core/Application.h>
@@ -25,11 +22,10 @@ namespace Labyrinth {
 
 	static ScriptEngineState* sData = nullptr;
 
-	void ScriptEngine::Init()
+	void ScriptEngine::Init(const ScriptEngineConfig& config)
 	{
 		sData = new ScriptEngineState();
 
-		ScriptEngineConfig config{ "Resources/Scripts/Labyrinth-ScriptCore.dll" };
 		ScriptEngineInternal::Init(config);
 	}
 
@@ -80,7 +76,7 @@ namespace Labyrinth {
 
 	void ScriptEngine::LoadAppAssembly()
 	{
-		ScriptEngineInternal::LoadAppAssembly(Application::Get().getSpec().scriptModulePath);
+		ScriptEngineInternal::LoadAppAssembly(Application::Get().getSpec().scriptConfig.appAssemblyPath);
 	}
 
 	void ScriptEngine::ReloadAssembly(const std::filesystem::path& assemblyPath)

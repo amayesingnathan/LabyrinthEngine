@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ScriptEngineInternal.h"
 #include "ScriptObject.h"
 
 namespace Labyrinth {
@@ -9,7 +10,7 @@ namespace Labyrinth {
 	class ScriptEngine
 	{
 	public:
-		static void Init();
+		static void Init(const ScriptEngineConfig& config);
 		static void Shutdown();
 
 		static void OnRuntimeStart();

@@ -70,7 +70,31 @@ namespace Labyrinth {
 			return;
 		}
 
+		if (buffer.size == 0)
+			return;
+
 		stream.write(buffer.as<char>(), buffer.size);
+	}
+
+	void FileUtils::Create(const std::filesystem::path& filepath)
+	{
+		std::ofstream stream(filepath, std::ios::binary);
+		if (!stream)
+		{
+			// Failed to open the file
+			LAB_CORE_ERROR("Failed to create file {}", filepath);
+			return;
+		}
+	}
+
+	void FileUtils::CreateDir(const std::filesystem::path& filepath)
+	{
+		std::filesystem::create_directories(filepath);
+	}
+
+	bool FileUtils::Exists(const std::filesystem::path& filepath)
+	{
+		return std::filesystem::exists(filepath);
 	}
 
 }
