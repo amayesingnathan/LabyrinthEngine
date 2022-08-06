@@ -27,7 +27,7 @@ namespace Labyrinth {
 	struct ApplicationSpec
 	{
 		std::string name = "Labyrinth Application";
-		Resolution resolution;
+		Resolution resolution = { 1600, 900 };
 		std::filesystem::path workingDir;
 		bool fullscreen = false;
 		ScriptEngineConfig scriptConfig;
