@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-	class AssetPanel : public IPanel
+	class AssetPanel : public Panel
 	{
 	public:
 		AssetPanel();

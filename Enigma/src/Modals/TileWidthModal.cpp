@@ -1,5 +1,7 @@
 #include "TileWidthModal.h"
 
+#include <Labyrinth/Core/Buffer.h>
+
 namespace Labyrinth {
 
 	TileWidthModal::TileWidthModal(SpriteSheetData& data) : Modal(), mPayload(data)
@@ -11,11 +13,9 @@ namespace Labyrinth {
 		ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
 		ImGui::NewLine();
 
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mPayload.sheetName);
+		StaticBuffer<256> buffer(mPayload.sheetName);
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-			mPayload.sheetName = std::string(buffer);
+			mPayload.sheetName = buffer.string();
 
 		ImGui::InputInt("Width", &mTileWidth);
 		ImGui::InputInt("Height", &mTileHeight);

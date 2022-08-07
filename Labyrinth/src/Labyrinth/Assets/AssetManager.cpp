@@ -4,6 +4,7 @@
 #include "AssetExtensions.h"
 
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Tools/StringUtils.h>
 
@@ -16,7 +17,7 @@ namespace Labyrinth {
 		AssetImporter::Init();
 
 		sAssetDirPath = Application::Get().getSpec().workingDir.string() + "assets";
-		sAssetRegPath = sAssetDirPath / "AssetRegistry.lreg";
+		sAssetRegPath = sAssetDirPath / "registry.lreg";
 		LoadRegistry();
 		ReloadAssets();
 	}
@@ -41,7 +42,7 @@ namespace Labyrinth {
 		return sAssetExtensionMap.at(ext.c_str());
 	}
 
-	AssetType AssetManager::GetAssetTypeFromPath(const std::filesystem::path& path)
+	AssetType AssetManager::GetAssetTypeFromPath(const fs::path& path)
 	{
 		return GetAssetTypeFromExtension(path.extension().string());
 	}
@@ -54,9 +55,9 @@ namespace Labyrinth {
 		return sAssetExtensionMap[ext] == type;
 	}
 
-	AssetHandle AssetManager::ImportAsset(const std::filesystem::path& filepath)
+	AssetHandle AssetManager::ImportAsset(const fs::path& filepath)
 	{
-		std::filesystem::path path = GetRelativePath(filepath);
+		fs::path path = GetRelativePath(filepath);
 
 		if (auto& metadata = GetMetadata(path); metadata.valid())
 			return metadata.handle;
@@ -100,15 +101,12 @@ namespace Labyrinth {
 
 	void AssetManager::LoadRegistry()
 	{
-		if (!std::filesystem::exists(sAssetRegPath))
+		if (!fs::exists(sAssetRegPath))
 			return;
 
-		std::ifstream stream(sAssetRegPath);
-		LAB_CORE_ASSERT(stream);
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node data = YAML::Load(strStream.str());
+		std::string str;
+		FileUtils::Read(sAssetRegPath, str);
+		YAML::Node data = YAML::Load(str);
 		auto handles = data["Assets"];
 		if (!handles)
 		{
@@ -128,7 +126,7 @@ namespace Labyrinth {
 			if (metadata.type == AssetType::None)
 				continue;
 
-			if (!std::filesystem::exists(AssetManager::GetFileSystemPath(metadata)))
+			if (!fs::exists(AssetManager::GetFileSystemPath(metadata)))
 			{
 				LAB_CORE_WARN("[AssetManager] Missing asset '{0}' detected in registry file", metadata.filepath);
 				continue;
@@ -144,9 +142,9 @@ namespace Labyrinth {
 		}
 	}
 
-	void AssetManager::ProcessDirectory(const std::filesystem::path& directoryPath)
+	void AssetManager::ProcessDirectory(const fs::path& directoryPath)
 	{
-		for (auto entry : std::filesystem::directory_iterator(directoryPath))
+		for (auto entry : fs::directory_iterator(directoryPath))
 		{
 			if (entry.is_directory())
 				ProcessDirectory(entry.path());
@@ -173,7 +171,7 @@ namespace Labyrinth {
 		std::map<UUID, AssetRegistryEntry> sortedMap;
 		for (auto& [filepath, metadata] : sAssetRegistry)
 		{
-			if (!std::filesystem::exists(GetFileSystemPath(metadata)))
+			if (!fs::exists(GetFileSystemPath(metadata)))
 				continue;
 
 			if (metadata.memoryAsset)
@@ -203,8 +201,7 @@ namespace Labyrinth {
 		out << YAML::EndSeq;
 		out << YAML::EndMap;
 
-		std::ofstream fout(sAssetRegPath);
-		fout << out.c_str();
+		FileUtils::Write(sAssetRegPath, out.c_str());
 	}
 
 	AssetMetadata& AssetManager::GetMetadataInternal(AssetHandle handle)
@@ -223,7 +220,7 @@ namespace Labyrinth {
 		return sEmptyMetadata;
 	}
 
-	const AssetMetadata& AssetManager::GetMetadata(const std::filesystem::path filepath)
+	const AssetMetadata& AssetManager::GetMetadata(const fs::path filepath)
 	{
 		const auto relativePath = GetRelativePath(filepath);
 
@@ -236,18 +233,18 @@ namespace Labyrinth {
 		return sEmptyMetadata;
 	}
 
-	AssetHandle AssetManager::GetHandleFromPath(const std::filesystem::path& filepath)
+	AssetHandle AssetManager::GetHandleFromPath(const fs::path& filepath)
 	{
 		return GetMetadata(filepath).handle;
 	}
 
-	std::filesystem::path AssetManager::GetRelativePath(const std::filesystem::path& filepath)
+	fs::path AssetManager::GetRelativePath(const fs::path& filepath)
 	{
-		std::filesystem::path relativePath = filepath.lexically_normal();
+		fs::path relativePath = filepath.lexically_normal();
 		std::string temp = filepath.string();
 		if (temp.find(sAssetDirPath.string()) != std::string::npos)
 		{
-			relativePath = std::filesystem::relative(filepath, sAssetDirPath);
+			relativePath = fs::relative(filepath, sAssetDirPath);
 			if (relativePath.empty())
 			{
 				relativePath = filepath.lexically_normal();

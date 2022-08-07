@@ -68,7 +68,7 @@ namespace Labyrinth {
 					mPanelData.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 
-					ModalManager::Open<TileWidthModal>("TileWidthModal", mPanelData);
+					ModalManager::Open<TileWidthModal>("TileWidthModal", ImGuiWindowFlags_None, []() {}, mPanelData);
 				}
 				else if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::TextureSheet))
 				{
@@ -83,7 +83,7 @@ namespace Labyrinth {
 		}
 
 		if (ImGui::Button("Add SubTex") && mPanelData.currentSheet)
-			ModalManager::Open<SubTexModal>("SubTexModal", mPanelData);
+			ModalManager::Open<SubTexModal>("SubTexModal", ImGuiWindowFlags_None, []() {}, mPanelData);
 
 		ImGui::SameLine();
 

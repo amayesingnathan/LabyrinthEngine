@@ -4,6 +4,7 @@
 #include "AssetImporter.h"
 
 #include "Labyrinth/Core/System/Assert.h"
+#include <Labyrinth/IO/Filesystem.h>
 #include "Labyrinth/Tools/PlatformUtils.h"
 #include "Labyrinth/Tools/Profiling.h"
 
@@ -21,12 +22,12 @@ namespace Labyrinth {
         static void Shutdown();
 
         static const AssetMetadata& GetMetadata(AssetHandle handle);
-        static const AssetMetadata& GetMetadata(const std::filesystem::path filepath);
+        static const AssetMetadata& GetMetadata(const fs::path filepath);
 
-        static AssetHandle GetHandleFromPath(const std::filesystem::path& filepath);
+        static AssetHandle GetHandleFromPath(const fs::path& filepath);
 
-        static std::filesystem::path GetRelativePath(const std::filesystem::path& filepath);
-        static std::filesystem::path GetFileSystemPath(const AssetMetadata& metadata) { return sAssetDirPath / metadata.filepath; }
+        static fs::path GetRelativePath(const fs::path& filepath);
+        static fs::path GetFileSystemPath(const AssetMetadata& metadata) { return sAssetDirPath / metadata.filepath; }
         static std::string GetFileSystemPathString(const AssetMetadata& metadata) { return GetFileSystemPath(metadata).string(); }
 
         static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }
@@ -34,16 +35,16 @@ namespace Labyrinth {
         static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.count(handle) != 0; }
 
         static AssetType GetAssetTypeFromExtension(const std::string& extension);
-        static AssetType GetAssetTypeFromPath(const std::filesystem::path& path);
+        static AssetType GetAssetTypeFromPath(const fs::path& path);
 
         static bool IsExtensionValid(const std::string& extension, AssetType type);
 
-        static AssetHandle ImportAsset(const std::filesystem::path& filepath);
+        static AssetHandle ImportAsset(const fs::path& filepath);
         static bool ReloadData(AssetHandle assetHandle);
 
     private:
         static void LoadRegistry();
-        static void ProcessDirectory(const std::filesystem::path& directoryPath);
+        static void ProcessDirectory(const fs::path& directoryPath);
         static void ReloadAssets();
         static void SaveRegistry();
 
@@ -79,7 +80,7 @@ namespace Labyrinth {
                         nextFilePath += " (" + std::to_string(current) + ")";
                     nextFilePath += metadata.filepath.extension().string();
 
-                    if (!std::filesystem::exists(nextFilePath))
+                    if (!fs::exists(nextFilePath))
                     {
                         foundAvailableFileName = true;
                         metadata.filepath = AssetManager::GetRelativePath(nextFilePath);
@@ -129,17 +130,17 @@ namespace Labyrinth {
         }
 
         template<typename T>
-        static Ref<T> GetAsset(const std::filesystem::path& filepath)
+        static Ref<T> GetAsset(const fs::path& filepath)
         {
             return GetAsset<T>(GetAssetHandleFromPath(filepath));
         }
 
         static bool FileExists(AssetMetadata& metadata)
         {
-            return std::filesystem::exists(sAssetRegPath / metadata.filepath);
+            return fs::exists(sAssetRegPath / metadata.filepath);
         }
 
-        static AssetHandle GetAssetHandleFromPath(const std::filesystem::path& path)
+        static AssetHandle GetAssetHandleFromPath(const fs::path& path)
         {
             return GetMetadata(path).handle;
         }
@@ -184,6 +185,6 @@ namespace Labyrinth {
         inline static AssetCache sLoadedAssets;
         inline static AssetCache sMemoryAssets;
         inline static AssetRegistry sAssetRegistry;
-        inline static std::filesystem::path sAssetDirPath, sAssetRegPath;
+        inline static fs::path sAssetDirPath, sAssetRegPath;
     };
 }

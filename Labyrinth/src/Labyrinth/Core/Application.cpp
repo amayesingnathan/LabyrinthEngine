@@ -46,9 +46,10 @@ namespace Labyrinth {
 
 	void Application::Close()
 	{
-		if (mBlockExit) return;
+		Application& app = Get();
+		if (app.mBlockExit) return;
 
-		mRunning = false;
+		app.mRunning = false;
 	}
 
 	void Application::run()
@@ -117,7 +118,7 @@ namespace Labyrinth {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		Close();
+		Application::Close();
 		return true;
 	}
 
@@ -138,9 +139,7 @@ namespace Labyrinth {
 	bool Application::OnKeyPressed(KeyPressedEvent& e)
 	{
 		if (e.getKeyCode() == Key::Escape)
-		{
-			Close();
-		}
+			Application::Close();
 
 		return false;
 	}

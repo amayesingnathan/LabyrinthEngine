@@ -2,6 +2,7 @@
 #include "AssetSerialiser.h"
 #include "AssetManager.h"
 
+#include "Labyrinth/IO/Filesystem.h"
 #include "Labyrinth/IO/YAML.h"
 #include "Labyrinth/Renderer/Texture.h"
 #include "Labyrinth/Renderer/SubTexture.h"
@@ -48,20 +49,15 @@ namespace Labyrinth {
 
 		out << YAML::EndMap; // Subtexture
 
-		std::ofstream fout(AssetManager::GetFileSystemPath(metadata));
-		fout << out.c_str();
+		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
 	bool SubTextureSerializer::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
-		std::ifstream stream(AssetManager::GetFileSystemPath(metadata));
-		if (!stream.is_open())
-			return false;
-
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node root = YAML::Load(strStream.str());
+		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
+		std::string str;
+		FileUtils::Read(assetPath, str);
+		YAML::Node root = YAML::Load(str);
 		YAML::Node subtexNode = root["SubTexture"];
 
 		Ref<Texture2DSheet> sheet = nullptr;
@@ -126,20 +122,15 @@ namespace Labyrinth {
 
 		out << YAML::EndMap; // TextureSheet
 
-		std::ofstream fout(AssetManager::GetFileSystemPath(metadata));
-		fout << out.c_str();
+		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
 	bool TextureSheetSerializer::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
-		std::ifstream stream(AssetManager::GetFileSystemPath(metadata));
-		if (!stream.is_open())
-			return false;
-
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
-
-		YAML::Node root = YAML::Load(strStream.str());
+		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
+		std::string str;
+		FileUtils::Read(assetPath, str);
+		YAML::Node root = YAML::Load(str);
 		YAML::Node texNode = root["TextureSheet"];
 
 		Ref<Texture2D> tex = nullptr;

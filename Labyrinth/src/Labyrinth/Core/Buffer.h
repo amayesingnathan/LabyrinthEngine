@@ -172,5 +172,7 @@ namespace Labyrinth {
 			return (const char*)data;
 		}
 
+		constexpr usize size() const { return _Size; }
+
 	};
 }

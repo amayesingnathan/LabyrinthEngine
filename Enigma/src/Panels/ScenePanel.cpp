@@ -122,7 +122,7 @@ namespace Labyrinth {
 				mSelectedEntity.addComponent<CameraComponent>();
 			}
 			if (ImGui::MenuItem("Rigid Body"))
-				ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
+				ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
 			ImGui::EndPopup();
 		}
 
@@ -227,7 +227,7 @@ namespace Labyrinth {
 		if (entityCreated)
 			mContext->CreateEntity("Empty Entity");
 		if (bodyCreated)
-			ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
+			ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
 		if (cloneEntity)
@@ -382,7 +382,7 @@ namespace Labyrinth {
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
 			{
 				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<MapSpecModal>("MapSpecModal", mSelectedEntity);
+					ModalManager::Open<MapSpecModal>("MapSpecModal", ImGuiWindowFlags_None, []() {}, mSelectedEntity);
 			}
 
 			ImGui::EndPopup();

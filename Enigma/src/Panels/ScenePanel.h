@@ -15,7 +15,7 @@ namespace Labyrinth {
 
 	struct EditorData;
 
-	class ScenePanel : public IPanel
+	class ScenePanel : public Panel
 	{
 	public:
 		ScenePanel();

@@ -3,30 +3,32 @@
 #include "Labyrinth/Core/System/Base.h"
 #include "Labyrinth/Core/System/Log.h"
 #include "Labyrinth/Events/Event.h"
+#include "Labyrinth/Project/Project.h"
 
 #include <string>
 #include <unordered_map>
 
 namespace Labyrinth {
 
-	class IPanel : public RefCounted
+	class Panel : public RefCounted
 	{
 	public:
-		virtual ~IPanel() {}
+		virtual ~Panel() {}
 
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() = 0;
 		virtual void onEvent(Event& e) {}
+		virtual void onProjectChange(Ref<Project> project) {}
 	};
 
 	struct PanelItem
 	{
 		std::string key;
-		Ref<IPanel> panel = nullptr;
+		Ref<Panel> panel = nullptr;
 		bool displayed = false;
 
 		PanelItem() = default;
-		PanelItem(const std::string& _key, const Ref<IPanel>& _panel, bool _display)
+		PanelItem(const std::string& _key, const Ref<Panel>& _panel, bool _display)
 			: key(_key), panel(_panel), displayed(_display) {}
 	};
 
@@ -65,7 +67,7 @@ namespace Labyrinth {
 			return &(*it);
 		}
 
-		static Ref<IPanel> Get(const std::string& name)
+		static Ref<Panel> Get(const std::string& name)
 		{
 			std::vector<PanelItem>& panels = GetPanels();
 			auto it = Find(name);
@@ -89,7 +91,7 @@ namespace Labyrinth {
 		template<typename T>
 		static Ref<T> Register(const std::string& name, bool display = true)
 		{
-			static_assert(IsDerivedFrom<IPanel, T>());
+			static_assert(IsDerivedFrom<Panel, T>());
 
 			std::vector<PanelItem>& panels = GetPanels();
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
@@ -104,7 +106,7 @@ namespace Labyrinth {
 		template<typename T, typename... Args>
 		static Ref<T> Register(const std::string& name, bool display, Args&&... args)
 		{
-			static_assert(IsDerivedFrom<IPanel, T>());
+			static_assert(IsDerivedFrom<Panel, T>());
 
 			std::vector<PanelItem>& panels = GetPanels();
 			LAB_ASSERT(Find(name) == panels.end(), "Can't register panel that is already being managed! (Check name is not already in use)");
@@ -152,6 +154,14 @@ namespace Labyrinth {
 			for (PanelItem& panelItem : GetPanels())
 			{
 				if (panelItem.panel) panelItem.panel->onEvent(e);
+			}
+		}
+
+		static void ProjectChanged(Ref<Project> project)
+		{
+			for (PanelItem& panelItem : GetPanels())
+			{
+				if (panelItem.panel) panelItem.panel->onProjectChange(project);
 			}
 		}
 	};

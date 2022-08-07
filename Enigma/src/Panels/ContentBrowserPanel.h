@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class ContentBrowserPanel : public IPanel
+	class ContentBrowserPanel : public Panel
 	{
 	public:
 		ContentBrowserPanel();

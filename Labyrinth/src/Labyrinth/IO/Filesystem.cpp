@@ -1,9 +1,11 @@
 #include "Lpch.h"
-#include "File.h"
+#include "Filesystem.h"
+
+#include <portable-file-dialogs.h>
 
 namespace Labyrinth {
 
-	Buffer FileUtils::Read(const std::filesystem::path& filepath)
+	Buffer FileUtils::Read(const fs::path& filepath)
 	{
 		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
@@ -32,7 +34,7 @@ namespace Labyrinth {
 		return buffer;
 	}
 
-	void FileUtils::Read(const std::filesystem::path& filepath, std::string& string)
+	void FileUtils::Read(const fs::path& filepath, std::string& string)
 	{
 		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);
 
@@ -59,7 +61,7 @@ namespace Labyrinth {
 		stream.close();
 	}
 
-	void FileUtils::Write(const std::filesystem::path& filepath, Buffer buffer)
+	void FileUtils::Write(const fs::path& filepath, Buffer buffer)
 	{
 		std::ofstream stream(filepath, std::ios::binary);
 
@@ -76,7 +78,24 @@ namespace Labyrinth {
 		stream.write(buffer.as<char>(), buffer.size);
 	}
 
-	void FileUtils::Create(const std::filesystem::path& filepath)
+	void FileUtils::Write(const fs::path& filepath, const std::string& string)
+	{
+		std::ofstream stream(filepath, std::ios::binary);
+
+		if (!stream)
+		{
+			// Failed to open the file
+			LAB_CORE_ERROR("Failed to open file {}", filepath);
+			return;
+		}
+
+		if (string.size() == 0)
+			return;
+
+		stream.write(string.c_str(), string.size());
+	}
+
+	void FileUtils::Create(const fs::path& filepath)
 	{
 		std::ofstream stream(filepath, std::ios::binary);
 		if (!stream)
@@ -87,14 +106,33 @@ namespace Labyrinth {
 		}
 	}
 
-	void FileUtils::CreateDir(const std::filesystem::path& filepath)
+	void FileUtils::CreateDir(const fs::path& filepath)
 	{
 		std::filesystem::create_directories(filepath);
 	}
 
-	bool FileUtils::Exists(const std::filesystem::path& filepath)
+	void FileUtils::CopyDir(const fs::path& src, const fs::path& dest)
 	{
-		return std::filesystem::exists(filepath);
+		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive);
+	}
+
+	std::string FileUtils::OpenFile(const std::vector<std::string>& filter)
+	{
+		auto selection = pfd::open_file("Select a file", ".", filter).result();
+		if (!selection.empty())
+			return selection[0];
+
+		return std::string();
+	}
+
+	std::string FileUtils::OpenDir()
+	{
+		return pfd::select_folder("Select a folder", ".").result();
+	}
+
+	std::string FileUtils::SaveFile(const std::vector<std::string>& filter)
+	{
+		return pfd::save_file("Save file as", ".", filter).result();
 	}
 
 }

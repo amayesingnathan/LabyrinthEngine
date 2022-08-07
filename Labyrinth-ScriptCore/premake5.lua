@@ -3,8 +3,8 @@ project "Labyrinth-ScriptCore"
     language "C#"
     dotnetframework "4.7.2"
 		
-    targetdir 	("%{wks.location}/Enigma/Resources/Scripts")
-    objdir 		("%{wks.location}/Enigma/Resources/Scripts/Intermediates")
+    targetdir 	("%{wks.location}/Enigma/resources/scripts")
+    objdir 		("%{wks.location}/Enigma/resources/scripts/intermediates")
 
     files 
     { 

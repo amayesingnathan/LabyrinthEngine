@@ -48,10 +48,9 @@ namespace Labyrinth {
 		Window& getWindow() { return *mWindow; }
 
 		static Application& Get() { return *sInstance; }
+		static void Close();
 
 		static void BlockEsc(bool block = true) { sInstance->mBlockExit = block; }
-
-		void Close();
 
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 

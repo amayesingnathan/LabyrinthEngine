@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
 #include "Modals/ModalManager.h"
+#include "Modals/NewProjectModal.h"
 #include "Modals/SettingsModal.h"
 
 #include "Panels/ScenePanel.h"
@@ -14,8 +15,9 @@
 
 #include "Labyrinth/Editor/EditorResources.h"
 
-#include "Labyrinth/IO/File.h"
 #include "Labyrinth/IO/Input.h"
+
+#include "Labyrinth/Project/ProjectSerialiser.h"
 
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
@@ -34,7 +36,17 @@
 
 namespace Labyrinth {
 
-	extern const std::filesystem::path gAssetPath;
+	extern const fs::path gAssetPath;
+
+	static void ReplaceToken(std::string& str, const char* token, const std::string& value)
+	{
+		usize pos = 0;
+		while ((pos = str.find(token, pos)) != std::string::npos)
+		{
+			str.replace(pos, strlen(token), value);
+			pos += strlen(token);
+		}
+	}
 
 	EditorLayer::EditorLayer()
 		:	Layer("EditorLayer")
@@ -235,7 +247,7 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				std::filesystem::path fullPath = gAssetPath / path;
+				fs::path fullPath = gAssetPath / path;
 				if (AssetManager::IsExtensionValid(fullPath.extension().string(), AssetType::Scene))
 					OpenScene(fullPath);
 			}
@@ -301,21 +313,39 @@ namespace Labyrinth {
 		{
 			if (ImGui::BeginMenu("File"))
 			{
-				// Disabling fullscreen would allow the window to be moved to the front of other windows, 
-				// which we can't undo at the moment without finer window depth/z control.
-				//ImGui::MenuItem("Fullscreen", NULL, &opt_fullscreen_persistant);
-				if (ImGui::MenuItem("New", "Ctrl+N"))
-					NewScene();
-				if (ImGui::MenuItem("Open", "Ctrl+O"))
-					OpenScene();
-				if (ImGui::MenuItem("Save", "Ctrl+S"))
-					SaveScene();
-				if (ImGui::MenuItem("Save As...", "Ctrl+Shift+S"))
-					SaveSceneAs();
-				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("SettingsModal");
+				if (ImGui::MenuItem("Create Project"))
+				{
+					ModalManager::Open<NewProjectModal>("New Project...", ImGuiWindowFlags_None,
+						[this]() 
+						{ 
+							if(!mEditorData.projectFilepath.empty()) 
+								CreateProject(mEditorData.projectFilepath / mEditorData.projectName); 
+						}
+						, mEditorData.projectFilepath, mEditorData.projectName);
+				}
+				if (ImGui::MenuItem("Open Project", "Ctrl+O"))
+					OpenProject();
+				if (ImGui::MenuItem("Save Project"))
+					SaveProject();
 
-				if (ImGui::MenuItem("Exit")) Application::Get().Close();
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+					NewScene();
+				if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
+					SaveScene();
+				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
+					SaveSceneAs();
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
+					ModalManager::Open<SettingsModal>("Settings", ImGuiWindowFlags_None, []() {});
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Exit")) Application::Close();
+
 				ImGui::EndMenu();
 			}
 
@@ -409,14 +439,14 @@ namespace Labyrinth {
 			case Key::O:
 			{
 				if (control)
-					OpenScene();
+					OpenProject();
 
 			}
 			break;
 			case Key::P:
 			{
 				if (control)
-					ModalManager::Open<SettingsModal>("SettingsModal");
+					ModalManager::Open<SettingsModal>("SettingsModal", ImGuiWindowFlags_None, []() {});
 
 			}
 			break;
@@ -538,6 +568,142 @@ namespace Labyrinth {
 		JSON::Write("enigma.ini", settings);
 	}
 
+	void EditorLayer::CreateProject(const fs::path& filepath)
+	{
+		if (!fs::exists(filepath))
+			FileUtils::CreateDir(filepath);
+
+		FileUtils::CopyDir("resources/new-project-template", filepath);
+		fs::path rootDirectory = std::filesystem::absolute("./resources").parent_path();
+		std::string rootDirectoryString = rootDirectory.string();
+
+		if (rootDirectory.stem().string() == "Enigma")
+			rootDirectoryString = rootDirectory.parent_path().string();
+
+		//std::replace(rootDirectoryString.begin(), rootDirectoryString.end(), '\\', '/');
+
+		{
+			// premake5.lua
+			std::string str;
+			FileUtils::Read(filepath / "premake5.lua", str);
+			ReplaceToken(str, "$PROJECT_NAME$", mEditorData.projectName);
+
+			FileUtils::Write(filepath / "premake5.lua", str);
+		}
+
+		{
+			// Project File
+			std::string str;
+			FileUtils::Read(filepath / "project.lpj", str);
+			ReplaceToken(str, "$PROJECT_NAME$", mEditorData.projectName);
+
+			FileUtils::Write(filepath / "project.lpj", str);
+
+			std::string newProjectFileName = mEditorData.projectName + ".lpj";
+			fs::rename(filepath / "project.lpj", filepath / newProjectFileName);
+		}
+
+		{
+			// VS Project Gen File
+			std::string str;
+			FileUtils::Read(filepath / "Win-CreateScriptProjects.bat", str);
+
+			ReplaceToken(str, "$LAB_ROOT_DIR$", rootDirectoryString);
+
+			FileUtils::Write(filepath / "Win-CreateScriptProjects.bat", str);
+		}
+
+		FileUtils::CreateDir(filepath / "assets" / "scenes");
+		FileUtils::CreateDir(filepath / "assets" / "scripts");
+		FileUtils::CreateDir(filepath / "assets" / "textures");
+		FileUtils::CreateDir(filepath / "assets" / "spritesheets");
+		FileUtils::CreateDir(filepath / "assets" / "tilemaps");
+
+		std::string batchFilePath = filepath.string();
+		std::replace(batchFilePath.begin(), batchFilePath.end(), '/', '\\'); // Only windows
+		batchFilePath += "\\Win-CreateScriptProjects.bat";
+		system(batchFilePath.c_str());
+
+		OpenProject(filepath.string() + "/" + mEditorData.projectName + ".lpj");
+	}
+
+	void EditorLayer::OpenProject()
+	{
+		fs::path filepath = FileUtils::OpenFile({ "Labyrinth Project (*.lpj)", "*.lpj" });
+
+		if (filepath.empty())
+			return;
+
+		OpenProject(filepath);
+	}
+
+	void EditorLayer::OpenProject(const fs::path& filepath)
+	{
+		if (!fs::exists(filepath))
+		{
+			LAB_CORE_ERROR("Tried to open a project that doesn't exist. Project path: {0}", filepath);
+			mEditorData.projectFilepath = fs::path();
+			return;
+		}
+
+		if (Project::GetActive())
+			CloseProject();
+
+		Ref<Project> project = Ref<Project>::Create();
+		ProjectSerialiser serialiser(project);
+		serialiser.deserialise(filepath);
+		Project::SetActive(project);
+
+		auto appAssemblyPath = Project::GetScriptModuleFilePath();
+		if (!appAssemblyPath.empty() && fs::exists(appAssemblyPath))
+			ScriptEngine::LoadAppAssembly();
+		else
+			LAB_WARN("No C# assembly has been provided in the Project Settings, or it wasn't found.");
+
+		PanelManager::ProjectChanged(project);
+
+		if (!project->getSettings().startScenePath.empty())
+			OpenScene(Project::GetAssetDirectory() / project->getSettings().startScenePath);
+		else
+			NewScene();
+
+		mScenePanel->setSelectedEntity({});
+
+		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+
+		mEditorData.projectName = std::string();
+		mEditorData.projectFilepath = fs::path();
+	}
+
+	void EditorLayer::SaveProject()
+	{
+		if (!Project::GetActive())
+			LAB_CORE_ASSERT(false);
+
+		auto& project = Project::GetActive();
+		ProjectSerialiser serialiser(project);
+		serialiser.serialise(project->getSettings().projectDir / project->getSettings().projectFilename);
+	}
+
+	void EditorLayer::CloseProject(bool unloadProject)
+	{
+		SaveProject();
+
+		mScenePanel->setContext(nullptr);
+
+		ScriptEngine::UnloadAppAssembly();
+		ScriptEngine::SetContext(nullptr);
+
+		mCurrentScene = nullptr;
+
+		// Check that m_EditorScene is the last one (so setting it null here will destroy the scene)
+		LAB_CORE_ASSERT(mEditorScene->getRefCount() == 1, "Scene will not be destroyed after project is closed - something is still holding scene refs!");
+		mEditorScene = nullptr;
+		
+		if (unloadProject)
+			Project::SetActive(nullptr);
+	}
+
 	void EditorLayer::NewScene()
 	{
 		if (mSceneState != SceneState::Edit)
@@ -550,14 +716,14 @@ namespace Labyrinth {
 
 	bool EditorLayer::OpenScene()
 	{
-		mEditorData.currentFile = FileDialogs::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
+		mEditorData.currentFile = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
 			return OpenScene(mEditorData.currentFile);
 
 		return false;
 	}
 
-	bool EditorLayer::OpenScene(const std::filesystem::path& path)
+	bool EditorLayer::OpenScene(const fs::path& path)
 	{
 		if (mSceneState != SceneState::Edit)
 			OnSceneStop();
@@ -597,7 +763,7 @@ namespace Labyrinth {
 	{
 		SyncWindowTitle();
 
-		mEditorData.currentFile = FileDialogs::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
+		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
 		if (!mEditorData.currentFile.empty())
 		{
 			SceneSerialiser serialiser(mCurrentScene);

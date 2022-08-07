@@ -23,19 +23,9 @@ namespace Labyrinth
 			Application::BlockEsc(false);
 		};
 
-	private:
-		void display()
-		{
-			onImGuiRender();
-
-			if (ImGui::IsKeyPressed(Key::Escape))
-				Close();
-		}
-
-		friend class ModalManager;
-
-
 	protected:
 		bool mComplete = false;
+
+		friend class ModalManager;
 	};
 }
