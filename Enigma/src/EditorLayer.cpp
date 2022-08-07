@@ -331,7 +331,7 @@ namespace Labyrinth {
 					OpenProject();
 				if (ImGui::MenuItem("Save Project"))
 					SaveProject();
-				if (ImGui::MenuItem("Project Settings") && Project::GetActive())
+				if (Project::GetActive() && ImGui::MenuItem("Project Settings"))
 					ModalManager::Open<ProjectSettingsModal>("Project Settings", ImGuiWindowFlags_None, []() {}, Project::GetActive());
 
 				ImGui::Separator();
@@ -342,6 +342,11 @@ namespace Labyrinth {
 					SaveScene();
 				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
+
+				ImGui::Separator();
+
+				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
+					ModalManager::Open<SettingsModal>("Project Settings", ImGuiWindowFlags_None, []() {});
 
 				ImGui::Separator();
 
@@ -643,7 +648,7 @@ namespace Labyrinth {
 		PanelManager::ProjectChanged(project);
 
 		if (!project->getSettings().startScenePath.empty())
-			OpenScene(Project::GetAssetDirectory() / project->getSettings().startScenePath);
+			OpenScene(Project::GetProjectDirectory() / project->getSettings().startScenePath);
 		else
 			NewScene();
 

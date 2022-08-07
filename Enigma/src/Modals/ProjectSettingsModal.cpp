@@ -24,7 +24,7 @@ namespace Labyrinth {
             {
                 fs::path result = FileUtils::OpenDir();
                 if (!result.empty())
-                    mProject->mSettings.assetDir = result;
+                    mProject->mSettings.assetDir = fs::relative(result);
             }
             std::string label = !mProject->mSettings.assetDir.empty() ? mProject->mSettings.assetDir.string() : "...";
             ImGui::Text(label.c_str());
@@ -34,7 +34,7 @@ namespace Labyrinth {
             {
                 fs::path result = FileUtils::OpenFile({ "Asset Registry (*.lreg)", "*.lreg" });
                 if (!result.empty())
-                    mProject->mSettings.assetRegPath = result;
+                    mProject->mSettings.assetRegPath = fs::relative(result);
             }
             std::string label = !mProject->mSettings.assetRegPath.empty() ? mProject->mSettings.assetRegPath.string() : "...";
             ImGui::Text(label.c_str());
@@ -47,7 +47,7 @@ namespace Labyrinth {
             {
                 fs::path result = FileUtils::OpenDir();
                 if (!result.empty())
-                    mProject->mSettings.scriptModulePath = result;
+                    mProject->mSettings.scriptModulePath = fs::relative(result, mProject->mSettings.projectDir);
             }
             std::string label = !mProject->mSettings.scriptModulePath.empty() ? mProject->mSettings.scriptModulePath.string() : "...";
             ImGui::Text(label.c_str());
@@ -60,7 +60,7 @@ namespace Labyrinth {
             {
                 fs::path result = FileUtils::OpenDir();
                 if (!result.empty())
-                    mProject->mSettings.projectDir = result;
+                    mProject->mSettings.projectDir = fs::relative(result);
             }
             std::string label = !mProject->mSettings.projectDir.empty() ? mProject->mSettings.projectDir.string() : "...";
             ImGui::Text(label.c_str());
@@ -70,7 +70,7 @@ namespace Labyrinth {
             {
                 fs::path result = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene" });
                 if (!result.empty())
-                    mProject->mSettings.startScenePath = result;
+                    mProject->mSettings.startScenePath = fs::relative(result, mProject->mSettings.projectDir);
             }
             std::string label = !mProject->mSettings.startScenePath.empty() ? mProject->mSettings.startScenePath.string() : "...";
             ImGui::Text(label.c_str());

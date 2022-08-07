@@ -1,41 +1,20 @@
 Scene: ScriptTest
 Entities:
-  - Entity: 5091533744363294107
-    TagComponent:
-      Tag: Camera
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 12.3274994]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    CameraComponent:
-      Camera:
-        ProjectionType: 0
-        PerspectiveFOV: 0.785398185
-        PerspectiveNear: 0.00999999978
-        PerspectiveFar: 1000
-        OrthographicSize: 10
-        OrthographicNear: -1
-        OrthographicFar: 1
-      Primary: true
-      FixedAspectRatio: false
-  - Entity: 14171635244167855353
+  - Entity: 2317683564321199996
     TagComponent:
       Tag: Rigid Body
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0, -2.78386307, 0]
+      Position: [0, -2.47000003, 0]
       Rotation: [0, 0, 0]
-      Scale: [9.85000038, 0.49000001, 1]
+      Scale: [7.44000006, 0.649999976, 1]
     SpriteRendererComponent:
       Type: 0
       Layer: 0
       Handle: 0
-      Colour: [0.995098054, 0.565840065, 0.0829248205, 1]
+      Colour: [1, 1, 1, 1]
       TilingFactor: 1
     RigidBodyComponent:
       Type: 0
@@ -47,9 +26,9 @@ Entities:
       Friction: 1
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 16904208088738156985
+  - Entity: 8302842047164021435
     TagComponent:
-      Tag: ScriptBody
+      Tag: Player
     Parent: 0
     Children:
       []
@@ -60,7 +39,7 @@ Entities:
     SpriteRendererComponent:
       Type: 2
       Layer: 0
-      Handle: 1872727982286165111
+      Handle: 131972653773191776
       Colour: [1, 1, 1, 1]
       TilingFactor: 1
     RigidBodyComponent:
@@ -75,3 +54,24 @@ Entities:
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: Sandbox.Player
+  - Entity: 14504236570371625370
+    TagComponent:
+      Tag: Camera
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 11.8101559]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 0.785398185
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 10
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
