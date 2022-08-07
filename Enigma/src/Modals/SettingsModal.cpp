@@ -28,17 +28,12 @@ namespace Labyrinth {
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
         StaticBuffer<256> workingDirBuffer(mSettings.workingDir.string());
-        usize test = sizeof(workingDirBuffer);
         if (ImGui::InputText("Working Directory", workingDirBuffer, sizeof(workingDirBuffer)))
             mSettings.workingDir = workingDirBuffer.string();
 
         StaticBuffer<256> coreAssemblyBuffer(mSettings.scriptConfig.coreAssemblyPath.string());
         if (ImGui::InputText("Core Assembly Path", coreAssemblyBuffer, sizeof(coreAssemblyBuffer)))
             mSettings.scriptConfig.coreAssemblyPath = coreAssemblyBuffer.string();
-
-        StaticBuffer<256> scriptModuleBuffer(mSettings.scriptConfig.appAssemblyPath.string());
-        if (ImGui::InputText("Script Module Path", scriptModuleBuffer, sizeof(scriptModuleBuffer)))
-            mSettings.scriptConfig.appAssemblyPath = scriptModuleBuffer.string();
 
         std::string resolutionStr = mSettings.resolution.toString();
         if (ImGui::BeginCombo("Resolution", resolutionStr.c_str()))
@@ -55,6 +50,19 @@ namespace Labyrinth {
             }
 
             ImGui::EndCombo();
+        }
+
+        StaticBuffer<256> projectBuffer(mSettings.startupProject.string());
+        if (ImGui::InputText("Startup Project", projectBuffer, projectBuffer.size()))
+            mSettings.startupProject = projectBuffer.string();
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("..."))
+        {
+            fs::path result = FileUtils::OpenFile({ "Labyrinth Project (*.lpj)", "*.lpj" });
+            if (!result.empty())
+                mSettings.startupProject = fs::relative(result);
         }
 
         ImGui::NewLine();

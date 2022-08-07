@@ -44,8 +44,8 @@ namespace Labyrinth {
 	{
 		switch (mPayload.addType)
 		{
-			case SheetAddType::Path:	mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
-			case SheetAddType::Texture: mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Path:	mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "spritesheets/" + mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Texture: mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "spritesheets/" + mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
 		}
 
 		mPayload.framebuffer->resize(Cast<size_t>(mPayload.viewportSize.x) - 15, 200);

@@ -79,6 +79,8 @@ namespace Labyrinth {
 		void UI_ChildPanels();
 		void UI_Toolbar();
 
+		static void RegenScriptProject(const fs::path& filepath);
+
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
@@ -100,6 +102,8 @@ namespace Labyrinth {
 			Edit = 0, Play = 1, Simulate = 2
 		};
 		SceneState mSceneState = SceneState::Edit;
+
+		friend class OptionsPanel;
 	};
 
 }

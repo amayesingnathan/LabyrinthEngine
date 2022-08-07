@@ -1,5 +1,5 @@
 Project:
   Name: $PROJECT_NAME$
   AssetDirectory: assets
-  AssetRegistry: assets/asset-registry.hzr
-  ScriptModulePath: assets/scripts/bin
+  AssetRegistry: assets/registry.lreg
+  ScriptModulePath: assets/scripts/Binaries

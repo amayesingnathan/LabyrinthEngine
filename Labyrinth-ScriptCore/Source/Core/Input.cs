@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Labyrinth
 {
-    internal static class Input
+    public static class Input
     {
-        internal static bool IsKeyPressed(KeyCode keycode) { return Internal.Input_IsKeyPressed(keycode); }
+        public static bool IsKeyPressed(KeyCode keycode) { return Internal.Input_IsKeyPressed(keycode); }
     }
 }

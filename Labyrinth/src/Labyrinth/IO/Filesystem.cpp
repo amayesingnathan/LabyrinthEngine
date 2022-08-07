@@ -116,21 +116,21 @@ namespace Labyrinth {
 		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive);
 	}
 
-	std::string FileUtils::OpenFile(const std::vector<std::string>& filter)
+	fs::path FileUtils::OpenFile(const std::vector<std::string>& filter)
 	{
 		auto selection = pfd::open_file("Select a file", ".", filter).result();
 		if (!selection.empty())
 			return selection[0];
 
-		return std::string();
+		return fs::path();
 	}
 
-	std::string FileUtils::OpenDir()
+	fs::path FileUtils::OpenDir()
 	{
 		return pfd::select_folder("Select a folder", ".").result();
 	}
 
-	std::string FileUtils::SaveFile(const std::vector<std::string>& filter)
+	fs::path FileUtils::SaveFile(const std::vector<std::string>& filter)
 	{
 		return pfd::save_file("Save file as", ".", filter).result();
 	}

@@ -1,13 +1,14 @@
 #include "Lpch.h"
 #include "Application.h"
 
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Renderer/Renderer.h"
-#include "Labyrinth/IO/Input.h"
-#include "Labyrinth/IO/JSON.h"
-#include "Labyrinth/Renderer/Renderer.h"
-#include "Labyrinth/Tools/PlatformUtils.h"
+#include <Labyrinth/Core/System/Log.h>
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/Renderer.h>
+#include <Labyrinth/IO/Input.h>
+#include <Labyrinth/IO/JSON.h>
+#include <Labyrinth/Project/Project.h>
+#include <Labyrinth/Renderer/Renderer.h>
+#include <Labyrinth/Tools/PlatformUtils.h>
 
 namespace Labyrinth {
 
@@ -28,7 +29,6 @@ namespace Labyrinth {
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
-		AssetManager::Init();
 		ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiLayer = new ImGuiLayer();
@@ -39,9 +39,16 @@ namespace Labyrinth {
 	Application::~Application()
 	{
 		LAB_PROFILE_FUNCTION();
+
+		for (Layer* layer : mLayerStack)
+		{
+			layer->onDetach();
+			delete layer;
+		}
+
 		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
-		AssetManager::Shutdown();
+		Project::SetActive(nullptr);
 	}
 
 	void Application::Close()
@@ -156,11 +163,11 @@ namespace Labyrinth {
 			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"].get<bool>();
 			if (startup.contains("WindowWidth")) outSpec.resolution.width = startup["WindowWidth"].get<u32>();
 			if (startup.contains("WindowHeight")) outSpec.resolution.height = startup["WindowHeight"].get<u32>();
-			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"].get<std::filesystem::path>();
+			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"].get<fs::path>();
+			if (startup.contains("Project")) outSpec.startupProject = startup["Project"].get<fs::path>();
 
 			auto scripting = startup["Scripting"];
-			if (scripting.contains("CoreAssemblyPath")) outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<std::filesystem::path>();
-			if (scripting.contains("ScriptModulePath")) outSpec.scriptConfig.appAssemblyPath = scripting["ScriptModulePath"].get<std::filesystem::path>();
+			if (scripting.contains("CoreAssemblyPath")) outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<fs::path>();
 		}
 	}
 
@@ -177,10 +184,10 @@ namespace Labyrinth {
 		startupSettings["WindowWidth"] = spec.resolution.width;
 		startupSettings["WindowHeight"] = spec.resolution.height;
 		startupSettings["WorkingDir"] = spec.workingDir;
+		startupSettings["Project"] = spec.startupProject;
 
 		JsonObj& scriptSettings = startupSettings["Scripting"];
 		scriptSettings["CoreAssemblyPath"] = spec.scriptConfig.coreAssemblyPath;
-		scriptSettings["ScriptModulePath"] = spec.scriptConfig.appAssemblyPath;
 
 		JSON::Write(settingsPath, settingsJSON);
 	}

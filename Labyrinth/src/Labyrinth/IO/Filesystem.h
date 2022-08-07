@@ -21,9 +21,9 @@ namespace Labyrinth {
 		static void CopyDir(const fs::path& src, const fs::path& dest);
 
 		// These return empty strings if cancelled
-		static std::string OpenFile(const std::vector<std::string>& filter);
-		static std::string OpenDir();
-		static std::string SaveFile(const std::vector<std::string>& filter);
+		static fs::path OpenFile(const std::vector<std::string>& filter);
+		static fs::path OpenDir();
+		static fs::path SaveFile(const std::vector<std::string>& filter);
 	};
 
 }

@@ -9,7 +9,6 @@ namespace Labyrinth {
 	{
 	public:
 		LayerStack() = default;
-		~LayerStack();
 
 		void pushLayer(Layer* layer);
 		void pushOverlay(Layer* overlay);

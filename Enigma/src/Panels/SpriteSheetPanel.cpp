@@ -12,8 +12,6 @@
 
 namespace Labyrinth {
 
-	extern const std::filesystem::path gAssetPath;
-
 	SpriteSheetPanel::SpriteSheetPanel()
 	{
 		FramebufferSpec fbSpec;
@@ -59,7 +57,7 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
-				std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+				std::filesystem::path texturePath = Project::GetAssetDirectory() / path;
 
 				if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::Texture))
 				{
@@ -147,7 +145,7 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
-				std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+				std::filesystem::path texturePath = Project::GetAssetDirectory() / path;
 
 				if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::SubTexture))
 				{

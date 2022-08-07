@@ -9,7 +9,7 @@ namespace Labyrinth {
 
 	struct ProjectSettings
 	{
-		std::string name;
+		std::string name = "NewProject";
 
 		fs::path assetDir;
 		fs::path assetRegPath;
@@ -75,6 +75,6 @@ namespace Labyrinth {
 		inline static Ref<Project> sActiveProject;
 
 		friend class ProjectSerialiser;
-		friend class OptionsModal;
+		friend class ProjectSettingsModal;
 	};
 }

@@ -2,6 +2,7 @@
 #include "SubTexture.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Project/Project.h>
 
 namespace Labyrinth {
 
@@ -73,7 +74,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "assets/spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, spriteSize, name);
+		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, spriteSize, name);
 		mSubTextures.emplace(name, subTex->handle);
 		return subTex;
 	}
@@ -86,7 +87,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "assets/spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, name);
+		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/ " + mName + " / subtextures", Ref<Texture2DSheet>(this), coords, name);
 		mSubTextures.emplace(name, subTex->handle);
 		return subTex;
 	}

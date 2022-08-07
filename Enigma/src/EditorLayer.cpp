@@ -3,6 +3,7 @@
 #include "Modals/ModalManager.h"
 #include "Modals/NewProjectModal.h"
 #include "Modals/SettingsModal.h"
+#include "Modals/ProjectSettingsModal.h"
 
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
@@ -34,9 +35,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-namespace Labyrinth {
+#include <cstdlib>
 
-	extern const fs::path gAssetPath;
+namespace Labyrinth {
 
 	static void ReplaceToken(std::string& str, const char* token, const std::string& value)
 	{
@@ -77,10 +78,12 @@ namespace Labyrinth {
 		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);
 		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
 
-		bool loadedScene = false;
-		NewScene();
-
 		LoadSettings();
+
+		if (!Application::Get().getSpec().startupProject.empty())
+			OpenProject(Application::Get().getSpec().startupProject);
+		else
+			NewScene();
 	}
 
 	void EditorLayer::onDetach()
@@ -90,8 +93,9 @@ namespace Labyrinth {
 		EditorResources::Shutdown();
 
 		WriteSettings();
-
 		PanelManager::Clear();
+
+		CloseProject(false);
 	}
 
 	void EditorLayer::onUpdate(Timestep ts)
@@ -247,7 +251,7 @@ namespace Labyrinth {
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 			{
 				const wchar_t* path = (const wchar_t*)payload->Data;
-				fs::path fullPath = gAssetPath / path;
+				fs::path fullPath = Project::GetAssetDirectory() / path;
 				if (AssetManager::IsExtensionValid(fullPath.extension().string(), AssetType::Scene))
 					OpenScene(fullPath);
 			}
@@ -327,6 +331,8 @@ namespace Labyrinth {
 					OpenProject();
 				if (ImGui::MenuItem("Save Project"))
 					SaveProject();
+				if (ImGui::MenuItem("Project Settings") && Project::GetActive())
+					ModalManager::Open<ProjectSettingsModal>("Project Settings", ImGuiWindowFlags_None, []() {}, Project::GetActive());
 
 				ImGui::Separator();
 
@@ -336,11 +342,6 @@ namespace Labyrinth {
 					SaveScene();
 				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
 					SaveSceneAs();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Settings", ImGuiWindowFlags_None, []() {});
 
 				ImGui::Separator();
 
@@ -574,14 +575,6 @@ namespace Labyrinth {
 			FileUtils::CreateDir(filepath);
 
 		FileUtils::CopyDir("resources/new-project-template", filepath);
-		fs::path rootDirectory = std::filesystem::absolute("./resources").parent_path();
-		std::string rootDirectoryString = rootDirectory.string();
-
-		if (rootDirectory.stem().string() == "Enigma")
-			rootDirectoryString = rootDirectory.parent_path().string();
-
-		//std::replace(rootDirectoryString.begin(), rootDirectoryString.end(), '\\', '/');
-
 		{
 			// premake5.lua
 			std::string str;
@@ -603,26 +596,13 @@ namespace Labyrinth {
 			fs::rename(filepath / "project.lpj", filepath / newProjectFileName);
 		}
 
-		{
-			// VS Project Gen File
-			std::string str;
-			FileUtils::Read(filepath / "Win-CreateScriptProjects.bat", str);
-
-			ReplaceToken(str, "$LAB_ROOT_DIR$", rootDirectoryString);
-
-			FileUtils::Write(filepath / "Win-CreateScriptProjects.bat", str);
-		}
-
 		FileUtils::CreateDir(filepath / "assets" / "scenes");
-		FileUtils::CreateDir(filepath / "assets" / "scripts");
+		FileUtils::CreateDir(filepath / "assets" / "scripts" / "Source");
 		FileUtils::CreateDir(filepath / "assets" / "textures");
 		FileUtils::CreateDir(filepath / "assets" / "spritesheets");
 		FileUtils::CreateDir(filepath / "assets" / "tilemaps");
 
-		std::string batchFilePath = filepath.string();
-		std::replace(batchFilePath.begin(), batchFilePath.end(), '/', '\\'); // Only windows
-		batchFilePath += "\\Win-CreateScriptProjects.bat";
-		system(batchFilePath.c_str());
+		EditorLayer::RegenScriptProject(filepath);
 
 		OpenProject(filepath.string() + "/" + mEditorData.projectName + ".lpj");
 	}
@@ -678,7 +658,7 @@ namespace Labyrinth {
 	void EditorLayer::SaveProject()
 	{
 		if (!Project::GetActive())
-			LAB_CORE_ASSERT(false);
+			return;
 
 		auto& project = Project::GetActive();
 		ProjectSerialiser serialiser(project);
@@ -689,15 +669,14 @@ namespace Labyrinth {
 	{
 		SaveProject();
 
-		mScenePanel->setContext(nullptr);
-
 		ScriptEngine::UnloadAppAssembly();
 		ScriptEngine::SetContext(nullptr);
 
 		mCurrentScene = nullptr;
 
-		// Check that m_EditorScene is the last one (so setting it null here will destroy the scene)
-		LAB_CORE_ASSERT(mEditorScene->getRefCount() == 1, "Scene will not be destroyed after project is closed - something is still holding scene refs!");
+		// Check that mEditorScene is the last one (so setting it null here will destroy the scene)
+		if (mEditorScene->getRefCount() != 1)
+			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - something is still holding scene refs!");
 		mEditorScene = nullptr;
 		
 		if (unloadProject)
@@ -716,7 +695,7 @@ namespace Labyrinth {
 
 	bool EditorLayer::OpenScene()
 	{
-		mEditorData.currentFile = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
+		mEditorData.currentFile = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene"}).string();
 		if (!mEditorData.currentFile.empty())
 			return OpenScene(mEditorData.currentFile);
 
@@ -763,7 +742,7 @@ namespace Labyrinth {
 	{
 		SyncWindowTitle();
 
-		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"});
+		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene"}).string();
 		if (!mEditorData.currentFile.empty())
 		{
 			SceneSerialiser serialiser(mCurrentScene);
@@ -894,4 +873,32 @@ namespace Labyrinth {
 		if (selectedEntity)
 			mCurrentScene->CloneEntity(selectedEntity);
 	}
+
+	void EditorLayer::RegenScriptProject(const fs::path& filepath)
+	{
+		static std::string sEnvVarString;
+
+		fs::path rootDirectory = std::filesystem::absolute("./resources").parent_path();
+		std::string rootDirectoryString = rootDirectory.string();
+
+		if (rootDirectory.stem().string() == "Enigma")
+			rootDirectoryString = rootDirectory.parent_path().string();
+		sEnvVarString = "LAB_ROOT_DIR=" + rootDirectoryString;
+
+		std::string batchFilePath = filepath.string();
+		std::replace(batchFilePath.begin(), batchFilePath.end(), '/', '\\'); // Only windows
+		batchFilePath += "\\Win-CreateScriptProjects.bat";
+
+#ifdef LAB_PLATFORM_WINDOWS
+		int error = _putenv(sEnvVarString.c_str());
+#elif defined(LAB_PLATFORM_LINUX)
+		int error = putenv(sEnvVarString.c_str());
+#else
+		int error = -1;
+#endif
+		if (error)
+			LAB_CORE_ERROR("Could not set the Labyrinth root directory!");
+		system(batchFilePath.c_str());
+	}
+
 }

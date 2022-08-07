@@ -22,19 +22,19 @@ namespace Sandbox
             Vector2 force = Vector2.Zero;
             if (Input.IsKeyPressed(KeyCode.A))
             {
-                force.X = -10.0f;
+                force.X = -40.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.D))
             {
-                force.X = 10.0f;
+                force.X = 40.0f;
             }
             if (Input.IsKeyPressed(KeyCode.W))
             {
-                force.Y = 10.0f;
+                force.Y = 40.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.S))
             {
-                force.Y = -10.0f;
+                force.Y = -40.0f;
             }
 
             if (!force.IsZero())
@@ -43,19 +43,6 @@ namespace Sandbox
                 RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
                 rigidBody.ApplyLinearImpulse(force, Vector2.Zero, true);
             }
-        }   
-    }
-    public class Player2 : Entity
-    {
-        public Player2(ulong UUID) : base(UUID) { }
-        public override void OnCreate()
-        {
-            Log.Info($"Player2.OnCreate {ID}");
-        }
-
-        public override void OnUpdate(float ts)
-        {
-            Log.Info($"Player2.OnUpdate: {ts}");
         }
     }
 }

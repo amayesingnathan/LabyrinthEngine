@@ -3,9 +3,9 @@
 
 #include "AssetExtensions.h"
 
-#include <Labyrinth/Core/Application.h>
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/IO/YAML.h>
+#include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Tools/StringUtils.h>
 
 namespace Labyrinth {
@@ -16,8 +16,8 @@ namespace Labyrinth {
 	{
 		AssetImporter::Init();
 
-		sAssetDirPath = Application::Get().getSpec().workingDir.string() + "assets";
-		sAssetRegPath = sAssetDirPath / "registry.lreg";
+		sAssetDirPath = Project::GetAssetDirectory();
+		sAssetRegPath = Project::GetAssetRegistryPath();
 		LoadRegistry();
 		ReloadAssets();
 	}

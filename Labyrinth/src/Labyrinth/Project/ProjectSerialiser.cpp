@@ -34,7 +34,10 @@ namespace Labyrinth {
 
     bool ProjectSerialiser::deserialise(const fs::path& filepath) 
     {
-		YAML::Node data = YAML::Load(FileUtils::Read(filepath).as<char>());
+		std::string str;
+		FileUtils::Read(filepath, str);
+
+		YAML::Node data = YAML::Load(str);
 		if (!data["Project"])
 			return false;
 
@@ -51,6 +54,10 @@ namespace Labyrinth {
 		config.scriptModulePath = rootNode["ScriptModulePath"].as<std::string>();
 
 		config.startScenePath = rootNode["StartScene"] ? rootNode["StartScene"].as<std::string>() : "";
+
+		fs::path projectPath = filepath;
+		config.projectFilename = projectPath.filename().string();
+		config.projectDir = projectPath.parent_path().string();
 
 		return true;
 

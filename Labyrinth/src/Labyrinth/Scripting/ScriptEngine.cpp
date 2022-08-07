@@ -6,6 +6,7 @@
 #include "MarshalUtils.h"
 
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
 #include <Labyrinth/Scene/Components.h>
@@ -76,7 +77,7 @@ namespace Labyrinth {
 
 	void ScriptEngine::LoadAppAssembly()
 	{
-		ScriptEngineInternal::LoadAppAssembly(Application::Get().getSpec().scriptConfig.appAssemblyPath);
+		ScriptEngineInternal::LoadAppAssembly(Project::GetScriptModuleFilePath());
 	}
 
 	void ScriptEngine::ReloadAssembly(const std::filesystem::path& assemblyPath)
@@ -84,8 +85,9 @@ namespace Labyrinth {
 		LAB_PROFILE_FUNCTION();
 		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", assemblyPath);
 
+		auto scene = sData->context;
+		if (scene)
 		{
-			auto scene = sData->context;
 			scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 			{
 				sc.instance = nullptr;
@@ -95,6 +97,7 @@ namespace Labyrinth {
 
 		ScriptEngineInternal::LoadAppAssembly(assemblyPath);
 
+		if (scene)
 		{
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 			auto scene = sData->context;
@@ -114,6 +117,10 @@ namespace Labyrinth {
 	void ScriptEngine::UnloadAppAssembly()
 	{
 		auto scene = sData->context;
+
+		if (!scene)
+			return;
+
 		scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 		{
 			sc.instance = nullptr;

@@ -1,8 +1,8 @@
 LAB_ROOT_DIR = os.getenv("LAB_ROOT_DIR")
 
-workspace "$PROJECT_NAME$"
+workspace "NewProject"
 	targetdir "build"
-	startproject "$PROJECT_NAME$"
+	startproject "NewProject"
 
     configurations { 
         "x64d",
@@ -39,7 +39,7 @@ project "Labyrinth-ScriptCore"
 
 group ""
 
-project "$PROJECT_NAME$"
+project "NewProject"
 	location "assets/scripts"
 	kind "SharedLib"
 	language "C#"

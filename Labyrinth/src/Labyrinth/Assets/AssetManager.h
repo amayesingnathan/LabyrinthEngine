@@ -56,6 +56,9 @@ namespace Labyrinth {
         {
             LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
 
+            if (!fs::exists(sAssetDirPath / directoryPath))
+                FileUtils::CreateDir(sAssetDirPath / directoryPath);
+
             AssetMetadata metadata;
             metadata.handle = AssetHandle();
             if (directoryPath.empty() || directoryPath == ".")

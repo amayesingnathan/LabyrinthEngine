@@ -18,7 +18,7 @@ namespace Labyrinth {
 		virtual void onUpdate() {};
 		virtual void onImGuiRender() = 0;
 		virtual void onEvent(Event& e) {}
-		virtual void onProjectChange(Ref<Project> project) {}
+		virtual void onProjectChange(const Ref<Project>& project) {}
 	};
 
 	struct PanelItem

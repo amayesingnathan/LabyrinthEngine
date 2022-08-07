@@ -14,11 +14,13 @@ namespace Labyrinth {
 		ContentBrowserPanel();
 
 		void onImGuiRender() override;
+		void onProjectChange(const Ref<Project>& project) override;
 
 		static Ref<ContentBrowserPanel> Create() { return Ref<ContentBrowserPanel>::Create(); }
 
 	private:
-		std::filesystem::path mCurrentDirectory;
+		fs::path mCurrentDirectory;
+		fs::path mAssetDirectory;
 	};
 
 }

@@ -4,6 +4,7 @@
 #include "ScriptClass.h"
 
 #include <Labyrinth/Core/System/Ref.h>
+#include <Labyrinth/IO/Filesystem.h>
 
 #define LAB_CORE_ASSEMBLY_INDEX 0
 #define LAB_APP_ASSEMBLY_INDEX LAB_CORE_ASSEMBLY_INDEX + 1
@@ -13,8 +14,7 @@ namespace Labyrinth {
 
 	struct ScriptEngineConfig
 	{
-		std::filesystem::path coreAssemblyPath = "resources/Scripts/Labyrinth-ScriptCore.dll";
-		std::filesystem::path appAssemblyPath;
+		fs::path coreAssemblyPath = "resources/Scripts/Labyrinth-ScriptCore.dll";
 	};
 
 	struct AssemblyInfo : public RefCounted

@@ -14,7 +14,6 @@
 #include "Labyrinth/Maths/Constant.h"
 
 //STL Containers/Types
-#include <cstdint>
 #include <vector>
 #include <array>
 #include <string>
@@ -24,7 +23,6 @@
 #include <unordered_set>
 
 //STL Functions
-#include <cmath>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -36,4 +34,9 @@
 #include <functional>
 #include <regex>
 #include <variant>
+
+//C Library Functions
+#include <cstdlib>
+#include <cstdint>
+#include <cmath>
 

@@ -3,6 +3,7 @@
 #include "../EditorLayer.h"
 
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
 
 #include <imgui/imgui.h>
@@ -26,7 +27,9 @@ namespace Labyrinth {
 			mEditorData->camera.resetPosition();
 		ImGui::Checkbox("Link Children On Destroy", &mEditorData->linkOnDestroy);
 		if (ImGui::Button("Reload Scripts"))
-			ScriptEngine::ReloadAssembly(Application::Get().getSpec().scriptConfig.appAssemblyPath);
+			ScriptEngine::ReloadAssembly(Project::GetScriptModuleFilePath());
+		if (ImGui::Button("Reload Script Project"))
+			EditorLayer::RegenScriptProject(Project::GetProjectDirectory());
 
 		ImGui::End();
 	}

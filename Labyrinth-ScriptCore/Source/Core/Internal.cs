@@ -7,7 +7,7 @@ using System.Runtime.CompilerServices;
 
 namespace Labyrinth
 {
-    public static class Internal
+    internal static class Internal
     {
         #region Logging
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

@@ -30,7 +30,7 @@ namespace Labyrinth {
 
 		if (ImGui::Button("..."))
 		{
-			std::string result = FileUtils::OpenDir();
+			fs::path result = FileUtils::OpenDir();
 			if (!result.empty())
 				mProjectPath = result;
 		}

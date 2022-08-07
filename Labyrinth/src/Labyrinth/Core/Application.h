@@ -11,6 +11,8 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
+#include <Labyrinth/IO/Filesystem.h>
+
 #include "Labyrinth/Scripting/ScriptEngine.h"
 
 int main(int argc, char** argv);
@@ -28,8 +30,9 @@ namespace Labyrinth {
 	{
 		std::string name = "Labyrinth Application";
 		Resolution resolution = { 1600, 900 };
-		std::filesystem::path workingDir;
+		fs::path workingDir;
 		bool fullscreen = false;
+		fs::path startupProject;
 		ScriptEngineConfig scriptConfig;
 	};
 
