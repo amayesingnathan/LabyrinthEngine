@@ -2,6 +2,7 @@
 bin/
 obj/
 !dependencies/premake/bin/
+Binaries
 Intermediates
 **/Labyrinth-ScriptCore.dll
 **/Labyrinth-ScriptCore.pdb

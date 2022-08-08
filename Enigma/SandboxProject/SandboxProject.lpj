@@ -1,6 +1,6 @@
 Project:
-  Name: NewProject
+  Name: SandboxProject
   AssetDirectory: assets
   AssetRegistry: assets/registry.lreg
   ScriptModulePath: assets/scripts/Binaries
-  StartScene: assets\scenes\ScriptTest.lscene
+  StartScene: assets/scenes/ScriptTest.lscene
