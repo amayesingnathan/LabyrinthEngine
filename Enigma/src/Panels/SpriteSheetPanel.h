@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class SpriteSheetPanel : public IPanel
+	class SpriteSheetPanel : public Panel
 	{
 	public:
 		SpriteSheetPanel();

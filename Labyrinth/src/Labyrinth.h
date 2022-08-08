@@ -10,6 +10,7 @@
 #include "Labyrinth/Core/System/Types.h"
 
 #include "Labyrinth/Core/Application.h"
+#include "Labyrinth/Core/Buffer.h"
 #include "Labyrinth/Core/Layer.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/CameraController.h"
@@ -27,7 +28,8 @@
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 #include "Labyrinth/Scene/SceneSerialiser.h"
-#include "Labyrinth/Scene/NativeScript.h"
+
+#include "Labyrinth/Scripting/NativeScript.h"
 
 #include "Labyrinth/Assets/AssetManager.h"
 

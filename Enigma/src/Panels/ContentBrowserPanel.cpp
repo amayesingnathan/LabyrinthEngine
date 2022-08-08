@@ -6,21 +6,28 @@
 
 namespace Labyrinth {
 
-	// Once we're loading projects, change this
-	extern const std::filesystem::path gAssetPath = "assets";
-
 	ContentBrowserPanel::ContentBrowserPanel()
-		: mCurrentDirectory(gAssetPath)
 	{
+		mAssetDirectory = "assets";
+		if (Project::GetActive())
+		{
+			mCurrentDirectory = Project::GetAssetDirectory();;
+			mAssetDirectory = Project::GetAssetDirectory();;
+		}
 	}
 
 	void ContentBrowserPanel::onImGuiRender()
 	{
 		ImGui::Begin("Content Browser");
 
-		if (ImGui::Button("<-"))
-			if (mCurrentDirectory != gAssetPath)
-				mCurrentDirectory = mCurrentDirectory.parent_path();
+		if (!Project::GetActive())
+		{
+			ImGui::End();
+			return;
+		}
+
+		if (ImGui::Button("<-") && (mCurrentDirectory != mAssetDirectory))
+			mCurrentDirectory = mCurrentDirectory.parent_path();
 
 		static float padding = 16.0f;
 		static float thumbnailSize = 128.0f;
@@ -35,7 +42,7 @@ namespace Labyrinth {
 
 		for (auto& dirEntry : std::filesystem::directory_iterator(mCurrentDirectory))
 		{
-			auto relativePath = std::filesystem::relative(dirEntry.path(), gAssetPath);
+			auto relativePath = std::filesystem::relative(dirEntry.path(), mAssetDirectory);
 
 			if (relativePath.extension().string() == ".lreg")
 				continue;
@@ -75,6 +82,15 @@ namespace Labyrinth {
 
 		// TODO: status bar
 		ImGui::End();
+	}
+
+	void ContentBrowserPanel::onProjectChange(const Ref<Project>& project)
+	{
+		if (project)
+		{
+			mCurrentDirectory = project->GetAssetDirectory();
+			mAssetDirectory = project->GetAssetDirectory();
+		}
 	}
 
 }

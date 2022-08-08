@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/Project/Project.h>
 
 #include <imgui/imgui.h>
 
@@ -12,6 +13,7 @@ namespace Labyrinth
 		Modal() { Application::BlockEsc(); }
 
 		virtual void onImGuiRender() = 0;
+
 		bool complete() { return mComplete; }
 
 	protected:
@@ -23,19 +25,9 @@ namespace Labyrinth
 			Application::BlockEsc(false);
 		};
 
-	private:
-		void display()
-		{
-			onImGuiRender();
-
-			if (ImGui::IsKeyPressed(Key::Escape))
-				Close();
-		}
-
-		friend class ModalManager;
-
-
 	protected:
 		bool mComplete = false;
+
+		friend class ModalManager;
 	};
 }

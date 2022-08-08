@@ -8,11 +8,14 @@
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 
+#include <imgui/imgui.h>
+#include <imgui/imgui_internal.h>
+
 namespace Labyrinth {
 
 	struct EditorData;
 
-	class ScenePanel : public IPanel
+	class ScenePanel : public Panel
 	{
 	public:
 		ScenePanel();
@@ -34,6 +37,19 @@ namespace Labyrinth {
 	private:
 		void DrawEntityNode(Entity entity);
 		void DrawComponents();
+
+		template<typename T>
+		void DrawAddComponentEntry(const std::string& text)
+		{
+			if (!mSelectedEntity.hasComponent<T>())
+			{
+				if (ImGui::MenuItem(text.c_str()))
+				{
+					mSelectedEntity.addComponent<T>();
+					ImGui::CloseCurrentPopup();
+				}
+			}
+		}
 
 		void AssetTypeWarning();
 

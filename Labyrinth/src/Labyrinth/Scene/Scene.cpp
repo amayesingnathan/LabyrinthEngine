@@ -3,9 +3,11 @@
 
 #include "Entity.h"
 #include "Components.h"
-#include "NativeScript.h"
 
+#include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Renderer/Renderer2D.h"
+#include "Labyrinth/Scripting/ScriptEngine.h"
+#include "Labyrinth/Scripting/NativeScript.h"
 
 #include <glm/glm.hpp>
 
@@ -138,6 +140,8 @@ namespace Labyrinth {
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
+		mEntityMap[id] = (entt::entity)newEnt.getEntID();
+
 		return newEnt;
 	}
 
@@ -147,12 +151,12 @@ namespace Labyrinth {
 		Entity newEnt = CreateEntity(tag.tag);
 
 		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(FindEntity(nodeCopy.parent));
+		newEnt.setParent(findEntity(nodeCopy.parent));
 
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
 
 		CopyAllComponents(copy, newEnt);
 
@@ -170,7 +174,7 @@ namespace Labyrinth {
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
 		
 		CopyAllComponents(copy, newEnt);
 
@@ -193,7 +197,7 @@ namespace Labyrinth {
 		auto& children = entity.getChildren();
 		for (auto& child : children)
 		{
-			Entity childEnt = FindEntity(child);
+			Entity childEnt = findEntity(child);
 			if (linkChildren)
 			{
 				if (parent)
@@ -204,6 +208,7 @@ namespace Labyrinth {
 			else DestroyEntityR(childEnt, entity);
 		}
 
+		mEntityMap.erase(entity.getUUID());
 		mRegistry.destroy(entity);
 	}
 
@@ -214,47 +219,58 @@ namespace Labyrinth {
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
 		{
 			Entity entity(e, Ref<Scene>(this));
+			UUID entityID = entity.getComponent<IDComponent>().id;
 
 			b2BodyDef bodyDef;
 			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
 			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
 			bodyDef.angle = trComponent.rotation.z;
 			bodyDef.fixedRotation = rbComponent.fixedRotation;
+
 			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+			b2MassData massData = body->GetMassData();;
+			massData.mass = rbComponent.mass;
+			body->SetMassData(&massData);
+			body->SetGravityScale(rbComponent.gravityScale);
+			body->SetLinearDamping(rbComponent.linearDrag);
+			body->SetAngularDamping(rbComponent.angularDrag);
+			body->GetUserData().pointer = (uintptr_t)entityID;
 
 			rbComponent.runtimeBody = body;
+		});
 
-			if (entity.hasComponent<BoxColliderComponent>())
-			{
-				auto& bcc = entity.getComponent<BoxColliderComponent>();
+		mRegistry.view<TransformComponent, BoxColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& bcComponent, const auto& rbComponent)
+		{
+			Entity entity = { e, this };
 
-				b2PolygonShape boxShape;
-				boxShape.SetAsBox(bcc.halfExtents.x * trComponent.scale.x, bcc.halfExtents.y * trComponent.scale.y, b2Vec2(bcc.offset.x, bcc.offset.y), 0.0f);
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &boxShape;
-				fixtureDef.density = bcc.density;
-				fixtureDef.friction = bcc.friction;
-				fixtureDef.restitution = bcc.restitution;
-				fixtureDef.restitutionThreshold = bcc.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
-			if (entity.hasComponent<CircleColliderComponent>())
-			{
-				auto& ccc = entity.getComponent<CircleColliderComponent>();
+			b2PolygonShape polygonShape;
+			polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
 
-				b2CircleShape circleShape;
-				circleShape.m_radius = ccc.radius * trComponent.scale.x;
-				circleShape.m_p = b2Vec2(ccc.offset.x, ccc.offset.y);
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &polygonShape;
+			fixtureDef.density = bcComponent.density;
+			fixtureDef.friction = bcComponent.friction;
+			body->CreateFixture(&fixtureDef);
+		});
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = ccc.density;
-				fixtureDef.friction = ccc.friction;
-				fixtureDef.restitution = ccc.restitution;
-				fixtureDef.restitutionThreshold = ccc.restitutionThreshold;
-				body->CreateFixture(&fixtureDef);
-			}
+		mRegistry.view<TransformComponent, CircleColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
+		{
+			Entity entity = { e, this };
+
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
+
+			b2CircleShape circleShape;
+			circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = ccComponent.density;
+			fixtureDef.friction = ccComponent.friction;
+			body->CreateFixture(&fixtureDef);
 		});
 	}
 
@@ -321,38 +337,50 @@ namespace Labyrinth {
 	void Scene::UpdateScripts(Timestep ts)
 	{
 		// Update scripts
+		mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
 		{
-			mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+			if (!nsc.complete && !nsc.instance)
 			{
-				if (!nsc.complete && !nsc.instance)
-				{
-					nsc.instance = nsc.instantiateScript();
-					nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
-					nsc.instance->onStart();
-				}
+				nsc.instance = nsc.instantiateScript();
+				nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
+				nsc.instance->onStart();
+			}
 
-				nsc.instance->onUpdate(ts);
+			nsc.instance->onUpdate(ts);
 
-				if (nsc.instance->isComplete())
-				{
-					nsc.complete = true;
-					nsc.instance->onStop();
-					nsc.destroyScript();
-				}
-			});
-		}
+			if (nsc.instance->isComplete())
+			{
+				nsc.complete = true;
+				nsc.instance->onStop();
+				nsc.destroyScript();
+			}
+		});
+
+		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+		{
+			sc.instance->onUpdate(ts);
+		});
 	}
 
-	Entity Scene::FindEntity(UUID findID)
+	Entity Scene::findEntity(UUID findID)
 	{
-		auto IDs = mRegistry.view<IDComponent>();
-		for (auto entity : IDs)
+		if (mEntityMap.count(findID) == 0) return Entity();
+
+		return { mEntityMap.at(findID), Ref<Scene>(this) };
+	}
+
+	Entity Scene::getEntityByTag(const std::string& tag)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		auto entities = mRegistry.view<TagComponent>();
+		for (auto e : entities)
 		{
-			auto& idc = IDs.get<IDComponent>(entity);
-			if (idc.id == findID)
-				return { entity, Ref<Scene>(this) };
+			if (entities.get<TagComponent>(e).tag == tag)
+				return Entity(e, Ref<Scene>(this));
 		}
-		return Entity();
+
+		return Entity{};
 	}
 
 	void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
@@ -376,11 +404,17 @@ namespace Labyrinth {
 	void Scene::onRuntimeStart()
 	{
 		OnPhysicsStart();
+
+		ScriptEngine::SetContext(Ref<Scene>(this));
+		ScriptEngine::OnRuntimeStart();
 	}
 
 	void Scene::onRuntimeStop()
 	{
 		OnPhysicsStop();
+
+		ScriptEngine::OnRuntimeStop();
+		ScriptEngine::SetContext(nullptr);
 	}
 
 	void Scene::onSimulationStart()
@@ -395,10 +429,11 @@ namespace Labyrinth {
 	
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
+		UpdateScripts(ts);
+		StepPhysics2D(ts);
+
 		Entity camera = getPrimaryCameraEntity();
 		if (!camera) return;
-
-		StepPhysics2D(ts);
 
 		BuildScene();
 		DrawScene(camera.getComponent<CameraComponent>(), camera.getComponent<TransformComponent>());
@@ -508,6 +543,16 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<CircleColliderComponent>(Entity entity, CircleColliderComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
 	{
 	}
 

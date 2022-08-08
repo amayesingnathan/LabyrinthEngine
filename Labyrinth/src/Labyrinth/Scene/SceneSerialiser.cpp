@@ -206,6 +206,17 @@ namespace Labyrinth {
 			out << YAML::EndMap; // CircleColliderComponent
 		}
 
+		if (entity.hasComponent<ScriptComponent>())
+		{
+			out << YAML::Key << "ScriptComponent";
+			out << YAML::BeginMap; // ScriptComponent
+
+			auto& scriptComponent = entity.getComponent<ScriptComponent>();
+			LAB_SERIALISE_PROPERTY(ClassName, scriptComponent.className, out);
+
+			out << YAML::EndMap; // ScriptComponent
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
@@ -327,6 +338,13 @@ namespace Labyrinth {
 				ccc.friction = ccComponent["Friction"].as<f32>();
 				ccc.restitution = ccComponent["Restitution"].as<f32>();
 				ccc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
+			}
+
+			auto scriptComponent = entity["ScriptComponent"];
+			if (scriptComponent)
+			{
+				auto& sc = deserializedEntity.addComponent<ScriptComponent>();
+				sc.className = scriptComponent["ClassName"].as<std::string>();
 			}
 		}
 	}

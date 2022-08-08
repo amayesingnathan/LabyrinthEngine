@@ -11,28 +11,29 @@
 
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
+#include <Labyrinth/IO/Filesystem.h>
+
+#include "Labyrinth/Scripting/ScriptEngine.h"
+
 int main(int argc, char** argv);
 
 namespace Labyrinth { 
 
-	struct ApplicationCommandLineArgs
+	struct Resolution
 	{
-		int count = 0;
-		char** args = nullptr;
+		u32 width, height;
 
-		const char* operator[](i32 index) const
-		{
-			LAB_CORE_ASSERT(index < count);
-			return args[index];
-		}
+		std::string toString() { return fmt::format("{}x{}", width, height); }
 	};
 
 	struct ApplicationSpec
 	{
 		std::string name = "Labyrinth Application";
-		ApplicationCommandLineArgs commandLineArgs;
-		std::string workingDir;
+		Resolution resolution = { 1600, 900 };
+		fs::path workingDir;
 		bool fullscreen = false;
+		fs::path startupProject;
+		ScriptEngineConfig scriptConfig;
 	};
 
 	class Application
@@ -50,14 +51,17 @@ namespace Labyrinth {
 		Window& getWindow() { return *mWindow; }
 
 		static Application& Get() { return *sInstance; }
+		static void Close();
 
 		static void BlockEsc(bool block = true) { sInstance->mBlockExit = block; }
 
-		void Close();
-
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
+		ApplicationSpec& getSpec() { return mSpecification; }
 		const ApplicationSpec& getSpec() const { return mSpecification; }
+
+		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
+		static void WriteSettings(const std::filesystem::path& settingsPath);
 
 	private:
 		void run();
@@ -87,7 +91,7 @@ namespace Labyrinth {
 	};
 
 	//To be defined in CLIENT
-	Application* CreateApplication(ApplicationCommandLineArgs args);
+	Application* CreateApplication(int argc, char** argv);
 
 }
 

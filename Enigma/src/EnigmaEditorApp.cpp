@@ -21,15 +21,12 @@ namespace Labyrinth {
 		}
 	};
 
-	Application* CreateApplication(ApplicationCommandLineArgs args)
+	Application* CreateApplication(int argc, char** argv)
 	{
 		ApplicationSpec spec;
 		spec.name = "Enigma";
-		spec.commandLineArgs = args;
 
-		JsonObj settings = JSON::Open("enigma.ini");
-		if (settings.contains("Startup"))
-			spec.fullscreen = settings["Startup"]["Fullscreen"];
+		Application::ReadSettings("enigma.ini", spec);
 
 		return new EnigmaEditor(spec);
 	}

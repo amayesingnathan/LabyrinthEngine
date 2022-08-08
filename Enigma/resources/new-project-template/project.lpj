@@ -1,0 +1,5 @@
+Project:
+  Name: $PROJECT_NAME$
+  AssetDirectory: assets
+  AssetRegistry: assets/registry.lreg
+  ScriptModulePath: assets/scripts/Binaries

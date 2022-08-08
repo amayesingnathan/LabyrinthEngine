@@ -3,6 +3,7 @@
 #include "Labyrinth/Core/Layer.h"
 #include "Labyrinth/Events/KeyEvent.h"
 #include "Labyrinth/Events/MouseEvent.h"
+#include "Labyrinth/IO/Filesystem.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/Framebuffer.h"
 #include "Labyrinth/Renderer/Texture.h"
@@ -24,6 +25,8 @@ namespace Labyrinth {
 		bool linkOnDestroy = false;
 
 		EditorCamera camera;
+		std::string projectName;
+		fs::path projectFilepath;
 	};
 
 	class EditorLayer : public Layer
@@ -46,9 +49,15 @@ namespace Labyrinth {
 		void LoadSettings();
 		void WriteSettings();
 
+		void CreateProject(const fs::path& filepath);
+		void OpenProject();
+		void OpenProject(const fs::path& filepath);
+		void SaveProject();
+		void CloseProject(bool unloadProject = true);
+
 		void NewScene();
 		bool OpenScene();
-		bool OpenScene(const std::filesystem::path& path);
+		bool OpenScene(const fs::path& path);
 		void SaveScene();
 		void SaveSceneAs();
 
@@ -69,6 +78,8 @@ namespace Labyrinth {
 		void UI_MenuBar();
 		void UI_ChildPanels();
 		void UI_Toolbar();
+
+		static void RegenScriptProject(const fs::path& filepath);
 
 	private:
 		Ref<Framebuffer> mFramebuffer;
@@ -91,6 +102,8 @@ namespace Labyrinth {
 			Edit = 0, Play = 1, Simulate = 2
 		};
 		SceneState mSceneState = SceneState::Edit;
+
+		friend class OptionsPanel;
 	};
 
 }

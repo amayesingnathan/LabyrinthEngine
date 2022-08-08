@@ -9,14 +9,14 @@
 
 #define LAB_APP_NAME_STR LAB_STRINGIFY_MACRO(LAB_APP_NAME)
 
-extern Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args);
+extern Labyrinth::Application* Labyrinth::CreateApplication(int argc, char** argv);
 
 int main(int argc, char** argv)
 {	
 	Labyrinth::Log::Init(LAB_APP_NAME_STR);
 
 	LAB_PROFILE_BEGIN_SESSION("Startup", "LabyrinthProfile-Startup.json");
-	auto app = Labyrinth::CreateApplication({ argc, argv });
+	auto app = Labyrinth::CreateApplication(argc, argv);
 	LAB_PROFILE_END_SESSION();
 
 	LAB_PROFILE_BEGIN_SESSION("Runtime", "LabyrinthProfile-Runtime.json");

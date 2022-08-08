@@ -2,6 +2,7 @@
 bin/
 obj/
 !dependencies/premake/bin/
+Binaries
 Intermediates
 **/Labyrinth-ScriptCore.dll
 **/Labyrinth-ScriptCore.pdb
@@ -33,13 +34,9 @@ Makefile.in
 #Asset Registries
 **.lreg
 
-#Labyrinth Assets
-**.lss
-**.lstex
-
 # Directories
 Labyrinth/dependencies/VulkanSDK
-*/assets/cache
+*/resources/cache
 
 #Python cache files
 __pycache__/

@@ -1,11 +1,14 @@
 #include "Lpch.h"
 #include "Application.h"
 
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Renderer/Renderer.h"
-#include "Labyrinth/IO/Input.h"
-#include "Labyrinth/Tools/PlatformUtils.h"
+#include <Labyrinth/Core/System/Log.h>
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/Renderer.h>
+#include <Labyrinth/IO/Input.h>
+#include <Labyrinth/IO/JSON.h>
+#include <Labyrinth/Project/Project.h>
+#include <Labyrinth/Renderer/Renderer.h>
+#include <Labyrinth/Tools/PlatformUtils.h>
 
 namespace Labyrinth {
 
@@ -22,11 +25,11 @@ namespace Labyrinth {
 		if (!mSpecification.workingDir.empty())
 			std::filesystem::current_path(mSpecification.workingDir);
 
-		mWindow = Window::Create(WindowProps(mSpecification.name));
+		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
 		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::onEvent));
 
 		Renderer::Init();
-		AssetManager::Init();
+		ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiLayer = new ImGuiLayer();
 		pushOverlay(mImGuiLayer);
@@ -37,15 +40,23 @@ namespace Labyrinth {
 	{
 		LAB_PROFILE_FUNCTION();
 
+		for (Layer* layer : mLayerStack)
+		{
+			layer->onDetach();
+			delete layer;
+		}
+
+		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
-		AssetManager::Shutdown();
+		Project::SetActive(nullptr);
 	}
 
 	void Application::Close()
 	{
-		if (mBlockExit) return;
+		Application& app = Get();
+		if (app.mBlockExit) return;
 
-		mRunning = false;
+		app.mRunning = false;
 	}
 
 	void Application::run()
@@ -114,7 +125,7 @@ namespace Labyrinth {
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
 	{
-		Close();
+		Application::Close();
 		return true;
 	}
 
@@ -135,10 +146,49 @@ namespace Labyrinth {
 	bool Application::OnKeyPressed(KeyPressedEvent& e)
 	{
 		if (e.getKeyCode() == Key::Escape)
-		{
-			Close();
-		}
+			Application::Close();
 
 		return false;
+	}
+
+	void Application::ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)
+	{
+		JsonObj settings = JSON::Open(settingsPath);
+		if (settings.empty())
+			return;
+
+		if (settings.contains("Startup"))
+		{
+			auto startup = settings["Startup"];
+			if (startup.contains("Fullscreen")) outSpec.fullscreen = startup["Fullscreen"].get<bool>();
+			if (startup.contains("WindowWidth")) outSpec.resolution.width = startup["WindowWidth"].get<u32>();
+			if (startup.contains("WindowHeight")) outSpec.resolution.height = startup["WindowHeight"].get<u32>();
+			if (startup.contains("WorkingDir")) outSpec.workingDir = startup["WorkingDir"].get<fs::path>();
+			if (startup.contains("Project")) outSpec.startupProject = startup["Project"].get<fs::path>();
+
+			auto scripting = startup["Scripting"];
+			if (scripting.contains("CoreAssemblyPath")) outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<fs::path>();
+		}
+	}
+
+	void Application::WriteSettings(const std::filesystem::path& settingsPath)
+	{
+		JsonObj settingsJSON = JSON::Open(settingsPath);
+		if (settingsJSON.empty())
+			LAB_CORE_WARN("Settings file did not exist, creating from scratch...");
+
+		const ApplicationSpec& spec = Application::Get().getSpec();
+		JsonObj& startupSettings = settingsJSON["Startup"];
+
+		startupSettings["Fullscreen"] = spec.fullscreen;
+		startupSettings["WindowWidth"] = spec.resolution.width;
+		startupSettings["WindowHeight"] = spec.resolution.height;
+		startupSettings["WorkingDir"] = spec.workingDir;
+		startupSettings["Project"] = spec.startupProject;
+
+		JsonObj& scriptSettings = startupSettings["Scripting"];
+		scriptSettings["CoreAssemblyPath"] = spec.scriptConfig.coreAssemblyPath;
+
+		JSON::Write(settingsPath, settingsJSON);
 	}
 }

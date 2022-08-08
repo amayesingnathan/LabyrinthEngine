@@ -12,8 +12,9 @@ namespace Labyrinth {
 			Ref<Modal> modal = nullptr;
 			bool begin = true;
 			ImGuiWindowFlags flags = ImGuiWindowFlags_None;
+			std::function<void()> onComplete = std::function<void()>();
 
-			ModalEntry(const Ref<Modal>& _modal, ImGuiWindowFlags _flags) : modal(_modal), flags(_flags) {}
+			ModalEntry(const Ref<Modal>& _modal, ImGuiWindowFlags _flags, std::function<void()> _onComplete) : modal(_modal), flags(_flags), onComplete(_onComplete) {}
 		};
 
 	private:
@@ -33,8 +34,9 @@ namespace Labyrinth {
 			static ModalManager mInstance;
 			return mInstance.mModals;
 		}
+
 		template<typename ModalType, typename... Args>
-		static void Open(const std::string& name, ImGuiWindowFlags flags, Args&&... args)
+		static void Open(const std::string& name, ImGuiWindowFlags flags, std::function<void()> onComplete, Args&&... args)
 		{
 			ModalData& modals = GetModals();
 			if (modals.count(name) != 0)
@@ -43,20 +45,7 @@ namespace Labyrinth {
 				return;
 			}
 
-			modals.try_emplace(name, CastRefToRelative<Modal>(ModalType::Create(std::forward<Args>(args)...)), flags);
-		}
-
-		template<typename ModalType, typename... Args>
-		static void Open(const std::string& name, Args&&... args)
-		{
-			ModalData& modals = GetModals();
-			if (modals.count(name) != 0)
-			{
-				LAB_WARN("Modal already exists!");
-				return;
-			}
-
-			modals.try_emplace(name, ModalType::Create(std::forward<Args>(args)...), ImGuiWindowFlags_None);
+			modals.try_emplace(name,ModalType::Create(std::forward<Args>(args)...), flags, onComplete);
 		}
 
 	private:
@@ -86,12 +75,15 @@ namespace Labyrinth {
 					continue;
 				}
 
-				modalData.modal->display();
+				modalData.modal->onImGuiRender();
 				ImGui::EndPopup();
 			}
 
 			for (const std::string& key : toRemove)
+			{
+				modals.at(key).onComplete();
 				modals.erase(key);
+			}
 		}
 
 	};

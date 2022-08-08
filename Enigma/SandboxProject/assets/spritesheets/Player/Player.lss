@@ -1,0 +1,29 @@
+TextureSheet:
+  Texture: 6538329575214566844
+  Name: Player
+  TileSize: [16, 22]
+  SubTextures:
+    - Name: 0
+      Handle: 424868899249788045
+    - Name: 1
+      Handle: 6414329438205154137
+    - Name: 2
+      Handle: 10136190266700577253
+    - Name: 3
+      Handle: 10731057741415484932
+    - Name: 4
+      Handle: 12082471598102280412
+    - Name: 5
+      Handle: 15911064562692048039
+    - Name: 6
+      Handle: 4750931542045797980
+    - Name: 7
+      Handle: 1187015584942408767
+    - Name: 11
+      Handle: 3040050158194552475
+    - Name: 8
+      Handle: 2998031105976616839
+    - Name: 10
+      Handle: 3205720620663154210
+    - Name: 9
+      Handle: 7038747049384606318

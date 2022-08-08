@@ -1,5 +1,7 @@
 #include "TileWidthModal.h"
 
+#include <Labyrinth/Core/Buffer.h>
+
 namespace Labyrinth {
 
 	TileWidthModal::TileWidthModal(SpriteSheetData& data) : Modal(), mPayload(data)
@@ -11,11 +13,9 @@ namespace Labyrinth {
 		ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
 		ImGui::NewLine();
 
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mPayload.sheetName);
+		StaticBuffer<256> buffer(mPayload.sheetName);
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-			mPayload.sheetName = std::string(buffer);
+			mPayload.sheetName = buffer.string();
 
 		ImGui::InputInt("Width", &mTileWidth);
 		ImGui::InputInt("Height", &mTileHeight);
@@ -44,8 +44,8 @@ namespace Labyrinth {
 	{
 		switch (mPayload.addType)
 		{
-			case SheetAddType::Path:	mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
-			case SheetAddType::Texture: mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "assets/spritesheets/" + mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Path:	mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "spritesheets/" + mPayload.sheetName, std::get<std::string>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
+			case SheetAddType::Texture: mPayload.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPayload.sheetName + ".lss", "spritesheets/" + mPayload.sheetName, std::get<Ref<Texture2D>>(mPayload.newSheetVar), glm::vec2{mTileWidth, mTileHeight}, mPayload.sheetName); break;
 		}
 
 		mPayload.framebuffer->resize(Cast<size_t>(mPayload.viewportSize.x) - 15, 200);

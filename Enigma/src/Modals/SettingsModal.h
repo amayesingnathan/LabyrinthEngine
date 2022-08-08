@@ -11,12 +11,6 @@ namespace Labyrinth {
 	class SettingsModal : public Modal
 	{
 	public:
-		struct StartupSettings
-		{
-			bool fullscreen = false;
-		};
-
-	public:
 		SettingsModal();
 
 		void onImGuiRender() override;
@@ -27,8 +21,7 @@ namespace Labyrinth {
 		void Save();
 
 	private:
-		StartupSettings mSettings;
-		JsonObj mSettingsJSON;
+		ApplicationSpec mSettings;
 	};
 
 }

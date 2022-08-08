@@ -12,7 +12,9 @@ namespace Labyrinth {
 		usize size = 0;
 
 		Buffer() = default;
+		Buffer(std::nullptr_t) {}
 		Buffer(void* _data, usize _size) : data(_data), size(_size) {}
+		Buffer(usize _size) { allocate(_size); }
 		Buffer(const Buffer& buffer)
 		{
 			LAB_CORE_ASSERT(buffer.data && buffer.size);
@@ -20,6 +22,16 @@ namespace Labyrinth {
 			allocate(buffer.size);
 			memcpy(data, buffer.data, buffer.size);
 		}
+		Buffer(Buffer&& buffer) noexcept
+		{
+			if (&buffer == this) return;
+
+			data = buffer.data;
+			buffer.data = nullptr;
+
+			size = buffer.size;
+		}
+		virtual ~Buffer() { release(); }
 
 		static Buffer Copy(const void* _data, usize size)
 		{
@@ -35,6 +47,19 @@ namespace Labyrinth {
 
 			allocate(buffer.size);
 			memcpy(data, buffer.data, buffer.size);
+
+			return *this;
+		}
+		Buffer& operator=(Buffer&& buffer) noexcept
+		{
+			LAB_CORE_ASSERT(&buffer != this, "Cannot move assign an object to itself!");
+
+			data = buffer.data;
+			buffer.data = nullptr;
+
+			size = buffer.size;
+
+			return *this;
 		}
 
 		void allocate(usize _size)
@@ -49,7 +74,7 @@ namespace Labyrinth {
 			size = _size;
 		}
 
-		void free()
+		void release()
 		{
 			delete[](byte*)data;
 			data = nullptr;
@@ -94,23 +119,60 @@ namespace Labyrinth {
 		{
 			return (T*)data;
 		}
-
-		inline usize size() const { return size; }
 	};
 
-	struct ScopedBuffer : public Buffer
+	template<usize _Size>
+	struct StaticBuffer
 	{
-		~ScopedBuffer()
+		byte data[_Size] = { 0 };
+
+		StaticBuffer() = default;
+		StaticBuffer(byte _data[_Size])
 		{
-			free();
+			memset(data, 0, _Size);
+			memcpy(data, _data, _Size);
+		}
+		StaticBuffer(const std::string& string)
+		{
+			LAB_CORE_ASSERT(string.size() <= _Size);
+
+			memset(data, 0, _Size);
+			memcpy(data, string.c_str(), string.size());;
 		}
 
-		static ScopedBuffer Copy(const void* _data, usize size)
+		template<usize _Other>
+		StaticBuffer(const StaticBuffer<_Other>& buffer)
 		{
-			ScopedBuffer buffer;
-			buffer.allocate(size);
-			memcpy(buffer.data, _data, size);
-			return buffer;
+			memset(data, 0, _Size);
+			if constexpr (_Other <= _Size)
+				memcpy(data, buffer.data, _Other);
+			else
+				memcpy(data, buffer.data, _Size);
 		}
+
+		operator char*() 
+		{
+			LAB_CORE_ASSERT(data[_Size - 1] == 0); // At least the last character should be null
+			return (char*)data;
+		}
+
+		byte& operator[](usize index)
+		{
+			return data[index];
+		}
+
+		byte operator[](usize index) const
+		{
+			return data[index];
+		}
+
+		const char* string() const 
+		{
+			LAB_CORE_ASSERT(data[_Size - 1] == 0); // At least the last character should be null
+			return (const char*)data;
+		}
+
+		constexpr usize size() const { return _Size; }
+
 	};
 }

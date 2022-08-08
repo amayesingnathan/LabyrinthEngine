@@ -3,15 +3,6 @@
 
 namespace Labyrinth {
 
-	LayerStack::~LayerStack()
-	{
-		for (Layer* layer : mLayers)
-		{
-			layer->onDetach();
-			delete layer;
-		}
-	}
-
 	void LayerStack::pushLayer(Layer* layer)
 	{
 		mLayers.emplace(mLayers.begin() + mLayerInsertIndex, layer);

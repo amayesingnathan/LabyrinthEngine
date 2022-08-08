@@ -18,12 +18,13 @@ public:
 	}
 };
 
-Labyrinth::Application* Labyrinth::CreateApplication(ApplicationCommandLineArgs args)
+Labyrinth::Application* Labyrinth::CreateApplication(int argc, char** argv)
 {
 	ApplicationSpec spec;
 	spec.name = "Sandbox";
+
+	Application::ReadSettings("sandbox.ini", spec);
 	spec.workingDir = "../Enigma";
-	spec.commandLineArgs = args;
 
 	return new Sandbox(spec);
 }

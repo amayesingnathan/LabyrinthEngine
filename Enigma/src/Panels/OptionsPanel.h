@@ -6,7 +6,7 @@ namespace Labyrinth {
 
 	struct EditorData;
 
-	class OptionsPanel : public IPanel
+	class OptionsPanel : public Panel
 	{
 	public:
 		OptionsPanel(EditorData& data) : mEditorData(&data) {}

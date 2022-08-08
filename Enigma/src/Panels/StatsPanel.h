@@ -6,7 +6,7 @@ namespace Labyrinth {
 
 	class Entity;
 
-	class StatsPanel : public IPanel
+	class StatsPanel : public Panel
 	{
 	public:
 		StatsPanel(Entity& entity) 

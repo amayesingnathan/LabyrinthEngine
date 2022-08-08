@@ -16,9 +16,12 @@ namespace Labyrinth {
 		virtual const std::string& getPath() const override { return mPath; }
 		virtual i32 getWidth() const override { return mWidth; }
 		virtual i32 getHeight() const override { return mHeight; }
+		virtual u32 getSize() const override;
 		virtual u32 getRendererID() const override { return mRendererID; }
 
-		virtual void setData(void* data, i32 size) override;
+		virtual void setData(void* data, usize size) override;
+		virtual void setData(Buffer buffer) override;
+		virtual Buffer getData() override;
 
 		virtual void bind(u32 slot = 0) const override;
 

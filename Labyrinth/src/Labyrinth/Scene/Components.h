@@ -4,6 +4,7 @@
 
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
+#include "Labyrinth/Scripting/ScriptObject.h"
 #include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Tilemap/Tilemap.h"
 
@@ -138,6 +139,15 @@ namespace Labyrinth {
 		}
 	};
 
+	struct ScriptComponent
+	{
+		std::string className;
+		Ref<ScriptObject> instance = nullptr;
+		bool initialised = false;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+	};
 
 	class NativeScript;
 
@@ -155,6 +165,10 @@ namespace Labyrinth {
 			instantiateScript = []() { return static_cast<NativeScript*>(new T()); };
 			destroyScript = [this]() { delete this->instance; this->instance = nullptr; };
 		}
+
+		NativeScriptComponent() = default;
+		NativeScriptComponent(const NativeScriptComponent& other)
+			: instantiateScript(other.instantiateScript), destroyScript(other.destroyScript) {}
 	};
 
 
@@ -162,9 +176,13 @@ namespace Labyrinth {
 
 	struct RigidBodyComponent
 	{
-		enum class BodyType { Static = 0, Dynamic, Kinematic };
+		enum class BodyType { None = -1, Static = 0, Dynamic, Kinematic };
 		BodyType type = BodyType::Static;
 		bool fixedRotation = false;
+		float mass = 1.0f;
+		float linearDrag = 0.01f;
+		float angularDrag = 0.05f;
+		float gravityScale = 1.0f;
 
 		void* runtimeBody = nullptr;
 
@@ -231,6 +249,8 @@ namespace Labyrinth {
 		RigidBodyComponent,
 		BoxColliderComponent,
 		CircleColliderComponent,
-		TilemapComponent
+		TilemapComponent,
+		NativeScriptComponent,
+		ScriptComponent
 	>;
 }

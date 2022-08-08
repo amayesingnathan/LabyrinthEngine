@@ -11,14 +11,11 @@
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
-#include <imgui/imgui.h>
-#include <imgui/imgui_internal.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Labyrinth {
-
-	extern const std::filesystem::path gAssetPath;
 
 	ScenePanel::ScenePanel()
 	{
@@ -103,11 +100,9 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mContext->getName());
+		StaticBuffer<256> buffer(mContext->getName());
 		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-			mContext->setName(buffer);
+			mContext->setName(buffer.string());
 
 		ImGui::SameLine();
 
@@ -125,7 +120,7 @@ namespace Labyrinth {
 				mSelectedEntity.addComponent<CameraComponent>();
 			}
 			if (ImGui::MenuItem("Rigid Body"))
-				ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
+				ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
 			ImGui::EndPopup();
 		}
 
@@ -224,13 +219,13 @@ namespace Labyrinth {
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode(mContext->FindEntity(node.children[i]));
+				DrawEntityNode(mContext->findEntity(node.children[i]));
 			ImGui::TreePop();
 		}
 		if (entityCreated)
 			mContext->CreateEntity("Empty Entity");
 		if (bodyCreated)
-			ModalManager::Open<BodySpecModal>("BodySpecModal", mContext);
+			ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
 		if (cloneEntity)
@@ -360,13 +355,9 @@ namespace Labyrinth {
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
 
-			char buffer[256];
-			memset(buffer, 0, sizeof(buffer));
-			STR_COPY(buffer, tag);
+			StaticBuffer<256> buffer(tag);
 			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-			{
-				tag = std::string(buffer);
-			}
+				tag = buffer.string();
 		}
 
 		ImGui::SameLine();
@@ -378,64 +369,18 @@ namespace Labyrinth {
 		bool addTileMap = false;
 		if (ImGui::BeginPopup("AddComponent"))
 		{
-			if (!mSelectedEntity.hasComponent<CameraComponent>())
-			{
-				if (ImGui::MenuItem("Camera"))
-				{
-					auto& cam = mSelectedEntity.addComponent<CameraComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
-			{
-				if (ImGui::MenuItem("Sprite Renderer"))
-				{
-					mSelectedEntity.addComponent<SpriteRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<CircleRendererComponent>())
-			{
-				if (ImGui::MenuItem("Circle Renderer"))
-				{
-					mSelectedEntity.addComponent<CircleRendererComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<RigidBodyComponent>())
-			{
-				if (ImGui::MenuItem("Rigid Body"))
-				{
-					mSelectedEntity.addComponent<RigidBodyComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<BoxColliderComponent>())
-			{
-				if (ImGui::MenuItem("Box Collider"))
-				{
-					mSelectedEntity.addComponent<BoxColliderComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
-
-			if (!mSelectedEntity.hasComponent<CircleColliderComponent>())
-			{
-				if (ImGui::MenuItem("Circle Collider"))
-				{
-					mSelectedEntity.addComponent<CircleColliderComponent>();
-					ImGui::CloseCurrentPopup();
-				}
-			}
+			DrawAddComponentEntry<CameraComponent>("Camera");
+			DrawAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+			DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
+			DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
+			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
+			DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
+			DrawAddComponentEntry<ScriptComponent>("Script");
 
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
 			{
 				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<MapSpecModal>("MapSpecModal", mSelectedEntity);
+					ModalManager::Open<MapSpecModal>("MapSpecModal", ImGuiWindowFlags_None, []() {}, mSelectedEntity);
 			}
 
 			ImGui::EndPopup();
@@ -629,7 +574,7 @@ namespace Labyrinth {
 				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
 				{
 					const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
-					std::filesystem::path texturePath = std::filesystem::path(gAssetPath) / path;
+					std::filesystem::path texturePath = Project::GetAssetDirectory() / path;
 					std::string extension = texturePath.extension().string();
 
 					if (AssetManager::IsExtensionValid(extension, AssetType::Texture))
@@ -723,6 +668,30 @@ namespace Labyrinth {
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
+		});
+
+		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
+		{
+			if (ImGui::BeginCombo("Class", component.className.c_str()))
+			{
+				// Display "None" at the top of the list
+				bool clear = component.className.empty();
+				if (ImGui::Selectable("None", clear))
+					component.className.clear();
+
+				for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
+				{
+					bool isSelected = component.className == key;
+
+					if (ImGui::Selectable(key.c_str(), isSelected))
+						component.className = key;
+
+					if (isSelected)
+						ImGui::SetItemDefaultFocus();
+				}
+
+				ImGui::EndCombo();
+			}
 		});
 
 		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
