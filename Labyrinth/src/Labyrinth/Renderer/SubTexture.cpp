@@ -87,7 +87,7 @@ namespace Labyrinth {
 			return nullptr;
 		}
 
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/ " + mName + " / subtextures", Ref<Texture2DSheet>(this), coords, name);
+		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, name);
 		mSubTextures.emplace(name, subTex->handle);
 		return subTex;
 	}

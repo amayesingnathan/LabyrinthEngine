@@ -1,5 +1,7 @@
 #pragma once
 
+#include <Labyrinth/IO/Filesystem.h>
+
 #include "json.hpp"
 
 namespace Labyrinth {
@@ -9,7 +11,7 @@ namespace Labyrinth {
 	class JSON
 	{
 	public:
-		static JsonObj Open(const std::filesystem::path& path)
+		static JsonObj Open(const fs::path& path)
 		{
 			std::ifstream i(path);
 			if (!i)
@@ -20,7 +22,7 @@ namespace Labyrinth {
 			return out;
 		}
 
-		static void Write(const std::filesystem::path& path, const JsonObj& obj)
+		static void Write(const fs::path& path, const JsonObj& obj)
 		{
 			std::ofstream o(path);
 			o << std::setw(4) << obj << std::endl;
