@@ -1,15 +1,43 @@
 Scene: ScriptTest
 Entities:
-  - Entity: 2317683564321199996
+  - Entity: 831078044592182056
+    TagComponent:
+      Tag: Player
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    SpriteRendererComponent:
+      Type: 2
+      Layer: 0
+      Handle: 424868899249788045
+      Colour: [1, 1, 1, 1]
+      TilingFactor: 1
+    RigidBodyComponent:
+      Type: 1
+      FixedRotation: false
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 1
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: Sandbox.Player
+  - Entity: 2701178380809893402
     TagComponent:
       Tag: Rigid Body
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0, -2.47000003, 0]
+      Position: [0, -1.48000002, 0]
       Rotation: [0, 0, 0]
-      Scale: [7.44000006, 0.649999976, 1]
+      Scale: [7.13000011, 0.620000005, 1]
     SpriteRendererComponent:
       Type: 0
       Layer: 0
@@ -26,42 +54,14 @@ Entities:
       Friction: 1
       Restitution: 0
       RestitutionThreshold: 0.5
-  - Entity: 8302842047164021435
-    TagComponent:
-      Tag: Player
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    SpriteRendererComponent:
-      Type: 2
-      Layer: 0
-      Handle: 131972653773191776
-      Colour: [1, 1, 1, 1]
-      TilingFactor: 1
-    RigidBodyComponent:
-      Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 1
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: Sandbox.Player
-  - Entity: 14504236570371625370
+  - Entity: 8280384758180237065
     TagComponent:
       Tag: Camera
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0, 0, 11.8101559]
+      Position: [0, 0.000252515078, 7.36670542]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:

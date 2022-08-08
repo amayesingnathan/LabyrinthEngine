@@ -223,10 +223,10 @@ namespace Labyrinth {
 		u32 whiteTextureData = 0xffffffff;
 		sData.whiteTexture->setData(&whiteTextureData, sizeof(u32));
 
-		sData.quadShader = Shader::Create("assets/shaders/Renderer2DQuad.glsl");
-		sData.circleShader = Shader::Create("assets/shaders/Renderer2DCircle.glsl");
-		sData.lineShader = Shader::Create("assets/shaders/Renderer2DLine.glsl");
-		sData.displayShader = Shader::Create("assets/shaders/Framebuffer.glsl");
+		sData.quadShader = Shader::Create("resources/shaders/Renderer2DQuad.glsl");
+		sData.circleShader = Shader::Create("resources/shaders/Renderer2DCircle.glsl");
+		sData.lineShader = Shader::Create("resources/shaders/Renderer2DLine.glsl");
+		sData.displayShader = Shader::Create("resources/shaders/Framebuffer.glsl");
 
 		sData.textureSlots[0] = sData.whiteTexture;
 
