@@ -17,7 +17,6 @@ project "Labyrinth"
         "dependencies/glm/glm/**.hpp",
         "dependencies/ImGuizmo/ImGuizmo.h",
         "dependencies/ImGuizmo/ImGuizmo.cpp",
-        "dependencies/lua/**.hpp"
     }
 	
 	defines
@@ -42,7 +41,6 @@ project "Labyrinth"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.rapidxml}",
         "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.lua}",
         "%{IncludeDir.asio}",
         "%{IncludeDir.pfd}",
         "%{IncludeDir.box2d}",
@@ -56,7 +54,6 @@ project "Labyrinth"
 		"glad",
 		"glfw",
 		"ImGui",
-		"lua",
 		"yaml-cpp",
          "%{Library.mono}"
 	}

@@ -23,7 +23,6 @@ project "Enigma"
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.lua}",
 		"%{IncludeDir.json}"
     }
 	

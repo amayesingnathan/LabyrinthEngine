@@ -23,7 +23,6 @@ project "Sandbox"
         "%{IncludeDir.json}",
 		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.lua}"
     }
 	
     links
