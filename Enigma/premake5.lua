@@ -38,12 +38,12 @@ project "Enigma"
     filter "system:linux"
         links { "pthread", "dl", "yaml-cpp" }
         
-    filter "configurations:*d"
+    filter "configurations:Debug"
         defines { "LAB_DEBUG" }
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:not *d"
+    filter "configurations:Release"
         defines { "LAB_RELEASE" }
         runtime "Release"
         optimize "on"

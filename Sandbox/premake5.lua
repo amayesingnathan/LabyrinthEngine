@@ -37,10 +37,10 @@ project "Sandbox"
     filter "system:linux"
         links { "pthread", "dl" }
 
-    filter "configurations:*d"
+    filter "configurations:Debug"
         runtime "Debug"
         symbols "on"
 
-    filter "configurations:not *d"
+    filter "configurations:Release"
         runtime "Release"
         optimize "on"

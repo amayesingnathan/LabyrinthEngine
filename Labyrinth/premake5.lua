@@ -84,7 +84,7 @@ project "Labyrinth"
         pic "On"
         systemversion "latest"
 
-    filter "configurations:*d"
+    filter "configurations:Debug"
         defines { "LAB_DEBUG" }
 		runtime "Debug"
         symbols "on"
@@ -95,7 +95,7 @@ project "Labyrinth"
 			"%{Library.SPIRV_Cross_GLSL_Debug}"
 		}
 
-    filter "configurations:not *d"
+    filter "configurations:Release"
         defines { "LAB_RELEASE" }
 		runtime "Release"
         optimize "on"

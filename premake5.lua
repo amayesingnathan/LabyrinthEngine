@@ -4,29 +4,24 @@ include "dependencies.lua"
 workspace "Labyrinth"
     startproject "Enigma"
 
-    configurations { 
-        "x64d",
-        "x64", 
-        "ARMd",
-        "ARM",
-        "ARM64d",
+    configurations 
+    { 
+        "Debug",
+        "Release"
+    }
+    
+    platforms
+    {
+        "x64",
+        "ARM32",
         "ARM64"
     }
 
-	filter "configurations:x64d"
+	filter "platforms:x64"
 		architecture "x86_64"
 
- 	filter "configurations:x64"
-		architecture "x86_64"
-
-	filter "configurations:ARMd"
+	filter "platforms:ARM32"
 		architecture "ARM"
-
- 	filter "configurations:ARM"
-		architecture "ARM"
-
-	filter "configurations:ARM64d"
-		architecture "ARM64"
 
  	filter "configurations:ARM64"
 		architecture "ARM64"
