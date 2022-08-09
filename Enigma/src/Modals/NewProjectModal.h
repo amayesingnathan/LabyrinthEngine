@@ -1,26 +1,28 @@
 #pragma once
 
-#include "Modal.h"
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <Labyrinth/IO/Filesystem.h>
 
 namespace Labyrinth {
 
-	class NewProjectModal : public Modal
+	struct EditorData;
+
+	class NewProjectModal : public EditorModal
 	{
 	public:
-		NewProjectModal(fs::path& projectPath, std::string& projectName);
+		NewProjectModal(EditorData& editorData);
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
-		static Ref<NewProjectModal> Create(fs::path& projectPath, std::string& projectName) { return Ref<NewProjectModal>::Create(projectPath, projectName); }
+		static Ref<NewProjectModal> Create(EditorData& editorData) { return Ref<NewProjectModal>::Create(editorData); }
+
 
 	private:
-		void Save();
-
-	private:
-		fs::path& mProjectPath;
-		std::string& mProjectName;
+		EditorData& mEditorData;
+		fs::path mProjectPath;
+		std::string mProjectName;
 	};
 
 }

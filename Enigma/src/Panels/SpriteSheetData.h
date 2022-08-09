@@ -3,20 +3,14 @@
 #include <Labyrinth/Renderer/Framebuffer.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
-#include <variant>
-
 namespace Labyrinth {
-
-	enum class SheetAddType { Path, Texture };
-	using SheetVariable = std::variant<std::string, Ref<Texture2D>>;
 
 	struct SpriteSheetData
 	{
 		std::string sheetName = "";
 		std::string subTexName = "None";
 
-		SheetAddType addType = SheetAddType::Path;
-		SheetVariable newSheetVar = std::string();
+		std::string texturePath;
 
 		Ref<Texture2DSheet> currentSheet = nullptr;
 		Ref<SubTexture2D> currentSubTex = nullptr;

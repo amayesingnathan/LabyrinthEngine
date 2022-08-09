@@ -2,12 +2,12 @@
 
 #include "SpriteSheetData.h"
 #include "../EditorLayer.h"
-#include "../Modals/ModalManager.h"
 #include "../Modals/BodySpecModal.h"
 #include "../Modals/MapSpecModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
+#include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
@@ -120,7 +120,7 @@ namespace Labyrinth {
 				mSelectedEntity.addComponent<CameraComponent>();
 			}
 			if (ImGui::MenuItem("Rigid Body"))
-				ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
+				ModalManager::Open<BodySpecModal>("BodySpecModal", ModalType::OKCancel, mContext);
 			ImGui::EndPopup();
 		}
 
@@ -225,7 +225,7 @@ namespace Labyrinth {
 		if (entityCreated)
 			mContext->CreateEntity("Empty Entity");
 		if (bodyCreated)
-			ModalManager::Open<BodySpecModal>("BodySpecModal", ImGuiWindowFlags_None, []() {}, mContext);
+			ModalManager::Open<BodySpecModal>("BodySpecModal", ModalType::OKCancel, mContext);
 		if (childCreated)
 			mContext->CreateEntity("Empty Entity", entity);
 		if (cloneEntity)
@@ -380,7 +380,7 @@ namespace Labyrinth {
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
 			{
 				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<MapSpecModal>("MapSpecModal", ImGuiWindowFlags_None, []() {}, mSelectedEntity);
+					ModalManager::Open<MapSpecModal>("MapSpecModal", ModalType::OKCancel, mSelectedEntity);
 			}
 
 			ImGui::EndPopup();

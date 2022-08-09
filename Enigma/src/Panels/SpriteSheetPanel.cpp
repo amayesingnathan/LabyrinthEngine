@@ -1,11 +1,13 @@
 #include "SpriteSheetPanel.h"
 
-#include "../Assets/AssetManager.h"
-#include "../Modals/ModalManager.h"
 #include "../Modals/SubTexModal.h"
 #include "../Modals/TileWidthModal.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Renderer/RenderCommand.h>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -61,12 +63,11 @@ namespace Labyrinth {
 
 				if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::Texture))
 				{
-					mPanelData.addType = SheetAddType::Path;
-					mPanelData.newSheetVar = texturePath.string();
+					mPanelData.texturePath = texturePath.string();
 					mPanelData.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 
-					ModalManager::Open<TileWidthModal>("TileWidthModal", ImGuiWindowFlags_None, []() {}, mPanelData);
+					ModalManager::Open<TileWidthModal>("TileWidthModal", ModalType::OKCancel, mPanelData);
 				}
 				else if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::TextureSheet))
 				{
@@ -81,7 +82,7 @@ namespace Labyrinth {
 		}
 
 		if (ImGui::Button("Add SubTex") && mPanelData.currentSheet)
-			ModalManager::Open<SubTexModal>("SubTexModal", ImGuiWindowFlags_None, []() {}, mPanelData);
+			ModalManager::Open<SubTexModal>("SubTexModal", ModalType::OKCancel, mPanelData);
 
 		ImGui::SameLine();
 

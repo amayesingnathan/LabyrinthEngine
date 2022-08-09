@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modal.h"
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Scene/Scene.h>
@@ -9,7 +9,7 @@
 
 namespace Labyrinth {
 
-	class ProjectSettingsModal : public Modal
+	class ProjectSettingsModal : public EditorModal
 	{
 	public:
 		ProjectSettingsModal(const Ref<Project>& project);

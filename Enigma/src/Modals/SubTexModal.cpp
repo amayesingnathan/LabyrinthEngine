@@ -1,10 +1,11 @@
 #include "SubTexModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/ModalManager.h>
 
 namespace Labyrinth {
 
-	SubTexModal::SubTexModal(SpriteSheetData& data) : Modal(), mPayload(data)
+	SubTexModal::SubTexModal(SpriteSheetData& data) : EditorModal(), mPayload(data)
 	{
 		mSheet = mPayload.currentSheet;
 		mMaxWidthCount = mSheet->getTileCountX();
@@ -80,29 +81,17 @@ namespace Labyrinth {
 		}
 
 		ImGui::PopStyleColor(2);
+	}
 
-		if (ImGui::Button("OK"))
+	void SubTexModal::onComplete()
+	{
+		if (CheckSelection())
 		{
-			if (CheckSelection())
-			{
-				mPayload.subTexName = mName;
-				mPayload.currentSubTex = mPayload.currentSheet->getSubTex(mPayload.subTexName);
-				Close();
-			}
-			else
-				LAB_WARN("Selection was not valid!");  //TODO: Add warning modal
-			
-			mWidthCount = 1; mHeightCount = 1;
+			mPayload.subTexName = mName;
+			mPayload.currentSubTex = mPayload.currentSheet->getSubTex(mPayload.subTexName);
 		}
-
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			Close();
-			mWidthCount = 1; mHeightCount = 1;
-		}
-
+		else
+			ModalManager::OpenWarning("Invalid selection", "Selection was not valid!");
 	}
 
 	bool SubTexModal::CheckSelection()

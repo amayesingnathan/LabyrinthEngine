@@ -1,6 +1,7 @@
 #include "EditorLayer.h"
 
-#include "Modals/ModalManager.h"
+#include <Labyrinth/Editor/ModalManager.h>
+
 #include "Modals/NewProjectModal.h"
 #include "Modals/SettingsModal.h"
 #include "Modals/ProjectSettingsModal.h"
@@ -29,7 +30,7 @@
 
 #include "Labyrinth/Maths/Maths.h"
 
-#include "imgui/imgui.h"
+#include <imgui/imgui.h>
 #include "ImGuizmo.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -319,20 +320,19 @@ namespace Labyrinth {
 			{
 				if (ImGui::MenuItem("Create Project"))
 				{
-					ModalManager::Open<NewProjectModal>("New Project...", ImGuiWindowFlags_None,
-						[this]() 
-						{ 
-							if(!mEditorData.projectFilepath.empty()) 
-								CreateProject(mEditorData.projectFilepath / mEditorData.projectName); 
-						}
-						, mEditorData.projectFilepath, mEditorData.projectName);
+					ModalManager::Open<NewProjectModal>("New Project...", ModalType::OKCancel, mEditorData);
+					ModalManager::AddOnComplete([&]()
+					{
+						if (!mEditorData.projectFilepath.empty())
+							CreateProject(mEditorData.projectFilepath / mEditorData.projectName);
+					});
 				}
 				if (ImGui::MenuItem("Open Project", "Ctrl+O"))
 					OpenProject();
 				if (ImGui::MenuItem("Save Project"))
 					SaveProject();
 				if (Project::GetActive() && ImGui::MenuItem("Project Settings"))
-					ModalManager::Open<ProjectSettingsModal>("Project Settings", ImGuiWindowFlags_None, []() {}, Project::GetActive());
+					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalType::OK, Project::GetActive());
 
 				ImGui::Separator();
 
@@ -346,7 +346,7 @@ namespace Labyrinth {
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Project Settings", ImGuiWindowFlags_None, []() {});
+					ModalManager::Open<SettingsModal>("Project Settings", ModalType::OKCancel);
 
 				ImGui::Separator();
 
@@ -452,7 +452,7 @@ namespace Labyrinth {
 			case Key::P:
 			{
 				if (control)
-					ModalManager::Open<SettingsModal>("SettingsModal", ImGuiWindowFlags_None, []() {});
+					ModalManager::Open<SettingsModal>("SettingsModal", ModalType::OKCancel);
 
 			}
 			break;
@@ -667,7 +667,7 @@ namespace Labyrinth {
 
 		auto& project = Project::GetActive();
 		ProjectSerialiser serialiser(project);
-		serialiser.serialise(project->getSettings().projectDir / project->getSettings().projectFilename);
+		serialiser.serialise(project->getSettings().projectDir / project->getSettings().projectName);
 	}
 
 	void EditorLayer::CloseProject(bool unloadProject)

@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-    BodySpecModal::BodySpecModal(Ref<Scene>& data) : Modal(), mContext(data) {}
+    BodySpecModal::BodySpecModal(Ref<Scene>& data) : EditorModal(), mContext(data) {}
 
     void BodySpecModal::onImGuiRender()
     {
@@ -86,23 +86,16 @@ namespace Labyrinth {
 
             ShapeOptions();
         }
+    }
 
-        if (ImGui::Button("OK"))
-        {
-            mNewEntity = mContext->CreateEntity("Rigid Body");
-            auto& trans = mNewEntity.replaceComponent<TransformComponent>(mBodyDef.trans);
-            auto& rbc = mNewEntity.addComponent<RigidBodyComponent>(mBodyDef.body);
+    void BodySpecModal::onComplete()
+    {
+        mNewEntity = mContext->CreateEntity("Rigid Body");
+        auto& trans = mNewEntity.replaceComponent<TransformComponent>(mBodyDef.trans);
+        auto& rbc = mNewEntity.addComponent<RigidBodyComponent>(mBodyDef.body);
 
-            if (mBodyDef.hasShape)
-                ConvertShapeOptions();
-
-            Close();
-        }
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel"))
-            Close();
+        if (mBodyDef.hasShape)
+            ConvertShapeOptions();
     }
 
     void BodySpecModal::ShapeOptions()

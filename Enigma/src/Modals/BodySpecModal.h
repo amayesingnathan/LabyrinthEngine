@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modal.h"
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
@@ -11,7 +11,7 @@
 
 namespace Labyrinth {
 
-	class BodySpecModal : public Modal
+	class BodySpecModal : public EditorModal
 	{
 	public: // Class Types
 		enum class Shape { Box, Circle };
@@ -33,6 +33,7 @@ namespace Labyrinth {
 		BodySpecModal(Ref<Scene>& data);
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
 		static Ref<BodySpecModal> Create(Ref<Scene>& data) { return Ref<BodySpecModal>::Create(data); }
 

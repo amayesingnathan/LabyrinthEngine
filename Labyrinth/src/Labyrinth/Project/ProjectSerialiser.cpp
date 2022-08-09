@@ -56,7 +56,7 @@ namespace Labyrinth {
 		config.startScenePath = rootNode["StartScene"] ? rootNode["StartScene"].as<std::string>() : "";
 
 		fs::path projectPath = filepath;
-		config.projectFilename = projectPath.filename().string();
+		config.projectName = projectPath.filename().string();
 		config.projectDir = projectPath.parent_path().string();
 
 		return true;

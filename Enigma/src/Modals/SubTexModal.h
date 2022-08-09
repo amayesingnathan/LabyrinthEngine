@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Modal.h"
 #include "../Panels/SpriteSheetData.h"
 
+#include <Labyrinth/Editor/EditorModal.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
 #include <imgui/imgui.h>
 
 namespace Labyrinth {
 
-	class SubTexModal : public Modal
+	class SubTexModal : public EditorModal
 	{
 		using Position = std::pair<size_t, size_t>;
 
@@ -17,6 +17,7 @@ namespace Labyrinth {
 		SubTexModal(SpriteSheetData& data);
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
 		static Ref<SubTexModal> Create(SpriteSheetData& data) { return Ref<SubTexModal>::Create(data); }
 

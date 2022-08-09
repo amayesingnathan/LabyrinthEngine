@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modal.h"
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <Labyrinth/IO/JSON.h>
 
@@ -8,17 +8,15 @@
 
 namespace Labyrinth {
 
-	class SettingsModal : public Modal
+	class SettingsModal : public EditorModal
 	{
 	public:
 		SettingsModal();
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
 		static Ref<SettingsModal> Create() { return Ref<SettingsModal>::Create(); }
-
-	private:
-		void Save();
 
 	private:
 		ApplicationSpec mSettings;

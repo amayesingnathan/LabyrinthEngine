@@ -1,16 +1,19 @@
 #include "NewProjectModal.h"
 
+#include "../EditorLayer.h"
+
 #include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Project/Project.h>
 
 #include <imgui/imgui.h>
 
 namespace Labyrinth {
 
-	NewProjectModal::NewProjectModal(fs::path& projectPath, std::string& projectName)
-		: mProjectPath(projectPath), mProjectName(projectName)
+	NewProjectModal::NewProjectModal(EditorData& editorData)
+		: mEditorData(editorData), mProjectPath(editorData.projectFilepath), mProjectName(editorData.projectName)
 	{
-		mProjectPath = std::filesystem::current_path();
-		mProjectName = "NewProject";
+		if (mProjectPath.empty()) mProjectPath = std::filesystem::current_path();
+		if (mProjectName.empty()) mProjectName = "NewProject";
 	}
 
 	void NewProjectModal::onImGuiRender()
@@ -34,19 +37,11 @@ namespace Labyrinth {
 			if (!result.empty())
 				mProjectPath = result;
 		}
+	}
 
-		ImGui::Separator();
-
-		if (ImGui::Button("OK"))
-			Close();
-
-		ImGui::SetItemDefaultFocus();
-		ImGui::SameLine();
-		if (ImGui::Button("Cancel"))
-		{
-			mProjectPath = fs::path();
-			mProjectName = std::string();
-			Close();
-		}
+	void NewProjectModal::onComplete()
+	{
+		mEditorData.projectFilepath = mProjectPath;
+		mEditorData.projectName = mProjectName;
 	}
 }

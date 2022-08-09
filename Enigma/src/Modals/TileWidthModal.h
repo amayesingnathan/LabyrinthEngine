@@ -1,25 +1,22 @@
 #pragma once
 
-#include "Modal.h"
 #include "../Panels/SpriteSheetData.h"
 
-#include <Labyrinth.h>
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <imgui/imgui.h>
 
 namespace Labyrinth {
 
-	class TileWidthModal : public Modal
+	class TileWidthModal : public EditorModal
 	{
 	public:
 		TileWidthModal(SpriteSheetData& data);
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
 		static Ref<TileWidthModal> Create(SpriteSheetData& data) { return Ref<TileWidthModal>::Create(data); }
-
-	private:
-		void LoadSheet();
 
 	private:
 		SpriteSheetData& mPayload;

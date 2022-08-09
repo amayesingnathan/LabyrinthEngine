@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-    ProjectSettingsModal::ProjectSettingsModal(const Ref<Project>& project) : Modal(), mProject(project)
+    ProjectSettingsModal::ProjectSettingsModal(const Ref<Project>& project) : EditorModal(), mProject(project)
     {
     }
 
@@ -75,10 +75,5 @@ namespace Labyrinth {
             std::string label = !mProject->mSettings.startScenePath.empty() ? mProject->mSettings.startScenePath.string() : "...";
             ImGui::Text(label.c_str());
         }
-
-        ImGui::Separator();
-
-        if (ImGui::Button("Close"))
-            Close();
     }
 }

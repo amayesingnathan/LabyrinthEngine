@@ -5,8 +5,6 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
-#include "lua.hpp"
-
 Sandbox2D::Sandbox2D()
 	: Layer("Sandbox2D"), mCameraController(1280.0f / 720.0f, true)
 {}

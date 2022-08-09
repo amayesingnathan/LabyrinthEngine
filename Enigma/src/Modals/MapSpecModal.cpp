@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-    MapSpecModal::MapSpecModal(Entity& data) : Modal(), mEntity(data)
+    MapSpecModal::MapSpecModal(Entity& data) : EditorModal(), mEntity(data)
     {
     }
 
@@ -24,18 +24,10 @@ namespace Labyrinth {
         i32 layer = (i32)mLayer;
         ImGui::DragInt("Layer", &layer, 0, 255);
         mLayer = (u8)layer;
+    }
 
-        ImGui::NewLine();
-
-        if (ImGui::Button("OK"))
-        {
-            mEntity.addComponent<TilemapComponent>(mMapName, mLayer);
-            Close();
-        }
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel"))
-            Close();
+    void MapSpecModal::onComplete()
+    {
+        mEntity.addComponent<TilemapComponent>(mMapName, mLayer);
     }
 }

@@ -17,7 +17,7 @@ namespace Labyrinth {
         {"1920x1080", {1920, 1080}}
     };
 
-    SettingsModal::SettingsModal() : Modal(), mSettings(Application::Get().getSpec())
+    SettingsModal::SettingsModal() : EditorModal(), mSettings(Application::Get().getSpec())
     {
     }
 
@@ -64,22 +64,9 @@ namespace Labyrinth {
             if (!result.empty())
                 mSettings.startupProject = fs::relative(result);
         }
-
-        ImGui::NewLine();
-
-        if (ImGui::Button("OK"))
-        {
-            Save();
-            Close();
-        }
-
-        ImGui::SetItemDefaultFocus();
-        ImGui::SameLine();
-        if (ImGui::Button("Cancel"))
-            Close();
     }
 
-    void SettingsModal::Save()
+    void SettingsModal::onComplete()
     {
         Application::Get().getSpec() = mSettings;
     }

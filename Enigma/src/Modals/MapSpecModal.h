@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Modal.h"
+#include <Labyrinth/Editor/EditorModal.h>
 
 #include <Labyrinth/Scene/Entity.h>
 
@@ -11,12 +11,13 @@ namespace Labyrinth {
 
 	struct MapSpec;
 
-	class MapSpecModal : public Modal
+	class MapSpecModal : public EditorModal
 	{
 	public:
 		MapSpecModal(Entity& data);
 
 		void onImGuiRender() override;
+		void onComplete() override;
 
 		static Ref<MapSpecModal> Create(Entity& data) { return Ref<MapSpecModal>::Create(data); }
 
