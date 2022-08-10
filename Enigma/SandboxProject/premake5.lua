@@ -4,15 +4,19 @@ workspace "SandboxProject"
 	targetdir "build"
 	startproject "SandboxProject"
 
-    configurations {  
-        "x64d",
-        "x64", 
-        "ARMd",
-        "ARM",
-        "ARM64d",
-        "ARM64"
+    configurations 
+    {  
+        "Debug",
+        "Release"
     }
 	
+    platforms
+    {
+        "x64",
+        "ARM32",
+        "ARM64"
+    }
+    
 group "Labyrinth"
 project "Labyrinth-ScriptCore"
 	location "%{LAB_ROOT_DIR}/Labyrinth-ScriptCore"

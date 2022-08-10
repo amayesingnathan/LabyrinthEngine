@@ -7,7 +7,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [0, 0.899999976, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SpriteRendererComponent:
@@ -18,9 +18,9 @@ Entities:
       TilingFactor: 1
     RigidBodyComponent:
       Type: 1
-      FixedRotation: false
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
+      FixedRotation: true
+    CircleColliderComponent:
+      Radius: 0.5
       Offset: [0, 0]
       Density: 0.5
       Friction: 1
@@ -37,7 +37,7 @@ Entities:
     TransformComponent:
       Position: [0, -1.48000002, 0]
       Rotation: [0, 0, 0]
-      Scale: [7.13000011, 0.620000005, 1]
+      Scale: [50, 0.620000005, 1]
     SpriteRendererComponent:
       Type: 0
       Layer: 0
@@ -61,7 +61,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0, 0.000252515078, 7.36670542]
+      Position: [0, 0.000252515078, 21.2700005]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:

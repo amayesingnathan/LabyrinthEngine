@@ -4,12 +4,16 @@ workspace "$PROJECT_NAME$"
 	targetdir "build"
 	startproject "$PROJECT_NAME$"
 
-    configurations { 
-        "x64d",
-        "x64", 
-        "ARMd",
-        "ARM",
-        "ARM64d",
+    configurations 
+    { 
+        "Debug",
+        "Release"
+    }
+    
+    platforms
+    {
+        "x64",
+        "ARM32",
         "ARM64"
     }
 	

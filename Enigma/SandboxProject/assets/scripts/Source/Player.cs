@@ -10,38 +10,53 @@ namespace Sandbox
 {
     public class Player : Entity
     {
+        public float JumpCD { get; set; }
         public override void OnCreate()
         {
             Log.Info($"Player.OnCreate {ID}");
+            JumpCD = 0.0f;
         }
 
         public override void OnUpdate(float ts)
         {
             //Log.Info($"Player.OnUpdate: {ts}");
 
-            Vector2 force = Vector2.Zero;
+            bool jumping = false;
+            Vector2 jump = Vector2.Zero;
+            Vector2 move = Vector2.Zero;
             if (Input.IsKeyPressed(KeyCode.A))
             {
-                force.X = -40.0f;
+                move.X = -10.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.D))
             {
-                force.X = 40.0f;
+                move.X = 10.0f;
             }
             if (Input.IsKeyPressed(KeyCode.W))
             {
-                force.Y = 40.0f;
-            }
-            else if (Input.IsKeyPressed(KeyCode.S))
-            {
-                force.Y = -40.0f;
+                jump.Y = 150.0f;
             }
 
-            if (!force.IsZero())
+            if (JumpCD > 0.0f)
+                JumpCD -= ts;
+
+            RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
+            TransformComponent transform = GetComponent<TransformComponent>();
+
+            if (transform.Translation.Y <= 0.01f)
+                jumping = false;
+            else
+                jumping = true;
+
+            if (!move.IsZero() && !jumping)
             {
-                force *= ts;
-                RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
-                rigidBody.ApplyLinearImpulse(force, Vector2.Zero, true);
+                move *= ts;
+                rigidBody.ApplyLinearImpulse(move, Vector2.Zero, true);
+            }
+            if (JumpCD <= 0.0f && !jump.IsZero())
+            {
+                rigidBody.AddForce(jump, Vector2.Zero, true);
+                JumpCD = 1.0f;
             }
         }
     }
