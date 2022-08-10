@@ -1,7 +1,6 @@
 #include "SpriteSheetPanel.h"
 
 #include "../Modals/SubTexModal.h"
-#include "../Modals/TileWidthModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/ModalManager.h>
@@ -67,7 +66,28 @@ namespace Labyrinth {
 					mPanelData.sheetName = "";
 					mTileWidth = 0; mTileHeight = 0;
 
-					ModalManager::Open<TileWidthModal>("TileWidthModal", ModalType::OKCancel, mPanelData);
+					static int tileWidth = 0, tileHeight = 0;
+					ModalManager::Open("New Spritesheet...", ModalButtons::OKCancel, 
+					[&]() 
+					{
+						ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
+						ImGui::NewLine();
+
+						StaticBuffer<256> buffer(mPanelData.sheetName);
+						if (ImGui::InputText("Name", buffer, sizeof(buffer)))
+							mPanelData.sheetName = buffer.string();
+
+						ImGui::InputInt("Width", &tileWidth);
+						ImGui::InputInt("Height", &tileHeight);
+					}, 
+					[&]() 
+					{
+						if (tileWidth > 0 && tileHeight > 0)
+						{
+							mPanelData.currentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mPanelData.sheetName + ".lss", "spritesheets/" + mPanelData.sheetName, texturePath.string(), glm::vec2{ tileWidth, tileHeight }, mPanelData.sheetName);
+							mPanelData.framebuffer->resize(Cast<size_t>(mPanelData.viewportSize.x) - 15, 200);
+						}
+					});
 				}
 				else if (AssetManager::IsExtensionValid(texturePath.extension().string(), AssetType::TextureSheet))
 				{
@@ -82,7 +102,7 @@ namespace Labyrinth {
 		}
 
 		if (ImGui::Button("Add SubTex") && mPanelData.currentSheet)
-			ModalManager::Open<SubTexModal>("SubTexModal", ModalType::OKCancel, mPanelData);
+			ModalManager::Open<SubTexModal>("SubTexModal", ModalButtons::OKCancel, mPanelData);
 
 		ImGui::SameLine();
 

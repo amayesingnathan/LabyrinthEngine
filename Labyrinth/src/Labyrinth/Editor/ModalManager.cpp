@@ -45,11 +45,13 @@ namespace Labyrinth {
 
     void ModalManager::RenderButtons(ModalEntry& modalData)
     {
+        if (modalData.type == ModalButtons::None) return;
+
         ImGui::Separator();
 
         switch (modalData.type)
         {
-        case ModalType::OK:
+        case ModalButtons::OK:
         {
             if (ImGui::Button("OK"))
             {
@@ -58,7 +60,7 @@ namespace Labyrinth {
             }
             break;
         }
-        case ModalType::OKCancel:
+        case ModalButtons::OKCancel:
         {
             if (ImGui::Button("OK"))
             {
@@ -73,7 +75,7 @@ namespace Labyrinth {
 
             break;
         }
-        case ModalType::YesNo:
+        case ModalButtons::YesNo:
         {
             if (ImGui::Button("Yes"))
             {
@@ -88,7 +90,7 @@ namespace Labyrinth {
 
             break;
         }
-        case ModalType::Custom:
+        case ModalButtons::Custom:
             modalData.modal->onCustomButtonRender();
             break;
         }

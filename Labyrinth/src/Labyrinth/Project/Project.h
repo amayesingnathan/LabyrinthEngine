@@ -19,7 +19,7 @@ namespace Labyrinth {
 		fs::path scriptModulePath;
 
 		// Not serialised
-		fs::path projectFilename;
+		std::string projectName;
 		fs::path projectDir;
 	};
 

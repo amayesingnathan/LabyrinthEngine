@@ -320,7 +320,7 @@ namespace Labyrinth {
 			{
 				if (ImGui::MenuItem("Create Project"))
 				{
-					ModalManager::Open<NewProjectModal>("New Project...", ModalType::OKCancel, mEditorData);
+					ModalManager::Open<NewProjectModal>("New Project...", ModalButtons::OKCancel, mEditorData);
 					ModalManager::AddOnComplete([&]()
 					{
 						if (!mEditorData.projectFilepath.empty())
@@ -332,7 +332,7 @@ namespace Labyrinth {
 				if (ImGui::MenuItem("Save Project"))
 					SaveProject();
 				if (Project::GetActive() && ImGui::MenuItem("Project Settings"))
-					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalType::OK, Project::GetActive());
+					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalButtons::OK, Project::GetActive());
 
 				ImGui::Separator();
 
@@ -346,7 +346,7 @@ namespace Labyrinth {
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Project Settings", ModalType::OKCancel);
+					ModalManager::Open<SettingsModal>("Project Settings", ModalButtons::OKCancel);
 
 				ImGui::Separator();
 
@@ -452,7 +452,7 @@ namespace Labyrinth {
 			case Key::P:
 			{
 				if (control)
-					ModalManager::Open<SettingsModal>("SettingsModal", ModalType::OKCancel);
+					ModalManager::Open<SettingsModal>("SettingsModal", ModalButtons::OKCancel);
 
 			}
 			break;

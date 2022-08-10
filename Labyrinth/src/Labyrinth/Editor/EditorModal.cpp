@@ -17,6 +17,4 @@ namespace Labyrinth {
         ImGui::CloseCurrentPopup();
         Application::BlockEsc(false);
     }
-
-
 }
