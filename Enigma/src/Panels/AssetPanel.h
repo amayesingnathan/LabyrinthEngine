@@ -1,12 +1,11 @@
 #pragma once
 
-#include "PanelManager.h"
-
-#include "Labyrinth/Renderer/Texture.h"
+#include <Labyrinth/Editor/EditorPanel.h>
+#include <Labyrinth/Renderer/Texture.h>
 
 namespace Labyrinth {
 
-	class AssetPanel : public Panel
+	class AssetPanel : public EditorPanel
 	{
 	public:
 		AssetPanel();

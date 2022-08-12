@@ -16,6 +16,7 @@
 #include "Labyrinth/Assets/AssetManager.h"
 
 #include "Labyrinth/Editor/EditorResources.h"
+#include "Labyrinth/Editor/PanelManager.h"
 
 #include "Labyrinth/IO/Input.h"
 

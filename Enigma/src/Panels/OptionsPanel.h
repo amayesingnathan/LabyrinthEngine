@@ -1,12 +1,12 @@
 #pragma once
 
-#include "PanelManager.h"
+#include <Labyrinth/Editor/EditorPanel.h>
 
 namespace Labyrinth {
 
 	struct EditorData;
 
-	class OptionsPanel : public Panel
+	class OptionsPanel : public EditorPanel
 	{
 	public:
 		OptionsPanel(EditorData& data) : mEditorData(&data) {}

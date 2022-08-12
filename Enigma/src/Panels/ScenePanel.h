@@ -1,12 +1,11 @@
 #pragma once
 
-#include "PanelManager.h"
-
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Renderer/Framebuffer.h"
-#include "Labyrinth/Scene/Scene.h"
-#include "Labyrinth/Scene/Entity.h"
-#include "Labyrinth/Scene/Components.h"
+#include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/Editor/EditorPanel.h>
+#include <Labyrinth/Renderer/Framebuffer.h>
+#include <Labyrinth/Scene/Scene.h>
+#include <Labyrinth/Scene/Entity.h>
+#include <Labyrinth/Scene/Components.h>
 
 #include <imgui/imgui.h>
 #include <imgui/imgui_internal.h>
@@ -15,7 +14,7 @@ namespace Labyrinth {
 
 	struct EditorData;
 
-	class ScenePanel : public Panel
+	class ScenePanel : public EditorPanel
 	{
 	public:
 		ScenePanel();

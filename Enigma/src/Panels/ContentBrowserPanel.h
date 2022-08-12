@@ -1,14 +1,13 @@
 #pragma once
 
-#include "PanelManager.h"
-
-#include "Labyrinth/Renderer/Texture.h"
+#include <Labyrinth/Editor/EditorPanel.h>
+#include <Labyrinth/Renderer/Texture.h>
 
 #include <filesystem>
 
 namespace Labyrinth {
 
-	class ContentBrowserPanel : public Panel
+	class ContentBrowserPanel : public EditorPanel
 	{
 	public:
 		ContentBrowserPanel();

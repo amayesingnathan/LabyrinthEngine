@@ -1,13 +1,13 @@
 #pragma once
 
-#include "PanelManager.h"
 #include "SpriteSheetData.h"
 
+#include <Labyrinth/Editor/EditorPanel.h>
 #include <Labyrinth/Renderer/Texture.h>
 
 namespace Labyrinth {
 
-	class SpriteSheetPanel : public Panel
+	class SpriteSheetPanel : public EditorPanel
 	{
 	public:
 		SpriteSheetPanel();

@@ -1,12 +1,12 @@
 #pragma once
 
-#include "PanelManager.h"
+#include <Labyrinth/Editor/EditorPanel.h>
 
 namespace Labyrinth {
 
 	class Entity;
 
-	class StatsPanel : public Panel
+	class StatsPanel : public EditorPanel
 	{
 	public:
 		StatsPanel(Entity& entity) 
