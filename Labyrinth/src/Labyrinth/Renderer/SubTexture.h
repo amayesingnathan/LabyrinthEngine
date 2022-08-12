@@ -81,8 +81,8 @@ namespace Labyrinth {
 		SubTexture2D(const SubTexture2D&) = default;
 		virtual ~SubTexture2D() = default;
 
-		Ref<Texture2DSheet> getSheet() const { return mSheet.lock(); }
-		Ref<Texture2D> getBaseTex() const { return mSheet.lock()->mTexture; }
+		Ref<Texture2DSheet> getSheet() const { return mSheet; }
+		Ref<Texture2D> getBaseTex() const { return mSheet->mTexture; }
 
 		const std::string& getName() const { return mName; }
 		glm::vec2* getTexCoords() { return mTexCoords; }
@@ -94,7 +94,7 @@ namespace Labyrinth {
 
 	private:
 		std::string mName;
-		WeakRef<Texture2DSheet> mSheet;
+		Ref<Texture2DSheet> mSheet;
 		glm::vec2 mTexCoords[4];
 
 	};

@@ -17,6 +17,7 @@
 
 #include "Labyrinth/Editor/EditorResources.h"
 #include "Labyrinth/Editor/PanelManager.h"
+#include "Labyrinth/Editor/SelectionManager.h"
 
 #include "Labyrinth/IO/Input.h"
 
@@ -269,8 +270,10 @@ namespace Labyrinth {
 	void EditorLayer::UI_Gizmos()
 	{
 		// Gizmos
-		Entity selectedEntity = mScenePanel->getSelectedEntity();
-		if (selectedEntity && mGizmoType != -1 && mViewportFocused && selectedEntity.hasComponent<TransformComponent>())
+		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
+		Entity firstSelection = mCurrentScene->findEntity(selections.size() != 0 ? selections[0] : 0);
+
+		if (firstSelection && mGizmoType != -1 && mViewportFocused && firstSelection.hasComponent<TransformComponent>())
 		{
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
@@ -284,7 +287,7 @@ namespace Labyrinth {
 			glm::mat4 cameraView = mEditorData.camera.getViewMatrix();
 
 			// Entity transform
-			auto& tc = selectedEntity.getComponent<TransformComponent>();
+			auto& tc = firstSelection.getComponent<TransformComponent>();
 			glm::mat4 transform = tc.getTransform();
 
 			// Snapping
@@ -465,6 +468,19 @@ namespace Labyrinth {
 					SaveScene();
 			}
 			break;
+			case Key::Escape:
+			{
+				ModalManager::Open("Quit", ModalButtons::YesNo, []() 
+				{
+					ImGui::Text("Are you sure you want to quit without saving?");
+				}, []()
+				{ 
+					Application::BlockEsc(false);
+					Application::Close();
+				});
+				return true;
+			}
+			break;
 
 			// Scene Commands
 			case Key::D:
@@ -519,19 +535,29 @@ namespace Labyrinth {
 			}
 		}
 
-
 		return false;
 	}
 
 	bool EditorLayer::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
+		bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+		bool shift = Input::IsKeyPressed(Key::LeftShift) || Input::IsKeyPressed(Key::RightShift);
+
 		switch (e.getMouseButton())
 		{
 		case Mouse::ButtonLeft:
+		{
+			if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 			{
-				if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
-					mScenePanel->setSelectedEntity(mHoveredEntity);
+				UUID hoveredID = mHoveredEntity ? mHoveredEntity.getUUID() : 0;
+				if (!control)
+					SelectionManager::DeselectAll(SelectionDomain::Scene);
+
+				if (mHoveredEntity)
+					SelectionManager::Select(SelectionDomain::Scene, hoveredID);
 			}
+			break;
+		}
 		}
 
 		return false;
@@ -548,7 +574,7 @@ namespace Labyrinth {
 		{
 			for (const JsonObj& panel : settings["Panels"])
 			{
-				if (PanelItem* panelItem = PanelManager::GetPanelItem(panel["Key"]))
+				if (auto* panelItem = PanelManager::GetPanelItem(panel["Key"]))
 					panelItem->displayed = panel["Displayed"];
 			}
 		}
@@ -563,7 +589,7 @@ namespace Labyrinth {
 		settings["Panels"] = {};
 
 		// Panels
-		for (const PanelItem& panelItem : PanelManager::GetPanels())
+		for (const auto& panelItem : PanelManager::GetPanels())
 		{
 			JsonObj panel;
 			panel["Key"] = panelItem.key;
@@ -653,7 +679,7 @@ namespace Labyrinth {
 		else
 			NewScene();
 
-		mScenePanel->setSelectedEntity({});
+		SelectionManager::DeselectAll();
 
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
 
@@ -836,14 +862,17 @@ namespace Labyrinth {
 			});
 		}
 
-		if (Entity selectedEntity = mScenePanel->getSelectedEntity())
 		{
-			if (selectedEntity.hasComponent<TransformComponent>())
+			const auto& selection = SelectionManager::GetSelections(SelectionDomain::Scene);
+			SelectionManager::ForEach(SelectionDomain::Scene, [this](const UUID& id)
 			{
-				const auto& transform = selectedEntity.getComponent<TransformComponent>();
-
-				Renderer2D::DrawRect(transform.getTransform(), mEditorData.selectionColour);
-			}
+				Entity selectedEntity = mCurrentScene->findEntity(id);
+				if (selectedEntity && selectedEntity.hasComponent<TransformComponent>())
+				{
+					const auto& transform = selectedEntity.getComponent<TransformComponent>();
+					Renderer2D::DrawRect(transform.getTransform(), mEditorData.selectionColour);
+				}
+			});
 		}
 
 		Renderer2D::EndState();
@@ -863,9 +892,7 @@ namespace Labyrinth {
 
 	void EditorLayer::SyncWindowTitle()
 	{
-		std::string title = "Enigma";
-		title += " - " + mCurrentScene->getName();
-		title += " (" + (mEditorData.currentFile.empty() ? "unsaved" : mEditorData.currentFile) + ")";
+		std::string title = fmt::format("Enigma - {0} ({1})", mCurrentScene->getName(), (mEditorData.currentFile.empty() ? "unsaved" : mEditorData.currentFile));
 
 		Application::Get().getWindow().setTitle(title);
 	}
@@ -875,9 +902,10 @@ namespace Labyrinth {
 		if (mSceneState != SceneState::Edit)
 			return;
 
-		Entity selectedEntity = mScenePanel->getSelectedEntity();
-		if (selectedEntity)
-			mCurrentScene->CloneEntity(selectedEntity);
+		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
+		Entity firstSelection = mCurrentScene->findEntity(selections.size() != 0 ? selections[0] : 0);
+		if (firstSelection)
+			mCurrentScene->CloneEntity(firstSelection);
 	}
 
 	void EditorLayer::RegenScriptProject(const fs::path& filepath)
@@ -903,7 +931,10 @@ namespace Labyrinth {
 		int error = -1;
 #endif
 		if (error)
+		{
 			LAB_CORE_ERROR("Could not set the Labyrinth root directory!");
+			return;
+		}
 		system(batchFilePath.c_str());
 	}
 

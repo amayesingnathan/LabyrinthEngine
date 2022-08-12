@@ -103,7 +103,7 @@ namespace Labyrinth {
 		for (auto it = mLayerStack.rbegin(); it != mLayerStack.rend(); it++)
 		{
 			if (e.handled)
-				break;
+				return;
 			(*it)->onEvent(e);
 		}
 

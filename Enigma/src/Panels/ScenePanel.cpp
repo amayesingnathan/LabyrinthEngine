@@ -8,6 +8,7 @@
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
+#include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
@@ -35,14 +36,12 @@ namespace Labyrinth {
 	void ScenePanel::setContext(const Ref<Scene>& scene)
 	{
 		mContext = scene;
-		mSelectedEntity = {};
 	}
 
 	void ScenePanel::setContext(const Ref<Scene>& scene, EditorData& options)
 	{
 		mContext = scene;
 		mEditorData = &options;
-		mSelectedEntity = {};
 	}
 
 	void ScenePanel::onUpdate()
@@ -80,6 +79,7 @@ namespace Labyrinth {
 		case SpriteRendererComponent::TexType::Texture:
 		{
 			Ref<Texture2D> tex = component.handle ? AssetManager::GetAsset<Texture2D>(component.handle) : EditorResources::NoTexture;
+			if (!tex) tex = EditorResources::NoTexture;
 			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex);
 		}
 		break;
@@ -87,6 +87,7 @@ namespace Labyrinth {
 		case SpriteRendererComponent::TexType::SubTexture:
 		{
 			Ref<SubTexture2D> subtex = component.handle ? AssetManager::GetAsset<SubTexture2D>(component.handle) : EditorResources::NoSubTexture;
+			if (!subtex) subtex = EditorResources::NoSubTexture;
 			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex);
 		}
 		break;
@@ -148,15 +149,10 @@ namespace Labyrinth {
 		ImGui::End();
 	}
 
-	void ScenePanel::setSelectedEntity(Entity entity)
+	void ScenePanel::onSelectionChange()
 	{
-		if (!entity) return;
-
-		if (entity.getScene() == mContext)
-		{
-			mSelectedEntity = entity;
-		}
-		else LAB_WARN("Entity {0} is not part of the current scene!", entity.getUUID());
+		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
+		mSelectedEntity = mContext->findEntity(selections.size() != 0 ? selections[0] : 0);
 	}
 
 	void ScenePanel::DrawEntityNode(Entity entity)
@@ -170,7 +166,8 @@ namespace Labyrinth {
 		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity, flags, tag.c_str());
 		if (ImGui::IsItemClicked())
 		{
-			mSelectedEntity = entity;
+			SelectionManager::DeselectAll(SelectionDomain::Scene);
+			SelectionManager::Select(SelectionDomain::Scene, entity.getUUID());
 		}
 		if (ImGui::BeginDragDropSource())
 		{

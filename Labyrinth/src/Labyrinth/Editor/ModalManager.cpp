@@ -47,6 +47,7 @@ namespace Labyrinth {
     {
         if (modalData.type == ModalButtons::None) return;
 
+        ImGui::NewLine();
         ImGui::Separator();
 
         switch (modalData.type)

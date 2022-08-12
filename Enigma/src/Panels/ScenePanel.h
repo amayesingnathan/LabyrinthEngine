@@ -26,9 +26,7 @@ namespace Labyrinth {
 		
 		void onUpdate() override;
 		void onImGuiRender() override;
-
-		Entity getSelectedEntity() const { return mSelectedEntity; }
-		void setSelectedEntity(Entity entity);
+		void onSelectionChange() override;
 
 		static Ref<ScenePanel> Create(EditorData& options) { return Ref<ScenePanel>::Create(options); }
 		static Ref<ScenePanel> Create(const Ref<Scene>& scene, EditorData& options) { return Ref<ScenePanel>::Create(scene, options); }

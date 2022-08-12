@@ -68,7 +68,7 @@ namespace Labyrinth {
 
 					static int tileWidth = 0, tileHeight = 0;
 					ModalManager::Open("New Spritesheet...", ModalButtons::OKCancel, 
-					[&]() 
+					[this, texturePath]() 
 					{
 						ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
 						ImGui::NewLine();
@@ -80,7 +80,7 @@ namespace Labyrinth {
 						ImGui::InputInt("Width", &tileWidth);
 						ImGui::InputInt("Height", &tileHeight);
 					}, 
-					[&]() 
+					[this, texturePath]() 
 					{
 						if (tileWidth > 0 && tileHeight > 0)
 						{

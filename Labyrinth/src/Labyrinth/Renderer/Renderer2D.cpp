@@ -90,7 +90,7 @@ namespace Labyrinth {
 		LineVertex* lineVertexBufferBase = nullptr;
 		LineVertex* lineVertexBufferPtr = nullptr;
 
-		f32 lineWidth = 1.0f;
+		f32 lineWidth = 2.0f;
 
 		std::array<Ref<Texture2D>, MaxTextureSlots> textureSlots;
 		u32 textureSlotIndex;
@@ -507,13 +507,16 @@ namespace Labyrinth {
 			{
 			case SpriteRendererComponent::TexType::Texture:
 			{
-				DrawQuad(transform, AssetManager::GetAsset<Texture2D>(src.handle),
+				Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(src.handle);
+				if (!tex) return;
+				DrawQuad(transform, tex,
 					src.tilingFactor, src.colour, nullptr, entityID);
 				break;
 			}
 			case SpriteRendererComponent::TexType::SubTexture:
 			{
 				Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(src.handle);
+				if (!subtex) return;
 				DrawQuad(transform, subtex->getBaseTex(),
 					src.tilingFactor, src.colour,
 					subtex->getTexCoords(),
