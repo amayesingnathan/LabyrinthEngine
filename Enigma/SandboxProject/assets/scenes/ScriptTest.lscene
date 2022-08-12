@@ -13,7 +13,7 @@ Entities:
     SpriteRendererComponent:
       Type: 2
       Layer: 0
-      Handle: 424868899249788045
+      Handle: 6153003512646782280
       Colour: [1, 1, 1, 1]
       TilingFactor: 1
     RigidBodyComponent:
