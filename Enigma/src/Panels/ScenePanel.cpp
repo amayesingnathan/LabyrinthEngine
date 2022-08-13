@@ -652,13 +652,13 @@ namespace Labyrinth {
 		ImGui::SliderFloat3(name.c_str(), glm::value_ptr(displayElement), min, max, "%.2f", flags);
 
 		glm::vec3 diff = displayElement - lastDisplay;
-		if (diff != ChildControllerComponent::Zero)
+		if (diff != Zero::Vec3)
 		{
 			componentElement = diff;
 			mContext->transformChildren();
 		}
-		else if (!mousePressed && displayElement != ChildControllerComponent::Zero)
-			displayElement = ChildControllerComponent::Zero;
+		else if (!mousePressed && displayElement != Zero::Vec3)
+			displayElement = Zero::Vec3;
 
 		lastDisplay = displayElement;
 	}

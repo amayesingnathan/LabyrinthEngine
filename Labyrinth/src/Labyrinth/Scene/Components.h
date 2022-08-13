@@ -109,8 +109,8 @@ namespace Labyrinth {
 
 	struct TransformComponent
 	{
-		glm::vec3 translation = glm::vec3{ 0.0f };
-		glm::vec3 rotation = glm::vec3{ 0.0f };
+		glm::vec3 translation = Zero::Vec3;
+		glm::vec3 rotation = Zero::Vec3;
 		glm::vec3 scale = glm::vec3{ 1.0f };
 
 		TransformComponent() = default;
@@ -144,27 +144,25 @@ namespace Labyrinth {
 
 	struct ChildControllerComponent
 	{
-		static constexpr glm::vec3 Zero = glm::vec3{ 0.0f };
-
-		glm::vec3 deltaTranslation = glm::vec3{ 0.0f };
-		glm::vec3 deltaRotation = glm::vec3{ 0.0f };
-		glm::vec3 deltaScale = glm::vec3{ 0.0f };
+		glm::vec3 deltaTranslation = Zero::Vec3;
+		glm::vec3 deltaRotation = Zero::Vec3;
+		glm::vec3 deltaScale = Zero::Vec3;
 
 		ChildControllerComponent() = default;
 		ChildControllerComponent(const ChildControllerComponent&) = default;
 
 		bool isZero() const 
 		{ 
-			return (deltaTranslation == Zero &&
-				deltaRotation== Zero &&
-				deltaScale == Zero);
+			return (deltaTranslation == Zero::Vec3 &&
+				deltaRotation== Zero::Vec3 &&
+				deltaScale == Zero::Vec3);
 		}
 
 		void zero()
 		{
-			deltaTranslation = Zero;
-			deltaRotation = Zero;
-			deltaScale = Zero;
+			deltaTranslation = Zero::Vec3;
+			deltaRotation = Zero::Vec3;
+			deltaScale = Zero::Vec3;
 		}
 	};
 

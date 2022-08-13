@@ -1,5 +1,9 @@
 #pragma once
 
+#include <Labyrinth/Core/System/Cast.h>
+
+#include <glm/glm.hpp>
+
 namespace Labyrinth
 {
 	namespace Math
@@ -27,14 +31,24 @@ namespace Labyrinth
 		constexpr f64 Rad120 = 2.09343951023931954923084;
 		constexpr f64 Rad180 = Math::pi;
 
-		constexpr f32 Rad5f = static_cast<f32>(Rad5);
-		constexpr f32 Rad10f = static_cast<f32>(Rad10);
-		constexpr f32 Rad20f = static_cast<f32>(Rad20);
-		constexpr f32 Rad30f = static_cast<f32>(Rad30);
-		constexpr f32 Rad45f = static_cast<f32>(Rad45);
-		constexpr f32 Rad60f = static_cast<f32>(Rad60);
-		constexpr f32 Rad90f = static_cast<f32>(Rad90);
-		constexpr f32 Rad120f = static_cast<f32>(Rad120);
-		constexpr f32 Rad180f = static_cast<f32>(Rad180);
+		constexpr f32 Rad5f = Cast<f32>(Rad5);
+		constexpr f32 Rad10f = Cast<f32>(Rad10);
+		constexpr f32 Rad20f = Cast<f32>(Rad20);
+		constexpr f32 Rad30f = Cast<f32>(Rad30);
+		constexpr f32 Rad45f = Cast<f32>(Rad45);
+		constexpr f32 Rad60f = Cast<f32>(Rad60);
+		constexpr f32 Rad90f = Cast<f32>(Rad90);
+		constexpr f32 Rad120f = Cast<f32>(Rad120);
+		constexpr f32 Rad180f = Cast<f32>(Rad180);
+	}
+
+	namespace Zero
+	{
+		constexpr glm::vec2 Vec2 = glm::vec2{ 0.0f };
+		constexpr glm::vec3 Vec3 = glm::vec3{ 0.0f };
+
+		constexpr glm::mat2 Mat2 = glm::mat2{ 0.0f };
+		constexpr glm::mat3 Mat3 = glm::mat3{ 0.0f };
+		constexpr glm::mat4 Mat4 = glm::mat4{ 0.0f };
 	}
 }
