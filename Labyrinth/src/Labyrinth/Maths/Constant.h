@@ -1,31 +1,40 @@
 #pragma once
 
-#include <cmath>
+namespace Labyrinth
+{
+	namespace Math
+	{
+		constexpr f64 e = 2.71828182845904523536;
+		constexpr f64 pi = 3.14159265358979323846;
+		constexpr f64 pi_2 = 1.57079632679489661923;
+		constexpr f64 pi_3 = 1.04719755119659774615;
+		constexpr f64 pi_4 = 0.785398163397448309616;
+		constexpr f64 one_pi = 0.318309886183790671538;
+		constexpr f64 two_pi = 0.318309886183790671538;
+		constexpr f64 sqrt2 = 1.41421356237309504880;
+		constexpr f64 one_sqrt2 = 0.707106781186547524401;
+	}
 
-//Fundamental Constants and common variations
-#define LAB_E			static_cast<f32>(M_E);
-#define LAB_LOG2E		static_cast<f32>(M_LOG2E);
-#define LAB_LOG10E		static_cast<f32>(M_LOG10E);
-#define LAB_LN2			static_cast<f32>(M_LN2);
-#define LAB_LN10		static_cast<f32>(M_LN10);
-#define LAB_PI			static_cast<f32>(M_PI)
-#define LAB_PI_2		static_cast<f32>(M_PI_2);
-#define LAB_PI_4		static_cast<f32>(M_PI_4);
-#define LAB_1_PI		static_cast<f32>(M_1_PI);
-#define LAB_2_PI		static_cast<f32>(M_2_PI);
-#define LAB_2_SQRTPI	static_cast<f32>(M_2_SQRTPI);
-#define LAB_SQRT2		static_cast<f32>(M_SQRT2);
-#define LAB_SQRT1_2		static_cast<f32>(M_SQRT1_2);
+	namespace Angle
+	{
+		constexpr f64 Rad5 = 0.0872664625997164788461845;
+		constexpr f64 Rad10 = 0.174532925199432957692369;
+		constexpr f64 Rad20 = 0.261799387799149436538554;
+		constexpr f64 Rad30 = 0.523598775598298873077107;
+		constexpr f64 Rad45 = Math::pi_4;
+		constexpr f64 Rad60 = Math::pi_3;
+		constexpr f64 Rad90 = Math::pi_2;
+		constexpr f64 Rad120 = 2.09343951023931954923084;
+		constexpr f64 Rad180 = Math::pi;
 
-//Angles in degrees
-#define LAB_ANG_5		 5.0f
-#define LAB_ANG_10		10.0f
-#define LAB_ANG_20		20.0f
-#define LAB_ANG_30		30.0f
-#define LAB_ANG_45		45.0f
-#define LAB_ANG_60		60.0f
-#define LAB_ANG_75		75.0f
-#define LAB_ANG_90		90.0f
-#define LAB_ANG_120		120.0f
-#define LAB_ANG_150		150.0f
-#define LAB_ANG_180		180.0f
+		constexpr f32 Rad5f = static_cast<f32>(Rad5);
+		constexpr f32 Rad10f = static_cast<f32>(Rad10);
+		constexpr f32 Rad20f = static_cast<f32>(Rad20);
+		constexpr f32 Rad30f = static_cast<f32>(Rad30);
+		constexpr f32 Rad45f = static_cast<f32>(Rad45);
+		constexpr f32 Rad60f = static_cast<f32>(Rad60);
+		constexpr f32 Rad90f = static_cast<f32>(Rad90);
+		constexpr f32 Rad120f = static_cast<f32>(Rad120);
+		constexpr f32 Rad180f = static_cast<f32>(Rad180);
+	}
+}
