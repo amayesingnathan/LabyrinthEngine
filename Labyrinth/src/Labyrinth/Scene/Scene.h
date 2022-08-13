@@ -75,6 +75,8 @@ namespace Labyrinth {
 		const std::string& getName() const { return mName; }
 		bool hasName() const { return (mName != "Untitled" && mName != ""); }
 
+		void transformChildren();
+
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
 

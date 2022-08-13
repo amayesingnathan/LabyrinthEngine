@@ -9,6 +9,8 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
+#include <Labyrinth/ImGui/ImGuiUtils.h>
+#include <Labyrinth/IO/Input.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
@@ -235,73 +237,6 @@ namespace Labyrinth {
 		}
 	}
 
-	static void DrawVec3Control(const std::string& label, glm::vec3& values, float resetValue = 0.0f, float columnWidth = 100.0f)
-	{
-		ImGuiIO& io = ImGui::GetIO();
-		auto boldFont = io.Fonts->Fonts[0];
-
-		ImGui::PushID(label.c_str());
-
-		ImGui::Columns(2);
-		ImGui::SetColumnWidth(0, columnWidth);
-		ImGui::Text(label.c_str());
-		ImGui::NextColumn();
-
-		ImGui::PushMultiItemsWidths(3, ImGui::CalcItemWidth());
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2{ 0, 0 });
-
-		float lineHeight = GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
-		ImVec2 buttonSize = { lineHeight + 3.0f, lineHeight };
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.9f, 0.2f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.8f, 0.1f, 0.15f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("X", buttonSize))
-			values.x = resetValue;
-		ImGui::PopFont();	
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##X", &values.x, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.3f, 0.8f, 0.3f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.2f, 0.7f, 0.2f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Y", buttonSize))
-			values.y = resetValue;
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##Y", &values.y, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-		ImGui::SameLine();
-
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4{ 0.2f, 0.35f, 0.9f, 1.0f });
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4{ 0.1f, 0.25f, 0.8f, 1.0f });
-		ImGui::PushFont(boldFont);
-		if (ImGui::Button("Z", buttonSize))
-			values.z = resetValue;
-		ImGui::PopFont();
-		ImGui::PopStyleColor(3);
-
-		ImGui::SameLine();
-		ImGui::DragFloat("##Z", &values.z, 0.1f, 0.0f, 0.0f, "%.2f");
-		ImGui::PopItemWidth();
-
-		ImGui::PopStyleVar();
-
-		ImGui::Columns(1);
-
-		ImGui::PopID();
-	}
-
-
 	template<typename T, typename UIFunction>
 	static void DrawComponent(const std::string& name, Entity entity, UIFunction uiFunction)
 	{
@@ -371,7 +306,7 @@ namespace Labyrinth {
 			DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
 			DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
 			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
-			DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
+			DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 			DrawAddComponentEntry<ScriptComponent>("Script");
 
 			if (!mSelectedEntity.hasComponent<TilemapComponent>())
@@ -429,11 +364,11 @@ namespace Labyrinth {
 
 		DrawComponent<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
 		{
-			DrawVec3Control("Translation", component.translation);
+			EditorUI::Vec3Control("Translation", component.translation);
 			glm::vec3 rotation = glm::degrees(component.rotation);
-			DrawVec3Control("Rotation", rotation);
+			EditorUI::Vec3Control("Rotation", rotation);
 			component.rotation = glm::radians(rotation);
-			DrawVec3Control("Scale", component.scale, 1.0f);
+			EditorUI::Vec3Control("Scale", component.scale, 1.0f);
 		});
 		
 		DrawComponent<CameraComponent>("Camera", mSelectedEntity, [this](auto& component)
@@ -667,6 +602,15 @@ namespace Labyrinth {
 			ImGui::DragFloat("Restitution Threshold", &component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
+		DrawComponent<ChildControllerComponent>("Child Controller", mSelectedEntity, [&](auto& component)
+		{
+			static ChildControllerComponent sController, sLastController;
+
+			DrawChildControllerElement("Translation", component.deltaTranslation, sController.deltaTranslation, sLastController.deltaTranslation, -10.0f, 10.0f, ImGuiSliderFlags_Logarithmic);
+			DrawChildControllerElement("Rotation", component.deltaRotation, sController.deltaRotation, sLastController.deltaRotation, 0.0f, 360.f);
+			DrawChildControllerElement("Scale", component.deltaScale, sController.deltaScale, sLastController.deltaScale, -5.0f, 5.0f, ImGuiSliderFlags_Logarithmic);
+		});
+
 		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
 		{
 			if (ImGui::BeginCombo("Class", component.className.c_str()))
@@ -699,6 +643,24 @@ namespace Labyrinth {
 			ImGui::Image((ImTextureID)(intptr_t)tilemapTex->getRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
 		});
 
+	}
+
+	void ScenePanel::DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags)
+	{
+		bool mousePressed = Input::IsMouseButtonPressed(Mouse::ButtonLeft);
+
+		ImGui::SliderFloat3(name.c_str(), glm::value_ptr(displayElement), min, max, "%.2f", flags);
+
+		glm::vec3 diff = displayElement - lastDisplay;
+		if (diff != ChildControllerComponent::Zero)
+		{
+			componentElement = diff;
+			mContext->transformChildren();
+		}
+		else if (!mousePressed && displayElement != ChildControllerComponent::Zero)
+			displayElement = ChildControllerComponent::Zero;
+
+		lastDisplay = displayElement;
 	}
 
 	void ScenePanel::AssetTypeWarning()

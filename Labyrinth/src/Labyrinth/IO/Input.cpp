@@ -21,7 +21,7 @@ namespace Labyrinth {
 		return state == GLFW_PRESS;
 	}
 
-	bool Input::IsMouseButtonPressed(KeyCode button)
+	bool Input::IsMouseButtonPressed(MouseCode button)
 	{
 		auto* window = static_cast<GLFWwindow*>(Application::Get().getWindow().getNativeWindow());
 		auto state = glfwGetMouseButton(window, static_cast<int32_t>(button));

@@ -63,9 +63,11 @@ namespace Labyrinth {
 
 		EditorResources::Init();
 
+		const ApplicationSpec& appSpec = Application::GetSpec();
+
 		FramebufferSpec fbSpec;
-		fbSpec.width = 1600;
-		fbSpec.height = 900;
+		fbSpec.width = appSpec.resolution.width;
+		fbSpec.height = appSpec.resolution.height;
 		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
 		fbSpec.samples = 1;
 			
@@ -83,8 +85,8 @@ namespace Labyrinth {
 
 		LoadSettings();
 
-		if (!Application::Get().getSpec().startupProject.empty())
-			OpenProject(Application::Get().getSpec().startupProject);
+		if (!appSpec.startupProject.empty())
+			OpenProject(appSpec.startupProject);
 		else
 			NewScene();
 	}
@@ -745,9 +747,9 @@ namespace Labyrinth {
 			return false;
 		}
 
-		Ref<Scene> newScene = AssetManager::GetAsset<Scene>(path);
-		if (!newScene)
-			return false;
+		Ref<Scene> newScene = Ref<Scene>::Create("Untitled");
+		SceneSerialiser serialiser(newScene);
+		serialiser.deserialise(path);
 
 		mEditorScene = newScene;
 		mEditorData.currentFile = path.string();
@@ -886,6 +888,8 @@ namespace Labyrinth {
 		mCurrentScene->onViewportResize((u32)mViewportSize.x, (u32)mViewportSize.y);
 
 		mScenePanel->setContext(mCurrentScene);
+
+		SelectionManager::DeselectAll(SelectionDomain::Scene);
 
 		SyncWindowTitle();
 	}

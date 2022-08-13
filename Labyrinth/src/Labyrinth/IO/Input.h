@@ -7,13 +7,13 @@
 
 namespace Labyrinth {
 
-	class LAB_API Input
+	class Input
 	{
 	public:
 		static bool IsWindowHovered();
 
 		static bool IsKeyPressed(KeyCode keycode);
-		static bool IsMouseButtonPressed(KeyCode button);
+		static bool IsMouseButtonPressed(MouseCode button);
 
 		static glm::vec2 GetMousePosition();
 		static f32 GetMouseX();

@@ -191,6 +191,34 @@ namespace Labyrinth {
 		DestroyEntityR(entity, parent, linkChildren);
 	}
 
+	void Scene::transformChildren()
+	{
+		auto view = mRegistry.view<ChildControllerComponent, NodeComponent>();
+		for (auto e : view)
+		{
+			Entity entity{ e, Ref<Scene>(this) };
+			ChildControllerComponent& childController = entity.getComponent<ChildControllerComponent>();
+			NodeComponent& node = entity.getComponent<NodeComponent>();
+
+			if (childController.isZero())
+				continue;
+
+			for (UUID id : node.children)
+			{
+				Entity child = findEntity(id);
+				if (child.hasComponent<TransformComponent>())
+				{
+					TransformComponent& transform = child.getComponent<TransformComponent>();
+					transform.translation += childController.deltaTranslation;
+					transform.rotation += glm::radians(childController.deltaRotation);
+					transform.scale += childController.deltaScale;
+				}
+			}
+
+			childController.zero();
+		}
+	}
+
 	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
 	{
 		// Set the parent of all entity's children (will be null entity if no parent)
@@ -474,7 +502,6 @@ namespace Labyrinth {
 		});
 		return primaryCam;
 	}
-
 #ifdef LAB_PLATFORM_WINDOWS
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
@@ -548,6 +575,11 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<NativeScriptComponent>(Entity entity, NativeScriptComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<ChildControllerComponent>(Entity entity, ChildControllerComponent& component)
 	{
 	}
 

@@ -50,15 +50,17 @@ namespace Labyrinth {
 
 		Window& getWindow() { return *mWindow; }
 
-		static Application& Get() { return *sInstance; }
-		static void Close();
-
-		static void BlockEsc(bool block = true) { sInstance->mBlockExit = block; }
-
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
 		ApplicationSpec& getSpec() { return mSpecification; }
 		const ApplicationSpec& getSpec() const { return mSpecification; }
+
+		static Application& Get() { return *sInstance; }
+		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }
+
+		static void Close();
+
+		static void BlockEsc(bool block = true) { sInstance->mBlockExit = block; }
 
 		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
 		static void WriteSettings(const std::filesystem::path& settingsPath);

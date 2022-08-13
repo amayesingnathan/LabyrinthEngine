@@ -139,6 +139,37 @@ namespace Labyrinth {
 		}
 	};
 
+
+	// Editor
+
+	struct ChildControllerComponent
+	{
+		static constexpr glm::vec3 Zero = glm::vec3{ 0.0f };
+
+		glm::vec3 deltaTranslation = glm::vec3{ 0.0f };
+		glm::vec3 deltaRotation = glm::vec3{ 0.0f };
+		glm::vec3 deltaScale = glm::vec3{ 0.0f };
+
+		ChildControllerComponent() = default;
+		ChildControllerComponent(const ChildControllerComponent&) = default;
+
+		bool isZero() const 
+		{ 
+			return (deltaTranslation == Zero &&
+				deltaRotation== Zero &&
+				deltaScale == Zero);
+		}
+
+		void zero()
+		{
+			deltaTranslation = Zero;
+			deltaRotation = Zero;
+			deltaScale = Zero;
+		}
+	};
+
+	// Scripting
+
 	struct ScriptComponent
 	{
 		std::string className;

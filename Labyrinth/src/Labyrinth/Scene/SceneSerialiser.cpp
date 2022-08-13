@@ -41,18 +41,15 @@ namespace Labyrinth {
 
 		out << YAML::EndMap;
 
-		std::ofstream fout(filepath);
-		fout << out.c_str();
+		FileUtils::Write(filepath, out.c_str());
 	}
 
 	bool SceneSerialiser::deserialise(const std::filesystem::path& filepath)
 	{
-		std::ifstream stream(filepath);
-		LAB_CORE_ASSERT(stream);
-		std::stringstream strStream;
-		strStream << stream.rdbuf();
+		std::string str;
+		FileUtils::Read(filepath, str);
 
-		YAML::Node data = YAML::Load(strStream.str());
+		YAML::Node data = YAML::Load(str);
 		if (!data["Scene"])
 			return false;
 
@@ -206,6 +203,16 @@ namespace Labyrinth {
 			out << YAML::EndMap; // CircleColliderComponent
 		}
 
+		if (entity.hasComponent<ChildControllerComponent>())
+		{
+			out << YAML::Key << "ChildControllerComponent";
+			out << YAML::BeginMap; // ChildControllerComponent
+
+			LAB_SERIALISE_PROPERTY(Controller, true, out);
+
+			out << YAML::EndMap; // ChildControllerComponent
+		}
+
 		if (entity.hasComponent<ScriptComponent>())
 		{
 			out << YAML::Key << "ScriptComponent";
@@ -307,38 +314,42 @@ namespace Labyrinth {
 				src.thickness = circleRendererComponent["Thickness"].as<f32>();
 			}
 
-			auto rbComponent = entity["RigidBodyComponent"];
-			if (rbComponent)
+			auto rigidBodyComponent = entity["RigidBodyComponent"];
+			if (rigidBodyComponent)
 			{
 				auto& rbc = deserializedEntity.addComponent<RigidBodyComponent>();
-				rbc.type = (RigidBodyComponent::BodyType)rbComponent["Type"].as<i32>();
-				rbc.fixedRotation = rbComponent["FixedRotation"].as<bool>();
+				rbc.type = (RigidBodyComponent::BodyType)rigidBodyComponent["Type"].as<i32>();
+				rbc.fixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
 			}
 
-			auto bcComponent = entity["BoxColliderComponent"];
-			if (bcComponent)
+			auto boxColliderComponent = entity["BoxColliderComponent"];
+			if (boxColliderComponent)
 			{
 
 				auto& bcc = deserializedEntity.addComponent<BoxColliderComponent>();
-				bcc.halfExtents = bcComponent["HalfExtents"].as<glm::vec2>();
-				bcc.offset = bcComponent["Offset"].as<glm::vec2>();
-				bcc.density = bcComponent["Density"].as<f32>();
-				bcc.friction = bcComponent["Friction"].as<f32>();
-				bcc.restitution = bcComponent["Restitution"].as<f32>();
-				bcc.restitutionThreshold = bcComponent["RestitutionThreshold"].as<f32>();
+				bcc.halfExtents = boxColliderComponent["HalfExtents"].as<glm::vec2>();
+				bcc.offset = boxColliderComponent["Offset"].as<glm::vec2>();
+				bcc.density = boxColliderComponent["Density"].as<f32>();
+				bcc.friction = boxColliderComponent["Friction"].as<f32>();
+				bcc.restitution = boxColliderComponent["Restitution"].as<f32>();
+				bcc.restitutionThreshold = boxColliderComponent["RestitutionThreshold"].as<f32>();
 			}
 
-			auto ccComponent = entity["CircleColliderComponent"];
-			if (ccComponent)
+			auto circleColliderComponent = entity["CircleColliderComponent"];
+			if (circleColliderComponent)
 			{
 				auto& ccc = deserializedEntity.addComponent<CircleColliderComponent>();
-				ccc.radius = ccComponent["Radius"].as<f32>();
-				ccc.offset = ccComponent["Offset"].as<glm::vec2>();
-				ccc.density = ccComponent["Density"].as<f32>();
-				ccc.friction = ccComponent["Friction"].as<f32>();
-				ccc.restitution = ccComponent["Restitution"].as<f32>();
-				ccc.restitutionThreshold = ccComponent["RestitutionThreshold"].as<f32>();
+				ccc.radius = circleColliderComponent["Radius"].as<f32>();
+				ccc.offset = circleColliderComponent["Offset"].as<glm::vec2>();
+				ccc.density = circleColliderComponent["Density"].as<f32>();
+				ccc.friction = circleColliderComponent["Friction"].as<f32>();
+				ccc.restitution = circleColliderComponent["Restitution"].as<f32>();
+				ccc.restitutionThreshold = circleColliderComponent["RestitutionThreshold"].as<f32>();
 			}
+
+			auto childControllerComponent = entity["ChildControllerComponent"];
+			if (childControllerComponent)
+				auto& ccc = deserializedEntity.addComponent<ChildControllerComponent>();
 
 			auto scriptComponent = entity["ScriptComponent"];
 			if (scriptComponent)
