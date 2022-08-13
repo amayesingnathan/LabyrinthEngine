@@ -310,10 +310,21 @@ namespace Labyrinth {
 				glm::vec3 translation, rotation, scale;
 				Math::DecomposeTransform(transform, translation, rotation, scale);
 
+				glm::vec3 deltaTranslation = translation - tc.translation;
 				glm::vec3 deltaRotation = rotation - tc.rotation;
-				tc.translation = translation;
-				tc.rotation += deltaRotation;
-				tc.scale = scale;
+				glm::vec3 deltaScale = scale - tc.scale;
+
+				SelectionManager::ForEach(SelectionDomain::Scene, [&, this](const UUID& id)
+				{
+					Entity entity = mCurrentScene->findEntity(id);
+					if (entity.hasComponent<TransformComponent>())
+					{
+						TransformComponent& transform = entity.getComponent<TransformComponent>();
+						transform.translation += deltaTranslation;
+						transform.rotation += deltaRotation;
+						transform.scale += deltaScale;
+					}
+				});
 			}
 		}
 	}
