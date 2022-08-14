@@ -1,51 +1,54 @@
 #pragma once
 
-#include "MapLayer.h"
+#include "TilemapTexture.h"
 
 #include <Labyrinth/Core/System/Base.h>
-#include <Labyrinth/Renderer/SubTexture.h>
+#include <Labyrinth/Scene/Scene.h>
+#include <Labyrinth/Scene/Entity.h>
 
 namespace Labyrinth {
 
-	struct SheetData
+	struct Tile
 	{
-		usize firstID;
-		Ref<Texture2DSheet> sheet;
+		usize x, y;
 
-		SheetData(usize id, const Ref<Texture2DSheet>& tex) : firstID(id), sheet(tex) {}
+		Tile(usize _x, usize _y) : x(_x), y(_y) {}
 
-		bool operator <(const SheetData& other) const
-		{
-			return firstID < other.firstID;
+		bool operator ==(const Tile& other) const { return x == other.x && y == other.y; }
+		bool operator <(const Tile& other) const
+		{ 
+			if (y != other.y)
+				return y < other.y;
+
+			return x < other.x;
 		}
 	};
 
-	class Tilemap : public RefCounted
+	class Tilemap : public Asset
 	{
-	private:
-		Tilemap() = default;
-
 	public:
-		Tilemap(const std::string& name);
+		Tilemap(const std::string& name, usize width, usize height);
+		Tilemap(const fs::path& path, usize width, usize height);
 
-		void loadMap(const std::string& name);
+		const Ref<Texture2D>& getTex() const { return mTexture->getTex(); };
 
-		const Ref<Texture2D>& getTex() const { return mTexture; };
-
-		static Ref<Tilemap> Create(const std::string& name);
+		static Ref<Tilemap> Create(const std::string& name, usize width, usize height) { return Ref<Tilemap>::Create(name, width, height); }
+		static Ref<Tilemap> Create(const fs::path& path, usize width, usize height) { return Ref<Tilemap>::Create(path, width, height); }
 
 	private:
-		// Re-renders the internal framebuffer object and outputs it to a Texture2D
-		void GenTex();
-
-		const Ref<Texture2DSheet>& GetSheet(usize tileID) const;
+		void RegenTexture() { mTexture->RegenTexture(); }
+		void RegenEntities();
 
 	private:
 		std::string mMapName;
-		usize mWidth, mHeight;
-		std::vector<SheetData> mSheets;
-		std::vector<MapLayer> mLayers;
-		Ref<Texture2D> mTexture = nullptr;
+		Entity mMapEntity;
 
+		Ref<Scene> mContext = nullptr;
+		Ref<TilemapTexture> mTexture = nullptr;
+		usize mWidth = 0, mHeight = 0;
+
+		std::map<Tile, Entity> mEntityMap;
+
+		friend class TilemapManager;
 	};
 }

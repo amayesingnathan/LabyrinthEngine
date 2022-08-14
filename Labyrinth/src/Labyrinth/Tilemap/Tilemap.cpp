@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "Tilemap.h"
 
+#include "TilemapComponents.h"
+
 #include "Labyrinth/IO/Tiled.h"
 #include <Labyrinth/Renderer/Framebuffer.h>
 #include "Labyrinth/Renderer/Renderer2D.h"
@@ -8,98 +10,37 @@
 
 namespace Labyrinth {
 
-	Tilemap::Tilemap(const std::string& name)
-		: mMapName(name)
+	Tilemap::Tilemap(const std::string& name, usize width, usize height)
+		: mMapName(name), mTexture(TilemapTexture::Create(width, height)), mWidth(width), mHeight(height)
 	{
-		std::filesystem::path mapPath = "assets/tilemaps/" + name;
-
-		TiledIO::Open(mapPath, mLayers, mSheets);
-
-		GenTex();
+		RegenTexture();
+		RegenEntities();
 	}
 
-	void Tilemap::loadMap(const std::string& name)
+	Tilemap::Tilemap(const fs::path& path, usize width, usize height)
+		: mMapName(path.stem().string()), mTexture(TilemapTexture::Create(path, width, height)), mWidth(width), mHeight(height)
 	{
-		std::filesystem::path mapPath = "assets/tilemaps/" + name;
-
-		mLayers.clear();
-		mSheets.clear();
-		mTexture.reset();
-
-		TiledIO::Open(mapPath, mLayers, mSheets);
-		GenTex();
+		RegenTexture();
+		RegenEntities();
 	}
 
-	void Tilemap::GenTex()
+	void Tilemap::RegenEntities()
 	{
-		usize width = mLayers[0].getWidth();
-		usize height = mLayers[0].getHeight();
-		glm::vec2 tileSize = mSheets[0].sheet->getTileSize();
+		mMapEntity.removeChildren();
+		mContext->getEntitiesWith<TileComponent>().each([&](auto entity, auto& component) { mContext->DestroyEntity({ entity, mContext }); });
+		mEntityMap.clear();
 
-		FramebufferSpec fbSpec;
-		mWidth = fbSpec.width = width * Cast<usize>(tileSize.x);
-		mHeight = fbSpec.height = height * Cast<usize>(tileSize.y);
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		fbSpec.samples = 1;
-
-		Ref<Framebuffer> textureFB = Framebuffer::Create(fbSpec);
-		textureFB->bind();
-
-		RenderCommand::SetClearColor({ 0.f, 0.f, 0.f, 1 });
-		RenderCommand::Clear();
-		RenderCommand::DisableDepth();
-
-		Renderer2D::BeginState();
-
-		for (const MapLayer& layer : mLayers)
+		for (usize y = 0; y < mHeight; y++)
 		{
-			usize width = layer.getWidth();
-			usize height = layer.getHeight();
-			for (usize y = 0; y < height; y++)
+			for (usize x = 0; x < mWidth; x++)
 			{
-				for (usize x = 0; x < width; x++)
-				{
-					usize tileID = layer(x, height - y - 1);
-					if (tileID == 0) continue;
+				Entity entity = mContext->CreateEntity(fmt::format("{0}-({1},{2})", mMapName, x, y));
+				entity.addComponent<ScriptComponent>();
+				TileComponent& tc = entity.addComponent<TileComponent>(x, y);
+				entity.setParent(mMapEntity);
 
-					Ref<Texture2DSheet> sheet = GetSheet(tileID);
-					glm::vec2 tiletexSize = { 2.f / (f32)width, 2.f / (f32)height };
-					glm::vec2 pos = { x * tiletexSize.x, y * tiletexSize.y };
-					pos -= 1.f;
-
-					Renderer2D::DrawQuad(pos, tiletexSize, sheet->getSubTex(std::to_string(tileID)));
-				}
+				mEntityMap.emplace(tc.tile, entity);
 			}
 		}
-
-		Renderer2D::EndState();
-		RenderCommand::EnableDepth();
-
-		mTexture = Texture2D::Create(mWidth, mHeight);
-
-		u8* texData = new u8[4 * mWidth * mHeight];
-		textureFB->readData(0, texData);
-		mTexture->setData(texData, 4 * mWidth * mHeight);
-		delete[] texData;
-
-		textureFB->unbind();
-	}
-
-	const Ref<Texture2DSheet>& Tilemap::GetSheet(usize tileID) const
-	{
-		auto it = std::find_if(mSheets.rbegin(), mSheets.rend(), [tileID](const SheetData& sheetData)
-			{
-				return sheetData.firstID <= tileID;
-			});
-
-		if (it != mSheets.rend())
-			return it->sheet;
-
-		else return mSheets[0].sheet;
-	}
-
-	Ref<Tilemap> Tilemap::Create(const std::string& name)
-	{
-		return Ref<Tilemap>::Create(name);
 	}
 }

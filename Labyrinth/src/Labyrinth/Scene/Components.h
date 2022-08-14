@@ -258,7 +258,6 @@ namespace Labyrinth {
 		u8 layer = 0;
 
 		TilemapComponent() = default;
-		TilemapComponent(const std::string& name, u8 _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
 		TilemapComponent(const TilemapComponent&) = default;
 
 		Ref<Texture2D> getTex() const { return tilemap->getTex(); }

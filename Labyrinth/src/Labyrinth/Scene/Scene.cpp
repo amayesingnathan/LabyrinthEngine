@@ -4,10 +4,11 @@
 #include "Entity.h"
 #include "Components.h"
 
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Renderer/Renderer2D.h"
-#include "Labyrinth/Scripting/ScriptEngine.h"
-#include "Labyrinth/Scripting/NativeScript.h"
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
+#include <Labyrinth/Scripting/NativeScript.h>
+#include <Labyrinth/Tilemap/TilemapComponents.h>
 
 #include <glm/glm.hpp>
 
@@ -585,6 +586,11 @@ namespace Labyrinth {
 
 	template<>
 	void Scene::onComponentAdded<ScriptComponent>(Entity entity, ScriptComponent& component)
+	{
+	}
+
+	template<>
+	void Scene::onComponentAdded<TileComponent>(Entity entity, TileComponent& component)
 	{
 	}
 

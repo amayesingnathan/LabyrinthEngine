@@ -15,10 +15,9 @@ namespace Labyrinth {
 
 	void Entity::destroy()
 	{
-		Ref<Scene> scene = mScene.lock();
-		scene->DestroyEntity(*this);
-		mEntID = entt::null; 
-		scene = nullptr;
+		mScene->DestroyEntity(*this);
+		mEntID = entt::null;
+		mScene = nullptr;
 	}
 
 
@@ -26,7 +25,7 @@ namespace Labyrinth {
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
-		Entity currentParent = mScene.lock()->findEntity(node.parent); 
+		Entity currentParent = mScene->findEntity(node.parent); 
 		if (currentParent == newParent) return false;
 
 		if (newParent)
@@ -77,6 +76,20 @@ namespace Labyrinth {
 		auto it = std::find(children.begin(), children.end(), child.getUUID());
 		if (it != children.end())
 			children.erase(it);
+	}
+
+	void Entity::removeChildren()
+	{
+		std::vector<UUID>& children = getChildren();
+		for (UUID id : children)
+		{
+			Entity child = mScene->findEntity(id);
+			child.addComponent<RootComponent>();
+
+			child.getComponent<NodeComponent>().parent = 0;
+		}
+
+		children.clear();
 	}
 
 	bool Entity::isRelated(Entity filter) const

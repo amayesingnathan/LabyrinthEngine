@@ -126,12 +126,14 @@ namespace Labyrinth {
 
 		std::vector<UUID>& getChildren();
 		const std::vector<UUID>& getChildren() const;
+		void removeChildren();
     
 		const usize getChildCount() const { return getChildren().size(); }
 		bool hasChild(Entity child) const;
 
 		bool isRelated(Entity filter) const;
 
+	private:
 		void addChild(Entity child, NodeComponent& node);
 		void addChild(Entity child);
 		void removeChild(Entity child);
