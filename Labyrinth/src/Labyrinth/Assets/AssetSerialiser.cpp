@@ -107,10 +107,10 @@ namespace Labyrinth {
 			out << YAML::Key << "SubTextures";
 			out << YAML::Value << YAML::BeginSeq;
 
-			for (const auto& [name, handle] : sheet->getSubTexList())
+			for (const auto& [id, handle] : sheet->getSubTexList())
 			{
 				out << YAML::BeginMap;
-				LAB_SERIALISE_PROPERTY(Name, name, out);
+				LAB_SERIALISE_PROPERTY(ID, id, out);
 				LAB_SERIALISE_PROPERTY(Handle, handle, out);
 				out << YAML::EndMap;
 			}
@@ -151,10 +151,10 @@ namespace Labyrinth {
 		auto subtextures = texNode["SubTextures"];
 		for (auto subtex : subtextures)
 		{
-			std::string name = subtex["Name"].as<std::string>();
+			usize id = subtex["ID"].as<usize>();
 			AssetHandle handle = subtex["Handle"].as<u64>();
 
-			sheet->addSubTex(name, handle);
+			sheet->addSubTex(id, handle);
 		}
 
 		asset = sheet;
@@ -193,9 +193,11 @@ namespace Labyrinth {
 			std::filesystem::create_directories(sheetPath);
 
 		YAML::Emitter out;
-		out << YAML::BeginMap; // Subtexture
+		out << YAML::BeginMap; // Tilemap
 		out << YAML::Key << "Tilemap" << YAML::Value;
 		{
+			out << YAML::BeginMap;
+
 			LAB_SERIALISE_PROPERTY(Name, tilemap->getName(), out);
 			LAB_SERIALISE_PROPERTY(Width, tilemap->getWidth(), out);
 			LAB_SERIALISE_PROPERTY(Height, tilemap->getHeight(), out);
@@ -210,7 +212,6 @@ namespace Labyrinth {
 				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
-			out << YAML::EndMap;
 
 			out << YAML::Key << "TextureLayers";
 			out << YAML::Value << YAML::BeginSeq;
@@ -221,6 +222,7 @@ namespace Labyrinth {
 				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
+
 			out << YAML::EndMap;
 		}
 

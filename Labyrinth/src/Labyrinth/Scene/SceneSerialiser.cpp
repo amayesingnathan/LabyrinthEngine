@@ -382,7 +382,7 @@ namespace Labyrinth {
 			}
 
 			auto tmcComponent = entity["TilemapControllerComponent"];
-			if (scriptComponent)
+			if (tmcComponent)
 			{
 				auto& tmcc = deserializedEntity.addComponent<TilemapControllerComponent>();
 

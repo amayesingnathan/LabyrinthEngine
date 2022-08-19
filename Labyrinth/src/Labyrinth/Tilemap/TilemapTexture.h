@@ -37,12 +37,15 @@ namespace Labyrinth {
 
 		void addLayer(const TexMapLayer& layer) { mLayers.emplace_back(layer); }
 
+		void setTile(usize layer, usize x, usize y, usize id) { mLayers[layer](x, y) = id; }
+
 		static Ref<TilemapTexture> Create(i32 width, i32 height) { return Ref<TilemapTexture>::Create(width, height); }
 		static Ref<TilemapTexture> Create(const fs::path& path) { return Ref<TilemapTexture>::Create(path); }
 
 	private:
 		void RegenTexture();
-		Ref<Texture2DSheet> GetSheet(usize tileID) const;
+		AssetHandle GetSheet(usize tileID) const;
+		usize GetID(AssetHandle handle) const;
 
 	private:
 		i32 mWidth = 0, mHeight = 0;

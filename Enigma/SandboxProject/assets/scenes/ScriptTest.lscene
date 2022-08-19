@@ -5,7 +5,7 @@ Entities:
       Tag: Player
     Parent: 0
     Children:
-      []
+      - Handle: 15348008762611256170
     TransformComponent:
       Position: [0, 0.899999976, 0]
       Rotation: [0, 0, 0]
@@ -13,7 +13,7 @@ Entities:
     SpriteRendererComponent:
       Type: 2
       Layer: 0
-      Handle: 6153003512646782280
+      Handle: 7854237085733589774
       Colour: [1, 1, 1, 1]
       TilingFactor: 1
     RigidBodyComponent:
@@ -75,3 +75,13 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
+  - Entity: 15348008762611256170
+    TagComponent:
+      Tag: Tiles
+    Parent: 831078044592182056
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]

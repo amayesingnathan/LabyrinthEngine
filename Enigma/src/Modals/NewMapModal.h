@@ -2,8 +2,6 @@
 
 #include <Labyrinth/Editor/EditorModal.h>
 
-#include <Labyrinth/Scene/Entity.h>
-
 #include <imgui/imgui.h>
 #include <glm/glm.hpp>
 

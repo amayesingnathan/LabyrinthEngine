@@ -106,15 +106,6 @@ namespace Labyrinth {
 
 		ImGui::SameLine();
 
-		if (ImGui::Button("Remove SubTex") && mPanelData.currentSheet)
-		{
-			mPanelData.currentSheet->deleteSubTex(mPanelData.subTexName);
-			mPanelData.subTexName = noSubTex;
-			mPanelData.currentSubTex = nullptr;
-		}
-
-		ImGui::SameLine();
-
 		if (ImGui::Button("Create Tileset") && mPanelData.currentSheet)
 			mPanelData.currentSheet->generateTileset();
 
@@ -130,13 +121,14 @@ namespace Labyrinth {
 
 			if (mPanelData.currentSheet)
 			{
-				for (const auto& [key, value] : mPanelData.currentSheet->getSubTexList())
+				for (const auto& [key, handle] : mPanelData.currentSheet->getSubTexList())
 				{
-					bool isSelected = mPanelData.subTexName == key;
+					Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(handle);
+					bool isSelected = mPanelData.subTexName == subtex->getName();
 
-					if (ImGui::Selectable(key.c_str(), isSelected))
+					if (ImGui::Selectable(subtex->getName().c_str(), isSelected))
 					{
-						mPanelData.subTexName = key;
+						mPanelData.subTexName = subtex->getName();
 						mPanelData.currentSubTex = mPanelData.currentSheet->getSubTex(key);
 					}
 

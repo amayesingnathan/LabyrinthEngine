@@ -54,11 +54,11 @@ namespace Labyrinth {
 					usize tileID = layer(x, mHeight - y - 1);
 					if (tileID == 0) continue;
 
-					Ref<Texture2DSheet> sheet = GetSheet(tileID);
+					Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileID));
 					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
 					//pos -= 1; TODO: Not sure why this is here 
 
-					Renderer2D::DrawQuad(pos, TileSizeF, sheet->getSubTex(std::to_string(tileID)));
+					Renderer2D::DrawQuad(pos, TileSizeF, sheet->getSubTex(tileID));
 				}
 			}
 		}
@@ -75,13 +75,13 @@ namespace Labyrinth {
 		textureFB->unbind();
 	}
 
-	Ref<Texture2DSheet> TilemapTexture::GetSheet(usize tileID) const
+	AssetHandle TilemapTexture::GetSheet(usize tileID) const
 	{
 		auto it = std::find_if(mSheets.rbegin(), mSheets.rend(), [tileID](const SheetData& sheetData) { return sheetData.firstID <= tileID; });
 
 		if (it != mSheets.rend())
-			return AssetManager::GetAsset<Texture2DSheet>(it->sheet);
+			return it->sheet;
 
-		return nullptr;
+		return 0;
 	}
 }
