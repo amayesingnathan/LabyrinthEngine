@@ -1,5 +1,8 @@
 #include "TilemapPanel.h"
 
+#include "../Modals/MapEditModal.h" 
+
+#include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Tilemap/Tilemap.h>
 
 #include <imgui/imgui.h>
@@ -32,6 +35,9 @@ namespace Labyrinth {
 
                     ImGui::EndPopup();
                 }
+
+                if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+                    ModalManager::Open<MapEditModal>("Edit Tilemap...", ModalButtons::OKCancel, tilemap);
 
                 if (ImGui::BeginDragDropSource())
                 {
