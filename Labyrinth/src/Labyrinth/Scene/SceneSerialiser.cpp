@@ -224,6 +224,29 @@ namespace Labyrinth {
 			out << YAML::EndMap; // ScriptComponent
 		}
 
+		if (entity.hasComponent<TilemapControllerComponent>())
+		{
+			out << YAML::Key << "TilemapControllerComponent";
+			out << YAML::BeginMap; // TilemapControllerComponent
+
+			auto& tilemapController = entity.getComponent<TilemapControllerComponent>();
+			LAB_SERIALISE_PROPERTY(Tilemap, tilemapController.tilemapHandle, out);
+
+			out << YAML::Key << "Behaviour";
+			out << YAML::Value << YAML::BeginSeq;
+
+			for (const auto& [pos, id] : tilemapController.tileBehaviour)
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(Position, pos, out);
+				LAB_SERIALISE_PROPERTY(Entity, id, out);
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
+
+			out << YAML::EndMap; // TilemapControllerComponent
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
@@ -263,9 +286,9 @@ namespace Labyrinth {
 			{
 				// Entities always have transforms
 				auto& transform = deserializedEntity.getComponent<TransformComponent>();
-				LAB_DESERIALISE_PROPERTY(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
-				LAB_DESERIALISE_PROPERTY(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
-				LAB_DESERIALISE_PROPERTY(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY_DEF(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY_DEF(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY_DEF(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
 			}
 			else
 				deserializedEntity.removeComponent<TransformComponent>();
@@ -356,6 +379,30 @@ namespace Labyrinth {
 			{
 				auto& sc = deserializedEntity.addComponent<ScriptComponent>();
 				sc.className = scriptComponent["ClassName"].as<std::string>();
+			}
+
+			auto tmcComponent = entity["TilemapControllerComponent"];
+			if (scriptComponent)
+			{
+				auto& tmcc = deserializedEntity.addComponent<TilemapControllerComponent>();
+
+				u64 handle;
+				LAB_DESERIALISE_PROPERTY(Tilemap, handle, scriptComponent);
+				tmcc.tilemapHandle = handle;
+
+				auto behaviour = scriptComponent["Behaviour"];
+				if (behaviour)
+				{
+					for (auto entry : behaviour)
+					{
+						TilePos pos;
+						u64 id;
+						LAB_DESERIALISE_PROPERTY(Position, pos, entry);
+						LAB_DESERIALISE_PROPERTY(Entity, id, entry);
+
+						tmcc.tileBehaviour[pos] = id;
+					}
+				}
 			}
 		}
 	}

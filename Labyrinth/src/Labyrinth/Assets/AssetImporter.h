@@ -14,7 +14,7 @@ namespace Labyrinth {
 		static bool Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset);
 
 	private:
-		inline static std::unordered_map<AssetType, Single<AssetSerializer>> sSerialisers;
+		inline static std::unordered_map<AssetType, Single<AssetSerialiser>> sSerialisers;
 	};
 
 }

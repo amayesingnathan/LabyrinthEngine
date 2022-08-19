@@ -12,6 +12,7 @@ namespace Labyrinth {
 		{ ".lscene", AssetType::Scene },
 		{ ".lss", AssetType::TextureSheet },
 		{ ".lstex", AssetType::SubTexture },
+		{ ".lmap", AssetType::Tilemap },
 
 		// Textures
 		{ ".png", AssetType::Texture },

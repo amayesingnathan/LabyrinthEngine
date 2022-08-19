@@ -16,6 +16,7 @@ namespace Labyrinth {
     {
     public:
         using AssetCache = std::unordered_map<AssetHandle, Ref<Asset>>;
+        using AssetTypeMap = std::unordered_map<AssetType, std::vector<AssetHandle>>;
 
     public:
         static void Init();
@@ -36,11 +37,14 @@ namespace Labyrinth {
 
         static AssetType GetAssetTypeFromExtension(const std::string& extension);
         static AssetType GetAssetTypeFromPath(const fs::path& path);
+        static AssetType GetAssetTypeFromHandle(AssetHandle handle);
 
         static bool IsExtensionValid(const std::string& extension, AssetType type);
 
         static AssetHandle ImportAsset(const fs::path& filepath);
         static bool ReloadData(AssetHandle assetHandle);
+
+        static void DestroyAsset(AssetHandle assetHandle);
 
     private:
         static void LoadRegistry();
@@ -95,19 +99,20 @@ namespace Labyrinth {
             }
 
             sAssetRegistry[metadata.handle] = metadata;
-
-            SaveRegistry();
+            sAssetTypeMap[GetAssetTypeFromPath(metadata.filepath)].emplace_back(metadata.handle);
 
             Ref<AssetType> asset = Ref<AssetType>::Create(std::forward<Args>(args)...);
             asset->handle = metadata.handle;
             sLoadedAssets[asset->handle] = asset;
             AssetImporter::Serialise(metadata, asset);
 
+            SaveRegistry();
+
             return asset;
         }
 
         template<typename AssetType>
-        static Ref<AssetType> GetAsset(const AssetHandle& assetHandle)
+        static Ref<AssetType> GetAsset(AssetHandle assetHandle)
         {
             LAB_PROFILE_FUNCTION();
 
@@ -151,6 +156,7 @@ namespace Labyrinth {
         static const AssetCache& GetLoadedAssets() { return sLoadedAssets; }
         static const AssetRegistry& GetAssetRegistry() { return sAssetRegistry; }
         static const AssetCache& GetMemoryOnlyAssets() { return sMemoryAssets; }
+        static const std::vector<AssetHandle>& GetAssetsWithType(AssetType type) { return sAssetTypeMap[type]; }
 
         template<typename AssetType, typename... Args>
         static AssetHandle CreateMemoryOnlyAsset(Args&&... args)
@@ -170,16 +176,14 @@ namespace Labyrinth {
         {
             LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
 
-            AssetCache& assets = GetAssets();
-
-            AssetMetaData metadata;
+            AssetMetadata metadata;
             metadata.filepath = directory + filename;
             metadata.handle = handle;
 
             Ref<AssetType> newAsset = AssetType::Create(std::forward<Args>(args)...);
             newAsset->handle = metadata.handle;
 
-            assets[metadata.handle] = newAsset;
+            sLoadedAssets[metadata.handle] = newAsset;
             return newAsset;
         }
 
@@ -188,6 +192,7 @@ namespace Labyrinth {
         inline static AssetCache sLoadedAssets;
         inline static AssetCache sMemoryAssets;
         inline static AssetRegistry sAssetRegistry;
+        inline static AssetTypeMap sAssetTypeMap;
         inline static fs::path sAssetDirPath, sAssetRegPath;
     };
 }

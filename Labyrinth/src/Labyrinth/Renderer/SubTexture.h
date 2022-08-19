@@ -10,6 +10,8 @@
 
 namespace Labyrinth {
 
+	class SubTexture2D;
+
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
 	class Texture2DSheet : public Asset
 	{
