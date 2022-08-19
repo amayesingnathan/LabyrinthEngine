@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	void StatsPanel::onImGuiRender()
 	{
-		ImGui::Begin("Stats");
+		ImGui::Begin("Statistics");
 
 		std::string name = "None";
 		if (mHoveredEntity)

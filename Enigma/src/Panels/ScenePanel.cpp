@@ -3,7 +3,7 @@
 #include "SpriteSheetData.h"
 #include "../EditorLayer.h"
 #include "../Modals/BodySpecModal.h"
-#include "../Modals/MapSpecModal.h"
+#include "../Modals/NewMapModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
@@ -308,12 +308,7 @@ namespace Labyrinth {
 			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
 			DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 			DrawAddComponentEntry<ScriptComponent>("Script");
-
-			if (!mSelectedEntity.hasComponent<TilemapComponent>())
-			{
-				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<MapSpecModal>("MapSpecModal", ModalButtons::OKCancel, mSelectedEntity);
-			}
+			DrawAddComponentEntry<TilemapControllerComponent>("Tilemap Controller");
 
 			ImGui::EndPopup();
 		}
@@ -635,12 +630,23 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&](auto& component)
 		{
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
-			Ref<Texture> tilemapTex = component.tilemap->getTex() ? component.tilemap->getTex() : EditorResources::NoTexture;
-			ImGui::Image((ImTextureID)(intptr_t)tilemapTex->getRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.tilemapHandle);
+			ImTextureID tex = (ImTextureID)(intptr_t)(tilemap ? tilemap->getTex()->getRendererID() : EditorResources::NoTexture->getRendererID());
+			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TILEMAP_ITEM"))
+				{
+					AssetHandle tilemapHandle = *(AssetHandle*)payload->Data;
+					component.tilemapHandle = tilemapHandle;
+				}
+				ImGui::EndDragDropTarget();
+			}
 		});
 
 	}

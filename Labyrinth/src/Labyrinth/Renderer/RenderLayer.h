@@ -7,7 +7,6 @@ namespace Labyrinth {
 	struct TransformComponent;
 	struct SpriteRendererComponent;
 	struct CircleRendererComponent;
-	struct TilemapComponent;
 
 	class QuadData
 	{
@@ -43,21 +42,6 @@ namespace Labyrinth {
 
 	};
 
-	class TilemapData
-	{
-	public:
-		TilemapData(const TransformComponent& trans, const TilemapComponent& tmc)
-			: transform(&trans), tilemap(&tmc) {}
-
-		const TransformComponent& getTrans() const { return *transform; }
-		const TilemapComponent& getMap() const { return *tilemap; }
-
-	private:
-		const TransformComponent* transform;
-		const TilemapComponent* tilemap;
-
-	};
-
 	class LAB_API RenderLayer
 	{
 	public:
@@ -65,16 +49,13 @@ namespace Labyrinth {
 		virtual ~RenderLayer() = default;
 
 		u8 getDepth() const { return mDepth; }
-		void clear() { mQuads.clear(); mCircles.clear(); mTilemaps.clear(); }
+		void clear() { mQuads.clear(); mCircles.clear(); }
 
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }
 
 		std::vector<CircleData>& getCircles() { return mCircles; }
 		const std::vector<CircleData>& getCircles() const { return mCircles; }
-
-		std::vector<TilemapData>& getTilemaps() { return mTilemaps; }
-		const std::vector<TilemapData>& getTilemaps() const { return mTilemaps; }
 
 		void addQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, i32 entID)
 		{
@@ -84,16 +65,11 @@ namespace Labyrinth {
 		{
 			mCircles.emplace_back(trans, sprite, entID);
 		}
-		void addTilemap(const TransformComponent& trans, const TilemapComponent& sprite)
-		{
-			mTilemaps.emplace_back(trans, sprite);
-		}
 
 	private:
 		u8 mDepth;
 		std::vector<QuadData> mQuads;
 		std::vector<CircleData> mCircles;
-		std::vector<TilemapData> mTilemaps;
 
 	};
 

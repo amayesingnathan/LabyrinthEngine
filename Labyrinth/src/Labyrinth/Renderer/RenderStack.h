@@ -21,7 +21,6 @@ namespace Labyrinth {
 
 		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID = -1);
 		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID = -1);
-		void addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp);
 
 		void draw();
 

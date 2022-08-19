@@ -5,10 +5,11 @@
 #include "Modals/NewProjectModal.h"
 #include "Modals/SettingsModal.h"
 #include "Modals/ProjectSettingsModal.h"
+#include "Modals/NewMapModal.h"
 
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
-#include "Panels/AssetPanel.h"
+#include "Panels/TilemapPanel.h"
 #include "Panels/SpriteSheetPanel.h"
 #include "Panels/OptionsPanel.h"
 #include "Panels/StatsPanel.h"
@@ -82,6 +83,7 @@ namespace Labyrinth {
 		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);
 		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
+		PanelManager::Register<TilemapPanel>("Tilemaps");
 
 		LoadSettings();
 
@@ -376,6 +378,14 @@ namespace Labyrinth {
 			{
 				for (auto& [key, _panel, display] : PanelManager::GetPanels())
 					ImGui::MenuItem(key.c_str(), nullptr, &display);
+
+				ImGui::EndMenu();
+			}
+
+			if (ImGui::BeginMenu("Create"))
+			{
+				if (ImGui::MenuItem("Tilemap"))
+					ModalManager::Open<NewMapModal>("New Tilemap", ModalButtons::Custom);
 
 				ImGui::EndMenu();
 			}

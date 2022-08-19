@@ -89,19 +89,6 @@ namespace Labyrinth {
 		targetLayer->addCircle(trComp, crComp, entID);
 	}
 
-	void RenderStack::addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp)
-	{
-		RenderLayer* targetLayer = getLayer(tmComp.layer);
-
-		if (!targetLayer)
-		{
-			targetLayer = new RenderLayer(tmComp.layer);
-			pushLayer(targetLayer);
-		}
-
-		targetLayer->addTilemap(trComp, tmComp);
-	}
-
 	void RenderStack::draw()
 	{
 		std::sort(mLayers.begin(), mLayers.end(), [](const auto& lhs, const auto& rhs)
@@ -116,9 +103,6 @@ namespace Labyrinth {
 
 			for (const CircleData& circle : layer->getCircles())
 				Renderer2D::DrawCircle(circle.getTrans(), circle.getCircle(), circle.getID());
-
-			for (const TilemapData& tilemap : layer->getTilemaps())
-				Renderer2D::DrawQuad(tilemap.getTrans(), tilemap.getMap().getTex());
 		}
 	}
 }

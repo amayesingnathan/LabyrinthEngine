@@ -14,7 +14,7 @@ namespace Labyrinth {
     protected:
         EditorModal() { Application::BlockEsc(); }
 
-    private:
+    protected:
         virtual void onImGuiRender() = 0;
         virtual void onComplete() {}
         virtual void onCustomButtonRender() { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }

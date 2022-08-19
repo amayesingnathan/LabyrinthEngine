@@ -11,20 +11,21 @@ namespace Labyrinth {
 
 	struct MapSpec;
 
-	class MapSpecModal : public EditorModal
+	class NewMapModal : public EditorModal
 	{
 	public:
-		MapSpecModal(Entity& data);
+		NewMapModal() : EditorModal() {}
 
 		void onImGuiRender() override;
+		void onCustomButtonRender() override;
 		void onComplete() override;
 
-		static Ref<MapSpecModal> Create(Entity& data) { return Ref<MapSpecModal>::Create(data); }
+		static Ref<NewMapModal> Create() { return Ref<NewMapModal>::Create(); }
 
 	private:
-		Entity& mEntity;
 		std::string mMapName;
-		u8 mLayer = 0;
+		i32 mMapWidth = 0, mMapHeight = 0;
+		fs::path mMapPath;
 	};
 
 }
