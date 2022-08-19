@@ -45,7 +45,6 @@ namespace Labyrinth {
 	private:
 		void RegenTexture();
 		AssetHandle GetSheet(usize tileID) const;
-		usize GetID(AssetHandle handle) const;
 
 	private:
 		i32 mWidth = 0, mHeight = 0;
