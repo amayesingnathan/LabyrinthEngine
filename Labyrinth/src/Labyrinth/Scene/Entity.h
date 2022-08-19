@@ -11,6 +11,7 @@ namespace Labyrinth {
 
 	struct RootComponent;
 	struct NodeComponent;
+	struct TransformComponent;
 
 	class Entity
 	{
@@ -92,6 +93,9 @@ namespace Labyrinth {
 		}
 
 		const UUID& getUUID() const;
+		
+		TransformComponent& getTransform();
+		const TransformComponent& getTransform() const;
 
 		operator entt::entity() const { return mEntID; }
 		operator u32() const { return Cast<u32>(mEntID); }
@@ -144,30 +148,5 @@ namespace Labyrinth {
 
 		friend Scene;
 		friend NodeComponent;
-	};
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//   Components exclusively for interaction with and between entities are stored here instead of Components.h	//
-	//   as they need the full Entity definition, and we can't to include Entity.h in Components.h					//
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-	//Root components just indicates an entity has no parent.
-	struct RootComponent
-	{
-		// Seem to need some actual data to be able to use as template parameter in addComponent
-		// so just added a random zero byte.
-		u8 data = 0x0;
-		RootComponent() = default;
-	};
-
-	//Node component for use in parent/child relations
-	struct NodeComponent
-	{
-		UUID parent = 0;
-		std::vector<UUID> children = {};
-
-		NodeComponent() = default;
-
-		operator bool() { return parent; }
 	};
 }

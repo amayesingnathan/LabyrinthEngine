@@ -13,6 +13,9 @@ namespace Labyrinth {
 	Entity Entity::getParent() const { return mScene.lock()->findEntity(getComponent<NodeComponent>().parent); }
 	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
 
+	TransformComponent& Entity::getTransform() { return getComponent<TransformComponent>(); }
+	const TransformComponent& Entity::getTransform() const { return getComponent<TransformComponent>(); }
+
 	void Entity::destroy()
 	{
 		mScene->DestroyEntity(*this);

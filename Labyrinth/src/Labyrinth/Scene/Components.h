@@ -32,6 +32,26 @@ namespace Labyrinth {
 		operator UUID() const { return id; }
 	};
 
+	//Root components just indicates an entity has no parent.
+	struct RootComponent
+	{
+		// Seem to need some actual data to be able to use as template parameter in addComponent
+		// so just added a random zero byte.
+		u8 data = 0x0;
+		RootComponent() = default;
+	};
+
+	//Node component for use in parent/child relations
+	struct NodeComponent
+	{
+		UUID parent = 0;
+		std::vector<UUID> children = {};
+
+		NodeComponent() = default;
+
+		operator bool() { return parent; }
+	};
+
 	struct CameraComponent
 	{
 		SceneCamera camera;
@@ -176,6 +196,7 @@ namespace Labyrinth {
 
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;
+		ScriptComponent(const std::string& name) : className(name) {}
 	};
 
 	class NativeScript;
@@ -249,21 +270,13 @@ namespace Labyrinth {
 		CircleColliderComponent(const CircleColliderComponent&) = default;
 	};
 
-
 	// Tilemaps
 
-	struct TilemapComponent
+	struct TilemapControllerComponent
 	{
-		Ref<Tilemap> tilemap = nullptr;
-		u8 layer = 0;
-
-		TilemapComponent() = default;
-		TilemapComponent(const TilemapComponent&) = default;
-
-		Ref<Texture2D> getTex() const { return tilemap->getTex(); }
+		AssetHandle tilemapHandle = 0;
+		std::unordered_map<TilePos, UUID> tileBehaviour;
 	};
-
-	struct NodeComponent;
 
 	template<typename... Component>
 	struct ComponentGroup {};
@@ -277,8 +290,8 @@ namespace Labyrinth {
 		RigidBodyComponent,
 		BoxColliderComponent,
 		CircleColliderComponent,
-		TilemapComponent,
 		NativeScriptComponent,
-		ScriptComponent
+		ScriptComponent,
+		TilemapControllerComponent
 	>;
 }

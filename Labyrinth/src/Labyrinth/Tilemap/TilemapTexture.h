@@ -24,20 +24,28 @@ namespace Labyrinth {
 	class TilemapTexture : public RefCounted
 	{
 	public:
-		TilemapTexture(usize width, usize height);
-		TilemapTexture(const fs::path& path, usize width, usize height);
+		TilemapTexture(i32 width, i32 height);
+		TilemapTexture(const fs::path& path);
 
 		const Ref<Texture2D>& getTex() const { return mTexture; }
 
-		static Ref<TilemapTexture> Create(usize width, usize height) { return Ref<TilemapTexture>::Create(width, height); }
-		static Ref<TilemapTexture> Create(const fs::path& path, usize width, usize height) { return Ref<TilemapTexture>::Create(path, width, height); }
+		const std::vector<SheetData>& getSheets() const { return mSheets; }
+		const std::vector<TexMapLayer>& getLayers() const { return mLayers; }
+
+		void addSheet(usize id, AssetHandle sheet) { mSheets.emplace_back(id, sheet); }
+		void addSheet(usize id, const Ref<Texture2DSheet>& sheet) { mSheets.emplace_back(id, sheet->handle); }
+
+		void addLayer(const TexMapLayer& layer) { mLayers.emplace_back(layer); }
+
+		static Ref<TilemapTexture> Create(i32 width, i32 height) { return Ref<TilemapTexture>::Create(width, height); }
+		static Ref<TilemapTexture> Create(const fs::path& path) { return Ref<TilemapTexture>::Create(path); }
 
 	private:
 		void RegenTexture();
 		Ref<Texture2DSheet> GetSheet(usize tileID) const;
 
 	private:
-		usize mWidth = 0, mHeight = 0;
+		i32 mWidth = 0, mHeight = 0;
 		std::vector<SheetData> mSheets;
 		std::vector<TexMapLayer> mLayers;
 		Ref<Texture2D> mTexture = nullptr;

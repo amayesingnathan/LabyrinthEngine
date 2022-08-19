@@ -8,7 +8,6 @@
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Scripting/NativeScript.h>
-#include <Labyrinth/Tilemap/TilemapComponents.h>
 
 #include <glm/glm.hpp>
 
@@ -220,6 +219,40 @@ namespace Labyrinth {
 		}
 	}
 
+	void Scene::reloadMaps()
+	{
+		mRegistry.view<TilemapControllerComponent>().each([this](auto e, auto& tmcComponent)
+		{
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcComponent.tilemapHandle);
+
+			Entity entity{ e, Ref<Scene>(this) };
+			entity.addOrReplaceComponent<ScriptComponent>("Labyrinth.Tilemap");
+
+			Entity tiles = getChildByTag("Tiles", entity);
+			if (tiles)
+				tiles.removeChildren();
+			else
+				tiles = CreateEntity("Tiles", entity);
+
+			if (!tilemap)
+			{
+				LAB_CORE_WARN("Tilemap failed to load");
+				return;
+			}
+
+			for (i32 y = 0; y < tilemap->getHeight(); y++)
+			{
+				for (i32 x = 0; x < tilemap->getWidth(); x++)
+				{
+					std::string tileName = fmt::format("({1}, {2})", x, y);
+					Entity tileEntity = CreateEntity(tileName, tiles);
+					tileEntity.addComponent<ScriptComponent>("Labyrinth.Tile");
+					tmcComponent.tileBehaviour[{x, y}] = tileEntity.getUUID();
+				}
+			}
+		});
+	}
+
 	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
 	{
 		// Set the parent of all entity's children (will be null entity if no parent)
@@ -319,10 +352,6 @@ namespace Labyrinth {
 		{
 			mRenderStack->addCircle(trComponent, crComponent, Cast<i32>(entity));
 		});
-		mRegistry.view<TilemapComponent, TransformComponent>().each([this](auto entity, const auto& tmComponent, const auto& trComponent)
-		{
-			mRenderStack->addTilemap(trComponent, tmComponent);
-		});
 	}
 
 	void Scene::DrawScene(EditorCamera& camera)
@@ -407,6 +436,24 @@ namespace Labyrinth {
 		{
 			if (entities.get<TagComponent>(e).tag == tag)
 				return Entity(e, Ref<Scene>(this));
+		}
+
+		return Entity{};
+	}
+
+	Entity Scene::getChildByTag(const std::string& tag, Entity parent)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		for (auto e : parent.getChildren())
+		{
+			Entity entity = findEntity(e);
+			if (entity.getComponent<TagComponent>().tag == tag)
+				return entity;
+
+			Entity checkChildren = getChildByTag(tag, entity);
+			if (checkChildren)
+				return checkChildren;
 		}
 
 		return Entity{};
@@ -590,13 +637,9 @@ namespace Labyrinth {
 	}
 
 	template<>
-	void Scene::onComponentAdded<TileComponent>(Entity entity, TileComponent& component)
+	void Scene::onComponentAdded<TilemapControllerComponent>(Entity entity, TilemapControllerComponent& component)
 	{
-	}
-
-	template<>
-	void Scene::onComponentAdded<TilemapComponent>(Entity entity, TilemapComponent& component)
-	{
+		reloadMaps();
 	}
 
 }

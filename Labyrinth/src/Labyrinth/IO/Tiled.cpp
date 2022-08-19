@@ -50,8 +50,8 @@ namespace Labyrinth {
 
         rapidxml::xml_node<>* layerMetaData = GetChild(mapNode, "layer");
 
-        usize width = Cast<usize>(std::stoi(layerMetaData->first_attribute("width")->value()));
-        usize height = Cast<usize>(std::stoi(layerMetaData->first_attribute("height")->value()));
+        i32 width = Cast<i32>(std::stoi(layerMetaData->first_attribute("width")->value()));
+        i32 height = Cast<i32>(std::stoi(layerMetaData->first_attribute("height")->value()));
 
         std::string mapLine;
         std::string mapElement;

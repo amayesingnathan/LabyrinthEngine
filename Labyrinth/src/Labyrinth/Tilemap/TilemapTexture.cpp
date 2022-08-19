@@ -9,21 +9,25 @@
 
 namespace Labyrinth {
 
-	TilemapTexture::TilemapTexture(usize width, usize height)
+	TilemapTexture::TilemapTexture(i32 width, i32 height)
 		: mWidth(width), mHeight(height)
 	{
 	}
 
-	TilemapTexture::TilemapTexture(const fs::path& path, usize width, usize height)
-		: mWidth(width), mHeight(height)
+	TilemapTexture::TilemapTexture(const fs::path& path)
 	{
 		TiledIO::Open(path, mLayers, mSheets);
+		if (!mLayers.empty())
+		{
+			mWidth = mLayers[0].getWidth();
+			mHeight = mLayers[0].getHeight();
+		}
 	}
 
 	void TilemapTexture::RegenTexture()
 	{
 		// TODO: maybe too large, estimate 100x100 map would be ~150MB of texture memory.
-		constexpr glm::vec<2, usize> TileSize = glm::vec<2, usize>{ 64 };
+		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 		constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
 
 		FramebufferSpec fbSpec;
@@ -62,7 +66,7 @@ namespace Labyrinth {
 		Renderer2D::EndState();
 		RenderCommand::EnableDepth();
 
-		mTexture = Texture2D::Create(mWidth, mHeight);
+		mTexture = Texture2D::Create(fbSpec.width, fbSpec.height);
 
 		Buffer texData(4 * (mWidth * TileSize.x) * (mHeight * TileSize.y));
 		textureFB->readData(0, texData.data);
