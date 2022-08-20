@@ -11,22 +11,16 @@ namespace Labyrinth {
 
     class EditorModal : public RefCounted
     {
-    protected:
+    public:
         EditorModal() { Application::BlockEsc(); }
+        virtual ~EditorModal() { Application::BlockEsc(false); }
 
     protected:
         virtual void onImGuiRender() = 0;
         virtual void onComplete() {}
-        virtual void onCustomButtonRender() { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
-
-        void onClose();
-
-        bool isComplete() const { return mComplete; }
-
+        virtual void onCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
 
     private:
-        bool mComplete = false;
-
         friend class ModalManager;
         friend class InlineModal;
     };

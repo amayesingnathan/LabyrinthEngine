@@ -15,7 +15,7 @@ namespace Labyrinth {
 		NewMapModal() : EditorModal() {}
 
 		void onImGuiRender() override;
-		void onCustomButtonRender() override;
+		void onCustomButtonRender(bool& open) override;
 		void onComplete() override;
 
 		static Ref<NewMapModal> Create() { return Ref<NewMapModal>::Create(); }

@@ -18,8 +18,8 @@ namespace Labyrinth {
             Ref<EditorModal> modal = nullptr;
             ModalButtons type = ModalButtons::OKCancel;
 
-            bool begin = true;
-            i32 flags = 0;
+            bool open = true;
+            i32 flags = 1 << 21; // ImGuiWindowFlags_NoDocking
 
             ModalEntry(const std::string& h, ModalButtons t, const Ref<EditorModal>& m) : heading(h), modal(m), type(t) {}
         };
@@ -38,6 +38,12 @@ namespace Labyrinth {
         template<typename T, typename... Args>
         static void Open(const std::string& title, ModalButtons type, Args&&... args)
         {
+            if (Exists(title))
+            {
+                LAB_CORE_WARN("Modal already open!");
+                return;
+            }
+
             sNewModal = sModals.emplace_back(title, type, T::Create(std::forward<Args>(args)...)).id;
         }
         static void Open(const std::string& title, ModalButtons type, std::function<void()> onImGuiRender, std::function<void()> onComplete = std::function<void()>())
@@ -54,6 +60,11 @@ namespace Labyrinth {
             sCallbacks[sNewModal].push_back(function);
         }
 
+    private:
+        static bool Exists(const std::string& title)
+        {
+            return std::find_if(sModals.begin(), sModals.end(), [&](const ModalEntry& entry) { return title == entry.heading; }) != sModals.end();
+        }
 
     private:
         static void Display();

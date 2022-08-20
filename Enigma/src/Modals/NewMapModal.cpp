@@ -21,13 +21,13 @@ namespace Labyrinth {
         ImGui::InputInt("Height", &mMapHeight);
     }
 
-    void NewMapModal::onCustomButtonRender()
+    void NewMapModal::onCustomButtonRender(bool& open)
     {
         if (ImGui::Button("Create"))
         {
             mMapPath = fs::path();
             onComplete();
-            onClose();
+            open = false;
         }
 
         ImGui::SameLine();
@@ -39,14 +39,14 @@ namespace Labyrinth {
             {
                 mMapPath = fs::relative(result);
                 onComplete();
-                onClose();
+                open = false;
             }
         }
 
         ImGui::SameLine();
 
         if (ImGui::Button("Cancel"))
-            onClose();
+            open = false;
     }
 
     void NewMapModal::onComplete()

@@ -495,7 +495,7 @@ namespace Labyrinth {
 			{
 				ModalManager::Open("Quit", ModalButtons::YesNo, []() 
 				{
-					ImGui::Text("Are you sure you want to quit without saving?");
+					ImGui::Text("Are you sure you want to quit? Any unsaved changes will be lost.");
 				}, []()
 				{ 
 					Application::BlockEsc(false);

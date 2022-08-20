@@ -9,27 +9,20 @@ namespace Labyrinth {
     {
         for (ModalEntry& modalData : sModals)
         {
-            // Do this here in case instead of Open() as it will fail if Open() is called midway through another popup.
-            if (modalData.begin)
-            {
-                ImGui::OpenPopup(modalData.heading.c_str());
-                modalData.begin = false;
-            }
-
             ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
+            ImGui::SetNextWindowSize(ImVec2(600, 400), ImGuiCond_FirstUseEver);
             ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-            if (!modalData.modal->isComplete() && ImGui::BeginPopupModal(modalData.heading.c_str(), nullptr, modalData.flags))
+            if (ImGui::Begin(modalData.heading.c_str(), &modalData.open, modalData.flags))
             {
                 modalData.modal->onImGuiRender();
-
                 RenderButtons(modalData);
-                ImGui::EndPopup();
             }
+
+            ImGui::End();
         }
 
         // Call any completion callbacks before deleting modal entries
-        auto removeStart = std::remove_if(sModals.begin(), sModals.end(), [](const ModalEntry& entry) { return entry.modal->isComplete(); });
+        auto removeStart = std::remove_if(sModals.begin(), sModals.end(), [](const ModalEntry& entry) { return !entry.open; });
         for (auto it = removeStart; it != sModals.end(); it++)
         {
             if (sCallbacks.count(it->id) == 0) continue;
@@ -57,7 +50,7 @@ namespace Labyrinth {
             if (ImGui::Button("OK"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
             break;
         }
@@ -66,13 +59,13 @@ namespace Labyrinth {
             if (ImGui::Button("OK"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
 
             ImGui::SameLine();
 
             if (ImGui::Button("Cancel"))
-                modalData.modal->onClose();
+                modalData.open = false;
 
             break;
         }
@@ -81,18 +74,18 @@ namespace Labyrinth {
             if (ImGui::Button("Yes"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
 
             ImGui::SameLine();
 
             if (ImGui::Button("No"))
-                modalData.modal->onClose();
+                modalData.open = false;
 
             break;
         }
         case ModalButtons::Custom:
-            modalData.modal->onCustomButtonRender();
+            modalData.modal->onCustomButtonRender(modalData.open);
             break;
         }
     }
