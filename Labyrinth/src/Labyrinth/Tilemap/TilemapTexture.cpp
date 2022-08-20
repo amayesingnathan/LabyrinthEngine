@@ -29,6 +29,7 @@ namespace Labyrinth {
 		// TODO: maybe too large, estimate 100x100 map would be ~150MB of texture memory.
 		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 		constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
+		constexpr glm::vec2 TileTexSize = 2.0f / TileSizeF;
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = mWidth * TileSize.x;
@@ -58,7 +59,7 @@ namespace Labyrinth {
 					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
 					//pos -= 1; TODO: Not sure why this is here 
 
-					Renderer2D::DrawQuad(pos, TileSizeF, sheet->getSubTex(tileID));
+					Renderer2D::DrawQuad(pos, TileTexSize, sheet->getSubTex(tileID));
 				}
 			}
 		}

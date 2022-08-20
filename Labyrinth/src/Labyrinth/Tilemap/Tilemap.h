@@ -52,7 +52,10 @@ namespace Labyrinth {
 
 		void removeLayer(usize index) { mTexture->removeLayer(index); }
 
-		void setTile(usize layer, usize x, usize y, i32 id) { mTexture->setTile(layer, x, y, id); }
+		void setTile(usize layer, usize x, usize y, i32 id) 
+		{ 
+			mTexture->setTile(layer, x, y, id); 
+		}
 
 		static Ref<Tilemap> Create(const std::string& name, i32 width, i32 height) { return Ref<Tilemap>::Create(name, width, height); }
 		static Ref<Tilemap> Create(const fs::path& path) { return Ref<Tilemap>::Create(path); }
@@ -66,6 +69,7 @@ namespace Labyrinth {
 		Ref<TilemapTexture> mTexture = nullptr;
 		i32 mWidth = 0, mHeight = 0;
 
+		friend class TilemapSerialiser;
 		friend class MapEditModal;
 	};
 }

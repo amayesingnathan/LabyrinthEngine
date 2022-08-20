@@ -266,6 +266,7 @@ namespace Labyrinth {
 			LAB_DESERIALISE_PROPERTY(Layer, layer, texLayer);
 			tilemap->addLayer(layer);
 		}
+		tilemap->RegenTexture();
 
 		asset = tilemap;
 		asset->handle = metadata.handle;

@@ -38,9 +38,19 @@ namespace Labyrinth {
 
 		void addLayer(const TexMapLayer& layer) { mLayers.emplace_back(layer); }
 
-		void removeLayer(usize index) { mLayers.erase(std::remove_if(mLayers.begin(), mLayers.end(), [=](const TexMapLayer& layer) { return layer.getLayer() == index; }), mLayers.end()); }
+		void removeLayer(usize index) 
+		{ 
+			mLayers.erase(std::remove_if(mLayers.begin(), mLayers.end(), 
+				[=](const TexMapLayer& layer) { return layer.getLayer() == index; }),
+				mLayers.end());
+		}
 
-		void setTile(usize layer, usize x, usize y, i32 id) { mLayers[layer](x, y) = id; RegenTexture(); }
+		void setTile(usize layer, usize x, usize y, i32 id) 
+		{ 
+			i32& tileID = mLayers[layer](x, y); 
+			tileID = id;
+			RegenTexture(); 
+		}
 
 		static Ref<TilemapTexture> Create(i32 width, i32 height) { return Ref<TilemapTexture>::Create(width, height); }
 		static Ref<TilemapTexture> Create(const fs::path& path) { return Ref<TilemapTexture>::Create(path); }

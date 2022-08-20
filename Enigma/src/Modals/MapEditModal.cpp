@@ -34,7 +34,10 @@ namespace Labyrinth {
                 mTilemap->addLayer();
             ImGui::SameLine();
             if (ImGui::Button("Delete"))
+            {
                 mTilemap->removeLayer(mCurrentLayer);
+                mTilemap->RegenTexture();
+            }
             ImGui::EndGroup();
         }
 
@@ -98,14 +101,13 @@ namespace Labyrinth {
             {
                 std::string name = fmt::format("##MapTile({}, {})", x, y);
 
-                ImGui::SetCursorPosX(xpos + (y * tileSize.x));
-                ImGui::SetCursorPosY(ypos + (x * tileSize.y));
+                ImGui::SetCursorPosX(xpos + (x * tileSize.x));
+                ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
                 if (ImGui::Button(name.c_str(), tileSize) && SelectionManager::GetSelectionCount(SelectionDomain::Tilemap) != 0)
                 {
                     usize tileId = SelectionManager::GetSelection(SelectionDomain::Tilemap, 0);
                     mTilemap->setTile(mCurrentLayer, x, y, (i32)tileId);
-                    mTilemap->RegenTexture();
                 }
                 if (ImGui::BeginDragDropTarget())
                 {
