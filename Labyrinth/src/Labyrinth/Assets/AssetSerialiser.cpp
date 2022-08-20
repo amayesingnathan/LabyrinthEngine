@@ -253,15 +253,19 @@ namespace Labyrinth {
 		{
 			i32 firstID;
 			u64 handle;
-			LAB_DESERIALISE_PROPERTY(FirstID, firstID, mapNode);
-			LAB_DESERIALISE_PROPERTY(SheetHandle, handle, mapNode);
+			LAB_DESERIALISE_PROPERTY(FirstID, firstID, sheet);
+			LAB_DESERIALISE_PROPERTY(SheetHandle, handle, sheet);
 
 			tilemap->addSheet(firstID, handle);
 		}
 
 		auto mapLayers = mapNode["TextureLayers"];
-		for (auto sheet : mapSheets)
-			tilemap->addLayer(sheet.as<TexMapLayer>());
+		for (auto texLayer : mapLayers)
+		{
+			TexMapLayer layer;
+			LAB_DESERIALISE_PROPERTY(Layer, layer, texLayer);
+			tilemap->addLayer(layer);
+		}
 
 		asset = tilemap;
 		asset->handle = metadata.handle;

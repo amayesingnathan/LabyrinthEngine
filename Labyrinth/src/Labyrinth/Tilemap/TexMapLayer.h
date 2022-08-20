@@ -43,6 +43,8 @@ namespace Labyrinth {
 	{
 		mOut << YAML::Flow;
 		mOut << YAML::BeginSeq;
+		mOut << layer.getLayer() << layer.getWidth() << layer.getHeight();
+
 		for (auto id : layer)
 			mOut << id;
 
@@ -59,9 +61,11 @@ namespace YAML {
 		inline static Node encode(const Labyrinth::TexMapLayer& rhs)
 		{
 			Node node;
+			node.push_back(rhs.getLayer());
+			node.push_back(rhs.getWidth());
+			node.push_back(rhs.getHeight());
 			for (auto id : rhs)
 				node.push_back(id);
-			//node.SetStyle(EmitterStyle::Flow);
 			return node;
 		}
 
@@ -70,9 +74,16 @@ namespace YAML {
 			if (!node.IsSequence())
 				return false;
 
-			rhs.resize(node.size());
-			for (auto element : node)
-				rhs.add(element.as<i32>());
+			rhs.resize(node.size() - 3);
+
+			auto it = node.begin();
+			usize layer = it++->as<usize>();
+			i32 width = it++->as<i32>();
+			i32 height = it++->as<i32>();
+			rhs = Labyrinth::TexMapLayer(layer, width, height);
+
+			for (it; it != node.end(); ++it)
+				rhs.add(it->as<i32>());
 
 			return true;
 		}
