@@ -20,10 +20,15 @@ namespace Labyrinth {
 		static Ref<MapEditModal> Create(const Ref<Tilemap>& map) { return Ref<MapEditModal>::Create(map); }
 
 	private:
-		Ref<Tilemap> mTilemap;
-		TexMapLayer mCurrentLayer;
+		void DrawMap();
+		void DrawSheet();
 
+	private:
+		Ref<Tilemap> mTilemap;
 		i32 mMapWidth, mMapHeight;
+
+		usize mCurrentLayer = 0;
+		SheetData mCurrentSheet;
 	};
 
 }
