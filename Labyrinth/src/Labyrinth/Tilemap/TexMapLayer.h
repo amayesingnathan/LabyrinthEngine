@@ -8,19 +8,22 @@ namespace Labyrinth {
 	class TexMapLayer
 	{
 	public:
-		using TileID = usize;
+		using TileID = i32;
 
 	public:
 		TexMapLayer() = default;
-		TexMapLayer(i32 width, i32 height) : mWidth(width), mHeight(height) { mTiles.reserve(width * height); }
+		TexMapLayer(usize layer, i32 width, i32 height) : mIndex(layer), mTiles(width * height, -1), mWidth(width), mHeight(height) { }
 
 		TileID& operator()(usize x, usize y) {return mTiles[x + (mWidth * y)]; }
 		const TileID& operator()(usize x, usize y) const { return mTiles[x + (mWidth * y)]; }
+
+		bool operator==(const TexMapLayer& other) const { return mIndex == other.mIndex; }
 
 		void add(TileID id) { mTiles.emplace_back(id); }
 
 		i32 getWidth() const { return mWidth; }
 		i32 getHeight() const { return mHeight; }
+		usize getLayer() const { return mIndex; }
 
 		void resize(usize size) { mTiles.reserve(size); }
 
@@ -30,8 +33,9 @@ namespace Labyrinth {
 		auto end() const { return mTiles.cend(); }
 
 	private:
+		usize mIndex = 0;
 		std::vector<TileID> mTiles;
-		i32 mWidth, mHeight;
+		i32 mWidth = 0, mHeight = 0;
 
 	};
 
@@ -68,7 +72,7 @@ namespace YAML {
 
 			rhs.resize(node.size());
 			for (auto element : node)
-				rhs.add(element.as<usize>());
+				rhs.add(element.as<i32>());
 
 			return true;
 		}

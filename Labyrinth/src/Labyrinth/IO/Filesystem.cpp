@@ -118,11 +118,23 @@ namespace Labyrinth {
 
 	void FileUtils::Remove(const fs::path& filepath)
 	{
+		if (!fs::exists(filepath))
+		{
+			LAB_CORE_ERROR("File does not exist!");
+			return;
+		}
+
 		fs::remove(filepath);
 	}
 
 	void FileUtils::RemoveDir(const fs::path& filepath)
 	{
+		if (!fs::exists(filepath))
+		{
+			LAB_CORE_ERROR("Directory does not exist!");
+			return;
+		}
+
 		fs::remove_all(filepath);
 	}
 

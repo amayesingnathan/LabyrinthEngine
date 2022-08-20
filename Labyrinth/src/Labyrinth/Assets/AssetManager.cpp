@@ -110,7 +110,7 @@ namespace Labyrinth {
 		auto& metadata = GetMetadataInternal(assetHandle);
 		if (!metadata.valid())
 		{
-			LAB_CORE_ERROR("Trying to reload invalid asset");
+			LAB_CORE_ERROR("Trying to destroy invalid asset");
 			return;
 		}
 

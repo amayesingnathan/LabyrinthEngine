@@ -83,7 +83,7 @@ namespace Labyrinth {
 		Buffer fileData = FileUtils::Read(assemblyPath);
 
 		MonoImageOpenStatus status;
-		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), fileData.size, 1, &status, 0);
+		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), (u32)fileData.size, 1, &status, 0);
 
 		if (status != MONO_IMAGE_OK)
 		{

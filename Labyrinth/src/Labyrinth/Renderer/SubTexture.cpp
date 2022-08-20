@@ -15,7 +15,6 @@ namespace Labyrinth {
 	{
 		mTileCountX = (u32)(round(mTexture->getWidth() / tileSize.x));
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
 	Texture2DSheet::Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
@@ -23,17 +22,16 @@ namespace Labyrinth {
 	{
 		mTileCountX = (u32)(round(mTexture->getWidth() / tileSize.x));
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
-	bool Texture2DSheet::hasSubTex(usize id) const
+	bool Texture2DSheet::hasSubTex(i32 id) const
 	{
 		if (mSubTextures.count(id) == 0)
 			return false;
 		else return true;
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::getSubTex(usize id)
+	Ref<SubTexture2D> Texture2DSheet::getSubTex(i32 id)
 	{
 		if (!hasSubTex(id))
 		{
@@ -44,7 +42,7 @@ namespace Labyrinth {
 		return AssetManager::GetAsset<SubTexture2D>(mSubTextures.at(id));
 	}
 
-	void Texture2DSheet::addSubTex(usize id, const Ref<SubTexture2D>& subtex)
+	void Texture2DSheet::addSubTex(i32 id, const Ref<SubTexture2D>& subtex)
 	{
 		if (hasSubTex(id))
 		{
@@ -55,7 +53,7 @@ namespace Labyrinth {
 		mSubTextures.emplace(id, subtex->handle);
 	}
 
-	void Texture2DSheet::addSubTex(usize id, AssetHandle handle)
+	void Texture2DSheet::addSubTex(i32 id, AssetHandle handle)
 	{
 		if (hasSubTex(id))
 		{
@@ -66,7 +64,7 @@ namespace Labyrinth {
 		mSubTextures.emplace(id, handle);
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::createSubTex(usize id, const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
+	Ref<SubTexture2D> Texture2DSheet::createSubTex(i32 id, const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
 	{
 		if (hasSubTex(id))
 		{
@@ -79,7 +77,7 @@ namespace Labyrinth {
 		return subTex;
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::createSubTex(usize id, const std::string& name, const glm::vec2 coords[4])
+	Ref<SubTexture2D> Texture2DSheet::createSubTex(i32 id, const std::string& name, const glm::vec2 coords[4])
 	{
 		if (hasSubTex(id))
 		{
@@ -92,7 +90,7 @@ namespace Labyrinth {
 		return subTex;
 	}
 
-	void Texture2DSheet::deleteSubTex(usize id)
+	void Texture2DSheet::deleteSubTex(i32 id)
 	{
 		if (!hasSubTex(id))
 		{
@@ -103,9 +101,9 @@ namespace Labyrinth {
 		mSubTextures.erase(id);
 	}
 
-	void Texture2DSheet::generateTileset(usize startIndex)
+	void Texture2DSheet::generateTileset(i32 startIndex)
 	{
-		usize count = startIndex;
+		i32 count = startIndex;
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
@@ -117,13 +115,21 @@ namespace Labyrinth {
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::operator[](usize id)
+	void Texture2DSheet::clearTileset()
+	{
+		for (const auto& [id, handle] : mSubTextures)
+			AssetManager::DestroyAsset(handle);
+
+		mSubTextures.clear();
+	}
+
+	Ref<SubTexture2D> Texture2DSheet::operator[](i32 id)
 	{
 		if (mSubTextures.count(id) == 0) return nullptr;
 		return AssetManager::GetAsset<SubTexture2D>(mSubTextures[id]);
 	}
 
-	const Ref<SubTexture2D> Texture2DSheet::operator[](usize id) const
+	const Ref<SubTexture2D> Texture2DSheet::operator[](i32 id) const
 	{
 		if (mSubTextures.count(id) == 0) return nullptr;
 

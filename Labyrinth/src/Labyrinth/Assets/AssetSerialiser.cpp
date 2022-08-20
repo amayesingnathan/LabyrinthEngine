@@ -151,7 +151,7 @@ namespace Labyrinth {
 		auto subtextures = texNode["SubTextures"];
 		for (auto subtex : subtextures)
 		{
-			usize id = subtex["ID"].as<usize>();
+			i32 id = subtex["ID"].as<i32>();
 			AssetHandle handle = subtex["Handle"].as<u64>();
 
 			sheet->addSubTex(id, handle);

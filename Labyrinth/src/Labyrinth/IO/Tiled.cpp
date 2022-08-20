@@ -56,9 +56,10 @@ namespace Labyrinth {
         std::string mapLine;
         std::string mapElement;
 
+        usize index = 0;
         for (rapidxml::xml_node<>* layer = GetChild(mapNode, "layer"); layer; layer = layer->next_sibling())
         {
-            TexMapLayer currLayer(width, height);
+            TexMapLayer currLayer(index, width, height);
             rapidxml::xml_node<>* layerData = GetChild(layer, "data");
             std::istringstream mapStream(layerData->value());
 
@@ -71,10 +72,11 @@ namespace Labyrinth {
                 while (std::getline(lineStream, mapElement, ','))
                 {
                     if (mapElement != "\r" && mapElement != "\n")
-                        currLayer.add(Cast<usize>(std::stoi(mapElement)));
+                        currLayer.add(Cast<i32>(std::stoi(mapElement)));
                 }
             }
             layers.emplace_back(std::move(currLayer));
+            index++;
         }
     }
 
@@ -82,7 +84,7 @@ namespace Labyrinth {
     {
         for (rapidxml::xml_node<>* tileset = GetChild(mapNode, "tileset"); std::string(tileset->name()) == "tileset"; tileset = tileset->next_sibling())
         {
-            usize firstGridID = Cast<usize>(std::stoll(tileset->first_attribute("firstgid")->value()));
+            i32 firstGridID = Cast<i32>(std::stoll(tileset->first_attribute("firstgid")->value()));
 
             //Some tilesets are included inline in file, some stored externally. 
             if (rapidxml::xml_attribute<>* source = tileset->first_attribute("source"))
@@ -98,7 +100,7 @@ namespace Labyrinth {
         std::sort(setData.begin(), setData.end());
     }
 
-    void TiledIO::GetTileData(const std::filesystem::path& tileset, usize firstID, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(const std::filesystem::path& tileset, i32 firstID, std::vector<SheetData>& setData)
     {
         //Remove .tsx extension and replace with .png
         std::filesystem::path tilesetPng = tileset.parent_path();
@@ -123,7 +125,7 @@ namespace Labyrinth {
         delete doc;
     }
 
-    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, usize firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, i32 firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
     {
         usize tileWidth = Cast<usize>(std::stoi(tilesetNode->first_attribute("tilewidth")->value()));
         usize tileHeight = Cast<usize>(std::stoi(tilesetNode->first_attribute("tileheight")->value()));

@@ -44,10 +44,15 @@ namespace Labyrinth {
 		const std::vector<SheetData>& getSheets() const { return mTexture->getSheets(); }
 		const std::vector<TexMapLayer>& getLayers() const { return mTexture->getLayers(); }
 
-		void addSheet(usize id, AssetHandle sheet) { mTexture->addSheet(id, sheet); }
-		void addSheet(usize id, const Ref<Texture2DSheet>& sheet) { mTexture->addSheet(id, sheet); }
+		void addSheet(i32 id, AssetHandle sheet) { mTexture->addSheet(id, sheet); }
+		void addSheet(i32 id, const Ref<Texture2DSheet>& sheet) { mTexture->addSheet(id, sheet); }
 
+		void addLayer() { mTexture->addLayer({ mTexture->getLayers().size(), mWidth, mHeight }); }
 		void addLayer(const TexMapLayer& layer) { mTexture->addLayer(layer); }
+
+		void removeLayer(usize index) { mTexture->removeLayer(index); }
+
+		void setTile(usize layer, usize x, usize y, i32 id) { mTexture->setTile(layer, x, y, id); }
 
 		static Ref<Tilemap> Create(const std::string& name, i32 width, i32 height) { return Ref<Tilemap>::Create(name, width, height); }
 		static Ref<Tilemap> Create(const fs::path& path) { return Ref<Tilemap>::Create(path); }
@@ -61,7 +66,7 @@ namespace Labyrinth {
 		Ref<TilemapTexture> mTexture = nullptr;
 		i32 mWidth = 0, mHeight = 0;
 
-		friend class TilemapManager;
+		friend class MapEditModal;
 	};
 }
 

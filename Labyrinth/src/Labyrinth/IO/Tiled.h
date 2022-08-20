@@ -31,8 +31,8 @@ namespace Labyrinth {
 	private:
 		static void GetLayers(rapidxml::xml_node<char>* mapNode, std::vector<TexMapLayer>& layers);
 		static void GetTilesets(rapidxml::xml_node<char>* mapNode, const std::filesystem::path& lvlPath, std::vector<SheetData>& setData);
-		static void GetTileData(const std::filesystem::path& tileset, usize firstID, std::vector<SheetData>& setData);
-		static void GetTileData(rapidxml::xml_node<char>* tilesetNode, usize firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData);
+		static void GetTileData(const std::filesystem::path& tileset, i32 firstID, std::vector<SheetData>& setData);
+		static void GetTileData(rapidxml::xml_node<char>* tilesetNode, i32 firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData);
 
 		static rapidxml::xml_node<char>* GetChild(rapidxml::xml_node<char>* inputNode, std::string sNodeFilter);
 	};
