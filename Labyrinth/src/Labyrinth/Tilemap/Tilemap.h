@@ -9,23 +9,6 @@
 
 namespace Labyrinth {
 
-	struct TilePos
-	{
-		i32 x = -1, y = -1;
-
-		TilePos() = default;
-		TilePos(i32 _x, i32 _y) : x(_x), y(_y) {}
-
-		bool operator==(const TilePos& other) const { return x == other.x && y == other.y; }
-	};
-
-	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TilePos& pos)
-	{
-		mOut << YAML::Flow;
-		mOut << YAML::BeginSeq << pos.x << pos.y << YAML::EndSeq;
-		return mOut;
-	}
-
 	class Tilemap : public Asset
 	{
 	public:
@@ -57,10 +40,14 @@ namespace Labyrinth {
 
 		void removeLayer(usize index) { mTexture->removeLayer(index); }
 
-		void setTile(usize layer, usize x, usize y, i32 id) 
+		void setTile(usize layer, TilePos pos, i32 id) 
 		{ 
-			mTexture->setTile(layer, x, y, id); 
+			mTexture->setTile(layer, pos, id); 
 		}
+
+		const std::unordered_map<TilePos, std::string>& getTileBehaviour() const { return mTileBehaviour; }
+		void setTileBehaviour(TilePos pos, const std::string& script) { mTileBehaviour[pos] = script; }
+		void removeTileBehaviour(TilePos pos) { if (mTileBehaviour.count(pos) != 0) mTileBehaviour.erase(pos); }
 
 		static Ref<Tilemap> Create(const std::string& name, i32 width, i32 height) { return Ref<Tilemap>::Create(name, width, height); }
 		static Ref<Tilemap> Create(const fs::path& path) { return Ref<Tilemap>::Create(path); }
@@ -74,47 +61,9 @@ namespace Labyrinth {
 		Ref<TilemapTexture> mTexture = nullptr;
 		i32 mWidth = 0, mHeight = 0;
 
+		std::unordered_map<TilePos, std::string> mTileBehaviour;
+
 		friend class TilemapSerialiser;
 		friend class MapEditModal;
-	};
-}
-
-namespace std {
-	template<typename T> struct hash;
-
-	template<>
-	struct hash<Labyrinth::TilePos>
-	{
-		std::size_t operator()(const Labyrinth::TilePos& tilePos) const
-		{
-			u64 combination = (u64)tilePos.x | ((u64)tilePos.y << 32);
-			return std::hash<u64>()(combination);
-		}
-	};
-}
-
-namespace YAML {
-
-	template<>
-	struct convert<Labyrinth::TilePos>
-	{
-		inline static Node encode(const Labyrinth::TilePos& rhs)
-		{
-			Node node;
-			node.push_back(rhs.x);
-			node.push_back(rhs.y);
-			//node.SetStyle(EmitterStyle::Flow);
-			return node;
-		}
-
-		inline static bool decode(const Node& node, Labyrinth::TilePos& rhs)
-		{
-			if (!node.IsSequence() || node.size() != 2)
-				return false;
-
-			rhs.x = node[0].as<i32>();
-			rhs.y = node[1].as<i32>();
-			return true;
-		}
 	};
 }

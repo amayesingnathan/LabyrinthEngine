@@ -9,6 +9,12 @@ namespace Labyrinth {
     {
         for (ModalEntry& modalData : sModals)
         {
+            if (!modalData.modal)
+            {
+                modalData.open = false;
+                continue;
+            }
+
             ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
             ImGui::SetNextWindowSize(ImVec2(600, 400), ImGuiCond_FirstUseEver);
             ImGui::SetNextWindowPos(centre, ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
@@ -87,6 +93,15 @@ namespace Labyrinth {
         case ModalButtons::Custom:
             modalData.modal->onCustomButtonRender(modalData.open);
             break;
+        }
+    }
+
+    void ModalManager::DispatchEvents(Event& e)
+    {
+        for (auto& modalEntry : sModals)
+        {
+            if (modalEntry.modal)
+                modalEntry.modal->onEvent(e);
         }
     }
 }

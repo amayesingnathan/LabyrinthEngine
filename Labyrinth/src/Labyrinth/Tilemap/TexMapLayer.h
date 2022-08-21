@@ -1,5 +1,7 @@
 #pragma once
 
+#include "TilePos.h"
+
 #include <Labyrinth/Core/System/Assert.h>
 #include <Labyrinth/IO/YAML.h>
 
@@ -14,11 +16,11 @@ namespace Labyrinth {
 		TexMapLayer() = default;
 		TexMapLayer(usize layer, i32 width, i32 height) : mIndex(layer), mTiles(width * height, -1), mWidth(width), mHeight(height) { }
 
-		TileID& operator()(usize x, usize y) 
+		TileID& operator[](TilePos pos)
 		{
-			return mTiles[x + (mWidth * y)]; 
+			return mTiles[pos.x + (mWidth * pos.y)];
 		}
-		const TileID& operator()(usize x, usize y) const { return mTiles[x + (mWidth * y)]; }
+		const TileID& operator[](const TilePos& pos) const { return mTiles[pos.x + (mWidth * pos.y)]; }
 
 		bool operator==(const TexMapLayer& other) const { return mIndex == other.mIndex; }
 

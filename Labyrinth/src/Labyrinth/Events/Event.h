@@ -31,7 +31,7 @@ namespace Labyrinth {
 
 #define EVENT_CLASS_CATEGORY(category) virtual i32 getCategoryFlags() const override { return category; }
 
-	class LAB_API Event
+	class Event
 	{
 		friend class EventDispatcher;
 
@@ -54,7 +54,7 @@ namespace Labyrinth {
 	private:
 	};
 
-	class LAB_API EventDispatcher
+	class EventDispatcher
 	{
 	public:
 		EventDispatcher(Event& event)
@@ -64,7 +64,7 @@ namespace Labyrinth {
 		template<typename T, typename F>
 		bool dispatch(const F& func)
 		{
-			if (mEvent.getEventType() == T::GetStaticType())
+			if (mEvent.getEventType() == T::GetStaticType() && !mEvent.handled)
 			{
 				mEvent.handled = func(static_cast<T&>(mEvent));
 				return true;

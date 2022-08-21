@@ -241,15 +241,15 @@ namespace Labyrinth {
 
 			tiles = CreateEntity("Tiles", entity);
 
-			for (i32 y = 0; y < tilemap->getHeight(); y++)
+			tmcComponent.tileBehaviour.clear();
+			for (const auto& [pos, script] : tilemap->getTileBehaviour())
 			{
-				for (i32 x = 0; x < tilemap->getWidth(); x++)
-				{
-					std::string tileName = fmt::format("({}, {})", x, y);
-					Entity tileEntity = CreateEntity(tileName, tiles);
-					tileEntity.addComponent<ScriptComponent>();
-					tmcComponent.tileBehaviour[{x, y}] = tileEntity.getUUID();
-				}
+				std::string tileName = fmt::format("({}, {})", pos.x, pos.y);
+				Entity tileBehaviour = CreateEntity(tileName, tiles);
+
+				tileBehaviour.addComponent<ScriptComponent>(script);
+				tileBehaviour.removeComponent<TransformComponent>();
+				tmcComponent.tileBehaviour[pos] = tileBehaviour.getUUID();
 			}
 		});
 	}

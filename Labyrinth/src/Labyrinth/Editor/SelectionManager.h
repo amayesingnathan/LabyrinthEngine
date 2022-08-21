@@ -7,7 +7,7 @@ namespace Labyrinth {
 
     enum class SelectionDomain
     {
-        Global, Scene, Tilemap
+        Global, Scene
     };
 
     class SelectionManager

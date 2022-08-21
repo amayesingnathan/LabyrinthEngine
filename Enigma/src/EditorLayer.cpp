@@ -245,7 +245,7 @@ namespace Labyrinth {
 
 		mViewportFocused = ImGui::IsWindowFocused();
 		mViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused && !mViewportHovered);
+		//Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused && !mViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -447,6 +447,7 @@ namespace Labyrinth {
 			mEditorData.camera.onEvent(e);
 
 		PanelManager::DispatchEvents(e);
+		ModalManager::DispatchEvents(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));

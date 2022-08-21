@@ -223,6 +223,17 @@ namespace Labyrinth {
 			}
 			out << YAML::EndSeq;
 
+			out << YAML::Key << "TileBehaviour";
+			out << YAML::Value << YAML::BeginSeq;
+			for (const auto& [pos, script]: tilemap->getTileBehaviour())
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(TilePos, pos, out);
+				LAB_SERIALISE_PROPERTY(Behaviour, script, out);
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
+
 			out << YAML::EndMap;
 		}
 
@@ -266,7 +277,19 @@ namespace Labyrinth {
 			LAB_DESERIALISE_PROPERTY(Layer, layer, texLayer);
 			tilemap->addLayer(layer);
 		}
+
 		tilemap->RegenTexture();
+
+		auto tileBehaviour = mapNode["TileBehaviour"];
+		for (auto tile : tileBehaviour)
+		{
+			TilePos pos;
+			std::string script;
+			LAB_DESERIALISE_PROPERTY(TilePos, pos, tile);
+			LAB_DESERIALISE_PROPERTY(Behaviour, script, tile);
+
+			tilemap->setTileBehaviour(pos, script);
+		}
 
 		asset = tilemap;
 		asset->handle = metadata.handle;

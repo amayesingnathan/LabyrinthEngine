@@ -67,7 +67,7 @@ namespace Labyrinth {
 		virtual ~RenderLayer() = default;
 
 		u8 getDepth() const { return mDepth; }
-		void clear() { mQuads.clear(); mCircles.clear(); }
+		void clear() { mQuads.clear(); mCircles.clear(); mTilemaps.clear(); }
 
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }

@@ -87,7 +87,7 @@ namespace Labyrinth {
 			{
 				for (usize x = 0; x < mWidth; x++)
 				{
-					i32 tileID = layer(x, mHeight - y - 1);
+					i32 tileID = layer[{x, mHeight - y - 1}];
 					if (tileID == -1) continue;
 
 					Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileID));

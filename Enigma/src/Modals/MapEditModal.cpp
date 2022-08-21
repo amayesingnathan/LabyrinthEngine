@@ -6,10 +6,32 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
+#include <Labyrinth/IO/Input.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
 namespace Labyrinth {
+
+    inline static EditMode EditModeFromString(const std::string& assetType)
+    {
+        if (assetType == "Behaviour")	return EditMode::Behaviour;
+        else if (assetType == "Paint")	return EditMode::Paint;
+
+        LAB_CORE_ASSERT(false, "Unknown Edit Mode!");
+        return EditMode::Behaviour;
+    }
+
+    inline static const char* EditModeToString(EditMode assetType)
+    {
+        switch (assetType)
+        {
+        case EditMode::Behaviour:	return "Behaviour";
+        case EditMode::Paint:		return "Paint";
+        }
+
+        LAB_CORE_ASSERT(false, "Unknown Edit Mode");
+        return "None";
+    }
 
     MapEditModal::MapEditModal(const Ref<Tilemap>& map) : EditorModal(), mTilemap(map), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
     {
@@ -19,8 +41,10 @@ namespace Labyrinth {
     {
         // Left
         {
+            ImGui::BeginChild("Left Pane", ImVec2(300, -3 * ImGui::GetFrameHeightWithSpacing()));
+
             ImGui::BeginGroup();
-            ImGui::BeginChild("Layers", ImVec2(300, -3 * ImGui::GetFrameHeightWithSpacing()), true);
+            ImGui::BeginChild("Layers", ImVec2(0, -12 * ImGui::GetFrameHeightWithSpacing()), true);
             for (const TexMapLayer& layer : mTilemap->getLayers())
             {
                 usize layerIndex = layer.getLayer();
@@ -57,6 +81,42 @@ namespace Labyrinth {
                 }
             }
             ImGui::EndGroup();
+
+            ImGui::BeginChild("Behaviour", ImVec2(300, -4 * ImGui::GetFrameHeightWithSpacing()));
+
+            ImGui::Text(fmt::format("Tile: ({}, {})", mCurrentMapTile.x, mCurrentMapTile.y).c_str());
+
+            ImGui::BeginDisabled(mCurrentMapTile.valid());
+            const std::string& script = (mTilemap->getTileBehaviour().count(mCurrentMapTile) != 0) ? mTilemap->getTileBehaviour().at(mCurrentMapTile) : "";
+            if (ImGui::BeginCombo("Behaviour", script.c_str()))
+            {
+                // Display "None" at the top of the list
+                bool clear = script.empty();
+                if (ImGui::Selectable("None", clear))
+                    mTilemap->removeTileBehaviour(mCurrentMapTile);
+
+                for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
+                {
+                    bool isSelected = script == key;
+
+                    if (ImGui::Selectable(key.c_str(), isSelected))
+                        mTilemap->setTileBehaviour(mCurrentMapTile, key);
+
+                    if (isSelected)
+                        ImGui::SetItemDefaultFocus();
+                }
+
+                ImGui::EndCombo();
+            }
+            ImGui::EndDisabled();
+
+            ImGui::EndChild();
+
+            ImGui::Text(fmt::format("Edit Mode: {}", EditModeToString(mEditMode)).c_str());
+            ImGui::Text("Ctrl + B: Behaviour Mode");
+            ImGui::Text("Ctrl + P: Paint Mode");
+
+            ImGui::EndChild();
         }
 
         ImGui::SameLine();
@@ -104,6 +164,12 @@ namespace Labyrinth {
         AssetImporter::Serialise(mTilemap);
     }
 
+    void MapEditModal::onEvent(Event& e)
+    {
+        EventDispatcher dispatcher(e);
+        dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(MapEditModal::OnKeyPressed));
+    }
+
     void MapEditModal::DrawMap()
     {
         float xpos = ImGui::GetCursorPosX();
@@ -122,17 +188,19 @@ namespace Labyrinth {
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize) && SelectionManager::GetSelectionCount(SelectionDomain::Tilemap) != 0)
+                if (ImGui::Button(name.c_str(), tileSize))
                 {
-                    usize tileId = SelectionManager::GetSelection(SelectionDomain::Tilemap, 0);
-                    mTilemap->setTile(mCurrentLayer, x, y, (i32)tileId);
+                    if (mEditMode == EditMode::Paint)
+                        mTilemap->setTile(mCurrentLayer, { x, y }, (i32)mCurrentTexTile);
+                    else if (mEditMode == EditMode::Behaviour)
+                        mCurrentMapTile = TilePos(x, y);
                 }
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAP_EDIT_TEXTURE_ITEM"))
                     {
                         i32 tileId = *(i32*)payload->Data;
-                        mTilemap->setTile(mCurrentLayer, x, y, tileId);
+                        mTilemap->setTile(mCurrentLayer, { x, y }, tileId);
                     }
                     ImGui::EndDragDropTarget();
                 }
@@ -197,11 +265,8 @@ namespace Labyrinth {
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize))
-                {
-                    SelectionManager::DeselectAll(SelectionDomain::Tilemap);
-                    SelectionManager::Select(SelectionDomain::Tilemap, tileID);
-                }
+                if (ImGui::Button(name.c_str(), tileSize) && mEditMode == EditMode::Paint)
+                    mCurrentTexTile = tileID;
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
                 {
                     ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &tileID, sizeof(i32));
@@ -209,5 +274,37 @@ namespace Labyrinth {
                 }
             }
         }
+    }
+
+    bool MapEditModal::OnKeyPressed(KeyPressedEvent& e)
+    {
+        if (e.isRepeated())
+            return false;
+
+        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+
+        switch (e.getKeyCode())
+        {
+        case Key::B:
+        {
+            if (control)
+            {
+                mEditMode = EditMode::Behaviour;
+                return true;
+            }
+        }
+        break;
+        case Key::P:
+        {
+            if (control)
+            {
+                mEditMode = EditMode::Paint;
+                return true;
+            }
+        }
+        break;
+        }
+
+        return false;
     }
 }

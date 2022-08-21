@@ -8,6 +8,11 @@
 
 namespace Labyrinth {
 
+	enum class EditMode
+	{
+		Paint, Behaviour
+	};
+
 	class MapEditModal : public EditorModal
 	{
 	public:
@@ -15,7 +20,7 @@ namespace Labyrinth {
 
 		void onImGuiRender() override;
 		void onComplete() override;
-		void onCustomButtonRender(bool& open) override {}
+		void onEvent(Event& e) override;
 
 		static Ref<MapEditModal> Create(const Ref<Tilemap>& map) { return Ref<MapEditModal>::Create(map); }
 
@@ -23,11 +28,17 @@ namespace Labyrinth {
 		void DrawMap();
 		void DrawSheet();
 
+		bool OnKeyPressed(KeyPressedEvent& e);
+
 	private:
 		Ref<Tilemap> mTilemap;
 		i32 mMapWidth, mMapHeight;
 
+		EditMode mEditMode = EditMode::Paint;
+
 		usize mCurrentLayer = 0;
+		TilePos mCurrentMapTile;
+		i32 mCurrentTexTile = -1;
 		SheetData mCurrentSheet;
 	};
 

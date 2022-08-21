@@ -26,7 +26,7 @@ namespace Labyrinth {
 		void SetDarkThemeColours();
 
 	private:
-		bool mBlockEvents = true;
+		bool mBlockEvents = false;
 	};
 
 }

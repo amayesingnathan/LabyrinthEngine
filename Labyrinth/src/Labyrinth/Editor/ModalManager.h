@@ -69,5 +69,6 @@ namespace Labyrinth {
     private:
         static void Display();
         static void RenderButtons(ModalEntry& modalData);
+        static void DispatchEvents(Event& e);
     };
 }
