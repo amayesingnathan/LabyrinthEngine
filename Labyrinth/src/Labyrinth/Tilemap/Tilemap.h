@@ -44,11 +44,16 @@ namespace Labyrinth {
 		const std::vector<SheetData>& getSheets() const { return mTexture->getSheets(); }
 		const std::vector<TexMapLayer>& getLayers() const { return mTexture->getLayers(); }
 
+		bool hasSheet(AssetHandle sheet) const { return mTexture->hasSheet(sheet); }
+		bool hasSheet(const Ref<Texture2DSheet>& sheet) const { return mTexture->hasSheet(sheet); }
+
 		void addSheet(i32 id, AssetHandle sheet) { mTexture->addSheet(id, sheet); }
 		void addSheet(i32 id, const Ref<Texture2DSheet>& sheet) { mTexture->addSheet(id, sheet); }
 
 		void addLayer() { mTexture->addLayer({ mTexture->getLayers().size(), mWidth, mHeight }); }
 		void addLayer(const TexMapLayer& layer) { mTexture->addLayer(layer); }
+
+		bool moveLayer(usize index, LayerDirection direction) { return mTexture->moveLayer(index, direction); }
 
 		void removeLayer(usize index) { mTexture->removeLayer(index); }
 

@@ -24,12 +24,46 @@ namespace Labyrinth {
 		}
 	}
 
+	bool TilemapTexture::moveLayer(usize index, LayerDirection direction)
+	{
+		LAB_CORE_ASSERT(index < mLayers.size());
+
+		i32 indexDirection = 0;
+
+		switch (direction)
+		{
+		case LayerDirection::Up:
+		{
+			if (index == 0) break;
+
+			indexDirection = -1;
+		}
+		break;
+		case LayerDirection::Down:
+		{
+			if (index == mLayers.size() - 1) break;
+
+			indexDirection = 1;
+		}
+		break;
+		}
+
+		if (indexDirection == 0)
+			return false;
+
+		std::swap(mLayers[index], mLayers[index + indexDirection]);
+		usize tempLayer = mLayers[index].mIndex;
+		mLayers[index].mIndex = mLayers[index + indexDirection].mIndex;
+		mLayers[index + indexDirection].mIndex = tempLayer;
+
+		return true;
+	}
+
 	void TilemapTexture::RegenTexture()
 	{
 		// TODO: maybe too large, estimate 100x100 map would be ~150MB of texture memory.
 		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 		constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
-		constexpr glm::vec2 TileTexSize = 2.0f / TileSizeF;
 
 		FramebufferSpec fbSpec;
 		fbSpec.width = mWidth * TileSize.x;
@@ -44,7 +78,8 @@ namespace Labyrinth {
 		RenderCommand::Clear();
 		RenderCommand::DisableDepth();
 
-		Renderer2D::BeginState();
+		OrthographicCamera camera(0.0f, Cast<f32>(fbSpec.width), 0.0f, Cast<f32>(fbSpec.height));
+		Renderer2D::BeginState(camera);
 
 		for (const TexMapLayer& layer : mLayers)
 		{
@@ -57,9 +92,9 @@ namespace Labyrinth {
 
 					Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileID));
 					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
-					//pos -= 1; TODO: Not sure why this is here 
+					pos += 0.5f * TileSizeF;
 
-					Renderer2D::DrawQuad(pos, TileTexSize, sheet->getSubTex(tileID));
+					Renderer2D::DrawQuad(pos, TileSizeF, sheet->getSubTex(tileID));
 				}
 			}
 		}
@@ -69,7 +104,7 @@ namespace Labyrinth {
 
 		mTexture = Texture2D::Create(fbSpec.width, fbSpec.height);
 
-		Buffer texData(4 * (mWidth * TileSize.x) * (mHeight * TileSize.y));
+		Buffer texData(4 * fbSpec.width * fbSpec.height);
 		textureFB->readData(0, texData.data);
 		mTexture->setData(texData);
 

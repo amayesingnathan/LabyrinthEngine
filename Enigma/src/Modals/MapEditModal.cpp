@@ -20,7 +20,7 @@ namespace Labyrinth {
         // Left
         {
             ImGui::BeginGroup();
-            ImGui::BeginChild("Layers", ImVec2(150, -3 * ImGui::GetFrameHeightWithSpacing()), true);
+            ImGui::BeginChild("Layers", ImVec2(300, -3 * ImGui::GetFrameHeightWithSpacing()), true);
             for (const TexMapLayer& layer : mTilemap->getLayers())
             {
                 usize layerIndex = layer.getLayer();
@@ -37,6 +37,24 @@ namespace Labyrinth {
             {
                 mTilemap->removeLayer(mCurrentLayer);
                 mTilemap->RegenTexture();
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Move Up"))
+            {
+                if (mTilemap->moveLayer(mCurrentLayer, LayerDirection::Up))
+                {
+                    mTilemap->RegenTexture();
+                    mCurrentLayer--;
+                }
+            }
+            ImGui::SameLine();
+            if (ImGui::Button("Move Down"))
+            {
+                if (mTilemap->moveLayer(mCurrentLayer, LayerDirection::Down))
+                {
+                    mTilemap->RegenTexture();
+                    mCurrentLayer++;
+                }
             }
             ImGui::EndGroup();
         }
@@ -92,7 +110,7 @@ namespace Labyrinth {
         float ypos = ImGui::GetCursorPosY();
 
         auto imageSize = ImGui::GetContentRegionAvail();
-        ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getRendererID(), imageSize);
+        ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getRendererID(), imageSize, { 0, 1 }, { 1, 0 });
 
         ImVec2 tileSize = { imageSize.x / mMapWidth, imageSize.y / mMapHeight };
         for (size_t y = 0; y < mMapHeight; y++)
@@ -143,18 +161,22 @@ namespace Labyrinth {
 
                 if (AssetManager::IsExtensionValid(sheetPath.extension().string(), AssetType::TextureSheet))
                 {
-                    i32 nextFirstID = 0;
-                    if (!mTilemap->getSheets().empty())
+                    AssetHandle sheetHandle = AssetManager::GetHandleFromPath(sheetPath);
+                    if (!mTilemap->hasSheet(sheetHandle))
                     {
-                        const SheetData& lastSheetData = mTilemap->getSheets().back();
-                        Ref<Texture2DSheet> lastSheet = AssetManager::GetAsset<Texture2DSheet>(lastSheetData.sheet);
-                        nextFirstID = lastSheetData.firstID + (lastSheet->getTileCountX() * lastSheet->getTileCountY());
-                    }
+                        i32 nextFirstID = 0;
+                        if (!mTilemap->getSheets().empty())
+                        {
+                            const SheetData& lastSheetData = mTilemap->getSheets().back();
+                            Ref<Texture2DSheet> lastSheet = AssetManager::GetAsset<Texture2DSheet>(lastSheetData.sheet);
+                            nextFirstID = lastSheetData.firstID + (lastSheet->getTileCountX() * lastSheet->getTileCountY());
+                        }
 
-                    Ref<Texture2DSheet> newSheet = AssetManager::GetAsset<Texture2DSheet>(sheetPath);
-                    newSheet->clearTileset();
-                    newSheet->generateTileset(nextFirstID);
-                    mTilemap->addSheet(nextFirstID, newSheet);
+                        Ref<Texture2DSheet> newSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
+                        newSheet->clearTileset();
+                        newSheet->generateTileset(nextFirstID);
+                        mTilemap->addSheet(nextFirstID, newSheet);
+                    }
                 }
             }
             ImGui::EndDragDropTarget();
@@ -175,7 +197,7 @@ namespace Labyrinth {
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize) && SelectionManager::GetSelection(SelectionDomain::Tilemap, 0))
+                if (ImGui::Button(name.c_str(), tileSize))
                 {
                     SelectionManager::DeselectAll(SelectionDomain::Tilemap);
                     SelectionManager::Select(SelectionDomain::Tilemap, tileID);

@@ -32,7 +32,7 @@ Makefile.in
 **.json
 
 #Asset Registries
-**.lreg
+assets/
 
 # Directories
 Labyrinth/dependencies/VulkanSDK

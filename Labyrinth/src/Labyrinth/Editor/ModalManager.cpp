@@ -11,7 +11,7 @@ namespace Labyrinth {
         {
             ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
             ImGui::SetNextWindowSize(ImVec2(600, 400), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
+            ImGui::SetNextWindowPos(centre, ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
             if (ImGui::Begin(modalData.heading.c_str(), &modalData.open, modalData.flags))
             {
                 modalData.modal->onImGuiRender();

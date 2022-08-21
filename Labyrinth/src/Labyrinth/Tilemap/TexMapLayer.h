@@ -23,6 +23,7 @@ namespace Labyrinth {
 		bool operator==(const TexMapLayer& other) const { return mIndex == other.mIndex; }
 
 		void add(TileID id) { mTiles.emplace_back(id); }
+		void set(usize index, TileID id) { mTiles[index] = id; }
 
 		i32 getWidth() const { return mWidth; }
 		i32 getHeight() const { return mHeight; }
@@ -40,6 +41,7 @@ namespace Labyrinth {
 		std::vector<TileID> mTiles;
 		i32 mWidth = 0, mHeight = 0;
 
+		friend class TilemapTexture;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TexMapLayer& layer)
@@ -83,8 +85,9 @@ namespace YAML {
 			i32 height = it++->as<i32>();
 			rhs = Labyrinth::TexMapLayer(layer, width, height);
 
-			for (it; it != node.end(); ++it)
-				rhs.add(it->as<i32>());
+			usize index = 0;
+			for (it; it != node.end(); ++it, ++index)
+				rhs.set(index, it->as<i32>());
 
 			return true;
 		}

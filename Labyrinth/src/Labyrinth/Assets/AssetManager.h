@@ -106,8 +106,6 @@ namespace Labyrinth {
             sLoadedAssets[asset->handle] = asset;
             AssetImporter::Serialise(metadata, asset);
 
-            SaveRegistry();
-
             return asset;
         }
 
@@ -187,12 +185,13 @@ namespace Labyrinth {
             return newAsset;
         }
 
-
     private:
         inline static AssetCache sLoadedAssets;
         inline static AssetCache sMemoryAssets;
         inline static AssetRegistry sAssetRegistry;
         inline static AssetTypeMap sAssetTypeMap;
         inline static fs::path sAssetDirPath, sAssetRegPath;
+
+        friend class Asset;
     };
 }

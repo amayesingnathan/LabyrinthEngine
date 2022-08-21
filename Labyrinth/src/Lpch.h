@@ -21,6 +21,8 @@
 #include <set>
 #include <unordered_map>
 #include <unordered_set>
+#include <list>
+#include <forward_list>
 
 //STL Functions
 #include <iostream>
