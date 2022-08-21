@@ -225,28 +225,29 @@ namespace Labyrinth {
 		{
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcComponent.tilemapHandle);
 
+			if (!tilemap)
+			{
+				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+				return;
+			}
+
 			Entity entity{ e, Ref<Scene>(this) };
-			entity.addOrReplaceComponent<ScriptComponent>("Labyrinth.Tilemap");
+			if (!entity.hasComponent<ScriptComponent>())
+				entity.addComponent<ScriptComponent>();
 
 			Entity tiles = getChildByTag("Tiles", entity);
 			if (tiles)
-				tiles.removeChildren();
-			else
-				tiles = CreateEntity("Tiles", entity);
+				DestroyEntity(tiles);
 
-			if (!tilemap)
-			{
-				LAB_CORE_WARN("Tilemap failed to load");
-				return;
-			}
+			tiles = CreateEntity("Tiles", entity);
 
 			for (i32 y = 0; y < tilemap->getHeight(); y++)
 			{
 				for (i32 x = 0; x < tilemap->getWidth(); x++)
 				{
-					std::string tileName = fmt::format("({1}, {2})", x, y);
+					std::string tileName = fmt::format("({}, {})", x, y);
 					Entity tileEntity = CreateEntity(tileName, tiles);
-					tileEntity.addComponent<ScriptComponent>("Labyrinth.Tile");
+					tileEntity.addComponent<ScriptComponent>();
 					tmcComponent.tileBehaviour[{x, y}] = tileEntity.getUUID();
 				}
 			}
@@ -257,6 +258,7 @@ namespace Labyrinth {
 	{
 		// Set the parent of all entity's children (will be null entity if no parent)
 		auto& children = entity.getChildren();
+
 		for (auto& child : children)
 		{
 			Entity childEnt = findEntity(child);
@@ -352,6 +354,10 @@ namespace Labyrinth {
 		{
 			mRenderStack->addCircle(trComponent, crComponent, Cast<i32>(entity));
 		});
+		mRegistry.group<TilemapControllerComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& tmcComponent, const auto& trComponent)
+		{
+			mRenderStack->addTilemap(trComponent, tmcComponent, Cast<i32>(entity));
+		});
 	}
 
 	void Scene::DrawScene(EditorCamera& camera)
@@ -416,7 +422,8 @@ namespace Labyrinth {
 
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
-			sc.instance->onUpdate(ts);
+			if (sc.instance) 
+				sc.instance->onUpdate(ts);
 		});
 	}
 

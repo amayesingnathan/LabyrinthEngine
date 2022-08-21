@@ -527,6 +527,13 @@ namespace Labyrinth {
 		} else DrawQuad(transform, src.colour, entityID);
 	}
 
+	void Renderer2D::DrawMap(const glm::mat4& transform, const TilemapControllerComponent& tmcc, i32 entityID)
+	{
+		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcc.tilemapHandle);
+		if (tilemap)
+			DrawQuad(transform, tilemap->getTex(), 1.0f, glm::vec4{ 1.0f }, nullptr, entityID);
+	}
+
 	void Renderer2D::DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour)
 	{
 		DrawRotatedQuad({ position.x, position.y, 0.0f }, size, rotation, colour);

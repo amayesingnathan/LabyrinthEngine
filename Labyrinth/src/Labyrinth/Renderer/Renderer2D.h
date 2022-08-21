@@ -39,6 +39,8 @@ namespace Labyrinth {
 
 		static void DrawSprite(const glm::mat4& transform, const SpriteRendererComponent& src, i32 entityID);
 
+		static void DrawMap(const glm::mat4& transform, const TilemapControllerComponent& tmcc, i32 entityID);
+
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour);
 		static void DrawRotatedQuad(const glm::vec3& position, const glm::vec2& size, f32 rotation, const glm::vec4& colour);
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<Texture2D>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), const glm::vec2* textureCoords = nullptr);

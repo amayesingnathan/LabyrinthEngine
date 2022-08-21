@@ -386,11 +386,12 @@ namespace Labyrinth {
 			{
 				auto& tmcc = deserializedEntity.addComponent<TilemapControllerComponent>();
 
+				u64 noHandle = 0;
 				u64 handle;
-				LAB_DESERIALISE_PROPERTY(Tilemap, handle, scriptComponent);
+				LAB_DESERIALISE_PROPERTY_DEF(Tilemap, handle, tmcComponent, noHandle);
 				tmcc.tilemapHandle = handle;
 
-				auto behaviour = scriptComponent["Behaviour"];
+				auto behaviour = tmcComponent["Behaviour"];
 				if (behaviour)
 				{
 					for (auto entry : behaviour)

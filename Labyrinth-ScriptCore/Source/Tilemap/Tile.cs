@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace Labyrinth
 {
-    public class Tile
+    public class Tile : Entity
     {
+        public override void OnCreate()
+        {
+            Log.Info($"Tile.OnCreate {ID}");
+        }
+
+        public override void OnUpdate(float ts)
+        {
+        }
     }
 }

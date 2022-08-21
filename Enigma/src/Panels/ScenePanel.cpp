@@ -630,7 +630,7 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&, this](auto& component)
 		{
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
@@ -644,6 +644,7 @@ namespace Labyrinth {
 				{
 					AssetHandle tilemapHandle = *(AssetHandle*)payload->Data;
 					component.tilemapHandle = tilemapHandle;
+					mContext->reloadMaps();
 				}
 				ImGui::EndDragDropTarget();
 			}
