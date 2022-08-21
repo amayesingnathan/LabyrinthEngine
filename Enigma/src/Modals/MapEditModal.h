@@ -39,6 +39,7 @@ namespace Labyrinth {
 		usize mCurrentLayer = 0;
 		TilePos mCurrentMapTile;
 		i32 mCurrentTexTile = -1;
+		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 		SheetData mCurrentSheet;
 	};
 

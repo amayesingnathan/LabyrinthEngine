@@ -213,13 +213,13 @@ namespace Labyrinth {
         float xpos = ImGui::GetCursorPosX();
         float ypos = ImGui::GetCursorPosY();
 
-        auto imageSize = ImGui::GetContentRegionAvail();
-        imageSize.y -= 3 * ImGui::GetFrameHeightWithSpacing();
+        auto sheetImageSize = ImGui::GetContentRegionAvail();
+        sheetImageSize.y -= 10 * ImGui::GetFrameHeightWithSpacing();
 
         Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet.sheet);
 
         u32 tex = sheet ? sheet->getBaseTex()->getRendererID() : EditorResources::NoTexture->getRendererID();
-        ImGui::Image((ImTextureID)(uintptr_t)tex, imageSize, { 0, 1 }, { 1, 0 });
+        ImGui::Image((ImTextureID)(uintptr_t)tex, sheetImageSize, {0, 1}, {1, 0});
         if (ImGui::BeginDragDropTarget())
         {
             if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
@@ -250,10 +250,37 @@ namespace Labyrinth {
             ImGui::EndDragDropTarget();
         }
 
+        auto subtexImageSize = ImGui::GetContentRegionAvail();
+        subtexImageSize.x *= 0.5f;
+        subtexImageSize.y -= (3 * ImGui::GetFrameHeightWithSpacing() + 0.25f * subtexImageSize.y);
+
+        ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
+        ImVec2 min(0, 1), max(1, 0);
+
+        if (mCurrentSubTex)
+        {
+            selectedSubTex = (ImTextureID)(uintptr_t)mCurrentSubTex->getBaseTex()->getRendererID();
+            glm::vec2* coords = mCurrentSubTex->getTexCoords();
+            max = ImVec2(coords[1].x, coords[1].y);
+            min = ImVec2(coords[3].x, coords[3].y);
+        }
+
+        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
+        ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+        ImGui::SameLine();
+
+        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.5f * (subtexImageSize.y - ImGui::GetFrameHeightWithSpacing()));
+        if (ImGui::Button("Clear Subtex"))
+        {
+            mCurrentTexTile = -1;
+            mCurrentSubTex = nullptr;
+        }
+
         if (!sheet)
             return;
 
-        ImVec2 tileSize = { imageSize.x / sheet->getTileCountX(), imageSize.y / sheet->getTileCountY() };
+        ImVec2 tileSize = { sheetImageSize.x / sheet->getTileCountX(), sheetImageSize.y / sheet->getTileCountY() };
         for (usize y = 0; y < sheet->getTileCountY(); y++)
         {
             for (usize x = 0; x < sheet->getTileCountX(); x++)
@@ -266,7 +293,10 @@ namespace Labyrinth {
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
                 if (ImGui::Button(name.c_str(), tileSize) && mEditMode == EditMode::Paint)
+                {
                     mCurrentTexTile = tileID;
+                    mCurrentSubTex = sheet->getSubTex(tileID);
+                }
                 if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
                 {
                     ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &tileID, sizeof(i32));

@@ -63,6 +63,9 @@ namespace Labyrinth {
 
 		void setTile(usize layer, TilePos pos, i32 id) 
 		{ 
+			if (layer >= mLayers.size())
+				return;
+
 			i32& tileID = mLayers[layer][pos];
 			tileID = id;
 			RegenTexture(); 
