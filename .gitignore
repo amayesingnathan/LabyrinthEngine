@@ -31,8 +31,9 @@ Makefile.in
 #Profiling files
 **.json
 
-#Asset Registries
+#Assets
 assets/
+!Enigma/SandboxProject/assets/
 
 # Directories
 Labyrinth/dependencies/VulkanSDK

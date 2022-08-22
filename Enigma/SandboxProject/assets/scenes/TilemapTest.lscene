@@ -1,0 +1,49 @@
+Scene: TilemapTest
+Entities:
+  - Entity: 9036093298182519495
+    TagComponent:
+      Tag: Tiles
+    Parent: 18236344740095204921
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+  - Entity: 15901214814456052562
+    TagComponent:
+      Tag: Camera
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 165]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    CameraComponent:
+      Camera:
+        ProjectionType: 0
+        PerspectiveFOV: 6.68461084
+        PerspectiveNear: 0.00999999978
+        PerspectiveFar: 1000
+        OrthographicSize: 50
+        OrthographicNear: -1
+        OrthographicFar: 1
+      Primary: true
+      FixedAspectRatio: false
+  - Entity: 18236344740095204921
+    TagComponent:
+      Tag: Tilemap
+    Parent: 0
+    Children:
+      - Handle: 9036093298182519495
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [100, 64, 1]
+    ScriptComponent:
+      ClassName: ""
+    TilemapControllerComponent:
+      Tilemap: 10940420863402242636
+      Behaviour:
+        []
