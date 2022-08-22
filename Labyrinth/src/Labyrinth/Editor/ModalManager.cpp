@@ -7,6 +7,8 @@ namespace Labyrinth {
 
     void ModalManager::Display()
     {
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigWindowsMoveFromTitleBarOnly = true;
         for (ModalEntry& modalData : sModals)
         {
             if (!modalData.modal)
@@ -26,6 +28,7 @@ namespace Labyrinth {
 
             ImGui::End();
         }
+        io.ConfigWindowsMoveFromTitleBarOnly = false;
 
         // Call any completion callbacks before deleting modal entries
         auto removeStart = std::remove_if(sModals.begin(), sModals.end(), [](const ModalEntry& entry) { return !entry.open; });

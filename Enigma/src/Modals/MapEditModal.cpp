@@ -16,6 +16,7 @@ namespace Labyrinth {
     {
         if (assetType == "Behaviour")	return EditMode::Behaviour;
         else if (assetType == "Paint")	return EditMode::Paint;
+        else if (assetType == "Brush")	return EditMode::Brush;
 
         LAB_CORE_ASSERT(false, "Unknown Edit Mode!");
         return EditMode::Behaviour;
@@ -27,6 +28,7 @@ namespace Labyrinth {
         {
         case EditMode::Behaviour:	return "Behaviour";
         case EditMode::Paint:		return "Paint";
+        case EditMode::Brush:		return "Brush";
         }
 
         LAB_CORE_ASSERT(false, "Unknown Edit Mode");
@@ -39,6 +41,16 @@ namespace Labyrinth {
 
     void MapEditModal::onImGuiRender()
     {
+        bool painting = false;
+        if (mEditMode == EditMode::Brush && mHoveredMapTile.valid())
+        {
+            if (ImGui::IsMouseClicked(Mouse::ButtonLeft, true))
+            {
+                mTilemap->setTile(mCurrentLayer, mHoveredMapTile, mCurrentTexTile);
+                painting = true;
+            }
+        }
+
         // Left
         {
             ImGui::BeginChild("Left Pane", ImVec2(300, -3 * ImGui::GetFrameHeightWithSpacing()));
@@ -126,7 +138,7 @@ namespace Labyrinth {
             ImVec2 min(0, 1), max(1, 0);
 
             Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
-            if (hoveredSubtex)
+            if (hoveredSubtex && !painting)
             {
                 selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
                 glm::vec2* coords = hoveredSubtex->getTexCoords();
@@ -172,7 +184,7 @@ namespace Labyrinth {
             {
                 Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(sheetData.sheet);
 
-                if (ImGui::Selectable(sheet->getName().c_str(), sheet && mCurrentSheet.sheet== sheet->handle))
+                if (ImGui::Selectable(sheet->getName().c_str(), sheet && mCurrentSheet.sheet == sheet->handle))
                     mCurrentSheet = SheetData(sheet->getSubTexList().begin()->first, sheet->handle);
             }
             ImGui::EndChild();
@@ -198,6 +210,9 @@ namespace Labyrinth {
 
     void MapEditModal::DrawMap()
     {
+        mHoveredMapTile = TilePos();
+        mHoveredTexTile = -1;
+
         f32 xpos = ImGui::GetCursorPosX();
         f32 ypos = ImGui::GetCursorPosY();
         
@@ -213,37 +228,44 @@ namespace Labyrinth {
         ImGui::SameLine();
         ImGui::SetCursorPosX(startX + (0.4f * imageSize.x));
         ImGui::Text("Ctrl + P: Paint Mode");
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(startX + (0.6f * imageSize.x));
+        ImGui::Text("Ctrl + R: Brush Mode");
 
+        ImGuiButtonFlags flags = (mEditMode == EditMode::Paint || mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
         ImVec2 tileSize = { imageSize.x / mMapWidth, imageSize.y / mMapHeight };
+
         for (size_t y = 0; y < mMapHeight; y++)
         {
             for (size_t x = 0; x < mMapWidth; x++)
             {
                 std::string name = fmt::format("##MapTile({}, {})", x, y);
+                TilePos pos(x, y);
 
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize))
+                if (ImGui::InvisibleButton(name.c_str(), tileSize, flags))
                 {
                     if (mEditMode == EditMode::Paint)
-                        mTilemap->setTile(mCurrentLayer, { x, y }, (i32)mCurrentTexTile);
+                        mTilemap->setTile(mCurrentLayer, pos, mCurrentTexTile);
                     else if (mEditMode == EditMode::Behaviour)
-                        mCurrentMapTile = TilePos(x, y);
+                        mCurrentMapTile = pos;
                 }
+
                 if (ImGui::BeginDragDropTarget())
                 {
                     if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAP_EDIT_TEXTURE_ITEM"))
                     {
                         i32 tileId = *(i32*)payload->Data;
-                        mTilemap->setTile(mCurrentLayer, { x, y }, tileId);
+                        mTilemap->setTile(mCurrentLayer, pos, tileId);
                     }
                     ImGui::EndDragDropTarget();
                 }
-                if (ImGui::IsItemHovered())
+                if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
                 {
-                    mHoveredMapTile = {x, y};
-                    mHoveredTexTile = mTilemap->getTile(mCurrentLayer, mHoveredMapTile);
+                    mHoveredMapTile = pos;
+                    mHoveredTexTile = mTilemap->getTile(mCurrentLayer, pos);
                 }
             }
         }
@@ -341,7 +363,7 @@ namespace Labyrinth {
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize) && mEditMode == EditMode::Paint)
+                if (ImGui::Button(name.c_str(), tileSize) && mEditMode != EditMode::Behaviour)
                 {
                     mCurrentTexTile = tileID;
                     mCurrentSubTex = sheet->getSubTex(tileID);
@@ -378,6 +400,15 @@ namespace Labyrinth {
             if (control)
             {
                 mEditMode = EditMode::Paint;
+                return true;
+            }
+        }
+        break;
+        case Key::R:
+        {
+            if (control)
+            {
+                mEditMode = EditMode::Brush;
                 return true;
             }
         }

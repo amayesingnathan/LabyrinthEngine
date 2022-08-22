@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	enum class EditMode
 	{
-		Paint, Behaviour
+		Paint, Behaviour, Brush
 	};
 
 	class MapEditModal : public EditorModal

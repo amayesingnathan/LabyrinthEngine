@@ -13,7 +13,7 @@ namespace Labyrinth {
 		TilePos(usize _x, usize _y) : x((i32)_x), y((i32)_y) {}
 
 		bool operator==(const TilePos& other) const { return x == other.x && y == other.y; }
-		bool valid() const { return x > 0 && y > 0; }
+		bool valid() const { return x >= 0 && y >= 0; }
 
 		std::string toString() const { return fmt::format("({}, {})", x, y); }
 	};
