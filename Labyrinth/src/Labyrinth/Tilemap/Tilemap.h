@@ -40,10 +40,10 @@ namespace Labyrinth {
 
 		void removeLayer(usize index) { mTexture->removeLayer(index); }
 
-		void setTile(usize layer, TilePos pos, i32 id) 
-		{ 
-			mTexture->setTile(layer, pos, id); 
-		}
+		i32 getTile(usize layer, const TilePos& pos) { return mTexture->getTile(layer, pos); }
+		void setTile(usize layer, TilePos pos, i32 id) { mTexture->setTile(layer, pos, id); }
+
+		Ref<SubTexture2D> getTileTex(i32 id) const { return mTexture->getTileTex(id); }
 
 		const std::unordered_map<TilePos, std::string>& getTileBehaviour() const { return mTileBehaviour; }
 		void setTileBehaviour(TilePos pos, const std::string& script) { mTileBehaviour[pos] = script; }

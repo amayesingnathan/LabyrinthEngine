@@ -36,11 +36,15 @@ namespace Labyrinth {
 
 		EditMode mEditMode = EditMode::Paint;
 
+		Ref<SubTexture2D> mCurrentSubTex = nullptr;
+
 		usize mCurrentLayer = 0;
 		TilePos mCurrentMapTile;
 		i32 mCurrentTexTile = -1;
-		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 		SheetData mCurrentSheet;
+
+		TilePos mHoveredMapTile;
+		i32 mHoveredTexTile = -1;
 	};
 
 }

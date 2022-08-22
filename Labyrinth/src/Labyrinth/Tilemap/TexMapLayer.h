@@ -16,11 +16,18 @@ namespace Labyrinth {
 		TexMapLayer() = default;
 		TexMapLayer(usize layer, i32 width, i32 height) : mIndex(layer), mTiles(width * height, -1), mWidth(width), mHeight(height) { }
 
-		TileID& operator[](TilePos pos)
-		{
-			return mTiles[pos.x + (mWidth * pos.y)];
+		TileID& operator[](const TilePos& pos) { return mTiles[pos.x + (mWidth * pos.y)]; }
+		TileID operator[](const TilePos& pos) const 
+		{ 
+			if (!pos.valid())
+				return -1;
+
+			usize index = (usize)(pos.x + (mWidth * pos.y));
+			if (index >= mTiles.size())
+				return -1;
+
+			return mTiles[index];
 		}
-		const TileID& operator[](const TilePos& pos) const { return mTiles[pos.x + (mWidth * pos.y)]; }
 
 		bool operator==(const TexMapLayer& other) const { return mIndex == other.mIndex; }
 

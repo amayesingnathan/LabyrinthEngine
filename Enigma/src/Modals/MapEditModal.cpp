@@ -82,22 +82,22 @@ namespace Labyrinth {
             }
             ImGui::EndGroup();
 
-            ImGui::BeginChild("Behaviour", ImVec2(300, -4 * ImGui::GetFrameHeightWithSpacing()));
+            ImGui::BeginChild("Selected", ImVec2(0, -5 * ImGui::GetFrameHeightWithSpacing()));
 
             ImGui::Text(fmt::format("Tile: ({}, {})", mCurrentMapTile.x, mCurrentMapTile.y).c_str());
 
             ImGui::BeginDisabled(mCurrentMapTile.valid());
-            const std::string& script = (mTilemap->getTileBehaviour().count(mCurrentMapTile) != 0) ? mTilemap->getTileBehaviour().at(mCurrentMapTile) : "";
-            if (ImGui::BeginCombo("Behaviour", script.c_str()))
+            const std::string& selectedScript = (mTilemap->getTileBehaviour().count(mCurrentMapTile) != 0) ? mTilemap->getTileBehaviour().at(mCurrentMapTile) : "";
+            if (ImGui::BeginCombo("Behaviour", selectedScript.c_str()))
             {
                 // Display "None" at the top of the list
-                bool clear = script.empty();
+                bool clear = selectedScript.empty();
                 if (ImGui::Selectable("None", clear))
                     mTilemap->removeTileBehaviour(mCurrentMapTile);
 
                 for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
                 {
-                    bool isSelected = script == key;
+                    bool isSelected = selectedScript == key;
 
                     if (ImGui::Selectable(key.c_str(), isSelected))
                         mTilemap->setTileBehaviour(mCurrentMapTile, key);
@@ -112,9 +112,35 @@ namespace Labyrinth {
 
             ImGui::EndChild();
 
-            ImGui::Text(fmt::format("Edit Mode: {}", EditModeToString(mEditMode)).c_str());
-            ImGui::Text("Ctrl + B: Behaviour Mode");
-            ImGui::Text("Ctrl + P: Paint Mode");
+            ImGui::BeginChild("Hovered");
+            auto subtexImageSize = ImGui::GetContentRegionAvail();
+
+            ImGui::Text(fmt::format("Hovered Tile: ({}, {})", mHoveredMapTile.x, mHoveredMapTile.y).c_str());
+            const std::string& hoveredScript = (mTilemap->getTileBehaviour().count(mHoveredMapTile) != 0) ? mTilemap->getTileBehaviour().at(mHoveredMapTile) : "";
+            ImGui::Text(fmt::format("Hovered Behaviour: {}", hoveredScript).c_str());
+
+            subtexImageSize.x *= 0.5f;
+            subtexImageSize.y *= 0.5f;
+
+            ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
+            ImVec2 min(0, 1), max(1, 0);
+
+            Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
+            if (hoveredSubtex)
+            {
+                selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
+                glm::vec2* coords = hoveredSubtex->getTexCoords();
+                max = ImVec2(coords[1].x, coords[1].y);
+                min = ImVec2(coords[3].x, coords[3].y);
+            }
+
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
+            ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+
+            //ImGui::Text(fmt::format("Hovered Tex ID: {}", mHoveredTexTile).c_str());
+
+            ImGui::EndChild();
 
             ImGui::EndChild();
         }
@@ -172,11 +198,21 @@ namespace Labyrinth {
 
     void MapEditModal::DrawMap()
     {
-        float xpos = ImGui::GetCursorPosX();
-        float ypos = ImGui::GetCursorPosY();
-
+        f32 xpos = ImGui::GetCursorPosX();
+        f32 ypos = ImGui::GetCursorPosY();
+        
         auto imageSize = ImGui::GetContentRegionAvail();
+        imageSize.y -= ImGui::GetFrameHeightWithSpacing();
         ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getRendererID(), imageSize, { 0, 1 }, { 1, 0 });
+
+        f32 startX = ImGui::GetCursorPosX();
+        ImGui::Text(fmt::format("Edit Mode: {}", EditModeToString(mEditMode)).c_str());
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(startX + (0.2f * imageSize.x));
+        ImGui::Text("Ctrl + B: Behaviour Mode");
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(startX + (0.4f * imageSize.x));
+        ImGui::Text("Ctrl + P: Paint Mode");
 
         ImVec2 tileSize = { imageSize.x / mMapWidth, imageSize.y / mMapHeight };
         for (size_t y = 0; y < mMapHeight; y++)
@@ -204,86 +240,99 @@ namespace Labyrinth {
                     }
                     ImGui::EndDragDropTarget();
                 }
+                if (ImGui::IsItemHovered())
+                {
+                    mHoveredMapTile = {x, y};
+                    mHoveredTexTile = mTilemap->getTile(mCurrentLayer, mHoveredMapTile);
+                }
             }
         }
     }
 
     void MapEditModal::DrawSheet()
     {
-        float xpos = ImGui::GetCursorPosX();
-        float ypos = ImGui::GetCursorPosY();
+        f32 xpos = ImGui::GetCursorPosX();
+        f32 ypos = ImGui::GetCursorPosY();
 
         auto sheetImageSize = ImGui::GetContentRegionAvail();
         sheetImageSize.y -= 10 * ImGui::GetFrameHeightWithSpacing();
 
         Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet.sheet);
 
-        u32 tex = sheet ? sheet->getBaseTex()->getRendererID() : EditorResources::NoTexture->getRendererID();
-        ImGui::Image((ImTextureID)(uintptr_t)tex, sheetImageSize, {0, 1}, {1, 0});
-        if (ImGui::BeginDragDropTarget())
-        {
-            if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
+        {   // Sprite Sheet
+            u32 tex = sheet ? sheet->getBaseTex()->getRendererID() : EditorResources::NoTexture->getRendererID();
+            ImGui::Image((ImTextureID)(uintptr_t)tex, sheetImageSize, { 0, 1 }, { 1, 0 });
+            if (ImGui::BeginDragDropTarget())
             {
-                const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
-                fs::path sheetPath = Project::GetAssetDirectory() / path;
-
-                if (AssetManager::IsExtensionValid(sheetPath.extension().string(), AssetType::TextureSheet))
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
                 {
-                    AssetHandle sheetHandle = AssetManager::GetHandleFromPath(sheetPath);
-                    if (!mTilemap->hasSheet(sheetHandle))
-                    {
-                        i32 nextFirstID = 0;
-                        if (!mTilemap->getSheets().empty())
-                        {
-                            const SheetData& lastSheetData = mTilemap->getSheets().back();
-                            Ref<Texture2DSheet> lastSheet = AssetManager::GetAsset<Texture2DSheet>(lastSheetData.sheet);
-                            nextFirstID = lastSheetData.firstID + (lastSheet->getTileCountX() * lastSheet->getTileCountY());
-                        }
+                    const FS_CHAR_TYPE* path = (const FS_CHAR_TYPE*)payload->Data;
+                    fs::path sheetPath = Project::GetAssetDirectory() / path;
 
-                        Ref<Texture2DSheet> newSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
-                        newSheet->clearTileset();
-                        newSheet->generateTileset(nextFirstID);
-                        mTilemap->addSheet(nextFirstID, newSheet);
+                    if (AssetManager::IsExtensionValid(sheetPath.extension().string(), AssetType::TextureSheet))
+                    {
+                        AssetHandle sheetHandle = AssetManager::GetHandleFromPath(sheetPath);
+                        if (!mTilemap->hasSheet(sheetHandle))
+                        {
+                            i32 nextFirstID = 0;
+                            if (!mTilemap->getSheets().empty())
+                            {
+                                const SheetData& lastSheetData = mTilemap->getSheets().back();
+                                Ref<Texture2DSheet> lastSheet = AssetManager::GetAsset<Texture2DSheet>(lastSheetData.sheet);
+                                nextFirstID = lastSheetData.firstID + (lastSheet->getTileCountX() * lastSheet->getTileCountY());
+                            }
+
+                            Ref<Texture2DSheet> newSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
+                            newSheet->clearTileset();
+                            newSheet->generateTileset(nextFirstID);
+                            mTilemap->addSheet(nextFirstID, newSheet);
+                        }
                     }
                 }
+                ImGui::EndDragDropTarget();
             }
-            ImGui::EndDragDropTarget();
         }
 
-        auto subtexImageSize = ImGui::GetContentRegionAvail();
-        subtexImageSize.x *= 0.5f;
-        subtexImageSize.y -= (3 * ImGui::GetFrameHeightWithSpacing() + 0.25f * subtexImageSize.y);
+        {   // Selected Subtexture
+            auto subtexImageSize = ImGui::GetContentRegionAvail();
+            subtexImageSize.x *= 0.5f;
+            subtexImageSize.y -= (3 * ImGui::GetFrameHeightWithSpacing() + 0.25f * subtexImageSize.y);
 
-        ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
-        ImVec2 min(0, 1), max(1, 0);
+            ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
+            ImVec2 min(0, 1), max(1, 0);
 
-        if (mCurrentSubTex)
-        {
-            selectedSubTex = (ImTextureID)(uintptr_t)mCurrentSubTex->getBaseTex()->getRendererID();
-            glm::vec2* coords = mCurrentSubTex->getTexCoords();
-            max = ImVec2(coords[1].x, coords[1].y);
-            min = ImVec2(coords[3].x, coords[3].y);
-        }
+            if (mCurrentSubTex)
+            {
+                selectedSubTex = (ImTextureID)(uintptr_t)mCurrentSubTex->getBaseTex()->getRendererID();
+                glm::vec2* coords = mCurrentSubTex->getTexCoords();
+                max = ImVec2(coords[1].x, coords[1].y);
+                min = ImVec2(coords[3].x, coords[3].y);
+            }
 
-        ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
-        ImGui::Image(selectedSubTex, subtexImageSize, min, max);
-        ImGui::SameLine();
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
+            ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+            ImGui::SameLine();
 
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.5f * (subtexImageSize.y - ImGui::GetFrameHeightWithSpacing()));
-        if (ImGui::Button("Clear Subtex"))
-        {
-            mCurrentTexTile = -1;
-            mCurrentSubTex = nullptr;
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.5f * (subtexImageSize.y - ImGui::GetFrameHeightWithSpacing()));
+            if (ImGui::Button("Clear Subtex"))
+            {
+                mCurrentTexTile = -1;
+                mCurrentSubTex = nullptr;
+            }
         }
 
         if (!sheet)
             return;
 
-        ImVec2 tileSize = { sheetImageSize.x / sheet->getTileCountX(), sheetImageSize.y / sheet->getTileCountY() };
-        for (usize y = 0; y < sheet->getTileCountY(); y++)
+        i32 tileCountX = (i32)sheet->getTileCountX();
+        i32 tileCountY = (i32)sheet->getTileCountY();
+        LAB_ASSERT(tileCountX > 0 && tileCountY > 0, "Tile sheet count too large!");
+
+        ImVec2 tileSize = { sheetImageSize.x / tileCountX, sheetImageSize.y / tileCountY };
+        for (i32 y = 0; y < tileCountY; y++)
         {
-            for (usize x = 0; x < sheet->getTileCountX(); x++)
+            for (i32 x = 0; x < tileCountX; x++)
             {
                 std::string name = fmt::format("##SheetTile({}, {})", x, y);
                 static i32 tileID = -1;

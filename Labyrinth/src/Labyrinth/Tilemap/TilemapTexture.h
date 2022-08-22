@@ -61,22 +61,17 @@ namespace Labyrinth {
 				mLayers.end());
 		}
 
-		void setTile(usize layer, TilePos pos, i32 id) 
-		{ 
-			if (layer >= mLayers.size())
-				return;
+		i32 getTile(usize layer, const TilePos& pos) const;
+		void setTile(usize layer, TilePos pos, i32 id);
 
-			i32& tileID = mLayers[layer][pos];
-			tileID = id;
-			RegenTexture(); 
-		}
+		Ref<SubTexture2D> getTileTex(i32 tileID) const;
 
 		static Ref<TilemapTexture> Create(i32 width, i32 height) { return Ref<TilemapTexture>::Create(width, height); }
 		static Ref<TilemapTexture> Create(const fs::path& path) { return Ref<TilemapTexture>::Create(path); }
 
 	private:
 		void RegenTexture();
-		AssetHandle GetSheet(usize tileID) const;
+		AssetHandle GetSheet(i32 tileID) const;
 
 	private:
 		i32 mWidth = 0, mHeight = 0;

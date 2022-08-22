@@ -111,7 +111,37 @@ namespace Labyrinth {
 		textureFB->unbind();
 	}
 
-	AssetHandle TilemapTexture::GetSheet(usize tileID) const
+	i32 TilemapTexture::getTile(usize layer, const TilePos& pos) const
+	{
+		if (layer >= mLayers.size())
+			return -1;
+
+		return mLayers[layer][pos];
+	}
+
+	void TilemapTexture::setTile(usize layer, TilePos pos, i32 id)
+	{
+		if (layer >= mLayers.size())
+			return;
+
+		i32& tileID = mLayers[layer][pos];
+		tileID = id;
+		RegenTexture();
+	}
+
+	Ref<SubTexture2D> TilemapTexture::getTileTex(i32 tileID) const
+	{
+		if (tileID < 0)
+			return nullptr;
+
+		Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileID));
+		if (!sheet)
+			return nullptr;
+
+		return sheet->getSubTex(tileID);
+	}
+
+	AssetHandle TilemapTexture::GetSheet(i32 tileID) const
 	{
 		auto it = std::find_if(mSheets.rbegin(), mSheets.rend(), [tileID](const SheetData& sheetData) { return sheetData.firstID <= tileID; });
 
