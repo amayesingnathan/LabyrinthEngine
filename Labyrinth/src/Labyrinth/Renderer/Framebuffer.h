@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Texture.h"
+
 #include "Labyrinth/Core/System/Base.h"
 
 #include <vector>
@@ -58,8 +60,8 @@ namespace Labyrinth {
 		virtual void unbind() = 0;
 
 		virtual void resize(usize width, usize height) = 0;
-		virtual i32 readPixel(u32 attachmentIndex, i32 x, i32 y) = 0;
-		virtual void readData(u32 attachmentIndex, void* data) = 0;
+		virtual i32 readPixel(u32 attachmentIndex, i32 x, i32 y) const = 0;
+		virtual Buffer readData(u32 attachmentIndex) const = 0;
 
 		virtual void clearAttachment(u32 attachmentIndex, i32 value) = 0;
 
@@ -67,6 +69,8 @@ namespace Labyrinth {
 		virtual u32 getColourAttachmentRendererID(u32 index = 0) const = 0;
 
 		virtual const FramebufferSpec& getSpecification() const = 0;
+
+		virtual Ref<Texture2D> toTex() const = 0;
 
 		static Ref<Framebuffer> Create(const FramebufferSpec& spec);
 	};

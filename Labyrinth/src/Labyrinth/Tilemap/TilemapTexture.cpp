@@ -102,12 +102,7 @@ namespace Labyrinth {
 		Renderer2D::EndState();
 		RenderCommand::EnableDepth();
 
-		mTexture = Texture2D::Create(fbSpec.width, fbSpec.height);
-
-		Buffer texData(4 * fbSpec.width * fbSpec.height);
-		textureFB->readData(0, texData.data);
-		mTexture->setData(texData);
-
+		mTexture = textureFB->toTex();
 		textureFB->unbind();
 	}
 

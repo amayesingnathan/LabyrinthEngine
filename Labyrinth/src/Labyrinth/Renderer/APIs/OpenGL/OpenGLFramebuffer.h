@@ -16,8 +16,8 @@ namespace Labyrinth {
 		virtual void unbind() override;
 
 		virtual void resize(usize width, usize height) override;
-		virtual i32 readPixel(u32 attachmentIndex, i32 x, i32 y) override;
-		virtual void readData(u32 attachmentIndex, void* data) override;
+		virtual i32 readPixel(u32 attachmentIndex, i32 x, i32 y) const override;
+		virtual Buffer readData(u32 attachmentIndex) const override;
 
 		virtual void clearAttachment(u32 attachmentIndex, i32 value) override;
 
@@ -29,6 +29,9 @@ namespace Labyrinth {
 		}
 
 		virtual const FramebufferSpec& getSpecification() const override { return mSpecification; }
+
+		virtual Ref<Texture2D> toTex() const override;
+
 	private:
 		u32 mRendererID = 0;
 		FramebufferSpec mSpecification;

@@ -196,7 +196,7 @@ namespace Labyrinth {
 		Invalidate();
 	}
 
-	i32 OpenGLFramebuffer::readPixel(u32 attachmentIndex, i32 x, i32 y)
+	i32 OpenGLFramebuffer::readPixel(u32 attachmentIndex, i32 x, i32 y) const
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
@@ -206,12 +206,15 @@ namespace Labyrinth {
 		return pixelData;
 	}
 
-	void OpenGLFramebuffer::readData(u32 attachmentIndex, void* data)
+	Buffer OpenGLFramebuffer::readData(u32 attachmentIndex) const
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
+		Buffer buffer(4 * mSpecification.width * mSpecification.height);
 		glReadBuffer(GL_COLOR_ATTACHMENT0 + attachmentIndex);
-		glReadPixels(0, 0, mSpecification.width, mSpecification.height, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glReadPixels(0, 0, mSpecification.width, mSpecification.height, GL_RGBA, GL_UNSIGNED_BYTE, buffer.data);
+
+		return buffer;
 	}
 
 	void OpenGLFramebuffer::clearAttachment(u32 attachmentIndex, i32 value)
@@ -229,5 +232,15 @@ namespace Labyrinth {
 
 		bool multisample = mSpecification.samples > 1;
 		Utils::BindTexture(multisample, mColourAttachments[index]);
+	}
+
+	Ref<Texture2D> OpenGLFramebuffer::toTex() const
+	{
+		Ref<Texture2D> tex = Texture2D::Create(mSpecification.width, mSpecification.height);
+
+		Buffer buffer = readData(0);
+		tex->setData(buffer);
+
+		return tex;
 	}
 }
