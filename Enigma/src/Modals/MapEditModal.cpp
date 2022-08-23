@@ -16,7 +16,6 @@ namespace Labyrinth {
     {
         if (assetType == "Behaviour")	return EditMode::Behaviour;
         else if (assetType == "Paint")	return EditMode::Paint;
-        else if (assetType == "Brush")	return EditMode::Brush;
 
         LAB_CORE_ASSERT(false, "Unknown Edit Mode!");
         return EditMode::Behaviour;
@@ -28,7 +27,6 @@ namespace Labyrinth {
         {
         case EditMode::Behaviour:	return "Behaviour";
         case EditMode::Paint:		return "Paint";
-        case EditMode::Brush:		return "Brush";
         }
 
         LAB_CORE_ASSERT(false, "Unknown Edit Mode");
@@ -41,15 +39,17 @@ namespace Labyrinth {
 
     void MapEditModal::onImGuiRender()
     {
-        bool painting = false;
-        if (mEditMode == EditMode::Brush && mHoveredMapTile.valid())
+        if (mEditMode == EditMode::Paint && mHoveredMapTile.valid() && mHoveredTexTile != mCurrentTexTile)
         {
-            if (ImGui::IsMouseClicked(Mouse::ButtonLeft, true))
+            if (ImGui::IsMouseDown(Mouse::ButtonLeft))
             {
                 mTilemap->setTile(mCurrentLayer, mHoveredMapTile, mCurrentTexTile);
-                painting = true;
+                mPainting = true;
+                mTest++;
             }
         }
+        if (mPainting && ImGui::IsMouseReleased(Mouse::ButtonLeft))
+            mPainting = false;
 
         // Left
         {
@@ -138,7 +138,7 @@ namespace Labyrinth {
             ImVec2 min(0, 1), max(1, 0);
 
             Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
-            if (hoveredSubtex && !painting)
+            if (hoveredSubtex && !mPainting)
             {
                 selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
                 glm::vec2* coords = hoveredSubtex->getTexCoords();
@@ -149,8 +149,6 @@ namespace Labyrinth {
             ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
             ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
             ImGui::Image(selectedSubTex, subtexImageSize, min, max);
-
-            //ImGui::Text(fmt::format("Hovered Tex ID: {}", mHoveredTexTile).c_str());
 
             ImGui::EndChild();
 
@@ -228,11 +226,8 @@ namespace Labyrinth {
         ImGui::SameLine();
         ImGui::SetCursorPosX(startX + (0.4f * imageSize.x));
         ImGui::Text("Ctrl + P: Paint Mode");
-        ImGui::SameLine();
-        ImGui::SetCursorPosX(startX + (0.6f * imageSize.x));
-        ImGui::Text("Ctrl + R: Brush Mode");
 
-        ImGuiButtonFlags flags = (mEditMode == EditMode::Paint || mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
+        ImGuiButtonFlags flags = (mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
         ImVec2 tileSize = { imageSize.x / mMapWidth, imageSize.y / mMapHeight };
 
         for (size_t y = 0; y < mMapHeight; y++)
@@ -246,12 +241,7 @@ namespace Labyrinth {
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
                 if (ImGui::InvisibleButton(name.c_str(), tileSize, flags))
-                {
-                    if (mEditMode == EditMode::Paint)
-                        mTilemap->setTile(mCurrentLayer, pos, mCurrentTexTile);
-                    else if (mEditMode == EditMode::Behaviour)
-                        mCurrentMapTile = pos;
-                }
+                    mCurrentMapTile = pos;
 
                 if (ImGui::BeginDragDropTarget())
                 {
@@ -363,7 +353,7 @@ namespace Labyrinth {
                 ImGui::SetCursorPosX(xpos + (x * tileSize.x));
                 ImGui::SetCursorPosY(ypos + (y * tileSize.y));
 
-                if (ImGui::Button(name.c_str(), tileSize) && mEditMode != EditMode::Behaviour)
+                if (ImGui::Button(name.c_str(), tileSize) && mEditMode == EditMode::Paint)
                 {
                     mCurrentTexTile = tileID;
                     mCurrentSubTex = sheet->getSubTex(tileID);
@@ -400,15 +390,6 @@ namespace Labyrinth {
             if (control)
             {
                 mEditMode = EditMode::Paint;
-                return true;
-            }
-        }
-        break;
-        case Key::R:
-        {
-            if (control)
-            {
-                mEditMode = EditMode::Brush;
                 return true;
             }
         }

@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	enum class EditMode
 	{
-		Paint, Behaviour, Brush
+		Paint, Behaviour
 	};
 
 	class MapEditModal : public EditorModal
@@ -37,6 +37,8 @@ namespace Labyrinth {
 		EditMode mEditMode = EditMode::Paint;
 
 		Ref<SubTexture2D> mCurrentSubTex = nullptr;
+
+		bool mPainting = false;
 
 		usize mCurrentLayer = 0;
 		TilePos mCurrentMapTile;
