@@ -2,7 +2,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Timestep
+	class Timestep
 	{
 	public:
 		Timestep(f32 time = 0.0f)

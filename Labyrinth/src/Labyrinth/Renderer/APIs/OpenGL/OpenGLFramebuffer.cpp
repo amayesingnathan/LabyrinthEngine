@@ -238,8 +238,7 @@ namespace Labyrinth {
 	{
 		Ref<Texture2D> tex = Texture2D::Create(mSpecification.width, mSpecification.height);
 
-		Buffer buffer = readData(0);
-		tex->setData(buffer);
+		tex->setData(readData(0));
 
 		return tex;
 	}

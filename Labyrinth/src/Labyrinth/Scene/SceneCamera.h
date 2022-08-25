@@ -6,7 +6,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API SceneCamera : public Camera
+	class SceneCamera : public Camera
 	{
 	public:
 		enum class ProjectionType { Perspective = 0, Orthographic = 1 };

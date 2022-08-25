@@ -1,6 +1,6 @@
 #pragma once
 
-struct LAB_API Vector2D
+struct Vector2D
 {
 	f32 x;
 	f32 y;

@@ -7,7 +7,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Renderer
+	class Renderer
 	{
 	public:
 		static void Init();

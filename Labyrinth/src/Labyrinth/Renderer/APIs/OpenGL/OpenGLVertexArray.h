@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API OpenGLVertexArray : public VertexArray
+	class OpenGLVertexArray : public VertexArray
 	{
 	public:
 		OpenGLVertexArray();

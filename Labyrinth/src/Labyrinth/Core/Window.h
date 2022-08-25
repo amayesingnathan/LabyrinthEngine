@@ -11,7 +11,7 @@ struct GLFWwindow;
 
 namespace Labyrinth {
 
-	struct LAB_API WindowProps {
+	struct WindowProps {
 		std::string title;
 		u32 width;
 		u32 height;
@@ -24,7 +24,7 @@ namespace Labyrinth {
 			: title(t), width(w), height(h), fullscreen(f) {}
 	};
 
-	class LAB_API Window
+	class Window
 	{
 	public:
 		using EventCallbackFunc = std::function<void(Event&)>;
