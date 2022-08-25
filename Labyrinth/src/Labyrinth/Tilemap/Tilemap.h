@@ -1,5 +1,6 @@
 #pragma once
 
+#include "TileSpec.h"
 #include "TilemapTexture.h"
 
 #include <Labyrinth/Core/System/Base.h>
@@ -45,9 +46,14 @@ namespace Labyrinth {
 
 		Ref<SubTexture2D> getTileTex(i32 id) const { return mTexture->getTileTex(id); }
 
-		const std::unordered_map<TilePos, std::string>& getTileBehaviour() const { return mTileBehaviour; }
-		void setTileBehaviour(TilePos pos, const std::string& script) { mTileBehaviour[pos] = script; }
-		void removeTileBehaviour(TilePos pos) { if (mTileBehaviour.count(pos) != 0) mTileBehaviour.erase(pos); }
+		const std::unordered_map<TilePos, TileSpec>& getTileData() const { return mTileBehaviour; }
+		void setTileData(TilePos pos, const TileSpec& spec) { mTileBehaviour[pos] = spec; }
+		void removeTileData(TilePos pos) { if (mTileBehaviour.count(pos) != 0) mTileBehaviour.erase(pos); }
+
+		void setTileBehaviour(TilePos pos, const std::string& script) { mTileBehaviour[pos].script = script; }
+		void removeTileBehaviour(TilePos pos) { if (mTileBehaviour.count(pos) != 0) mTileBehaviour[pos].script.clear(); }
+
+		void setTileSolid(TilePos pos, bool solid = true) { mTileBehaviour[pos].solid = solid; }
 
 		static Ref<Tilemap> Create(const std::string& name, i32 width, i32 height) { return Ref<Tilemap>::Create(name, width, height); }
 		static Ref<Tilemap> Create(const fs::path& path) { return Ref<Tilemap>::Create(path); }
@@ -63,7 +69,7 @@ namespace Labyrinth {
 		Ref<TilemapTexture> mTexture = nullptr;
 		i32 mWidth = 0, mHeight = 0;
 
-		std::unordered_map<TilePos, std::string> mTileBehaviour;
+		std::unordered_map<TilePos, TileSpec> mTileBehaviour;
 
 		friend class TilemapSerialiser;
 		friend class MapEditModal;

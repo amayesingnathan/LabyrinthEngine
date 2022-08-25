@@ -112,7 +112,7 @@ namespace Labyrinth {
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // TransformComponent
 
-			auto& transform = entity.getComponent<TransformComponent>();
+			auto& transform = entity.getTransform();
 			LAB_SERIALISE_PROPERTY(Position, transform.translation, out);
 			LAB_SERIALISE_PROPERTY(Rotation, transform.rotation, out);
 			LAB_SERIALISE_PROPERTY(Scale, transform.scale, out);
@@ -167,6 +167,10 @@ namespace Labyrinth {
 			auto& rbComponent = entity.getComponent<RigidBodyComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)rbComponent.type, out);
 			LAB_SERIALISE_PROPERTY(FixedRotation, rbComponent.fixedRotation, out);
+			LAB_SERIALISE_PROPERTY(Mass, rbComponent.mass, out);
+			LAB_SERIALISE_PROPERTY(LinearDrag, rbComponent.linearDrag, out);
+			LAB_SERIALISE_PROPERTY(AngularDrag, rbComponent.angularDrag, out);
+			LAB_SERIALISE_PROPERTY(GravityScale, rbComponent.gravityScale, out);
 
 			out << YAML::EndMap; // RigidBodyComponent
 		}
@@ -285,7 +289,7 @@ namespace Labyrinth {
 			if (transformComponent)
 			{
 				// Entities always have transforms
-				auto& transform = deserializedEntity.getComponent<TransformComponent>();
+				auto& transform = deserializedEntity.getTransform();
 				LAB_DESERIALISE_PROPERTY_DEF(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY_DEF(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY_DEF(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
@@ -320,7 +324,6 @@ namespace Labyrinth {
 
 				src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
 				src.layer = spriteRendererComponent["Layer"].as<u8>();
-				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 				src.handle = spriteRendererComponent["Handle"].as<u64>();
 				src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
 			}
@@ -331,8 +334,6 @@ namespace Labyrinth {
 				auto& src = deserializedEntity.addComponent<CircleRendererComponent>();
 
 				src.layer = circleRendererComponent["Layer"].as<u8>();
-				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
-
 				src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
 				src.thickness = circleRendererComponent["Thickness"].as<f32>();
 			}
@@ -343,6 +344,10 @@ namespace Labyrinth {
 				auto& rbc = deserializedEntity.addComponent<RigidBodyComponent>();
 				rbc.type = (RigidBodyComponent::BodyType)rigidBodyComponent["Type"].as<i32>();
 				rbc.fixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
+				rbc.mass = rigidBodyComponent["Mass"].as<f32>();
+				rbc.linearDrag = rigidBodyComponent["LinearDrag"].as<f32>();
+				rbc.angularDrag = rigidBodyComponent["AngularDrag"].as<f32>();
+				rbc.gravityScale = rigidBodyComponent["GravityScale"].as<f32>();
 			}
 
 			auto boxColliderComponent = entity["BoxColliderComponent"];

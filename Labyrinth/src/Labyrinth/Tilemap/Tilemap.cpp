@@ -28,8 +28,8 @@ namespace Labyrinth {
 			copy->addLayer(layer);
 		for (const auto& sheet : other->mTexture->mSheets)
 			copy->addSheet(sheet.firstID, sheet.sheet);
-		for (const auto& [pos, script] : other->mTileBehaviour)
-			copy->setTileBehaviour(pos, script);
+		for (const auto& [pos, spec] : other->mTileBehaviour)
+			copy->setTileData(pos, spec);
 
 		copy->RegenTexture();
 		copy->handle = other->handle;

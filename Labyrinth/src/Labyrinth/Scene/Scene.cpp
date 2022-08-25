@@ -208,7 +208,7 @@ namespace Labyrinth {
 				Entity child = findEntity(id);
 				if (child.hasComponent<TransformComponent>())
 				{
-					TransformComponent& transform = child.getComponent<TransformComponent>();
+					TransformComponent& transform = child.getTransform();
 					transform.translation += childController.deltaTranslation;
 					transform.rotation += glm::radians(childController.deltaRotation);
 					transform.scale += childController.deltaScale;
@@ -235,6 +235,11 @@ namespace Labyrinth {
 			if (!entity.hasComponent<ScriptComponent>())
 				entity.addComponent<ScriptComponent>();
 
+			const auto& mapTransform = entity.getTransform();
+			i32 width = tilemap->getWidth();
+			i32 height = tilemap->getHeight();
+			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
 			Entity tiles = getChildByTag("Tiles", entity);
 			if (tiles)
 				DestroyEntity(tiles);
@@ -242,14 +247,23 @@ namespace Labyrinth {
 			tiles = CreateEntity("Tiles", entity);
 
 			tmcComponent.tileBehaviour.clear();
-			for (const auto& [pos, script] : tilemap->getTileBehaviour())
+			for (const auto& [pos, spec] : tilemap->getTileData())
 			{
 				std::string tileName = fmt::format("({}, {})", pos.x, pos.y);
-				Entity tileBehaviour = CreateEntity(tileName, tiles);
+				Entity tile = CreateEntity(tileName, tiles);
+				auto& tileTransform = tile.getTransform();
+				tileTransform.translation.x = tileSize.x * (pos.x - 0.5f * (f32)(width - 1));
+				tileTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - pos.y);
+				tileTransform.scale = tileSize;
 
-				tileBehaviour.addComponent<ScriptComponent>(script);
-				tileBehaviour.removeComponent<TransformComponent>();
-				tmcComponent.tileBehaviour[pos] = tileBehaviour.getUUID();
+				tile.addComponent<ScriptComponent>(spec.script);
+				if (spec.solid)
+				{
+					tile.addComponent<RigidBodyComponent>();
+					tile.addComponent<BoxColliderComponent>();
+				}
+
+				tmcComponent.tileBehaviour[pos] = tile.getUUID();
 			}
 		});
 	}
@@ -348,15 +362,15 @@ namespace Labyrinth {
 	{
 		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
-			mRenderStack->addQuad(trComponent, srComponent, Cast<i32>(entity));
+			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
 		});
 		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
-			mRenderStack->addCircle(trComponent, crComponent, Cast<i32>(entity));
+			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
 		});
 		mRegistry.group<TilemapControllerComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& tmcComponent, const auto& trComponent)
 		{
-			mRenderStack->addTilemap(trComponent, tmcComponent, Cast<i32>(entity));
+			mRenderStack->addTilemap(trComponent, tmcComponent, (i32)entity);
 		});
 	}
 
@@ -519,7 +533,7 @@ namespace Labyrinth {
 		if (!camera) return;
 
 		BuildScene();
-		DrawScene(camera.getComponent<CameraComponent>(), camera.getComponent<TransformComponent>());
+		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
 	}
 
 	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
@@ -595,17 +609,11 @@ namespace Labyrinth {
 	template<>
 	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
-		// Overwrite transform component z value using render layer value
-		auto& trans = entity.getComponent<TransformComponent>().translation;
-		trans.z = component.getNLayer();
 	}
 
 	template<>
 	void Scene::onComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 	{
-		// Overwrite transform component z value using render layer value
-		auto& trans = entity.getComponent<TransformComponent>().translation;
-		trans.z = component.getNLayer();
 	}
 
 	template<>

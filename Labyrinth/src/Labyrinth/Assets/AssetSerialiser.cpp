@@ -225,11 +225,11 @@ namespace Labyrinth {
 
 			out << YAML::Key << "TileBehaviour";
 			out << YAML::Value << YAML::BeginSeq;
-			for (const auto& [pos, script]: tilemap->getTileBehaviour())
+			for (const auto& [pos, spec]: tilemap->getTileData())
 			{
 				out << YAML::BeginMap;
 				LAB_SERIALISE_PROPERTY(TilePos, pos, out);
-				LAB_SERIALISE_PROPERTY(Behaviour, script, out);
+				LAB_SERIALISE_PROPERTY(Spec, spec, out);
 				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
@@ -284,11 +284,11 @@ namespace Labyrinth {
 		for (auto tile : tileBehaviour)
 		{
 			TilePos pos;
-			std::string script;
+			TileSpec spec;
 			LAB_DESERIALISE_PROPERTY(TilePos, pos, tile);
-			LAB_DESERIALISE_PROPERTY(Behaviour, script, tile);
+			LAB_DESERIALISE_PROPERTY(Spec, spec, tile);
 
-			tilemap->setTileBehaviour(pos, script);
+			tilemap->setTileData(pos, spec);
 		}
 
 		asset = tilemap;

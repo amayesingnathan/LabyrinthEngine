@@ -275,7 +275,6 @@ namespace Labyrinth {
 	struct TilemapControllerComponent
 	{
 		AssetHandle tilemapHandle = 0;
-		UUID playerEntity = 0;
 		std::unordered_map<TilePos, UUID> tileBehaviour;
 	};
 

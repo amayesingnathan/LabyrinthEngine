@@ -93,63 +93,83 @@ namespace Labyrinth {
             }
             ImGui::EndGroup();
 
-            ImGui::BeginChild("Selected", ImVec2(0, -5 * ImGui::GetFrameHeightWithSpacing()));
+            {   // Selected Tile
+                ImGui::BeginChild("Selected", ImVec2(0, -7 * ImGui::GetFrameHeightWithSpacing()));
 
-            ImGui::Text(fmt::format("Tile: ({}, {})", mCurrentMapTile.x, mCurrentMapTile.y).c_str());
+                ImGui::Text(fmt::format("Tile: ({}, {})", mCurrentMapTile.x, mCurrentMapTile.y).c_str());
 
-            ImGui::BeginDisabled(mCurrentMapTile.valid());
-            const std::string& selectedScript = (mTilemap->getTileBehaviour().count(mCurrentMapTile) != 0) ? mTilemap->getTileBehaviour().at(mCurrentMapTile) : "";
-            if (ImGui::BeginCombo("Behaviour", selectedScript.c_str()))
-            {
-                // Display "None" at the top of the list
-                bool clear = selectedScript.empty();
-                if (ImGui::Selectable("None", clear))
-                    mTilemap->removeTileBehaviour(mCurrentMapTile);
+                bool selectedHasData = mTilemap->getTileData().count(mCurrentMapTile) != 0;
 
-                for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
+                ImGui::BeginDisabled(!mCurrentMapTile.valid());
+                const std::string& selectedScript = selectedHasData ? mTilemap->getTileData().at(mCurrentMapTile).script : "";
+                if (ImGui::BeginCombo("Behaviour", selectedScript.c_str()))
                 {
-                    bool isSelected = selectedScript == key;
+                    // Display "None" at the top of the list
+                    bool clear = selectedScript.empty();
+                    if (ImGui::Selectable("None", clear))
+                        mTilemap->removeTileBehaviour(mCurrentMapTile);
 
-                    if (ImGui::Selectable(key.c_str(), isSelected))
-                        mTilemap->setTileBehaviour(mCurrentMapTile, key);
+                    for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
+                    {
+                        bool isSelected = selectedScript == key;
 
-                    if (isSelected)
-                        ImGui::SetItemDefaultFocus();
+                        if (ImGui::Selectable(key.c_str(), isSelected))
+                            mTilemap->setTileBehaviour(mCurrentMapTile, key);
+
+                        if (isSelected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+
+                    ImGui::EndCombo();
                 }
 
-                ImGui::EndCombo();
-            }
-            ImGui::EndDisabled();
+                bool selectedSolid = selectedHasData ? mTilemap->getTileData().at(mCurrentMapTile).solid : false;
+                if (ImGui::Checkbox("Solid", &selectedSolid))
+                    mTilemap->setTileSolid(mCurrentMapTile, selectedSolid);
 
-            ImGui::EndChild();
 
-            ImGui::BeginChild("Hovered");
-            auto subtexImageSize = ImGui::GetContentRegionAvail();
+                ImGui::EndDisabled();
 
-            ImGui::Text(fmt::format("Hovered Tile: ({}, {})", mHoveredMapTile.x, mHoveredMapTile.y).c_str());
-            const std::string& hoveredScript = (mTilemap->getTileBehaviour().count(mHoveredMapTile) != 0) ? mTilemap->getTileBehaviour().at(mHoveredMapTile) : "";
-            ImGui::Text(fmt::format("Hovered Behaviour: {}", hoveredScript).c_str());
-
-            subtexImageSize.x *= 0.5f;
-            subtexImageSize.y *= 0.5f;
-
-            ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
-            ImVec2 min(0, 1), max(1, 0);
-
-            Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
-            if (hoveredSubtex && !mPainting)
-            {
-                selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
-                glm::vec2* coords = hoveredSubtex->getTexCoords();
-                max = ImVec2(coords[1].x, coords[1].y);
-                min = ImVec2(coords[3].x, coords[3].y);
+                ImGui::EndChild();
             }
 
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
-            ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+            {   // Hovered Tile
+                ImGui::BeginChild("Hovered");
+                auto subtexImageSize = ImGui::GetContentRegionAvail();
 
-            ImGui::EndChild();
+                bool hoveredHasData = mTilemap->getTileData().count(mHoveredMapTile) != 0;
+
+                ImGui::BeginDisabled();
+                ImGui::Text(fmt::format("Hovered Tile: ({}, {})", mHoveredMapTile.x, mHoveredMapTile.y).c_str());
+
+                const std::string& hoveredScript = hoveredHasData ? mTilemap->getTileData().at(mHoveredMapTile).script : "";
+                ImGui::Text(fmt::format("Hovered Behaviour: {}", hoveredScript).c_str());
+
+                bool hoveredSolid = hoveredHasData ? mTilemap->getTileData().at(mHoveredMapTile).solid : false;
+                ImGui::Checkbox("Solid", &hoveredSolid);
+                ImGui::EndDisabled();
+
+                subtexImageSize.x *= 0.5f;
+                subtexImageSize.y *= 0.5f;
+
+                ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
+                ImVec2 min(0, 1), max(1, 0);
+
+                Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
+                if (hoveredSubtex && !mPainting)
+                {
+                    selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
+                    glm::vec2* coords = hoveredSubtex->getTexCoords();
+                    max = ImVec2(coords[1].x, coords[1].y);
+                    min = ImVec2(coords[3].x, coords[3].y);
+                }
+
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
+                ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
+                ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+
+                ImGui::EndChild();
+            }
 
             ImGui::EndChild();
         }

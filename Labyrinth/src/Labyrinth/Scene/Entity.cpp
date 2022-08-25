@@ -23,7 +23,6 @@ namespace Labyrinth {
 		mScene = nullptr;
 	}
 
-
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)

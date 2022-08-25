@@ -423,7 +423,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		*outTranslation = entity.getComponent<TransformComponent>();
+		*outTranslation = entity.getTransform();
 	}
 	void GlueFunctions::Transform_SetTransform(UUID id, TransformComponent* translation)
 	{
@@ -434,7 +434,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		entity.getComponent<TransformComponent>() = *translation;
+		entity.getTransform() = *translation;
 	}
 	void GlueFunctions::Transform_GetTranslation(UUID id, glm::vec3* outTranslation)
 	{
@@ -445,7 +445,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		*outTranslation = entity.getComponent<TransformComponent>().translation;
+		*outTranslation = entity.getTransform().translation;
 	}
 	void GlueFunctions::Transform_SetTranslation(UUID id, glm::vec3* translation)
 	{
@@ -456,7 +456,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		entity.getComponent<TransformComponent>().translation = *translation;
+		entity.getTransform().translation = *translation;
 	}
 	void GlueFunctions::Transform_GetRotation(UUID id, glm::vec3* rotation)
 	{
@@ -467,7 +467,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		*rotation = entity.getComponent<TransformComponent>().rotation;
+		*rotation = entity.getTransform().rotation;
 	}
 	void GlueFunctions::Transform_SetRotation(UUID id, glm::vec3* rotation)
 	{
@@ -478,7 +478,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		entity.getComponent<TransformComponent>().rotation = *rotation;
+		entity.getTransform().rotation = *rotation;
 	}
 	void GlueFunctions::Transform_GetScale(UUID id, glm::vec3* outScale)
 	{
@@ -489,7 +489,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		*outScale = entity.getComponent<TransformComponent>().scale;
+		*outScale = entity.getTransform().scale;
 	}
 	void GlueFunctions::Transform_SetScale(UUID id, glm::vec3* scale)
 	{
@@ -500,7 +500,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		entity.getComponent<TransformComponent>().scale = *scale;
+		entity.getTransform().scale = *scale;
 	}
 #pragma endregion
 
