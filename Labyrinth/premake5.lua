@@ -54,7 +54,6 @@ project "Labyrinth"
 		"glad",
 		"glfw",
 		"ImGui",
-		"mContainers",
 		"yaml-cpp",
          "%{Library.mono}"
 	}

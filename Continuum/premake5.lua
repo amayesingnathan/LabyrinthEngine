@@ -21,7 +21,6 @@ project "Continuum"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.entt}",
-        "%{IncludeDir.mContainers}",
 		"%{IncludeDir.yaml_cpp}",
 		"%{IncludeDir.lua}",
 		"%{IncludeDir.json}",

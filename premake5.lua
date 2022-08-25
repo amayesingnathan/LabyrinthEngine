@@ -45,7 +45,6 @@ group "Dependencies"
 	include "Labyrinth/dependencies/glfw"
 	include "Labyrinth/dependencies/glad"
 	include "Labyrinth/dependencies/imgui"
-	include "Labyrinth/dependencies/mContainers"
 	include "Labyrinth/dependencies/yaml-cpp"
 group ""
 
