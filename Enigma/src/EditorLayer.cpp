@@ -365,7 +365,7 @@ namespace Labyrinth {
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Project Settings", ModalButtons::OKCancel);
+					ModalManager::Open<SettingsModal>("Settings", ModalButtons::OKCancel);
 
 				ImGui::Separator();
 
@@ -808,31 +808,34 @@ namespace Labyrinth {
 	
 	void EditorLayer::OnScenePlay()
 	{
-		mSceneState = SceneState::Play;
-
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onRuntimeStart();
 
+		mSceneState = SceneState::Play;
 		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneSimulate()
 	{
-		mSceneState = SceneState::Simulate;
-
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onSimulationStart();
 
+		mSceneState = SceneState::Simulate;
 		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
-		mSceneState = SceneState::Edit;
-
-		mCurrentScene->onRuntimeStop();
+		switch (mSceneState)
+		{
+		case SceneState::Play: mCurrentScene->onRuntimeStop(); break;
+		case SceneState::Simulate: mCurrentScene->onSimulationStop(); break;
+		case SceneState::Edit: break;
+		}
+		
 		mCurrentScene = mEditorScene;
 
+		mSceneState = SceneState::Edit;
 		mScenePanel->setContext(mCurrentScene);
 	}
 

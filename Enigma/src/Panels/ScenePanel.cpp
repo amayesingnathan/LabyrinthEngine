@@ -306,6 +306,7 @@ namespace Labyrinth {
 			DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
 			DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
 			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
+			DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
 			DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 			DrawAddComponentEntry<ScriptComponent>("Script");
 			DrawAddComponentEntry<TilemapControllerComponent>("Tilemap Controller");
@@ -449,10 +450,7 @@ namespace Labyrinth {
 				if (layerVal > component.MaxLayers) layerVal = component.MaxLayers;
 
 				if (layerVal != component.layer)
-				{
 					component.layer = layerVal;
-					mSelectedEntity.getComponent<TransformComponent>().translation.z = component.getNLayer();
-				}
 			}
 
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
@@ -575,6 +573,10 @@ namespace Labyrinth {
 			}
 
 			ImGui::Checkbox("Fixed Rotation", &component.fixedRotation);
+			ImGui::DragFloat("Mass", &component.mass, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Linear Drag", &component.linearDrag, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Angular Drag", &component.angularDrag, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Gravity Scale", &component.gravityScale, 0.01f, 0.0f, 100.0f);
 		});
 
 		DrawComponent<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
