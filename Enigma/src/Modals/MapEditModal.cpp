@@ -33,7 +33,7 @@ namespace Labyrinth {
         return "None";
     }
 
-    MapEditModal::MapEditModal(const Ref<Tilemap>& map) : EditorModal(), mTilemap(map), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
+    MapEditModal::MapEditModal(const Ref<Tilemap>& map) : EditorModal(), mTilemap(Tilemap::Clone(map)), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
     {
     }
 
@@ -197,6 +197,7 @@ namespace Labyrinth {
     void MapEditModal::onComplete()
     {
         AssetImporter::Serialise(mTilemap);
+        AssetManager::ReloadData(mTilemap->handle);
     }
 
     void MapEditModal::onEvent(Event& e)

@@ -20,7 +20,7 @@ namespace Labyrinth {
 
 		const Ref<Framebuffer>& getTex() const { return mTexture->getTex(); };
 
-		const std::string& getName() { return mMapName; }
+		const std::string& getName() const { return mMapName; }
 		i32 getWidth() const { return mWidth; }
 		i32 getHeight() const { return mHeight; }
 
@@ -51,6 +51,8 @@ namespace Labyrinth {
 
 		static Ref<Tilemap> Create(const std::string& name, i32 width, i32 height) { return Ref<Tilemap>::Create(name, width, height); }
 		static Ref<Tilemap> Create(const fs::path& path) { return Ref<Tilemap>::Create(path); }
+
+		static Ref<Tilemap> Clone(const Ref<Tilemap>& other);
 
 	private:
 		void RegenTexture() { mTexture->RegenTexture(); }
