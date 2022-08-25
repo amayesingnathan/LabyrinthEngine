@@ -3,18 +3,29 @@
 
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/IO/Tiled.h"
-#include <Labyrinth/Renderer/Framebuffer.h>
 #include "Labyrinth/Renderer/Renderer2D.h"
 #include "Labyrinth/Renderer/RenderCommand.h"
 
 namespace Labyrinth {
 
 	TilemapTexture::TilemapTexture(i32 width, i32 height)
-		: mWidth(width), mHeight(height)
+		: mWidth(width), mHeight(height), mCamera(0.0f, 1.0f, 0.0f, 1.0f)
 	{
+		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
+
+		FramebufferSpec fbSpec;
+		fbSpec.width = mWidth * TileSize.x;
+		fbSpec.height = mHeight * TileSize.y;
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+
+		mTexture = Framebuffer::Create(fbSpec);
+
+		mCamera = OrthographicCamera(0.0f, Cast<f32>(fbSpec.width), 0.0f, Cast<f32>(fbSpec.height));
 	}
 
-	TilemapTexture::TilemapTexture(const fs::path& path)
+	TilemapTexture::TilemapTexture(const fs::path& path) :
+		mCamera(0.0f, 1.0f, 0.0f, 1.0f)
 	{
 		TiledIO::Open(path, mLayers, mSheets);
 		if (!mLayers.empty())
@@ -22,6 +33,18 @@ namespace Labyrinth {
 			mWidth = mLayers[0].getWidth();
 			mHeight = mLayers[0].getHeight();
 		}
+
+		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
+
+		FramebufferSpec fbSpec;
+		fbSpec.width = mWidth * TileSize.x;
+		fbSpec.height = mHeight * TileSize.y;
+		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+		fbSpec.samples = 1;
+
+		mTexture = Framebuffer::Create(fbSpec);
+
+		mCamera = OrthographicCamera(0.0f, Cast<f32>(fbSpec.width), 0.0f, Cast<f32>(fbSpec.height));
 	}
 
 	bool TilemapTexture::moveLayer(usize index, LayerDirection direction)
@@ -65,21 +88,13 @@ namespace Labyrinth {
 		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 		constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
 
-		FramebufferSpec fbSpec;
-		fbSpec.width = mWidth * TileSize.x;
-		fbSpec.height = mHeight * TileSize.y;
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		fbSpec.samples = 1;
-
-		Ref<Framebuffer> textureFB = Framebuffer::Create(fbSpec);
-		textureFB->bind();
+		mTexture->bind();
 
 		RenderCommand::SetClearColor({ 0.f, 0.f, 0.f, 1 });
 		RenderCommand::Clear();
 		RenderCommand::DisableDepth();
 
-		OrthographicCamera camera(0.0f, Cast<f32>(fbSpec.width), 0.0f, Cast<f32>(fbSpec.height));
-		Renderer2D::BeginState(camera);
+		Renderer2D::BeginState(mCamera);
 
 		for (const TexMapLayer& layer : mLayers)
 		{
@@ -101,9 +116,7 @@ namespace Labyrinth {
 
 		Renderer2D::EndState();
 		RenderCommand::EnableDepth();
-
-		mTexture = textureFB->toTex();
-		textureFB->unbind();
+		mTexture->unbind();
 	}
 
 	i32 TilemapTexture::getTile(usize layer, const TilePos& pos) const

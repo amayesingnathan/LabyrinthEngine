@@ -5,6 +5,8 @@
 #include <Labyrinth/Core/System/Base.h>
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Renderer/SubTexture.h>
+#include <Labyrinth/Renderer/Framebuffer.h>
+#include <Labyrinth/Renderer/OrthographicCamera.h>
 
 namespace Labyrinth {
 
@@ -33,7 +35,7 @@ namespace Labyrinth {
 		TilemapTexture(i32 width, i32 height);
 		TilemapTexture(const fs::path& path);
 
-		const Ref<Texture2D>& getTex() const { return mTexture; }
+		const Ref<Framebuffer>& getTex() const { return mTexture; }
 
 		const std::vector<SheetData>& getSheets() const { return mSheets; }
 		const std::vector<TexMapLayer>& getLayers() const { return mLayers; }
@@ -77,7 +79,8 @@ namespace Labyrinth {
 		i32 mWidth = 0, mHeight = 0;
 		std::vector<SheetData> mSheets;
 		std::vector<TexMapLayer> mLayers;
-		Ref<Texture2D> mTexture = nullptr;
+		Ref<Framebuffer> mTexture = nullptr;
+		OrthographicCamera mCamera;
 
 		friend class Tilemap;
 	};

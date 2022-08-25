@@ -18,7 +18,7 @@ namespace Labyrinth {
 		Tilemap(const std::string& name, i32 width, i32 height);
 		Tilemap(const fs::path& path);
 
-		const Ref<Texture2D>& getTex() const { return mTexture->getTex(); };
+		const Ref<Framebuffer>& getTex() const { return mTexture->getTex(); };
 
 		const std::string& getName() { return mMapName; }
 		i32 getWidth() const { return mWidth; }

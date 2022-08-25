@@ -635,7 +635,7 @@ namespace Labyrinth {
 			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
 			ImGui::Text("Texture");
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.tilemapHandle);
-			ImTextureID tex = (ImTextureID)(intptr_t)(tilemap ? tilemap->getTex()->getRendererID() : EditorResources::NoTexture->getRendererID());
+			ImTextureID tex = (ImTextureID)(intptr_t)(tilemap ? tilemap->getTex()->getColourAttachmentRendererID() : EditorResources::NoTexture->getRendererID());
 			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
 
 			if (ImGui::BeginDragDropTarget())

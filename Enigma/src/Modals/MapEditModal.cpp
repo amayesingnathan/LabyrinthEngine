@@ -45,7 +45,6 @@ namespace Labyrinth {
             {
                 mTilemap->setTile(mCurrentLayer, mHoveredMapTile, mCurrentTexTile);
                 mPainting = true;
-                mTest++;
             }
         }
         if (mPainting && ImGui::IsMouseReleased(Mouse::ButtonLeft))
@@ -216,7 +215,7 @@ namespace Labyrinth {
         
         auto imageSize = ImGui::GetContentRegionAvail();
         imageSize.y -= ImGui::GetFrameHeightWithSpacing();
-        ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getRendererID(), imageSize, { 0, 1 }, { 1, 0 });
+        ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getColourAttachmentRendererID(), imageSize, { 0, 1 }, { 1, 0 });
 
         f32 startX = ImGui::GetCursorPosX();
         ImGui::Text(fmt::format("Edit Mode: {}", EditModeToString(mEditMode)).c_str());
