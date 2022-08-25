@@ -61,6 +61,17 @@ namespace Labyrinth {
 
 	void RenderStack::clearItems()
 	{
+		auto removeStart = std::remove_if(mLayers.begin(), mLayers.end(), [](RenderLayer* layer) 
+		{ 
+			if (layer->empty())
+			{
+				delete layer;
+				return true;
+			}
+			return false;
+		});
+		mLayers.erase(removeStart, mLayers.end());
+
 		for (RenderLayer* layer : mLayers)
 			layer->clear();
 	}
@@ -108,19 +119,19 @@ namespace Labyrinth {
 	{
 		std::sort(mLayers.begin(), mLayers.end(), [](const auto& lhs, const auto& rhs)
 		{
-			return lhs->getDepth() < rhs->getDepth();
+			return lhs->getDepth() > rhs->getDepth();
 		});
 
 		for (RenderLayer* layer : mLayers)
 		{
+			for (const TilemapData& map : layer->getTilemaps())
+				Renderer2D::DrawMap(map.getTrans(), map.getMap(), map.getID());
+
 			for (const QuadData& quad : layer->getQuads())
 				Renderer2D::DrawSprite(quad.getTrans(), quad.getSprite(), quad.getID());
 
 			for (const CircleData& circle : layer->getCircles())
 				Renderer2D::DrawCircle(circle.getTrans(), circle.getCircle(), circle.getID());
-
-			for (const TilemapData& map : layer->getTilemaps())
-				Renderer2D::DrawMap(map.getTrans(), map.getMap(), map.getID());
 		}
 	}
 }

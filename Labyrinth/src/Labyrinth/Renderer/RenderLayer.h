@@ -69,6 +69,13 @@ namespace Labyrinth {
 		u8 getDepth() const { return mDepth; }
 		void clear() { mQuads.clear(); mCircles.clear(); mTilemaps.clear(); }
 
+		bool empty() const 
+		{ 
+			return mQuads.empty() && 
+				mCircles.empty() && 
+				mTilemaps.empty(); 
+		}
+
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }
 
