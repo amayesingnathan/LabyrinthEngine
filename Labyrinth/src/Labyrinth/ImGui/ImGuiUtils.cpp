@@ -71,4 +71,21 @@ namespace Labyrinth {
 
 		ImGui::PopID();
 	}
+
+	void EditorUI::GridControl(const ImVec2& region, i32 width, i32 height, std::function<void(i32, i32, const ImVec2&)> lambda)
+	{
+		ImVec2 pos = ImGui::GetCursorPos();
+		ImVec2 tileSize = { region.x / width, region.y / height };
+
+		for (i32 y = 0; y < width; y++)
+		{
+			for (i32 x = 0; x < height; x++)
+			{
+				ImGui::SetCursorPosX(pos.x + (x * tileSize.x));
+				ImGui::SetCursorPosY(pos.y + (y * tileSize.y));
+
+				lambda(x, y, tileSize);
+			}
+		}
+	}
 }
