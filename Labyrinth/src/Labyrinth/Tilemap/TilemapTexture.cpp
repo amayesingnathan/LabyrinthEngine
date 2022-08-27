@@ -8,8 +8,8 @@
 
 namespace Labyrinth {
 
-	TilemapTexture::TilemapTexture(i32 width, i32 height)
-		: mWidth(width), mHeight(height), mCamera(0.0f, 1.0f, 0.0f, 1.0f)
+	TilemapTexture::TilemapTexture(i32 width, i32 height, const std::unordered_map<TilePos, TileSpec>& behaviour)
+		: mWidth(width), mHeight(height), mCamera(0.0f, 1.0f, 0.0f, 1.0f), mTileBehaviour(behaviour)
 	{
 		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 
@@ -24,8 +24,8 @@ namespace Labyrinth {
 		mCamera = OrthographicCamera(0.0f, Cast<f32>(fbSpec.width), 0.0f, Cast<f32>(fbSpec.height));
 	}
 
-	TilemapTexture::TilemapTexture(const fs::path& path) :
-		mCamera(0.0f, 1.0f, 0.0f, 1.0f)
+	TilemapTexture::TilemapTexture(const fs::path& path, const std::unordered_map<TilePos, TileSpec>& behaviour) :
+		mCamera(0.0f, 1.0f, 0.0f, 1.0f), mTileBehaviour(behaviour)
 	{
 		TiledIO::Open(path, mLayers, mSheets);
 		if (!mLayers.empty())
@@ -82,11 +82,12 @@ namespace Labyrinth {
 		return true;
 	}
 
-	void TilemapTexture::RegenTexture()
+	void TilemapTexture::RegenTexture(bool overlay)
 	{
 		// TODO: maybe too large, estimate 100x100 map would be ~150MB of texture memory.
 		constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 		constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
+		constexpr glm::vec4 ColliderColour = { 0, 1, 0, 1 };
 
 		mTexture->bind();
 
@@ -114,6 +115,19 @@ namespace Labyrinth {
 			}
 		}
 
+		if (overlay)
+		{
+			for (const auto& [pos, spec] : mTileBehaviour)
+			{
+				if (spec.solid)
+				{
+					glm::vec2 posF = { pos.x * TileSize.x, (mHeight - pos.y - 1) * TileSize.y };
+					posF += 0.5f * TileSizeF;
+					Renderer2D::DrawRect(posF, TileSizeF, ColliderColour);
+				}
+			}
+		}
+
 		Renderer2D::EndState();
 		RenderCommand::EnableDepth();
 		mTexture->unbind();
@@ -134,7 +148,6 @@ namespace Labyrinth {
 
 		i32& tileID = mLayers[layer][pos];
 		tileID = id;
-		RegenTexture();
 	}
 
 	Ref<SubTexture2D> TilemapTexture::getTileTex(i32 tileID) const

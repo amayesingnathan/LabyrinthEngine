@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TexMapLayer.h"
+#include "TileSpec.h"
 
 #include <Labyrinth/Core/System/Base.h>
 #include <Labyrinth/IO/Filesystem.h>
@@ -32,8 +33,8 @@ namespace Labyrinth {
 	class TilemapTexture : public RefCounted
 	{
 	public:
-		TilemapTexture(i32 width, i32 height);
-		TilemapTexture(const fs::path& path);
+		TilemapTexture(i32 width, i32 height, const std::unordered_map<TilePos, TileSpec>& behaviour);
+		TilemapTexture(const fs::path& path, const std::unordered_map<TilePos, TileSpec>& behaviour);
 
 		const Ref<Framebuffer>& getTex() const { return mTexture; }
 
@@ -68,11 +69,11 @@ namespace Labyrinth {
 
 		Ref<SubTexture2D> getTileTex(i32 tileID) const;
 
-		static Ref<TilemapTexture> Create(i32 width, i32 height) { return Ref<TilemapTexture>::Create(width, height); }
-		static Ref<TilemapTexture> Create(const fs::path& path) { return Ref<TilemapTexture>::Create(path); }
+		static Ref<TilemapTexture> Create(i32 width, i32 height, const std::unordered_map<TilePos, TileSpec>& behaviour) { return Ref<TilemapTexture>::Create(width, height, behaviour); }
+		static Ref<TilemapTexture> Create(const fs::path& path, const std::unordered_map<TilePos, TileSpec>& behaviour) { return Ref<TilemapTexture>::Create(path, behaviour); }
 
 	private:
-		void RegenTexture();
+		void RegenTexture(bool overlay = false);
 		AssetHandle GetSheet(i32 tileID) const;
 
 	private:
@@ -81,6 +82,7 @@ namespace Labyrinth {
 		std::vector<TexMapLayer> mLayers;
 		Ref<Framebuffer> mTexture = nullptr;
 		OrthographicCamera mCamera;
+		const std::unordered_map<TilePos, TileSpec>& mTileBehaviour;
 
 		friend class Tilemap;
 	};

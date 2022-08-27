@@ -61,7 +61,7 @@ namespace Labyrinth {
 		static Ref<Tilemap> Clone(const Ref<Tilemap>& other);
 
 	private:
-		void RegenTexture() { mTexture->RegenTexture(); }
+		void RegenTexture(bool overlay = false) { mTexture->RegenTexture(overlay); }
 
 	private:
 		std::string mMapName;
@@ -72,6 +72,7 @@ namespace Labyrinth {
 		std::unordered_map<TilePos, TileSpec> mTileBehaviour;
 
 		friend class TilemapSerialiser;
+		friend class ScenePanel;
 		friend class MapEditModal;
 	};
 }

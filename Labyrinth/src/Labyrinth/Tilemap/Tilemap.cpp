@@ -9,13 +9,13 @@
 namespace Labyrinth {
 
 	Tilemap::Tilemap(const std::string& name, i32 width, i32 height)
-		: mMapName(name), mTexture(TilemapTexture::Create(width, height)), mWidth(width), mHeight(height)
+		: mMapName(name), mTexture(TilemapTexture::Create(width, height, mTileBehaviour)), mWidth(width), mHeight(height)
 	{
 		RegenTexture();
 	}
 
 	Tilemap::Tilemap(const fs::path& path)
-		: mMapName(path.stem().string()), mTexture(TilemapTexture::Create(path))
+		: mMapName(path.stem().string()), mTexture(TilemapTexture::Create(path, mTileBehaviour))
 	{
 		RegenTexture();
 	}
@@ -36,5 +36,4 @@ namespace Labyrinth {
 
 		return copy;
 	}
-
 }

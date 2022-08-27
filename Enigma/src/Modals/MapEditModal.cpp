@@ -6,6 +6,7 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
+#include <Labyrinth/ImGui/ImGuiUtils.h>
 #include <Labyrinth/IO/Input.h>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -35,6 +36,7 @@ namespace Labyrinth {
 
     MapEditModal::MapEditModal(const Ref<Tilemap>& map) : EditorModal(), mTilemap(Tilemap::Clone(map)), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
     {
+        mTilemap->RegenTexture(mDisplayColliders);
     }
 
     void MapEditModal::onImGuiRender()
@@ -44,6 +46,7 @@ namespace Labyrinth {
             if (ImGui::IsMouseDown(Mouse::ButtonLeft))
             {
                 mTilemap->setTile(mCurrentLayer, mHoveredMapTile, mCurrentTexTile);
+                mTilemap->RegenTexture(mDisplayColliders);
                 mPainting = true;
             }
         }
@@ -71,14 +74,14 @@ namespace Labyrinth {
             if (ImGui::Button("Delete"))
             {
                 mTilemap->removeLayer(mCurrentLayer);
-                mTilemap->RegenTexture();
+                mTilemap->RegenTexture(mDisplayColliders);
             }
             ImGui::SameLine();
             if (ImGui::Button("Move Up"))
             {
                 if (mTilemap->moveLayer(mCurrentLayer, LayerDirection::Up))
                 {
-                    mTilemap->RegenTexture();
+                    mTilemap->RegenTexture(mDisplayColliders);
                     mCurrentLayer--;
                 }
             }
@@ -87,7 +90,7 @@ namespace Labyrinth {
             {
                 if (mTilemap->moveLayer(mCurrentLayer, LayerDirection::Down))
                 {
-                    mTilemap->RegenTexture();
+                    mTilemap->RegenTexture(mDisplayColliders);
                     mCurrentLayer++;
                 }
             }
@@ -230,9 +233,6 @@ namespace Labyrinth {
     {
         mHoveredMapTile = TilePos();
         mHoveredTexTile = -1;
-
-        f32 xpos = ImGui::GetCursorPosX();
-        f32 ypos = ImGui::GetCursorPosY();
         
         auto imageSize = ImGui::GetContentRegionAvail();
         imageSize.y -= ImGui::GetFrameHeightWithSpacing();
@@ -246,39 +246,36 @@ namespace Labyrinth {
         ImGui::SameLine();
         ImGui::SetCursorPosX(startX + (0.4f * imageSize.x));
         ImGui::Text("Ctrl + P: Paint Mode");
+        ImGui::SameLine();
+        ImGui::SetCursorPosX(startX + (0.75f * imageSize.x));
+        if (ImGui::Checkbox("Colliders", &mDisplayColliders))
+            mTilemap->RegenTexture(mDisplayColliders);
 
         ImGuiButtonFlags flags = (mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
-        ImVec2 tileSize = { imageSize.x / mMapWidth, imageSize.y / mMapHeight };
 
-        for (size_t y = 0; y < mMapHeight; y++)
+        EditorUI::GridControl(imageSize, mMapWidth, mMapHeight, [this, flags](i32 x, i32 y, ImVec2 elementSize)
         {
-            for (size_t x = 0; x < mMapWidth; x++)
+            TilePos pos(x, y);
+            std::string name = fmt::format("##MapTiles({}, {})", x, y);
+
+            if (ImGui::InvisibleButton(name.c_str(), elementSize, flags))
+                mCurrentMapTile = pos;
+
+            if (ImGui::BeginDragDropTarget())
             {
-                std::string name = fmt::format("##MapTile({}, {})", x, y);
-                TilePos pos(x, y);
-
-                ImGui::SetCursorPosX(xpos + (x * tileSize.x));
-                ImGui::SetCursorPosY(ypos + (y * tileSize.y));
-
-                if (ImGui::InvisibleButton(name.c_str(), tileSize, flags))
-                    mCurrentMapTile = pos;
-
-                if (ImGui::BeginDragDropTarget())
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAP_EDIT_TEXTURE_ITEM"))
                 {
-                    if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAP_EDIT_TEXTURE_ITEM"))
-                    {
-                        i32 tileId = *(i32*)payload->Data;
-                        mTilemap->setTile(mCurrentLayer, pos, tileId);
-                    }
-                    ImGui::EndDragDropTarget();
+                    i32 tileId = *(i32*)payload->Data;
+                    mTilemap->setTile(mCurrentLayer, pos, tileId);
                 }
-                if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
-                {
-                    mHoveredMapTile = pos;
-                    mHoveredTexTile = mTilemap->getTile(mCurrentLayer, pos);
-                }
+                ImGui::EndDragDropTarget();
             }
-        }
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_RectOnly))
+            {
+                mHoveredMapTile = pos;
+                mHoveredTexTile = mTilemap->getTile(mCurrentLayer, pos);
+            }
+        });
     }
 
     void MapEditModal::DrawSheet()
@@ -361,30 +358,24 @@ namespace Labyrinth {
         i32 tileCountY = (i32)sheet->getTileCountY();
         LAB_ASSERT(tileCountX > 0 && tileCountY > 0, "Tile sheet count too large!");
 
-        ImVec2 tileSize = { sheetImageSize.x / tileCountX, sheetImageSize.y / tileCountY };
-        for (i32 y = 0; y < tileCountY; y++)
+        EditorUI::GridControl(sheetImageSize, tileCountX, tileCountY, [this, &sheet](i32 x, i32 y, const ImVec2& elementSize) 
         {
-            for (i32 x = 0; x < tileCountX; x++)
+            static i32 tileID = -1; // Must be static for lifetime to persist for use as payload.
+
+            tileID = mCurrentSheet.firstID + (x + (y * sheet->getTileCountX()));
+            std::string name = fmt::format("##SheetTile({}, {})", x, y);
+            if (ImGui::Button(name.c_str(), elementSize) && mEditMode == EditMode::Paint)
             {
-                std::string name = fmt::format("##SheetTile({}, {})", x, y);
-                static i32 tileID = -1;
-                tileID = mCurrentSheet.firstID + (x + (y * sheet->getTileCountX()));
-
-                ImGui::SetCursorPosX(xpos + (x * tileSize.x));
-                ImGui::SetCursorPosY(ypos + (y * tileSize.y));
-
-                if (ImGui::Button(name.c_str(), tileSize) && mEditMode == EditMode::Paint)
-                {
-                    mCurrentTexTile = tileID;
-                    mCurrentSubTex = sheet->getSubTex(tileID);
-                }
-                if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-                {
-                    ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &tileID, sizeof(i32));
-                    ImGui::EndDragDropSource();
-                }
+                mCurrentTexTile = tileID;
+                mCurrentSubTex = sheet->getSubTex(tileID);
             }
-        }
+            if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+            {
+                ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &tileID, sizeof(i32));
+                ImGui::EndDragDropSource();
+            }
+        });
+
     }
 
     bool MapEditModal::OnKeyPressed(KeyPressedEvent& e)

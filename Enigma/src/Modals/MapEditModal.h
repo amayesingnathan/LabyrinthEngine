@@ -39,6 +39,7 @@ namespace Labyrinth {
 		Ref<SubTexture2D> mCurrentSubTex = nullptr;
 
 		bool mPainting = false;
+		bool mDisplayColliders = true;
 
 		usize mCurrentLayer = 0;
 		TilePos mCurrentMapTile;
