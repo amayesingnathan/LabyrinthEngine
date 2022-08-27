@@ -27,13 +27,6 @@ namespace Labyrinth {
         using ModalList = std::vector<ModalEntry>;
         using CallbackMap = std::unordered_map<UUID, std::vector<std::function<void()>>>;
 
-    private:
-        inline static ModalList sModals;
-        inline static CallbackMap sCallbacks;
-        inline static UUID sNewModal;
-
-        friend class EditorLayer;
-
     public:
         template<typename T, typename... Args>
         static void Open(const std::string& title, ModalButtons type, Args&&... args)
@@ -67,8 +60,15 @@ namespace Labyrinth {
         }
 
     private:
-        static void Display();
+        static void Render();
         static void RenderButtons(ModalEntry& modalData);
         static void DispatchEvents(Event& e);
+
+    private:
+        inline static ModalList sModals;
+        inline static CallbackMap sCallbacks;
+        inline static UUID sNewModal;
+
+        friend class EditorLayer;
     };
 }

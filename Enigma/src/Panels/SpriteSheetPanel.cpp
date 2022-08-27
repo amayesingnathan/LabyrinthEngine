@@ -24,7 +24,7 @@ namespace Labyrinth {
 		mPanelData.framebuffer = Framebuffer::Create(fbSpec);
 	}
 
-	void SpriteSheetPanel::onUpdate()
+	void SpriteSheetPanel::onUpdate(Timestep ts)
 	{
 		if (mPanelData.currentSubTex)
 		{

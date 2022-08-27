@@ -121,7 +121,7 @@ namespace Labyrinth {
 
 		Renderer2D::ResetStats();
 
-		PanelManager::UpdatePanels();
+		PanelManager::Update(ts);
 
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
@@ -223,10 +223,10 @@ namespace Labyrinth {
 
 		UI_Viewport();
 		UI_MenuBar();
-		UI_ChildPanels();
 		UI_Toolbar();
 
-		ModalManager::Display();
+		PanelManager::Render();
+		ModalManager::Render();
 
 		ImGui::End();
 
@@ -392,11 +392,6 @@ namespace Labyrinth {
 
 			ImGui::EndMenuBar();
 		}
-	}
-
-	void EditorLayer::UI_ChildPanels()
-	{
-		PanelManager::RenderPanels();
 	}
 
 	void EditorLayer::UI_Toolbar()

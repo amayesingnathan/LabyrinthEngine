@@ -76,7 +76,6 @@ namespace Labyrinth {
 		void UI_Viewport();
 		void UI_Gizmos();
 		void UI_MenuBar();
-		void UI_ChildPanels();
 		void UI_Toolbar();
 
 		static void RegenScriptProject(const fs::path& filepath);

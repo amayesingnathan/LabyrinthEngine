@@ -24,7 +24,7 @@ namespace Labyrinth {
 		void setContext(const Ref<Scene>& scene);
 		void setContext(const Ref<Scene>& scene, EditorData& options);
 		
-		void onUpdate() override;
+		void onUpdate(Timestep ts) override;
 		void onImGuiRender() override;
 		void onSelectionChange() override;
 

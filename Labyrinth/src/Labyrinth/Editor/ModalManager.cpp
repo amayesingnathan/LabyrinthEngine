@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-    void ModalManager::Display()
+    void ModalManager::Render()
     {
         ImGuiIO& io = ImGui::GetIO();
         io.ConfigWindowsMoveFromTitleBarOnly = true;

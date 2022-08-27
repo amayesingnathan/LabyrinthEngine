@@ -12,7 +12,7 @@ namespace Labyrinth {
 	public:
 		SpriteSheetPanel();
 
-		void onUpdate() override;
+		void onUpdate(Timestep ts) override;
 		void onImGuiRender() override;
 
 		static Ref<SpriteSheetPanel> Create() { return Ref<SpriteSheetPanel>::Create(); }

@@ -46,7 +46,7 @@ namespace Labyrinth {
 		mEditorData = &options;
 	}
 
-	void ScenePanel::onUpdate()
+	void ScenePanel::onUpdate(Timestep ts)
 	{
 		if (!mSelectedEntity || !mSelectedEntity.hasComponent<SpriteRendererComponent>()) return;
 

@@ -102,15 +102,15 @@ namespace Labyrinth {
 
 		static void Clear() { sPanels.clear(); }
 
-		static void UpdatePanels()
+		static void Update(Timestep ts)
 		{
 			for (PanelItem& panelItem : sPanels)
 			{
-				if (panelItem.panel) panelItem.panel->onUpdate();
+				if (panelItem.panel) panelItem.panel->onUpdate(ts);
 			}
 		}
 
-		static void RenderPanels()
+		static void Render()
 		{
 			for (PanelItem& panelItem : sPanels)
 			{
