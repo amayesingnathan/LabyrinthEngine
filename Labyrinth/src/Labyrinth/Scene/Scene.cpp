@@ -245,6 +245,7 @@ namespace Labyrinth {
 				DestroyEntity(tiles);
 
 			tiles = CreateEntity("Tiles", entity);
+			tiles.removeComponent<TransformComponent>();
 
 			tmcComponent.tileBehaviour.clear();
 			for (const auto& [pos, spec] : tilemap->getTileData())

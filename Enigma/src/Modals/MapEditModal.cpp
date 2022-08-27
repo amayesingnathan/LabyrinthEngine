@@ -253,10 +253,9 @@ namespace Labyrinth {
 
         ImGuiButtonFlags flags = (mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
 
-        EditorUI::GridControl(imageSize, mMapWidth, mMapHeight, [this, flags](i32 x, i32 y, ImVec2 elementSize)
+        EditorUI::GridControl(imageSize, mMapWidth, mMapHeight, [this, flags](const TilePos& pos, ImVec2 elementSize)
         {
-            TilePos pos(x, y);
-            std::string name = fmt::format("##MapTiles({}, {})", x, y);
+            std::string name = fmt::format("##MapTiles({}, {})", pos.x, pos.y);
 
             if (ImGui::InvisibleButton(name.c_str(), elementSize, flags))
                 mCurrentMapTile = pos;
@@ -358,12 +357,12 @@ namespace Labyrinth {
         i32 tileCountY = (i32)sheet->getTileCountY();
         LAB_ASSERT(tileCountX > 0 && tileCountY > 0, "Tile sheet count too large!");
 
-        EditorUI::GridControl(sheetImageSize, tileCountX, tileCountY, [this, &sheet](i32 x, i32 y, const ImVec2& elementSize) 
+        EditorUI::GridControl(sheetImageSize, tileCountX, tileCountY, [this, &sheet](const TilePos& pos, const ImVec2& elementSize) 
         {
             static i32 tileID = -1; // Must be static for lifetime to persist for use as payload.
 
-            tileID = mCurrentSheet.firstID + (x + (y * sheet->getTileCountX()));
-            std::string name = fmt::format("##SheetTile({}, {})", x, y);
+            tileID = mCurrentSheet.firstID + (pos.x + (pos.y * sheet->getTileCountX()));
+            std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
             if (ImGui::Button(name.c_str(), elementSize) && mEditMode == EditMode::Paint)
             {
                 mCurrentTexTile = tileID;

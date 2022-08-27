@@ -377,7 +377,7 @@ namespace Labyrinth {
 
 			auto childControllerComponent = entity["ChildControllerComponent"];
 			if (childControllerComponent)
-				auto& ccc = deserializedEntity.addComponent<ChildControllerComponent>();
+				deserializedEntity.addComponent<ChildControllerComponent>();
 
 			auto scriptComponent = entity["ScriptComponent"];
 			if (scriptComponent)

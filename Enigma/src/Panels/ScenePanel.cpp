@@ -153,6 +153,9 @@ namespace Labyrinth {
 
 	void ScenePanel::onSelectionChange()
 	{
+		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+			mPreviousEntity = mSelectedEntity;
+
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = mContext->findEntity(selections.size() != 0 ? selections[0] : 0);
 	}
@@ -283,6 +286,16 @@ namespace Labyrinth {
 
 	void ScenePanel::DrawComponents()
 	{
+		if (ImGui::Button("<--") && mPreviousEntity)
+		{
+			Entity holdPrevious = mPreviousEntity;
+			Entity holdSelected = mSelectedEntity;
+
+			SelectionManager::DeselectAll(SelectionDomain::Scene);
+			SelectionManager::Select(SelectionDomain::Scene, holdPrevious.getUUID());
+			mPreviousEntity = holdSelected;
+		}
+
 		if (mSelectedEntity.hasComponent<TagComponent>())
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
@@ -330,9 +343,9 @@ namespace Labyrinth {
 			});
 
 			std::string currentParentString = "None";
-			Entity parent(mSelectedEntity.getParent(), mContext);
+			Entity parent = mSelectedEntity.getParent();
 			if (parent)
-				currentParentString = parent.getComponent<TagComponent>().tag + "    (ID =" + parent.getUUID().to_string() + ")";
+				currentParentString = fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID());
 
 			if (ImGui::BeginCombo("Parent", currentParentString.c_str()))
 			{
@@ -634,11 +647,13 @@ namespace Labyrinth {
 
 		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&, this](auto& component)
 		{
-			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
-			ImGui::Text("Texture");
+			ImVec2 cursorPos = ImGui::GetCursorPos();
+			auto imageSize = ImGui::GetContentRegionAvail();
+			imageSize = { imageSize.x - 15.0f, 150.0f };
+
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.tilemapHandle);
 			ImTextureID tex = (ImTextureID)(intptr_t)(tilemap ? tilemap->getTex()->getColourAttachmentRendererID() : EditorResources::NoTexture->getRendererID());
-			ImGui::Image(tex, { viewportPanelWidth.x - 15.0f, 100.0f }, { 0, 1 }, { 1, 0 });
+			ImGui::Image(tex, imageSize, { 0, 1 }, { 1, 0 });
 
 			if (ImGui::BeginDragDropTarget())
 			{
@@ -650,8 +665,25 @@ namespace Labyrinth {
 				}
 				ImGui::EndDragDropTarget();
 			}
-		});
 
+			if (!tilemap)
+				return;
+
+			ImGui::SetCursorPos(cursorPos);
+			ImGui::PushStyleColor(ImGuiCol_Button, mButtonColour);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, mHoveredButtonColour);
+			EditorUI::GridControl(imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, &component](const TilePos& pos, const ImVec2& elementSize)
+			{
+				std::string name = fmt::format("##SelectTile({}, {})", pos.x, pos.y);
+
+				if (ImGui::Button(name.c_str(), elementSize) && component.tileBehaviour.count(pos) != 0)
+				{
+					SelectionManager::DeselectAll(SelectionDomain::Scene);
+					SelectionManager::Select(SelectionDomain::Scene, component.tileBehaviour.at(pos));
+				}
+			});
+			ImGui::PopStyleColor(2);
+		});
 	}
 
 	void ScenePanel::DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags)

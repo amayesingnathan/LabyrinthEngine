@@ -57,6 +57,7 @@ namespace Labyrinth {
 		EditorData* mEditorData = nullptr;
 
 		Entity mSelectedEntity;
+		Entity mPreviousEntity;
 		std::vector<Entity> mToRemove;
 
 		Ref<Framebuffer> mTexture = nullptr;
@@ -68,6 +69,9 @@ namespace Labyrinth {
 			{ "Texture2D", SpriteRendererComponent::TexType::Texture },
 			{ "SubTexture2D", SpriteRendererComponent::TexType::SubTexture }
 		};
+
+		const ImVec4 mButtonColour = { 0.0f, 0.0f, 0.0f, 0.0f };
+		const ImVec4 mHoveredButtonColour = { 0.25f, 1.0f, 1.0f, 0.5f };
 	};
 
 }
