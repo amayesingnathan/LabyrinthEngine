@@ -1,6 +1,7 @@
 #include "SubTexModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 
 namespace Labyrinth {
@@ -51,11 +52,11 @@ namespace Labyrinth {
 
 			if (square.pressed)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Button, mPressedColour);
+				ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::HoveredColour);
 			}
 			else
 			{
-				ImGui::PushStyleColor(ImGuiCol_Button, mUnpressedColour);
+				ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::ClearColour);
 			}
 
 			if (ImGui::Button(name.c_str(), tileSize))

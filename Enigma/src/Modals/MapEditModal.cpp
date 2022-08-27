@@ -233,24 +233,26 @@ namespace Labyrinth {
     {
         mHoveredMapTile = TilePos();
         mHoveredTexTile = -1;
+
+        ImVec2 pos = ImGui::GetCursorPos();
         
         auto imageSize = ImGui::GetContentRegionAvail();
         imageSize.y -= ImGui::GetFrameHeightWithSpacing();
         ImGui::Image((ImTextureID)(uintptr_t)mTilemap->getTex()->getColourAttachmentRendererID(), imageSize, { 0, 1 }, { 1, 0 });
 
-        f32 startX = ImGui::GetCursorPosX();
         ImGui::Text(fmt::format("Edit Mode: {}", EditModeToString(mEditMode)).c_str());
         ImGui::SameLine();
-        ImGui::SetCursorPosX(startX + (0.2f * imageSize.x));
+        ImGui::SetCursorPosX(pos.x + (0.2f * imageSize.x));
         ImGui::Text("Ctrl + B: Behaviour Mode");
         ImGui::SameLine();
-        ImGui::SetCursorPosX(startX + (0.4f * imageSize.x));
+        ImGui::SetCursorPosX(pos.x + (0.4f * imageSize.x));
         ImGui::Text("Ctrl + P: Paint Mode");
         ImGui::SameLine();
-        ImGui::SetCursorPosX(startX + (0.75f * imageSize.x));
+        ImGui::SetCursorPosX(pos.x + (0.75f * imageSize.x));
         if (ImGui::Checkbox("Colliders", &mDisplayColliders))
             mTilemap->RegenTexture(mDisplayColliders);
 
+        ImGui::SetCursorPos(pos);
         ImGuiButtonFlags flags = (mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
 
         EditorUI::GridControl(imageSize, mMapWidth, mMapHeight, [this, flags](const TilePos& pos, ImVec2 elementSize)

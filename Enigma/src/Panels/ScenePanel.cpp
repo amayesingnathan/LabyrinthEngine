@@ -680,13 +680,13 @@ namespace Labyrinth {
 				return;
 
 			ImGui::SetCursorPos(cursorPos);
-			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, mHoveredButtonColour);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, EditorResources::HoveredColour);
 			EditorUI::GridControl(imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, &component](const TilePos& pos, const ImVec2& elementSize)
 			{
 				std::string name = fmt::format("##SelectTile({}, {})", pos.x, pos.y);
 
 				bool active = component.tileBehaviour.count(pos) != 0;
-				ImVec4 buttonColour = active ? mActiveButtonColour : mDefaultButtonColour;
+				ImVec4 buttonColour = active ? EditorResources::HighlightedColour : EditorResources::ClearColour;
 				ImGui::PushStyleColor(ImGuiCol_Button, buttonColour);
 				if (ImGui::Button(name.c_str(), elementSize) && active)
 				{

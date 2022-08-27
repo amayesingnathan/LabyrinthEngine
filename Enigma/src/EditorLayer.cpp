@@ -33,7 +33,7 @@
 
 #include "Labyrinth/Maths/Maths.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include "ImGuizmo.h"
 
 #include <glm/gtc/matrix_transform.hpp>

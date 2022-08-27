@@ -69,10 +69,6 @@ namespace Labyrinth {
 			{ "Texture2D", SpriteRendererComponent::TexType::Texture },
 			{ "SubTexture2D", SpriteRendererComponent::TexType::SubTexture }
 		};
-
-		const ImVec4 mDefaultButtonColour = { 0.0f, 0.0f, 0.0f, 0.0f };
-		const ImVec4 mActiveButtonColour = { 1.0f, 0.5f, 0.0f, 0.6f };
-		const ImVec4 mHoveredButtonColour = { 0.25f, 1.0f, 1.0f, 0.5f };
 	};
 
 }
