@@ -296,6 +296,15 @@ namespace Labyrinth {
 			mPreviousEntity = holdSelected;
 		}
 
+		ImGui::SameLine(ImGui::GetWindowWidth() - 72);
+
+		if (ImGui::Button("Destroy"))
+		{
+			mSelectedEntity.destroy();
+			SelectionManager::DeselectAll(SelectionDomain::Scene);
+			return;
+		}
+
 		if (mSelectedEntity.hasComponent<TagComponent>())
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
@@ -335,7 +344,8 @@ namespace Labyrinth {
 			std::unordered_map<std::string, Entity> possibleParents;
 
 			// Create map of possible 
-			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) {
+			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) 
+			{
 				if (mSelectedEntity != entityID)
 				{
 					possibleParents.emplace(tc.tag + "    (ID = " + idc.id.to_string() + ")", Entity{entityID, mContext});
@@ -670,19 +680,22 @@ namespace Labyrinth {
 				return;
 
 			ImGui::SetCursorPos(cursorPos);
-			ImGui::PushStyleColor(ImGuiCol_Button, mButtonColour);
 			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, mHoveredButtonColour);
 			EditorUI::GridControl(imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, &component](const TilePos& pos, const ImVec2& elementSize)
 			{
 				std::string name = fmt::format("##SelectTile({}, {})", pos.x, pos.y);
 
-				if (ImGui::Button(name.c_str(), elementSize) && component.tileBehaviour.count(pos) != 0)
+				bool active = component.tileBehaviour.count(pos) != 0;
+				ImVec4 buttonColour = active ? mActiveButtonColour : mDefaultButtonColour;
+				ImGui::PushStyleColor(ImGuiCol_Button, buttonColour);
+				if (ImGui::Button(name.c_str(), elementSize) && active)
 				{
 					SelectionManager::DeselectAll(SelectionDomain::Scene);
-					SelectionManager::Select(SelectionDomain::Scene, component.tileBehaviour.at(pos));
+					SelectionManager::Select(SelectionDomain::Scene, component.tileBehaviour[pos]);
 				}
+				ImGui::PopStyleColor();
 			});
-			ImGui::PopStyleColor(2);
+			ImGui::PopStyleColor();
 		});
 	}
 

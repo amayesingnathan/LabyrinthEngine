@@ -92,7 +92,7 @@ namespace Labyrinth {
 
 		if (entity.hasComponent<NodeComponent>())
 		{
-			auto& nodeComponent = entity.getComponent<NodeComponent>();
+			const auto& nodeComponent = entity.getComponent<NodeComponent>();
 			out << YAML::Key << "Parent" << YAML::Value << nodeComponent.parent;
 
 			out << YAML::Key << "Children";
@@ -112,7 +112,7 @@ namespace Labyrinth {
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // TransformComponent
 
-			auto& transform = entity.getTransform();
+			const auto& transform = entity.getTransform();
 			LAB_SERIALISE_PROPERTY(Position, transform.translation, out);
 			LAB_SERIALISE_PROPERTY(Rotation, transform.rotation, out);
 			LAB_SERIALISE_PROPERTY(Scale, transform.scale, out);
@@ -125,7 +125,7 @@ namespace Labyrinth {
 			out << YAML::Key << "SpriteRendererComponent";
 			out << YAML::BeginMap; // SpriteRendererComponent
 
-			auto& sprite = entity.getComponent<SpriteRendererComponent>();
+			const auto& sprite = entity.getComponent<SpriteRendererComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)sprite.type, out);
 			LAB_SERIALISE_PROPERTY(Layer, (i32)sprite.layer, out);
 			LAB_SERIALISE_PROPERTY(Handle, sprite.handle, out);
@@ -140,7 +140,7 @@ namespace Labyrinth {
 			out << YAML::Key << "CameraComponent";
 			out << YAML::BeginMap; // CameraComponent
 
-			auto& cameraComponent = entity.getComponent<CameraComponent>();
+			const auto& cameraComponent = entity.getComponent<CameraComponent>();
 
 			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
@@ -164,7 +164,7 @@ namespace Labyrinth {
 			out << YAML::Key << "RigidBodyComponent";
 			out << YAML::BeginMap; // RigidBodyComponent
 
-			auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+			const auto& rbComponent = entity.getComponent<RigidBodyComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)rbComponent.type, out);
 			LAB_SERIALISE_PROPERTY(FixedRotation, rbComponent.fixedRotation, out);
 			LAB_SERIALISE_PROPERTY(Mass, rbComponent.mass, out);
@@ -180,7 +180,7 @@ namespace Labyrinth {
 			out << YAML::Key << "BoxColliderComponent";
 			out << YAML::BeginMap; // BoxColliderComponent
 
-			auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+			const auto& bcComponent = entity.getComponent<BoxColliderComponent>();
 			LAB_SERIALISE_PROPERTY(HalfExtents, bcComponent.halfExtents, out);
 			LAB_SERIALISE_PROPERTY(Offset, bcComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, bcComponent.density, out);
@@ -196,7 +196,7 @@ namespace Labyrinth {
 			out << YAML::Key << "CircleColliderComponent";
 			out << YAML::BeginMap; // CircleColliderComponent
 
-			auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+			const auto& ccComponent = entity.getComponent<CircleColliderComponent>();
 			LAB_SERIALISE_PROPERTY(Radius, ccComponent.radius, out);
 			LAB_SERIALISE_PROPERTY(Offset, ccComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, ccComponent.density, out);
@@ -222,7 +222,7 @@ namespace Labyrinth {
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // ScriptComponent
 
-			auto& scriptComponent = entity.getComponent<ScriptComponent>();
+			const auto& scriptComponent = entity.getComponent<ScriptComponent>();
 			LAB_SERIALISE_PROPERTY(ClassName, scriptComponent.className, out);
 
 			out << YAML::EndMap; // ScriptComponent
@@ -249,6 +249,18 @@ namespace Labyrinth {
 			out << YAML::EndSeq;
 
 			out << YAML::EndMap; // TilemapControllerComponent
+		}
+
+		if (entity.hasComponent<TileComponent>())
+		{
+			out << YAML::Key << "TileComponent";
+			out << YAML::BeginMap; // TileComponent
+
+			const auto& tileComponent = entity.getComponent<TileComponent>();
+			LAB_SERIALISE_PROPERTY(Controller, tileComponent.tilemapEntity, out);
+			LAB_SERIALISE_PROPERTY(Position, tileComponent.pos, out);
+
+			out << YAML::EndMap; // TileComponent
 		}
 
 		out << YAML::EndMap; // Entity
@@ -409,6 +421,14 @@ namespace Labyrinth {
 						tmcc.tileBehaviour[pos] = id;
 					}
 				}
+			}
+
+			auto tileComponent = entity["TileComponent"];
+			if (tileComponent)
+			{
+				auto& tc = deserializedEntity.addComponent<TileComponent>();
+				tc.tilemapEntity = tileComponent["Controller"].as<u64>();
+				tc.pos = tileComponent["Position"].as<TilePos>();
 			}
 		}
 	}

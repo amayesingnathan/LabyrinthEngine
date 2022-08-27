@@ -191,6 +191,34 @@ namespace Labyrinth {
 		DestroyEntityR(entity, parent, linkChildren);
 	}
 
+	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
+	{
+		// Set the parent of all entity's children (will be null entity if no parent)
+		auto& children = entity.getChildren();
+
+		for (auto& child : children)
+		{
+			Entity childEnt = findEntity(child);
+			if (linkChildren)
+			{
+				if (parent)
+					childEnt.setParent(parent);
+				else
+					DestroyEntityR(childEnt, entity);
+			}
+			else DestroyEntityR(childEnt, entity);
+		}
+
+		if (entity.hasComponent<TileComponent>())
+		{
+			const auto& tile = entity.getComponent<TileComponent>();
+			Entity tilemapController = { mEntityMap.at(tile.tilemapEntity), Ref<Scene>(this) };
+			tilemapController.getComponent<TilemapControllerComponent>().tileBehaviour.erase(tile.pos);
+		}
+		mEntityMap.erase(entity.getUUID());
+		mRegistry.destroy(entity);
+	}
+
 	void Scene::transformChildren()
 	{
 		auto view = mRegistry.view<ChildControllerComponent, NodeComponent>();
@@ -258,6 +286,7 @@ namespace Labyrinth {
 				tileTransform.scale = tileSize;
 
 				tile.addComponent<ScriptComponent>(spec.script);
+				tile.addComponent<TileComponent>(pos, entity.getUUID());
 				if (spec.solid)
 				{
 					tile.addComponent<RigidBodyComponent>();
@@ -267,28 +296,6 @@ namespace Labyrinth {
 				tmcComponent.tileBehaviour[pos] = tile.getUUID();
 			}
 		});
-	}
-
-	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
-	{
-		// Set the parent of all entity's children (will be null entity if no parent)
-		auto& children = entity.getChildren();
-
-		for (auto& child : children)
-		{
-			Entity childEnt = findEntity(child);
-			if (linkChildren)
-			{
-				if (parent)
-					childEnt.setParent(parent);
-				else
-					DestroyEntityR(childEnt, entity);
-			}
-			else DestroyEntityR(childEnt, entity);
-		}
-
-		mEntityMap.erase(entity.getUUID());
-		mRegistry.destroy(entity);
 	}
 
 	void Scene::OnPhysicsStart()
@@ -658,4 +665,8 @@ namespace Labyrinth {
 		reloadMaps();
 	}
 
+	template<>
+	void Scene::onComponentAdded<TileComponent>(Entity entity, TileComponent& component)
+	{
+	}
 }

@@ -278,6 +278,15 @@ namespace Labyrinth {
 		std::unordered_map<TilePos, UUID> tileBehaviour;
 	};
 
+	struct TileComponent
+	{
+		UUID tilemapEntity = 0;
+		TilePos pos;
+
+		TileComponent() = default;
+		TileComponent(TilePos _pos, UUID tilemap) : pos(_pos), tilemapEntity(tilemap) {}
+	};
+
 	template<typename... Component>
 	struct ComponentGroup {};
 	using AllComponents = ComponentGroup
