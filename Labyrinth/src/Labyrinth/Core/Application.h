@@ -23,7 +23,7 @@ namespace Labyrinth {
 	{
 		u32 width, height;
 
-		std::string toString() { return fmt::format("{}x{}", width, height); }
+		std::string toString() const { return fmt::format("{}x{}", width, height); }
 	};
 
 	struct ApplicationSpec

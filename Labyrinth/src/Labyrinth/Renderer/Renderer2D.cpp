@@ -312,7 +312,7 @@ namespace Labyrinth {
 	void Renderer2D::Flush()
 	{
 		// Quads
-		if (sData.quadIndexCount) 
+		if (sData.quadIndexCount)
 		{
 			u32 quadDataSize = (u32)((u8*)sData.quadVertexBufferPtr - (u8*)sData.quadVertexBufferBase);
 			sData.quadVertexBuffer->setData(sData.quadVertexBufferBase, quadDataSize);
@@ -325,17 +325,6 @@ namespace Labyrinth {
 			sData.stats.drawCalls++;
 		}
 
-		// Circles
-		if (sData.circleIndexCount)
-		{
-			u32 circleDataSize = (u32)((u8*)sData.circleVertexBufferPtr - (u8*)sData.circleVertexBufferBase);
-			sData.circleVertexBuffer->setData(sData.circleVertexBufferBase, circleDataSize);
-
-			sData.circleShader->bind();
-			RenderCommand::DrawIndexed(sData.circleVertexArray, sData.circleIndexCount);
-			sData.stats.drawCalls++;
-		}
-
 		// Lines
 		if (sData.lineVertexCount)
 		{
@@ -345,6 +334,17 @@ namespace Labyrinth {
 			sData.lineShader->bind();
 			RenderCommand::SetLineWidth(sData.lineWidth);
 			RenderCommand::DrawLines(sData.lineVertexArray, sData.lineVertexCount);
+			sData.stats.drawCalls++;
+		}
+
+		// Circles
+		if (sData.circleIndexCount)
+		{
+			u32 circleDataSize = (u32)((u8*)sData.circleVertexBufferPtr - (u8*)sData.circleVertexBufferBase);
+			sData.circleVertexBuffer->setData(sData.circleVertexBufferBase, circleDataSize);
+
+			sData.circleShader->bind();
+			RenderCommand::DrawIndexed(sData.circleVertexArray, sData.circleIndexCount);
 			sData.stats.drawCalls++;
 		}
 	}
@@ -649,6 +649,11 @@ namespace Labyrinth {
 		sData.lineVertexBufferPtr++;
 
 		sData.lineVertexCount += 2;
+	}
+
+	void Renderer2D::DrawRect(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID)
+	{
+		DrawRect({ position.x, position.y, 0.0f }, size, colour, entityID);
 	}
 
 	void Renderer2D::DrawRect(const glm::vec3& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID)

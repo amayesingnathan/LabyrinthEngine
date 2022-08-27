@@ -130,6 +130,8 @@ namespace Labyrinth {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
+		OnOverlayRender();
+
 		switch (mSceneState)
 		{
 		case SceneState::Edit:
@@ -168,8 +170,6 @@ namespace Labyrinth {
 			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
 			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
-
-		OnOverlayRender();
 
 		mFramebuffer->unbind();
 		
@@ -266,9 +266,9 @@ namespace Labyrinth {
 		}
 
 		if (mSceneState == SceneState::Edit) UI_Gizmos();
+		ImGui::PopStyleVar();
 
 		ImGui::End();
-		ImGui::PopStyleVar();
 	}
 
 	void EditorLayer::UI_Gizmos()
@@ -296,7 +296,7 @@ namespace Labyrinth {
 
 			// Snapping
 			bool snap = Input::IsKeyPressed(Key::LeftControl);
-			float snapValue = 1.0f; // Snap to 0.5m for translation/scale
+			float snapValue = 1.0f; // Snap to 1.0m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
 				snapValue = 45.0f;
@@ -438,7 +438,7 @@ namespace Labyrinth {
 
 	void EditorLayer::onEvent(Event& e)
 	{
-		if (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate)
+		if (mViewportHovered && (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate))
 			mEditorData.camera.onEvent(e);
 
 		PanelManager::DispatchEvents(e);
@@ -568,12 +568,11 @@ namespace Labyrinth {
 		{
 			if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 			{
-				UUID hoveredID = mHoveredEntity ? mHoveredEntity.getUUID() : 0;
 				if (!control)
 					SelectionManager::DeselectAll(SelectionDomain::Scene);
 
 				if (mHoveredEntity)
-					SelectionManager::Select(SelectionDomain::Scene, hoveredID);
+					SelectionManager::Select(SelectionDomain::Scene, mHoveredEntity.getUUID());
 			}
 			break;
 		}

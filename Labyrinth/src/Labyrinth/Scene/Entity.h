@@ -97,6 +97,9 @@ namespace Labyrinth {
 		TransformComponent& getTransform();
 		const TransformComponent& getTransform() const;
 
+		std::string& getTag();
+		const std::string& getTag() const;
+
 		operator entt::entity() const { return mEntID; }
 		operator u32() const { return Cast<u32>(mEntID); }
 

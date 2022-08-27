@@ -16,6 +16,9 @@ namespace Labyrinth {
 	TransformComponent& Entity::getTransform() { return getComponent<TransformComponent>(); }
 	const TransformComponent& Entity::getTransform() const { return getComponent<TransformComponent>(); }
 
+	std::string& Entity::getTag() { return getComponent<TagComponent>().tag; }
+	const std::string& Entity::getTag() const { return getComponent<TagComponent>().tag; }
+
 	void Entity::destroy()
 	{
 		mScene->DestroyEntity(*this);
