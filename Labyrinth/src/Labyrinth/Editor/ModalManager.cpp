@@ -5,31 +5,33 @@
 
 namespace Labyrinth {
 
-    void ModalManager::Display()
+    void ModalManager::Render()
     {
+        ImGuiIO& io = ImGui::GetIO();
+        io.ConfigWindowsMoveFromTitleBarOnly = true;
         for (ModalEntry& modalData : sModals)
         {
-            // Do this here in case instead of Open() as it will fail if Open() is called midway through another popup.
-            if (modalData.begin)
+            if (!modalData.modal)
             {
-                ImGui::OpenPopup(modalData.heading.c_str());
-                modalData.begin = false;
+                modalData.open = false;
+                continue;
             }
 
             ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
-            ImGui::SetNextWindowPos(centre, ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-
-            if (!modalData.modal->isComplete() && ImGui::BeginPopupModal(modalData.heading.c_str(), nullptr, modalData.flags))
+            ImGui::SetNextWindowSize(ImVec2(600, 400), ImGuiCond_FirstUseEver);
+            ImGui::SetNextWindowPos(centre, ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
+            if (ImGui::Begin(modalData.heading.c_str(), &modalData.open, modalData.flags))
             {
                 modalData.modal->onImGuiRender();
-
                 RenderButtons(modalData);
-                ImGui::EndPopup();
             }
+
+            ImGui::End();
         }
+        io.ConfigWindowsMoveFromTitleBarOnly = false;
 
         // Call any completion callbacks before deleting modal entries
-        auto removeStart = std::remove_if(sModals.begin(), sModals.end(), [](const ModalEntry& entry) { return entry.modal->isComplete(); });
+        auto removeStart = std::remove_if(sModals.begin(), sModals.end(), [](const ModalEntry& entry) { return !entry.open; });
         for (auto it = removeStart; it != sModals.end(); it++)
         {
             if (sCallbacks.count(it->id) == 0) continue;
@@ -57,7 +59,7 @@ namespace Labyrinth {
             if (ImGui::Button("OK"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
             break;
         }
@@ -66,13 +68,13 @@ namespace Labyrinth {
             if (ImGui::Button("OK"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
 
             ImGui::SameLine();
 
             if (ImGui::Button("Cancel"))
-                modalData.modal->onClose();
+                modalData.open = false;
 
             break;
         }
@@ -81,19 +83,28 @@ namespace Labyrinth {
             if (ImGui::Button("Yes"))
             {
                 modalData.modal->onComplete();
-                modalData.modal->onClose();
+                modalData.open = false;
             }
 
             ImGui::SameLine();
 
             if (ImGui::Button("No"))
-                modalData.modal->onClose();
+                modalData.open = false;
 
             break;
         }
         case ModalButtons::Custom:
-            modalData.modal->onCustomButtonRender();
+            modalData.modal->onCustomButtonRender(modalData.open);
             break;
+        }
+    }
+
+    void ModalManager::DispatchEvents(Event& e)
+    {
+        for (auto& modalEntry : sModals)
+        {
+            if (modalEntry.modal)
+                modalEntry.modal->onEvent(e);
         }
     }
 }

@@ -113,7 +113,8 @@ namespace Labyrinth {
 
 #define LAB_SERIALISE_PROPERTY_ASSET(propName, propVal, outputData) outputData << YAML::Key << #propName << YAML::Value << (propVal ? (u64)propVal->handle : 0);
 
-#define LAB_DESERIALISE_PROPERTY(propName, destination, node, defaultValue) destination = node[#propName] ? node[#propName].as<decltype(defaultValue)>() : defaultValue
+#define LAB_DESERIALISE_PROPERTY_DEF(propName, destination, node, defaultValue) destination = node[#propName] ? node[#propName].as<decltype(defaultValue)>() : defaultValue
+#define LAB_DESERIALISE_PROPERTY(propName, destination, node) destination = node[#propName] ? node[#propName].as<decltype(destination)>() : decltype(destination)()
 
 #define LAB_DESERIALISE_PROPERTY_ASSET(propName, destination, inputData, assetClass)\
 		{AssetHandle assetHandle = inputData[#propName] ? inputData[#propName].as<u64>() : 0;\

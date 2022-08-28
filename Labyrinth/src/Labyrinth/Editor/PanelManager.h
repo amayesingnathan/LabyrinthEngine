@@ -30,7 +30,7 @@ namespace Labyrinth {
 		friend class EditorLayer;
 
 	private:
-		static const std::vector<PanelItem>& GetPanels() { return sPanels; }
+		static std::vector<PanelItem>& GetPanels() { return sPanels; }
 
 		static auto Find(const std::string& key) { return std::find_if(sPanels.begin(), sPanels.end(), [&key](const PanelItem& panel) { return key == panel.key; }); }
 
@@ -102,15 +102,15 @@ namespace Labyrinth {
 
 		static void Clear() { sPanels.clear(); }
 
-		static void UpdatePanels()
+		static void Update(Timestep ts)
 		{
 			for (PanelItem& panelItem : sPanels)
 			{
-				if (panelItem.panel) panelItem.panel->onUpdate();
+				if (panelItem.panel) panelItem.panel->onUpdate(ts);
 			}
 		}
 
-		static void RenderPanels()
+		static void Render()
 		{
 			for (PanelItem& panelItem : sPanels)
 			{

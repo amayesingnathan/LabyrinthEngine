@@ -4,35 +4,42 @@
 
 namespace Labyrinth {
 
-	class AssetSerializer
+	class AssetSerialiser
 	{
 	public:
 		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const = 0;
 		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const = 0;
 	};
 
-	class TextureSerializer : public AssetSerializer
+	class TextureSerialiser : public AssetSerialiser
 	{
 	public:
 		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const override {}
 		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
 	};
 
-	class SubTextureSerializer : public AssetSerializer
+	class SubTextureSerialiser : public AssetSerialiser
 	{
 	public:
 		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const override;
 		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
 	};
 
-	class TextureSheetSerializer : public AssetSerializer
+	class TextureSheetSerialiser : public AssetSerialiser
 	{
 	public:
 		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const override;
 		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
 	};
 
-	class SceneAssetSerializer : public AssetSerializer
+	class SceneAssetSerialiser : public AssetSerialiser
+	{
+	public:
+		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const override;
+		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
+	};
+
+	class TilemapSerialiser : public AssetSerialiser
 	{
 	public:
 		virtual void serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const override;

@@ -32,6 +32,26 @@ namespace Labyrinth {
 		operator UUID() const { return id; }
 	};
 
+	//Root components just indicates an entity has no parent.
+	struct RootComponent
+	{
+		// Seem to need some actual data to be able to use as template parameter in addComponent
+		// so just added a random zero byte.
+		u8 data = 0x0;
+		RootComponent() = default;
+	};
+
+	//Node component for use in parent/child relations
+	struct NodeComponent
+	{
+		UUID parent = 0;
+		std::vector<UUID> children = {};
+
+		NodeComponent() = default;
+
+		operator bool() { return parent; }
+	};
+
 	struct CameraComponent
 	{
 		SceneCamera camera;
@@ -176,6 +196,7 @@ namespace Labyrinth {
 
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;
+		ScriptComponent(const std::string& name) : className(name) {}
 	};
 
 	class NativeScript;
@@ -223,7 +244,7 @@ namespace Labyrinth {
 	{
 		glm::vec2 halfExtents = { 0.5f, 0.5f };
 		glm::vec2 offset = { 0.0f, 0.0f };
-		f32 friction = 1.0f;
+		f32 friction = 0.5f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;
@@ -238,7 +259,7 @@ namespace Labyrinth {
 	{
 		f32 radius = 0.5f;
 		glm::vec2 offset = { 0.0f, 0.0f };
-		f32 friction = 1.0f;
+		f32 friction = 0.5f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;
@@ -249,22 +270,22 @@ namespace Labyrinth {
 		CircleColliderComponent(const CircleColliderComponent&) = default;
 	};
 
-
 	// Tilemaps
 
-	struct TilemapComponent
+	struct TilemapControllerComponent
 	{
-		Ref<Tilemap> tilemap = nullptr;
-		u8 layer = 0;
-
-		TilemapComponent() = default;
-		TilemapComponent(const std::string& name, u8 _layer = 0) : tilemap(Tilemap::Create(name)), layer(_layer) {}
-		TilemapComponent(const TilemapComponent&) = default;
-
-		Ref<Texture2D> getTex() const { return tilemap->getTex(); }
+		AssetHandle tilemapHandle = 0;
+		std::unordered_map<TilePos, UUID> tileBehaviour;
 	};
 
-	struct NodeComponent;
+	struct TileComponent
+	{
+		UUID tilemapEntity = 0;
+		TilePos pos;
+
+		TileComponent() = default;
+		TileComponent(TilePos _pos, UUID tilemap) : pos(_pos), tilemapEntity(tilemap) {}
+	};
 
 	template<typename... Component>
 	struct ComponentGroup {};
@@ -278,8 +299,8 @@ namespace Labyrinth {
 		RigidBodyComponent,
 		BoxColliderComponent,
 		CircleColliderComponent,
-		TilemapComponent,
 		NativeScriptComponent,
-		ScriptComponent
+		ScriptComponent,
+		TilemapControllerComponent
 	>;
 }

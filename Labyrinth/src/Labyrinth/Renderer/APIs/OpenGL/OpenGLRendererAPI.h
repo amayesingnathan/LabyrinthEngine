@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API OpenGLRendererAPI : public RendererAPI
+	class OpenGLRendererAPI : public RendererAPI
 	{
 	public:
 		virtual void init();

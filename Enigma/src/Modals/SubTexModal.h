@@ -57,7 +57,7 @@ namespace Labyrinth {
 		SpriteSheetData& mPayload;
 
 		std::string mName = "SubTextureName";
-		Ref<Texture2DSheet> mSheet;
+		Ref<Texture2DSheet> mSheet = nullptr;
 
 		Position outTopLeft;
 		Position outBottomRight;

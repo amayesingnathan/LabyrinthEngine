@@ -16,7 +16,7 @@ namespace Labyrinth {
 	{
 		if (!mEditorData) return;
 
-		ImGui::Begin("Settings");
+		ImGui::Begin("Options");
 
 		ImGui::Checkbox("Display Colliders", &mEditorData->displayColliders);
 		ImGui::ColorEdit4("Collider Colour", glm::value_ptr(mEditorData->colliderColour));

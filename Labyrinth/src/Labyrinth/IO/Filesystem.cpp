@@ -108,12 +108,34 @@ namespace Labyrinth {
 
 	void FileUtils::CreateDir(const fs::path& filepath)
 	{
-		std::filesystem::create_directories(filepath);
+		fs::create_directories(filepath);
 	}
 
 	void FileUtils::CopyDir(const fs::path& src, const fs::path& dest)
 	{
-		std::filesystem::copy(src, dest, std::filesystem::copy_options::recursive);
+		fs::copy(src, dest, fs::copy_options::recursive);
+	}
+
+	void FileUtils::Remove(const fs::path& filepath)
+	{
+		if (!fs::exists(filepath))
+		{
+			LAB_CORE_ERROR("File does not exist!");
+			return;
+		}
+
+		fs::remove(filepath);
+	}
+
+	void FileUtils::RemoveDir(const fs::path& filepath)
+	{
+		if (!fs::exists(filepath))
+		{
+			LAB_CORE_ERROR("Directory does not exist!");
+			return;
+		}
+
+		fs::remove_all(filepath);
 	}
 
 	fs::path FileUtils::OpenFile(const std::vector<std::string>& filter)

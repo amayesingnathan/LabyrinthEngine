@@ -4,10 +4,10 @@
 #include "Entity.h"
 #include "Components.h"
 
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/Renderer/Renderer2D.h"
-#include "Labyrinth/Scripting/ScriptEngine.h"
-#include "Labyrinth/Scripting/NativeScript.h"
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
+#include <Labyrinth/Scripting/NativeScript.h>
 
 #include <glm/glm.hpp>
 
@@ -191,6 +191,34 @@ namespace Labyrinth {
 		DestroyEntityR(entity, parent, linkChildren);
 	}
 
+	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
+	{
+		// Set the parent of all entity's children (will be null entity if no parent)
+		auto& children = entity.getChildren();
+
+		for (auto& child : children)
+		{
+			Entity childEnt = findEntity(child);
+			if (linkChildren)
+			{
+				if (parent)
+					childEnt.setParent(parent);
+				else
+					DestroyEntityR(childEnt, entity);
+			}
+			else DestroyEntityR(childEnt, entity);
+		}
+
+		if (entity.hasComponent<TileComponent>())
+		{
+			const auto& tile = entity.getComponent<TileComponent>();
+			Entity tilemapController = { mEntityMap.at(tile.tilemapEntity), Ref<Scene>(this) };
+			tilemapController.getComponent<TilemapControllerComponent>().tileBehaviour.erase(tile.pos);
+		}
+		mEntityMap.erase(entity.getUUID());
+		mRegistry.destroy(entity);
+	}
+
 	void Scene::transformChildren()
 	{
 		auto view = mRegistry.view<ChildControllerComponent, NodeComponent>();
@@ -208,7 +236,7 @@ namespace Labyrinth {
 				Entity child = findEntity(id);
 				if (child.hasComponent<TransformComponent>())
 				{
-					TransformComponent& transform = child.getComponent<TransformComponent>();
+					TransformComponent& transform = child.getTransform();
 					transform.translation += childController.deltaTranslation;
 					transform.rotation += glm::radians(childController.deltaRotation);
 					transform.scale += childController.deltaScale;
@@ -219,25 +247,55 @@ namespace Labyrinth {
 		}
 	}
 
-	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
+	void Scene::reloadMaps()
 	{
-		// Set the parent of all entity's children (will be null entity if no parent)
-		auto& children = entity.getChildren();
-		for (auto& child : children)
+		mRegistry.view<TilemapControllerComponent>().each([this](auto e, auto& tmcComponent)
 		{
-			Entity childEnt = findEntity(child);
-			if (linkChildren)
-			{
-				if (parent)
-					childEnt.setParent(parent);
-				else
-					DestroyEntityR(childEnt, entity);
-			}
-			else DestroyEntityR(childEnt, entity);
-		}
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcComponent.tilemapHandle);
 
-		mEntityMap.erase(entity.getUUID());
-		mRegistry.destroy(entity);
+			if (!tilemap)
+			{
+				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+				return;
+			}
+
+			Entity entity{ e, Ref<Scene>(this) };
+			if (!entity.hasComponent<ScriptComponent>())
+				entity.addComponent<ScriptComponent>();
+
+			const auto& mapTransform = entity.getTransform();
+			i32 width = tilemap->getWidth();
+			i32 height = tilemap->getHeight();
+			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
+			Entity tiles = getChildByTag("Tiles", entity);
+			if (tiles)
+				DestroyEntity(tiles);
+
+			tiles = CreateEntity("Tiles", entity);
+			tiles.removeComponent<TransformComponent>();
+
+			tmcComponent.tileBehaviour.clear();
+			for (const auto& [pos, spec] : tilemap->getTileData())
+			{
+				std::string tileName = fmt::format("({}, {})", pos.x, pos.y);
+				Entity tile = CreateEntity(tileName, tiles);
+				auto& tileTransform = tile.getTransform();
+				tileTransform.translation.x = tileSize.x * (pos.x - 0.5f * (f32)(width - 1));
+				tileTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - pos.y);
+				tileTransform.scale = tileSize;
+
+				tile.addComponent<ScriptComponent>(spec.script);
+				tile.addComponent<TileComponent>(pos, entity.getUUID());
+				if (spec.solid)
+				{
+					tile.addComponent<RigidBodyComponent>();
+					tile.addComponent<BoxColliderComponent>();
+				}
+
+				tmcComponent.tileBehaviour[pos] = tile.getUUID();
+			}
+		});
 	}
 
 	void Scene::OnPhysicsStart()
@@ -312,15 +370,15 @@ namespace Labyrinth {
 	{
 		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
-			mRenderStack->addQuad(trComponent, srComponent, Cast<i32>(entity));
+			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
 		});
 		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
-			mRenderStack->addCircle(trComponent, crComponent, Cast<i32>(entity));
+			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
 		});
-		mRegistry.view<TilemapComponent, TransformComponent>().each([this](auto entity, const auto& tmComponent, const auto& trComponent)
+		mRegistry.group<TilemapControllerComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& tmcComponent, const auto& trComponent)
 		{
-			mRenderStack->addTilemap(trComponent, tmComponent);
+			mRenderStack->addTilemap(trComponent, tmcComponent, (i32)entity);
 		});
 	}
 
@@ -386,7 +444,8 @@ namespace Labyrinth {
 
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
-			sc.instance->onUpdate(ts);
+			if (sc.instance) 
+				sc.instance->onUpdate(ts);
 		});
 	}
 
@@ -406,6 +465,24 @@ namespace Labyrinth {
 		{
 			if (entities.get<TagComponent>(e).tag == tag)
 				return Entity(e, Ref<Scene>(this));
+		}
+
+		return Entity{};
+	}
+
+	Entity Scene::getChildByTag(const std::string& tag, Entity parent)
+	{
+		LAB_PROFILE_FUNCTION();
+
+		for (auto e : parent.getChildren())
+		{
+			Entity entity = findEntity(e);
+			if (entity.getComponent<TagComponent>().tag == tag)
+				return entity;
+
+			Entity checkChildren = getChildByTag(tag, entity);
+			if (checkChildren)
+				return checkChildren;
 		}
 
 		return Entity{};
@@ -464,7 +541,7 @@ namespace Labyrinth {
 		if (!camera) return;
 
 		BuildScene();
-		DrawScene(camera.getComponent<CameraComponent>(), camera.getComponent<TransformComponent>());
+		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
 	}
 
 	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
@@ -540,17 +617,11 @@ namespace Labyrinth {
 	template<>
 	void Scene::onComponentAdded<SpriteRendererComponent>(Entity entity, SpriteRendererComponent& component)
 	{
-		// Overwrite transform component z value using render layer value
-		auto& trans = entity.getComponent<TransformComponent>().translation;
-		trans.z = component.getNLayer();
 	}
 
 	template<>
 	void Scene::onComponentAdded<CircleRendererComponent>(Entity entity, CircleRendererComponent& component)
 	{
-		// Overwrite transform component z value using render layer value
-		auto& trans = entity.getComponent<TransformComponent>().translation;
-		trans.z = component.getNLayer();
 	}
 
 	template<>
@@ -589,8 +660,13 @@ namespace Labyrinth {
 	}
 
 	template<>
-	void Scene::onComponentAdded<TilemapComponent>(Entity entity, TilemapComponent& component)
+	void Scene::onComponentAdded<TilemapControllerComponent>(Entity entity, TilemapControllerComponent& component)
 	{
+		reloadMaps();
 	}
 
+	template<>
+	void Scene::onComponentAdded<TileComponent>(Entity entity, TileComponent& component)
+	{
+	}
 }

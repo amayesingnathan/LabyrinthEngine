@@ -3,6 +3,8 @@
 
 #include "Renderer2D.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
+
 namespace Labyrinth {
 
 	RenderStack::~RenderStack()
@@ -59,6 +61,17 @@ namespace Labyrinth {
 
 	void RenderStack::clearItems()
 	{
+		auto removeStart = std::remove_if(mLayers.begin(), mLayers.end(), [](RenderLayer* layer) 
+		{ 
+			if (layer->empty())
+			{
+				delete layer;
+				return true;
+			}
+			return false;
+		});
+		mLayers.erase(removeStart, mLayers.end());
+
 		for (RenderLayer* layer : mLayers)
 			layer->clear();
 	}
@@ -89,36 +102,36 @@ namespace Labyrinth {
 		targetLayer->addCircle(trComp, crComp, entID);
 	}
 
-	void RenderStack::addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp)
+	void RenderStack::addTilemap(const TransformComponent& trComp, const TilemapControllerComponent& tmcComp, i32 entID)
 	{
-		RenderLayer* targetLayer = getLayer(tmComp.layer);
+		RenderLayer* targetLayer = getLayer(0);
 
 		if (!targetLayer)
 		{
-			targetLayer = new RenderLayer(tmComp.layer);
+			targetLayer = new RenderLayer(0);
 			pushLayer(targetLayer);
 		}
 
-		targetLayer->addTilemap(trComp, tmComp);
+		targetLayer->addCircle(trComp, tmcComp, entID);
 	}
 
 	void RenderStack::draw()
 	{
 		std::sort(mLayers.begin(), mLayers.end(), [](const auto& lhs, const auto& rhs)
-			{
-				return lhs->getDepth() < rhs->getDepth();
-			});
+		{
+			return lhs->getDepth() > rhs->getDepth();
+		});
 
 		for (RenderLayer* layer : mLayers)
 		{
+			for (const TilemapData& map : layer->getTilemaps())
+				Renderer2D::DrawMap(map.getTrans(), map.getMap(), map.getID());
+
 			for (const QuadData& quad : layer->getQuads())
 				Renderer2D::DrawSprite(quad.getTrans(), quad.getSprite(), quad.getID());
 
 			for (const CircleData& circle : layer->getCircles())
 				Renderer2D::DrawCircle(circle.getTrans(), circle.getCircle(), circle.getID());
-
-			for (const TilemapData& tilemap : layer->getTilemaps())
-				Renderer2D::DrawQuad(tilemap.getTrans(), tilemap.getMap().getTex());
 		}
 	}
 }

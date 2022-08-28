@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "ImGuiUtils.h"
 
+#include <Labyrinth/Tilemap/TilePos.h>
+
 #include <imgui.h>
 #include <imgui_internal.h>
 
@@ -70,5 +72,28 @@ namespace Labyrinth {
 		ImGui::Columns(1);
 
 		ImGui::PopID();
+	}
+
+	void EditorUI::GridControl(const ImVec2& pos, const ImVec2& region, i32 width, i32 height, std::function<void(const TilePos&, const ImVec2&)> lambda)
+	{
+		ImGui::SetCursorPos(pos);
+		GridControl(region, width, height, lambda);
+	}
+
+	void EditorUI::GridControl(const ImVec2& region, i32 width, i32 height, std::function<void(const TilePos&, const ImVec2&)> lambda)
+	{
+		ImVec2 pos = ImGui::GetCursorPos();
+		ImVec2 tileSize = { region.x / width, region.y / height };
+
+		for (i32 y = 0; y < width; y++)
+		{
+			for (i32 x = 0; x < height; x++)
+			{
+				ImGui::SetCursorPosX(pos.x + (x * tileSize.x));
+				ImGui::SetCursorPosY(pos.y + (y * tileSize.y));
+
+				lambda({ x, y }, tileSize);
+			}
+		}
 	}
 }

@@ -37,6 +37,7 @@ namespace Labyrinth {
 
 		Entity findEntity(UUID id);
 		Entity getEntityByTag(const std::string& tag);
+		Entity getChildByTag(const std::string& tag, Entity parent);
 
 		template<typename Component, typename... Other, typename... Exclude>
 		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})
@@ -76,6 +77,8 @@ namespace Labyrinth {
 		bool hasName() const { return (mName != "Untitled" && mName != ""); }
 
 		void transformChildren();
+		
+		void reloadMaps();
 
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);

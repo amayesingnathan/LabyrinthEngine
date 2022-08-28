@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API RenderStack
+	class RenderStack
 	{
 	public:
 		RenderStack() = default;
@@ -21,7 +21,7 @@ namespace Labyrinth {
 
 		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID = -1);
 		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID = -1);
-		void addTilemap(const TransformComponent& trComp, const TilemapComponent& tmComp);
+		void addTilemap(const TransformComponent& trComp, const TilemapControllerComponent& tmcComp, i32 entID = -1);
 
 		void draw();
 

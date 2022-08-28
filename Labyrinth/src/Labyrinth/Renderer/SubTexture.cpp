@@ -15,7 +15,6 @@ namespace Labyrinth {
 	{
 		mTileCountX = (u32)(round(mTexture->getWidth() / tileSize.x));
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
 	Texture2DSheet::Texture2DSheet(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)
@@ -23,112 +22,119 @@ namespace Labyrinth {
 	{
 		mTileCountX = (u32)(round(mTexture->getWidth() / tileSize.x));
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
-		mSubTextures.reserve(mTileCountX * mTileCountY);
 	}
 
-	bool Texture2DSheet::hasSubTex(const std::string& name) const
+	bool Texture2DSheet::hasSubTex(i32 id) const
 	{
-		if (mSubTextures.count(name) == 0)
+		if (mSubTextures.count(id) == 0)
 			return false;
 		else return true;
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::getSubTex(const std::string& name)
+	Ref<SubTexture2D> Texture2DSheet::getSubTex(i32 id)
 	{
-		if (!hasSubTex(name))
+		if (!hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", name);
+			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", id);
 			return nullptr;
 		}
 
-		return AssetManager::GetAsset<SubTexture2D>(mSubTextures.at(name));
+		return AssetManager::GetAsset<SubTexture2D>(mSubTextures.at(id));
 	}
 
-	void Texture2DSheet::addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex)
+	void Texture2DSheet::addSubTex(i32 id, const Ref<SubTexture2D>& subtex)
 	{
-		if (hasSubTex(name))
+		if (hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
+			LAB_CORE_WARN("Subtexture with the name {0} already exists!", id);
 			return;
 		}
 
-		mSubTextures.emplace(name, subtex->handle);
+		mSubTextures.emplace(id, subtex->handle);
 	}
 
-	void Texture2DSheet::addSubTex(const std::string& name, AssetHandle handle)
+	void Texture2DSheet::addSubTex(i32 id, AssetHandle handle)
 	{
-		if (hasSubTex(name))
+		if (hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
+			LAB_CORE_WARN("Subtexture with the name {0} already exists!", id);
 			return;
 		}
 
-		mSubTextures.emplace(name, handle);
+		mSubTextures.emplace(id, handle);
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
+	Ref<SubTexture2D> Texture2DSheet::createSubTex(i32 id, const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize)
 	{
-		if (hasSubTex(name))
+		if (hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
+			LAB_CORE_WARN("Subtexture with the name {0} already exists!", id);
 			return nullptr;
 		}
 
 		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, spriteSize, name);
-		mSubTextures.emplace(name, subTex->handle);
+		mSubTextures.emplace(id, subTex->handle);
 		return subTex;
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::createSubTex(const std::string& name, const glm::vec2 coords[4])
+	Ref<SubTexture2D> Texture2DSheet::createSubTex(i32 id, const std::string& name, const glm::vec2 coords[4])
 	{
-		if (hasSubTex(name))
+		if (hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} already exists!", name);
+			LAB_CORE_WARN("Subtexture with the name {0} already exists!", id);
 			return nullptr;
 		}
 
 		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(name + ".lstex", "spritesheets/" + mName + "/subtextures", Ref<Texture2DSheet>(this), coords, name);
-		mSubTextures.emplace(name, subTex->handle);
+		mSubTextures.emplace(id, subTex->handle);
 		return subTex;
 	}
 
-	void Texture2DSheet::deleteSubTex(const std::string& name)
+	void Texture2DSheet::deleteSubTex(i32 id)
 	{
-		if (!hasSubTex(name))
+		if (!hasSubTex(id))
 		{
-			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", name);
+			LAB_CORE_WARN("Subtexture with the id {0} does not exist!", id);
 			return;
 		}
 
-		mSubTextures.erase(name);
+		mSubTextures.erase(id);
 	}
 
-	void Texture2DSheet::generateTileset(usize startIndex)
+	void Texture2DSheet::generateTileset(i32 startIndex)
 	{
-		usize count = startIndex;
+		i32 count = startIndex;
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
 			{
-				std::string countName = std::to_string(count);
-				if (mSubTextures.count(countName) == 0) createSubTex(countName, { Cast<f32>(x), Cast<f32>(y) });
+				if (mSubTextures.count(count) == 0) createSubTex(count, std::to_string(count), { Cast<f32>(x), Cast<f32>(y) });
 				count++;
 			}
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 	}
 
-	Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key)
+	void Texture2DSheet::clearTileset()
 	{
-		if (mSubTextures.count(key) == 0) return nullptr;
-		return AssetManager::GetAsset<SubTexture2D>(mSubTextures[key]);
+		for (const auto& [id, handle] : mSubTextures)
+			AssetManager::DestroyAsset(handle);
+		FileUtils::RemoveDir(AssetManager::GetMetadata(handle).filepath.parent_path() / "subtextures");
+
+		mSubTextures.clear();
 	}
 
-	const Ref<SubTexture2D> Texture2DSheet::operator[](const std::string& key) const
+	Ref<SubTexture2D> Texture2DSheet::operator[](i32 id)
 	{
-		if (mSubTextures.count(key) == 0) return nullptr;
+		if (mSubTextures.count(id) == 0) return nullptr;
+		return AssetManager::GetAsset<SubTexture2D>(mSubTextures[id]);
+	}
 
-		return AssetManager::GetAsset<SubTexture2D>(mSubTextures.at(key));
+	const Ref<SubTexture2D> Texture2DSheet::operator[](i32 id) const
+	{
+		if (mSubTextures.count(id) == 0) return nullptr;
+
+		return AssetManager::GetAsset<SubTexture2D>(mSubTextures.at(id));
 	}
 
 	Ref<Texture2DSheet> Texture2DSheet::Create(const std::string& filepath, const glm::vec2& tileSize, const std::string& name)

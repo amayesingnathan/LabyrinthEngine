@@ -10,7 +10,7 @@ namespace Labyrinth {
 
 	namespace Net {
 
-		class LAB_API ClientLayer : public NetworkLayer
+		class ClientLayer : public NetworkLayer
 		{
 		public:
 			ClientLayer() {}

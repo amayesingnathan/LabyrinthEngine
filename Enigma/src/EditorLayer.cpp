@@ -5,10 +5,11 @@
 #include "Modals/NewProjectModal.h"
 #include "Modals/SettingsModal.h"
 #include "Modals/ProjectSettingsModal.h"
+#include "Modals/NewMapModal.h"
 
 #include "Panels/ScenePanel.h"
 #include "Panels/ContentBrowserPanel.h"
-#include "Panels/AssetPanel.h"
+#include "Panels/TilemapPanel.h"
 #include "Panels/SpriteSheetPanel.h"
 #include "Panels/OptionsPanel.h"
 #include "Panels/StatsPanel.h"
@@ -32,7 +33,7 @@
 
 #include "Labyrinth/Maths/Maths.h"
 
-#include <imgui/imgui.h>
+#include <imgui.h>
 #include "ImGuizmo.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -82,6 +83,7 @@ namespace Labyrinth {
 		PanelManager::Register<SpriteSheetPanel>("Sprite Sheets");
 		PanelManager::Register<OptionsPanel>("Options", true, mEditorData);
 		PanelManager::Register<StatsPanel>("Statistics", true, mHoveredEntity);
+		PanelManager::Register<TilemapPanel>("Tilemaps");
 
 		LoadSettings();
 
@@ -119,7 +121,8 @@ namespace Labyrinth {
 
 		Renderer2D::ResetStats();
 
-		PanelManager::UpdatePanels();
+		PanelManager::Update(ts);
+		ModalManager::Update(ts);
 
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
@@ -127,6 +130,8 @@ namespace Labyrinth {
 
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
+
+		OnOverlayRender();
 
 		switch (mSceneState)
 		{
@@ -166,8 +171,6 @@ namespace Labyrinth {
 			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
 			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
 		}
-
-		OnOverlayRender();
 
 		mFramebuffer->unbind();
 		
@@ -221,10 +224,10 @@ namespace Labyrinth {
 
 		UI_Viewport();
 		UI_MenuBar();
-		UI_ChildPanels();
 		UI_Toolbar();
 
-		ModalManager::Display();
+		PanelManager::Render();
+		ModalManager::Render();
 
 		ImGui::End();
 
@@ -243,7 +246,7 @@ namespace Labyrinth {
 
 		mViewportFocused = ImGui::IsWindowFocused();
 		mViewportHovered = ImGui::IsWindowHovered();
-		Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused && !mViewportHovered);
+		//Application::Get().getImGuiLayer()->blockEvents(!mViewportFocused && !mViewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
@@ -264,9 +267,9 @@ namespace Labyrinth {
 		}
 
 		if (mSceneState == SceneState::Edit) UI_Gizmos();
+		ImGui::PopStyleVar();
 
 		ImGui::End();
-		ImGui::PopStyleVar();
 	}
 
 	void EditorLayer::UI_Gizmos()
@@ -294,7 +297,7 @@ namespace Labyrinth {
 
 			// Snapping
 			bool snap = Input::IsKeyPressed(Key::LeftControl);
-			float snapValue = 1.0f; // Snap to 0.5m for translation/scale
+			float snapValue = 1.0f; // Snap to 1.0m for translation/scale
 			// Snap to 45 degrees for rotation
 			if (mGizmoType == ImGuizmo::OPERATION::ROTATE)
 				snapValue = 45.0f;
@@ -363,7 +366,7 @@ namespace Labyrinth {
 				ImGui::Separator();
 
 				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Project Settings", ModalButtons::OKCancel);
+					ModalManager::Open<SettingsModal>("Settings", ModalButtons::OKCancel);
 
 				ImGui::Separator();
 
@@ -380,13 +383,16 @@ namespace Labyrinth {
 				ImGui::EndMenu();
 			}
 
+			if (ImGui::BeginMenu("Create"))
+			{
+				if (ImGui::MenuItem("Tilemap"))
+					ModalManager::Open<NewMapModal>("New Tilemap", ModalButtons::Custom);
+
+				ImGui::EndMenu();
+			}
+
 			ImGui::EndMenuBar();
 		}
-	}
-
-	void EditorLayer::UI_ChildPanels()
-	{
-		PanelManager::RenderPanels();
 	}
 
 	void EditorLayer::UI_Toolbar()
@@ -433,10 +439,11 @@ namespace Labyrinth {
 
 	void EditorLayer::onEvent(Event& e)
 	{
-		if (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate)
+		if (mViewportHovered && (mSceneState == SceneState::Edit || mSceneState == SceneState::Simulate))
 			mEditorData.camera.onEvent(e);
 
 		PanelManager::DispatchEvents(e);
+		ModalManager::DispatchEvents(e);
 
 		EventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(EditorLayer::OnKeyPressed));
@@ -485,7 +492,7 @@ namespace Labyrinth {
 			{
 				ModalManager::Open("Quit", ModalButtons::YesNo, []() 
 				{
-					ImGui::Text("Are you sure you want to quit without saving?");
+					ImGui::Text("Are you sure you want to quit? Any unsaved changes will be lost.");
 				}, []()
 				{ 
 					Application::BlockEsc(false);
@@ -562,12 +569,11 @@ namespace Labyrinth {
 		{
 			if (mViewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 			{
-				UUID hoveredID = mHoveredEntity ? mHoveredEntity.getUUID() : 0;
 				if (!control)
 					SelectionManager::DeselectAll(SelectionDomain::Scene);
 
 				if (mHoveredEntity)
-					SelectionManager::Select(SelectionDomain::Scene, hoveredID);
+					SelectionManager::Select(SelectionDomain::Scene, mHoveredEntity.getUUID());
 			}
 			break;
 		}
@@ -797,31 +803,34 @@ namespace Labyrinth {
 	
 	void EditorLayer::OnScenePlay()
 	{
-		mSceneState = SceneState::Play;
-
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onRuntimeStart();
 
+		mSceneState = SceneState::Play;
 		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneSimulate()
 	{
-		mSceneState = SceneState::Simulate;
-
 		mCurrentScene = mEditorScene->Clone();
 		mCurrentScene->onSimulationStart();
 
+		mSceneState = SceneState::Simulate;
 		mScenePanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
-		mSceneState = SceneState::Edit;
-
-		mCurrentScene->onRuntimeStop();
+		switch (mSceneState)
+		{
+		case SceneState::Play: mCurrentScene->onRuntimeStop(); break;
+		case SceneState::Simulate: mCurrentScene->onSimulationStop(); break;
+		case SceneState::Edit: break;
+		}
+		
 		mCurrentScene = mEditorScene;
 
+		mSceneState = SceneState::Edit;
 		mScenePanel->setContext(mCurrentScene);
 	}
 

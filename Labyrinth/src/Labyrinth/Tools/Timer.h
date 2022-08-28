@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Timer
+	class Timer
 	{
 	public:
 		Timer()

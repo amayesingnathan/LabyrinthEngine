@@ -8,7 +8,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API ImGuiLayer : public Layer
+	class ImGuiLayer : public Layer
 	{
 	public:
 		ImGuiLayer();
@@ -26,7 +26,7 @@ namespace Labyrinth {
 		void SetDarkThemeColours();
 
 	private:
-		bool mBlockEvents = true;
+		bool mBlockEvents = false;
 	};
 
 }

@@ -92,7 +92,7 @@ namespace Labyrinth {
 
 		if (entity.hasComponent<NodeComponent>())
 		{
-			auto& nodeComponent = entity.getComponent<NodeComponent>();
+			const auto& nodeComponent = entity.getComponent<NodeComponent>();
 			out << YAML::Key << "Parent" << YAML::Value << nodeComponent.parent;
 
 			out << YAML::Key << "Children";
@@ -112,7 +112,7 @@ namespace Labyrinth {
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // TransformComponent
 
-			auto& transform = entity.getComponent<TransformComponent>();
+			const auto& transform = entity.getTransform();
 			LAB_SERIALISE_PROPERTY(Position, transform.translation, out);
 			LAB_SERIALISE_PROPERTY(Rotation, transform.rotation, out);
 			LAB_SERIALISE_PROPERTY(Scale, transform.scale, out);
@@ -125,7 +125,7 @@ namespace Labyrinth {
 			out << YAML::Key << "SpriteRendererComponent";
 			out << YAML::BeginMap; // SpriteRendererComponent
 
-			auto& sprite = entity.getComponent<SpriteRendererComponent>();
+			const auto& sprite = entity.getComponent<SpriteRendererComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)sprite.type, out);
 			LAB_SERIALISE_PROPERTY(Layer, (i32)sprite.layer, out);
 			LAB_SERIALISE_PROPERTY(Handle, sprite.handle, out);
@@ -140,7 +140,7 @@ namespace Labyrinth {
 			out << YAML::Key << "CameraComponent";
 			out << YAML::BeginMap; // CameraComponent
 
-			auto& cameraComponent = entity.getComponent<CameraComponent>();
+			const auto& cameraComponent = entity.getComponent<CameraComponent>();
 
 			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
@@ -164,9 +164,13 @@ namespace Labyrinth {
 			out << YAML::Key << "RigidBodyComponent";
 			out << YAML::BeginMap; // RigidBodyComponent
 
-			auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+			const auto& rbComponent = entity.getComponent<RigidBodyComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)rbComponent.type, out);
 			LAB_SERIALISE_PROPERTY(FixedRotation, rbComponent.fixedRotation, out);
+			LAB_SERIALISE_PROPERTY(Mass, rbComponent.mass, out);
+			LAB_SERIALISE_PROPERTY(LinearDrag, rbComponent.linearDrag, out);
+			LAB_SERIALISE_PROPERTY(AngularDrag, rbComponent.angularDrag, out);
+			LAB_SERIALISE_PROPERTY(GravityScale, rbComponent.gravityScale, out);
 
 			out << YAML::EndMap; // RigidBodyComponent
 		}
@@ -176,7 +180,7 @@ namespace Labyrinth {
 			out << YAML::Key << "BoxColliderComponent";
 			out << YAML::BeginMap; // BoxColliderComponent
 
-			auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+			const auto& bcComponent = entity.getComponent<BoxColliderComponent>();
 			LAB_SERIALISE_PROPERTY(HalfExtents, bcComponent.halfExtents, out);
 			LAB_SERIALISE_PROPERTY(Offset, bcComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, bcComponent.density, out);
@@ -192,7 +196,7 @@ namespace Labyrinth {
 			out << YAML::Key << "CircleColliderComponent";
 			out << YAML::BeginMap; // CircleColliderComponent
 
-			auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+			const auto& ccComponent = entity.getComponent<CircleColliderComponent>();
 			LAB_SERIALISE_PROPERTY(Radius, ccComponent.radius, out);
 			LAB_SERIALISE_PROPERTY(Offset, ccComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, ccComponent.density, out);
@@ -218,10 +222,45 @@ namespace Labyrinth {
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // ScriptComponent
 
-			auto& scriptComponent = entity.getComponent<ScriptComponent>();
+			const auto& scriptComponent = entity.getComponent<ScriptComponent>();
 			LAB_SERIALISE_PROPERTY(ClassName, scriptComponent.className, out);
 
 			out << YAML::EndMap; // ScriptComponent
+		}
+
+		if (entity.hasComponent<TilemapControllerComponent>())
+		{
+			out << YAML::Key << "TilemapControllerComponent";
+			out << YAML::BeginMap; // TilemapControllerComponent
+
+			auto& tilemapController = entity.getComponent<TilemapControllerComponent>();
+			LAB_SERIALISE_PROPERTY(Tilemap, tilemapController.tilemapHandle, out);
+
+			out << YAML::Key << "Behaviour";
+			out << YAML::Value << YAML::BeginSeq;
+
+			for (const auto& [pos, id] : tilemapController.tileBehaviour)
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(Position, pos, out);
+				LAB_SERIALISE_PROPERTY(Entity, id, out);
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
+
+			out << YAML::EndMap; // TilemapControllerComponent
+		}
+
+		if (entity.hasComponent<TileComponent>())
+		{
+			out << YAML::Key << "TileComponent";
+			out << YAML::BeginMap; // TileComponent
+
+			const auto& tileComponent = entity.getComponent<TileComponent>();
+			LAB_SERIALISE_PROPERTY(Controller, tileComponent.tilemapEntity, out);
+			LAB_SERIALISE_PROPERTY(Position, tileComponent.pos, out);
+
+			out << YAML::EndMap; // TileComponent
 		}
 
 		out << YAML::EndMap; // Entity
@@ -262,10 +301,10 @@ namespace Labyrinth {
 			if (transformComponent)
 			{
 				// Entities always have transforms
-				auto& transform = deserializedEntity.getComponent<TransformComponent>();
-				LAB_DESERIALISE_PROPERTY(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
-				LAB_DESERIALISE_PROPERTY(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
-				LAB_DESERIALISE_PROPERTY(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
+				auto& transform = deserializedEntity.getTransform();
+				LAB_DESERIALISE_PROPERTY_DEF(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY_DEF(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
+				LAB_DESERIALISE_PROPERTY_DEF(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
 			}
 			else
 				deserializedEntity.removeComponent<TransformComponent>();
@@ -297,7 +336,6 @@ namespace Labyrinth {
 
 				src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
 				src.layer = spriteRendererComponent["Layer"].as<u8>();
-				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
 				src.handle = spriteRendererComponent["Handle"].as<u64>();
 				src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();
 			}
@@ -308,8 +346,6 @@ namespace Labyrinth {
 				auto& src = deserializedEntity.addComponent<CircleRendererComponent>();
 
 				src.layer = circleRendererComponent["Layer"].as<u8>();
-				deserializedEntity.getComponent<TransformComponent>().translation.z = src.getNLayer();
-
 				src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
 				src.thickness = circleRendererComponent["Thickness"].as<f32>();
 			}
@@ -320,6 +356,10 @@ namespace Labyrinth {
 				auto& rbc = deserializedEntity.addComponent<RigidBodyComponent>();
 				rbc.type = (RigidBodyComponent::BodyType)rigidBodyComponent["Type"].as<i32>();
 				rbc.fixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
+				rbc.mass = rigidBodyComponent["Mass"].as<f32>();
+				rbc.linearDrag = rigidBodyComponent["LinearDrag"].as<f32>();
+				rbc.angularDrag = rigidBodyComponent["AngularDrag"].as<f32>();
+				rbc.gravityScale = rigidBodyComponent["GravityScale"].as<f32>();
 			}
 
 			auto boxColliderComponent = entity["BoxColliderComponent"];
@@ -349,13 +389,46 @@ namespace Labyrinth {
 
 			auto childControllerComponent = entity["ChildControllerComponent"];
 			if (childControllerComponent)
-				auto& ccc = deserializedEntity.addComponent<ChildControllerComponent>();
+				deserializedEntity.addComponent<ChildControllerComponent>();
 
 			auto scriptComponent = entity["ScriptComponent"];
 			if (scriptComponent)
 			{
 				auto& sc = deserializedEntity.addComponent<ScriptComponent>();
 				sc.className = scriptComponent["ClassName"].as<std::string>();
+			}
+
+			auto tmcComponent = entity["TilemapControllerComponent"];
+			if (tmcComponent)
+			{
+				auto& tmcc = deserializedEntity.addComponent<TilemapControllerComponent>();
+
+				u64 noHandle = 0;
+				u64 handle;
+				LAB_DESERIALISE_PROPERTY_DEF(Tilemap, handle, tmcComponent, noHandle);
+				tmcc.tilemapHandle = handle;
+
+				auto behaviour = tmcComponent["Behaviour"];
+				if (behaviour)
+				{
+					for (auto entry : behaviour)
+					{
+						TilePos pos;
+						u64 id;
+						LAB_DESERIALISE_PROPERTY(Position, pos, entry);
+						LAB_DESERIALISE_PROPERTY(Entity, id, entry);
+
+						tmcc.tileBehaviour[pos] = id;
+					}
+				}
+			}
+
+			auto tileComponent = entity["TileComponent"];
+			if (tileComponent)
+			{
+				auto& tc = deserializedEntity.addComponent<TileComponent>();
+				tc.tilemapEntity = tileComponent["Controller"].as<u64>();
+				tc.pos = tileComponent["Position"].as<TilePos>();
 			}
 		}
 	}

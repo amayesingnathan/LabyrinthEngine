@@ -20,6 +20,9 @@ namespace Labyrinth {
 
 		static void CopyDir(const fs::path& src, const fs::path& dest);
 
+		static void Remove(const fs::path& filepath);
+		static void RemoveDir(const fs::path& filepath);
+
 		// These return empty strings if cancelled
 		static fs::path OpenFile(const std::vector<std::string>& filter);
 		static fs::path OpenDir();

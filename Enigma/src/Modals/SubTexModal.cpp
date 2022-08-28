@@ -1,6 +1,7 @@
 #include "SubTexModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 
 namespace Labyrinth {
@@ -23,13 +24,9 @@ namespace Labyrinth {
 
 	void SubTexModal::onImGuiRender()
 	{
-		char buffer[256];
-		memset(buffer, 0, sizeof(buffer));
-		STR_COPY(buffer, mName);
+		StaticBuffer<256> buffer(mName);
 		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-		{
-			mName = std::string(buffer);
-		}
+			mName = buffer.string();
 
 		float xpos = ImGui::GetCursorPosX();
 		float ypos = ImGui::GetCursorPosY();
@@ -55,11 +52,11 @@ namespace Labyrinth {
 
 			if (square.pressed)
 			{
-				ImGui::PushStyleColor(ImGuiCol_Button, mPressedColour);
+				ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::HoveredColour);
 			}
 			else
 			{
-				ImGui::PushStyleColor(ImGuiCol_Button, mUnpressedColour);
+				ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::ClearColour);
 			}
 
 			if (ImGui::Button(name.c_str(), tileSize))
@@ -88,7 +85,7 @@ namespace Labyrinth {
 		if (CheckSelection())
 		{
 			mPayload.subTexName = mName;
-			mPayload.currentSubTex = mPayload.currentSheet->getSubTex(mPayload.subTexName);
+			mPayload.currentSubTex = mPayload.currentSheet->getSubTex(std::hash<std::string>()(mName));
 		}
 		else
 			ModalManager::OpenWarning("Invalid selection", "Selection was not valid!");
@@ -134,7 +131,7 @@ namespace Labyrinth {
 		float width = Cast<float>(lastSquare.first - firstSquare.pos.first + 1);
 		float height = Cast<float>(lastSquare.second - firstSquare.pos.second + 1);
 
-		mSheet->createSubTex(mName,
+		mSheet->createSubTex(std::hash<std::string>()(mName), mName,
 			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) }, 
 			{ width, height });
 

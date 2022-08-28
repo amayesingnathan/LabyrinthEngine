@@ -24,7 +24,7 @@ namespace Labyrinth {
 		void setContext(const Ref<Scene>& scene);
 		void setContext(const Ref<Scene>& scene, EditorData& options);
 		
-		void onUpdate() override;
+		void onUpdate(Timestep ts) override;
 		void onImGuiRender() override;
 		void onSelectionChange() override;
 
@@ -57,6 +57,7 @@ namespace Labyrinth {
 		EditorData* mEditorData = nullptr;
 
 		Entity mSelectedEntity;
+		Entity mPreviousEntity;
 		std::vector<Entity> mToRemove;
 
 		Ref<Framebuffer> mTexture = nullptr;

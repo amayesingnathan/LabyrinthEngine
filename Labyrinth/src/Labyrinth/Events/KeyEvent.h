@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API KeyEvent : public Event
+	class KeyEvent : public Event
 	{
 	public:
 		KeyCode getKeyCode() const { return mKeyCode; }
@@ -19,7 +19,7 @@ namespace Labyrinth {
 		KeyCode mKeyCode;
 	};	
 
-	class LAB_API KeyPressedEvent : public KeyEvent
+	class KeyPressedEvent : public KeyEvent
 	{
 	public:
 		KeyPressedEvent(const KeyCode keycode, bool repeat = false)
@@ -39,7 +39,7 @@ namespace Labyrinth {
 		bool mIsRepeat;
 	};
 
-	class LAB_API KeyReleasedEvent : public KeyEvent
+	class KeyReleasedEvent : public KeyEvent
 	{
 	public:
 		KeyReleasedEvent(const KeyCode keycode)
@@ -55,7 +55,7 @@ namespace Labyrinth {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
-	class LAB_API KeyTypedEvent : public KeyEvent
+	class KeyTypedEvent : public KeyEvent
 	{
 	public:
 		KeyTypedEvent(const KeyCode keycode)

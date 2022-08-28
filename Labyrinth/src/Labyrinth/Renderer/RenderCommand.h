@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API RenderCommand
+	class RenderCommand
 	{
 	public:
 		static void Init()

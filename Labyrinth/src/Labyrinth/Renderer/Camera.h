@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API Camera
+	class Camera
 	{
 	public:
 		Camera() = default;

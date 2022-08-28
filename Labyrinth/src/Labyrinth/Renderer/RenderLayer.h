@@ -7,22 +7,22 @@ namespace Labyrinth {
 	struct TransformComponent;
 	struct SpriteRendererComponent;
 	struct CircleRendererComponent;
-	struct TilemapComponent;
+	struct TilemapControllerComponent;
 
 	class QuadData
 	{
 	public:
 		QuadData(const TransformComponent& trans, const SpriteRendererComponent& src, i32 id = -1) 
-			: transform(&trans), sprite(&src), entID(id) {}
+			: mTransform(&trans), mSprite(&src), mEntID(id) {}
 
-		const TransformComponent& getTrans() const { return *transform; }
-		const SpriteRendererComponent& getSprite() const { return *sprite; }
-		i32 getID() const { return entID; }
+		const TransformComponent& getTrans() const { return *mTransform; }
+		const SpriteRendererComponent& getSprite() const { return *mSprite; }
+		i32 getID() const { return mEntID; }
 
 	private:
-		const TransformComponent* transform;
-		const SpriteRendererComponent* sprite;
-		i32 entID;
+		const TransformComponent* mTransform;
+		const SpriteRendererComponent* mSprite;
+		i32 mEntID;
 
 	};
 
@@ -30,35 +30,37 @@ namespace Labyrinth {
 	{
 	public:
 		CircleData(const TransformComponent& trans, const CircleRendererComponent& crc, i32 id = -1)
-			: transform(&trans), circle(&crc), entID(id) {}
+			: mTransform(&trans), mCircle(&crc), mEntID(id) {}
 
-		const TransformComponent& getTrans() const { return *transform; }
-		const CircleRendererComponent& getCircle() const { return *circle; }
-		i32 getID() const { return entID; }
+		const TransformComponent& getTrans() const { return *mTransform; }
+		const CircleRendererComponent& getCircle() const { return *mCircle; }
+		i32 getID() const { return mEntID; }
 
 	private:
-		const TransformComponent* transform;
-		const CircleRendererComponent* circle;
-		i32 entID;
+		const TransformComponent* mTransform;
+		const CircleRendererComponent* mCircle;
+		i32 mEntID;
 
 	};
 
 	class TilemapData
 	{
 	public:
-		TilemapData(const TransformComponent& trans, const TilemapComponent& tmc)
-			: transform(&trans), tilemap(&tmc) {}
+		TilemapData(const TransformComponent& trans, const TilemapControllerComponent& tmc, i32 id = -1)
+			: mTransform(&trans), mTilemap(&tmc), mEntID(id) {}
 
-		const TransformComponent& getTrans() const { return *transform; }
-		const TilemapComponent& getMap() const { return *tilemap; }
+		const TransformComponent& getTrans() const { return *mTransform; }
+		const TilemapControllerComponent& getMap() const { return *mTilemap; }
+		i32 getID() const { return mEntID; }
 
 	private:
-		const TransformComponent* transform;
-		const TilemapComponent* tilemap;
+		const TransformComponent* mTransform;
+		const TilemapControllerComponent* mTilemap;
+		i32 mEntID;
 
 	};
 
-	class LAB_API RenderLayer
+	class RenderLayer
 	{
 	public:
 		RenderLayer(u8 layer) : mDepth(layer) {}
@@ -66,6 +68,13 @@ namespace Labyrinth {
 
 		u8 getDepth() const { return mDepth; }
 		void clear() { mQuads.clear(); mCircles.clear(); mTilemaps.clear(); }
+
+		bool empty() const 
+		{ 
+			return mQuads.empty() && 
+				mCircles.empty() && 
+				mTilemaps.empty(); 
+		}
 
 		std::vector<QuadData>& getQuads() { return mQuads; }
 		const std::vector<QuadData>& getQuads() const { return mQuads; }
@@ -84,9 +93,9 @@ namespace Labyrinth {
 		{
 			mCircles.emplace_back(trans, sprite, entID);
 		}
-		void addTilemap(const TransformComponent& trans, const TilemapComponent& sprite)
+		void addCircle(const TransformComponent& trans, const TilemapControllerComponent& tilemap, i32 entID)
 		{
-			mTilemaps.emplace_back(trans, sprite);
+			mTilemaps.emplace_back(trans, tilemap, entID);
 		}
 
 	private:

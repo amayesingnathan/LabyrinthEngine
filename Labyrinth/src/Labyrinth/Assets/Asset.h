@@ -47,13 +47,6 @@ namespace Labyrinth {
 		}
 	};
 
-	class AssetSerialiser
-	{
-	public:
-		virtual void serialise(const Ref<Asset>& asset) const = 0;
-		virtual bool deserialise(const Ref<Asset>& asset) const = 0;
-	};
-
 	class Texture2D;
 	class SubTexture2D;
 	class Texture2DSheet;

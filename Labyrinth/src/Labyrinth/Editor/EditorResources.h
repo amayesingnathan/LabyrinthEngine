@@ -2,6 +2,8 @@
 
 #include <Labyrinth/Renderer/SubTexture.h>
 
+#include "imgui.h"
+
 namespace Labyrinth {
 
 	class EditorResources
@@ -20,6 +22,11 @@ namespace Labyrinth {
 		// Textures
 		inline static Ref<Texture2D> NoTexture = nullptr;
 		inline static Ref<SubTexture2D> NoSubTexture = nullptr;
+
+		// ImGui Colours
+		inline static ImVec4 HoveredColour = { 0.25f, 1.0f, 1.0f, 0.5f };
+		inline static ImVec4 HighlightedColour = { 1.0f, 0.5f, 0.0f, 0.6f };
+		inline static ImVec4 ClearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		static void Init()
 		{

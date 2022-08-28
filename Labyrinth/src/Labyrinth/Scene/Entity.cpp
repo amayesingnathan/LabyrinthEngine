@@ -13,20 +13,24 @@ namespace Labyrinth {
 	Entity Entity::getParent() const { return mScene.lock()->findEntity(getComponent<NodeComponent>().parent); }
 	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
 
+	TransformComponent& Entity::getTransform() { return getComponent<TransformComponent>(); }
+	const TransformComponent& Entity::getTransform() const { return getComponent<TransformComponent>(); }
+
+	std::string& Entity::getTag() { return getComponent<TagComponent>().tag; }
+	const std::string& Entity::getTag() const { return getComponent<TagComponent>().tag; }
+
 	void Entity::destroy()
 	{
-		Ref<Scene> scene = mScene.lock();
-		scene->DestroyEntity(*this);
-		mEntID = entt::null; 
-		scene = nullptr;
+		mScene->DestroyEntity(*this);
+		mEntID = entt::null;
+		mScene = nullptr;
 	}
-
 
 	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
 
 	bool Entity::setParent(Entity newParent, NodeComponent& node)
 	{
-		Entity currentParent = mScene.lock()->findEntity(node.parent); 
+		Entity currentParent = mScene->findEntity(node.parent); 
 		if (currentParent == newParent) return false;
 
 		if (newParent)
@@ -77,6 +81,20 @@ namespace Labyrinth {
 		auto it = std::find(children.begin(), children.end(), child.getUUID());
 		if (it != children.end())
 			children.erase(it);
+	}
+
+	void Entity::removeChildren()
+	{
+		std::vector<UUID>& children = getChildren();
+		for (UUID id : children)
+		{
+			Entity child = mScene->findEntity(id);
+			child.addComponent<RootComponent>();
+
+			child.getComponent<NodeComponent>().parent = 0;
+		}
+
+		children.clear();
 	}
 
 	bool Entity::isRelated(Entity filter) const

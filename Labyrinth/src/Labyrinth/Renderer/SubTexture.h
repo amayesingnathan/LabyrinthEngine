@@ -6,9 +6,11 @@
 
 #include <glm/glm.hpp>
 
-#include <unordered_map>
+#include <map>
 
 namespace Labyrinth {
+
+	class SubTexture2D;
 
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
 	class Texture2DSheet : public Asset
@@ -39,22 +41,23 @@ namespace Labyrinth {
 		const std::string& getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
-		bool hasSubTex(const std::string& name) const;
-		Ref<SubTexture2D> getSubTex(const std::string& name);
+		bool hasSubTex(i32 id) const;
+		Ref<SubTexture2D> getSubTex(i32 id);
 
-		std::unordered_map<std::string, AssetHandle>& getSubTexList() { return mSubTextures; }
-		const std::unordered_map<std::string, AssetHandle>& getSubTexList() const { return mSubTextures; }
+		std::map<i32, AssetHandle>& getSubTexList() { return mSubTextures; }
+		const std::map<i32, AssetHandle>& getSubTexList() const { return mSubTextures; }
 
-		void addSubTex(const std::string& name, const Ref<SubTexture2D>& subtex);
-		void addSubTex(const std::string& name, AssetHandle handle);
-		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
-		Ref<SubTexture2D> createSubTex(const std::string& name, const glm::vec2 coords[4]);
-		void deleteSubTex(const std::string& name);
+		void addSubTex(i32 id, const Ref<SubTexture2D>& subtex);
+		void addSubTex(i32 id, AssetHandle handle);
+		Ref<SubTexture2D> createSubTex(i32 id, const std::string& name, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
+		Ref<SubTexture2D> createSubTex(i32 id, const std::string& name, const glm::vec2 coords[4]);
+		void deleteSubTex(i32 id);
 
-		void generateTileset(usize startIndex = 0);
+		void generateTileset(i32 startIndex = 0);
+		void clearTileset();
 
-		Ref<SubTexture2D> operator[] (const std::string& key);
-		const Ref<SubTexture2D> operator[] (const std::string& key) const;
+		Ref<SubTexture2D> operator[] (i32 id);
+		const Ref<SubTexture2D> operator[] (i32 id) const;
 
 		static Ref<Texture2DSheet> Create(const std::string& filepath, const glm::vec2& tileSize, const std::string& name = "");
 		static Ref<Texture2DSheet> Create(const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize, const std::string& name = "");
@@ -64,7 +67,7 @@ namespace Labyrinth {
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
 		u32 mTileCountX, mTileCountY;
-		std::unordered_map<std::string, AssetHandle> mSubTextures;
+		std::map<i32, AssetHandle> mSubTextures;
 		
 		friend class SubTexture2D;
 	};

@@ -18,8 +18,8 @@ namespace Labyrinth {
             Ref<EditorModal> modal = nullptr;
             ModalButtons type = ModalButtons::OKCancel;
 
-            bool begin = true;
-            i32 flags = 0;
+            bool open = true;
+            i32 flags = 1 << 21; // ImGuiWindowFlags_NoDocking
 
             ModalEntry(const std::string& h, ModalButtons t, const Ref<EditorModal>& m) : heading(h), modal(m), type(t) {}
         };
@@ -27,17 +27,16 @@ namespace Labyrinth {
         using ModalList = std::vector<ModalEntry>;
         using CallbackMap = std::unordered_map<UUID, std::vector<std::function<void()>>>;
 
-    private:
-        inline static ModalList sModals;
-        inline static CallbackMap sCallbacks;
-        inline static UUID sNewModal;
-
-        friend class EditorLayer;
-
     public:
         template<typename T, typename... Args>
         static void Open(const std::string& title, ModalButtons type, Args&&... args)
         {
+            if (Exists(title))
+            {
+                LAB_CORE_WARN("Modal already open!");
+                return;
+            }
+
             sNewModal = sModals.emplace_back(title, type, T::Create(std::forward<Args>(args)...)).id;
         }
         static void Open(const std::string& title, ModalButtons type, std::function<void()> onImGuiRender, std::function<void()> onComplete = std::function<void()>())
@@ -54,9 +53,31 @@ namespace Labyrinth {
             sCallbacks[sNewModal].push_back(function);
         }
 
+    private:
+        static bool Exists(const std::string& title)
+        {
+            return std::find_if(sModals.begin(), sModals.end(), [&](const ModalEntry& entry) { return title == entry.heading; }) != sModals.end();
+        }
+
+        static void Update(Timestep ts)
+        {
+            for (ModalEntry& modalData : sModals)
+            {
+                if (modalData.modal && modalData.open)
+                    modalData.modal->onUpdate(ts);
+            }
+        }
 
     private:
-        static void Display();
+        static void Render();
         static void RenderButtons(ModalEntry& modalData);
+        static void DispatchEvents(Event& e);
+
+    private:
+        inline static ModalList sModals;
+        inline static CallbackMap sCallbacks;
+        inline static UUID sNewModal;
+
+        friend class EditorLayer;
     };
 }

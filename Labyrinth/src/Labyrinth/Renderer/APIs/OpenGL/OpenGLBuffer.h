@@ -4,7 +4,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API OpenGLVertexBuffer : public VertexBuffer
+	class OpenGLVertexBuffer : public VertexBuffer
 	{
 	public:
 		OpenGLVertexBuffer(u32 size);

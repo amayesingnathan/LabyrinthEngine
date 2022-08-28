@@ -1,0 +1,853 @@
+Assets:
+  - Handle: 106024140194134760
+    Filepath: spritesheets/Minecraft/subtextures/192.lstex
+    Type: SubTexture
+  - Handle: 176828260673022243
+    Filepath: tilemaps/level1/LightShadow_pipo.png
+    Type: Texture
+  - Handle: 219601751554060934
+    Filepath: spritesheets/Minecraft/subtextures/224.lstex
+    Type: SubTexture
+  - Handle: 252756218410606386
+    Filepath: spritesheets/Minecraft/subtextures/220.lstex
+    Type: SubTexture
+  - Handle: 495811890709479335
+    Filepath: spritesheets/Minecraft/subtextures/57.lstex
+    Type: SubTexture
+  - Handle: 504694452509934107
+    Filepath: spritesheets/Minecraft/subtextures/147.lstex
+    Type: SubTexture
+  - Handle: 529856697189330788
+    Filepath: spritesheets/Minecraft/subtextures/250.lstex
+    Type: SubTexture
+  - Handle: 620074987643155204
+    Filepath: tilemaps/level1/[Base]BaseChip_pipo.png
+    Type: Texture
+  - Handle: 642433966589841466
+    Filepath: spritesheets/Minecraft/subtextures/232.lstex
+    Type: SubTexture
+  - Handle: 687351534233778227
+    Filepath: spritesheets/Minecraft/subtextures/66.lstex
+    Type: SubTexture
+  - Handle: 778329197015847561
+    Filepath: spritesheets/Minecraft/subtextures/125.lstex
+    Type: SubTexture
+  - Handle: 785531170945958427
+    Filepath: spritesheets/Minecraft/subtextures/69.lstex
+    Type: SubTexture
+  - Handle: 804969316657538143
+    Filepath: spritesheets/Minecraft/subtextures/169.lstex
+    Type: SubTexture
+  - Handle: 914687438693049895
+    Filepath: spritesheets/Minecraft/subtextures/233.lstex
+    Type: SubTexture
+  - Handle: 916646925784818076
+    Filepath: spritesheets/Minecraft/subtextures/149.lstex
+    Type: SubTexture
+  - Handle: 975006446191933327
+    Filepath: textures/PlayerSprite.png
+    Type: Texture
+  - Handle: 1003054603677251875
+    Filepath: spritesheets/Minecraft/subtextures/2.lstex
+    Type: SubTexture
+  - Handle: 1043329403668951733
+    Filepath: spritesheets/Minecraft/subtextures/204.lstex
+    Type: SubTexture
+  - Handle: 1160970526682043620
+    Filepath: tilemaps/level1/[A]Dirt_pipo.png
+    Type: Texture
+  - Handle: 1235927217922680391
+    Filepath: spritesheets/Minecraft/subtextures/60.lstex
+    Type: SubTexture
+  - Handle: 1283234711275722532
+    Filepath: spritesheets/Minecraft/subtextures/46.lstex
+    Type: SubTexture
+  - Handle: 1422524770934251709
+    Filepath: tilemaps/level1/[A]Wall-Up_pipo.png
+    Type: Texture
+  - Handle: 1455279341762034962
+    Filepath: spritesheets/Minecraft/subtextures/92.lstex
+    Type: SubTexture
+  - Handle: 1484740737332428095
+    Filepath: spritesheets/Minecraft/subtextures/173.lstex
+    Type: SubTexture
+  - Handle: 1609746307311293162
+    Filepath: spritesheets/Minecraft/subtextures/54.lstex
+    Type: SubTexture
+  - Handle: 1651951818843398104
+    Filepath: spritesheets/Minecraft/subtextures/240.lstex
+    Type: SubTexture
+  - Handle: 1915941040130290053
+    Filepath: spritesheets/Minecraft/subtextures/100.lstex
+    Type: SubTexture
+  - Handle: 1974674335189895078
+    Filepath: spritesheets/Minecraft/subtextures/123.lstex
+    Type: SubTexture
+  - Handle: 2172468364859979160
+    Filepath: spritesheets/Minecraft/subtextures/41.lstex
+    Type: SubTexture
+  - Handle: 2283241512799902068
+    Filepath: spritesheets/Minecraft/subtextures/213.lstex
+    Type: SubTexture
+  - Handle: 2420423005147989718
+    Filepath: scenes/ScriptTest.lscene
+    Type: Scene
+  - Handle: 2508853712659749234
+    Filepath: spritesheets/Minecraft/subtextures/151.lstex
+    Type: SubTexture
+  - Handle: 2525939819284663700
+    Filepath: spritesheets/Minecraft/subtextures/142.lstex
+    Type: SubTexture
+  - Handle: 2548748804152614819
+    Filepath: spritesheets/Minecraft/subtextures/37.lstex
+    Type: SubTexture
+  - Handle: 2623925950108490942
+    Filepath: spritesheets/Minecraft/subtextures/148.lstex
+    Type: SubTexture
+  - Handle: 2664489158566382260
+    Filepath: spritesheets/Minecraft/Minecraft.lss
+    Type: TextureSheet
+  - Handle: 2672468728365690096
+    Filepath: spritesheets/Minecraft/subtextures/53.lstex
+    Type: SubTexture
+  - Handle: 2691098540749473526
+    Filepath: spritesheets/Minecraft/subtextures/44.lstex
+    Type: SubTexture
+  - Handle: 2744013982665616161
+    Filepath: spritesheets/Minecraft/subtextures/174.lstex
+    Type: SubTexture
+  - Handle: 2810044061503631928
+    Filepath: spritesheets/Minecraft/subtextures/104.lstex
+    Type: SubTexture
+  - Handle: 2813248928878295000
+    Filepath: spritesheets/Minecraft/subtextures/34.lstex
+    Type: SubTexture
+  - Handle: 2828367719755105371
+    Filepath: spritesheets/Minecraft/subtextures/181.lstex
+    Type: SubTexture
+  - Handle: 2828482996557920858
+    Filepath: textures/pieces.png
+    Type: Texture
+  - Handle: 2857280044860807331
+    Filepath: spritesheets/Minecraft/subtextures/210.lstex
+    Type: SubTexture
+  - Handle: 2883007268671771703
+    Filepath: spritesheets/Minecraft/subtextures/164.lstex
+    Type: SubTexture
+  - Handle: 2944706100214941453
+    Filepath: spritesheets/Minecraft/subtextures/117.lstex
+    Type: SubTexture
+  - Handle: 3197226785518737236
+    Filepath: spritesheets/Minecraft/subtextures/187.lstex
+    Type: SubTexture
+  - Handle: 3272638989845471107
+    Filepath: spritesheets/Minecraft/subtextures/103.lstex
+    Type: SubTexture
+  - Handle: 3322796274371047049
+    Filepath: spritesheets/Minecraft/subtextures/121.lstex
+    Type: SubTexture
+  - Handle: 3348342009914520088
+    Filepath: spritesheets/Minecraft/subtextures/197.lstex
+    Type: SubTexture
+  - Handle: 3420303758166332039
+    Filepath: spritesheets/Minecraft/subtextures/221.lstex
+    Type: SubTexture
+  - Handle: 3474230026722057646
+    Filepath: spritesheets/Minecraft/subtextures/91.lstex
+    Type: SubTexture
+  - Handle: 3486330103024405868
+    Filepath: spritesheets/Player/subtextures/258.lstex
+    Type: SubTexture
+  - Handle: 3525444058116908007
+    Filepath: spritesheets/Minecraft/subtextures/70.lstex
+    Type: SubTexture
+  - Handle: 3538088142716896530
+    Filepath: spritesheets/Minecraft/subtextures/189.lstex
+    Type: SubTexture
+  - Handle: 3574999011699845493
+    Filepath: spritesheets/Minecraft/subtextures/19.lstex
+    Type: SubTexture
+  - Handle: 3600295390037600382
+    Filepath: spritesheets/Minecraft/subtextures/5.lstex
+    Type: SubTexture
+  - Handle: 3620828459561785012
+    Filepath: spritesheets/Minecraft/subtextures/96.lstex
+    Type: SubTexture
+  - Handle: 3650208242070902743
+    Filepath: spritesheets/Minecraft/subtextures/78.lstex
+    Type: SubTexture
+  - Handle: 3743486663930068390
+    Filepath: spritesheets/Minecraft/subtextures/211.lstex
+    Type: SubTexture
+  - Handle: 3777806004918228238
+    Filepath: spritesheets/Minecraft/subtextures/182.lstex
+    Type: SubTexture
+  - Handle: 3794402389169128515
+    Filepath: spritesheets/Minecraft/subtextures/51.lstex
+    Type: SubTexture
+  - Handle: 3862327730555341000
+    Filepath: spritesheets/Player/Player.lss
+    Type: TextureSheet
+  - Handle: 3863761971686067558
+    Filepath: spritesheets/Minecraft/subtextures/247.lstex
+    Type: SubTexture
+  - Handle: 3983457017999910547
+    Filepath: spritesheets/Minecraft/subtextures/159.lstex
+    Type: SubTexture
+  - Handle: 4065684903175852504
+    Filepath: spritesheets/Minecraft/subtextures/193.lstex
+    Type: SubTexture
+  - Handle: 4104856087189833608
+    Filepath: spritesheets/Minecraft/subtextures/162.lstex
+    Type: SubTexture
+  - Handle: 4151985864931576565
+    Filepath: spritesheets/Minecraft/subtextures/244.lstex
+    Type: SubTexture
+  - Handle: 4171419588909498394
+    Filepath: spritesheets/Minecraft/subtextures/105.lstex
+    Type: SubTexture
+  - Handle: 4173785907680628253
+    Filepath: spritesheets/Minecraft/subtextures/136.lstex
+    Type: SubTexture
+  - Handle: 4241619956218854710
+    Filepath: spritesheets/Minecraft/subtextures/171.lstex
+    Type: SubTexture
+  - Handle: 4280575761431714535
+    Filepath: spritesheets/Minecraft/subtextures/80.lstex
+    Type: SubTexture
+  - Handle: 4290827403735972808
+    Filepath: spritesheets/Minecraft/subtextures/230.lstex
+    Type: SubTexture
+  - Handle: 4358231375511555937
+    Filepath: spritesheets/Minecraft/subtextures/225.lstex
+    Type: SubTexture
+  - Handle: 4455006548334012654
+    Filepath: spritesheets/Player/subtextures/262.lstex
+    Type: SubTexture
+  - Handle: 4469821487798260311
+    Filepath: spritesheets/Minecraft/subtextures/72.lstex
+    Type: SubTexture
+  - Handle: 4535416709981979978
+    Filepath: spritesheets/Minecraft/subtextures/251.lstex
+    Type: SubTexture
+  - Handle: 4539810103195618791
+    Filepath: spritesheets/Minecraft/subtextures/98.lstex
+    Type: SubTexture
+  - Handle: 4639505691006733725
+    Filepath: spritesheets/Minecraft/subtextures/165.lstex
+    Type: SubTexture
+  - Handle: 4648523088158673999
+    Filepath: spritesheets/Minecraft/subtextures/26.lstex
+    Type: SubTexture
+  - Handle: 4674494233532205478
+    Filepath: spritesheets/Minecraft/subtextures/35.lstex
+    Type: SubTexture
+  - Handle: 4699729637867290981
+    Filepath: spritesheets/Minecraft/subtextures/203.lstex
+    Type: SubTexture
+  - Handle: 4801689939330024997
+    Filepath: spritesheets/Minecraft/subtextures/207.lstex
+    Type: SubTexture
+  - Handle: 4841034248760933229
+    Filepath: spritesheets/Minecraft/subtextures/145.lstex
+    Type: SubTexture
+  - Handle: 4893319836482429412
+    Filepath: spritesheets/Minecraft/subtextures/190.lstex
+    Type: SubTexture
+  - Handle: 4911652193398635659
+    Filepath: spritesheets/Minecraft/subtextures/217.lstex
+    Type: SubTexture
+  - Handle: 5099379137124875398
+    Filepath: spritesheets/Minecraft/subtextures/27.lstex
+    Type: SubTexture
+  - Handle: 5152000005408895735
+    Filepath: spritesheets/Minecraft/subtextures/134.lstex
+    Type: SubTexture
+  - Handle: 5200652170734244635
+    Filepath: spritesheets/Minecraft/subtextures/255.lstex
+    Type: SubTexture
+  - Handle: 5413665587428039603
+    Filepath: spritesheets/Minecraft/subtextures/227.lstex
+    Type: SubTexture
+  - Handle: 5420945863056708588
+    Filepath: spritesheets/Minecraft/subtextures/205.lstex
+    Type: SubTexture
+  - Handle: 5552903226655243439
+    Filepath: spritesheets/Minecraft/subtextures/140.lstex
+    Type: SubTexture
+  - Handle: 5676254284571020682
+    Filepath: spritesheets/Minecraft/subtextures/45.lstex
+    Type: SubTexture
+  - Handle: 5729296348498846010
+    Filepath: spritesheets/Minecraft/subtextures/241.lstex
+    Type: SubTexture
+  - Handle: 5776336954930913368
+    Filepath: spritesheets/Minecraft/subtextures/132.lstex
+    Type: SubTexture
+  - Handle: 5798956490936472590
+    Filepath: spritesheets/Minecraft/subtextures/99.lstex
+    Type: SubTexture
+  - Handle: 5814310491370245355
+    Filepath: tilemaps/SandboxMap.lmap
+    Type: Tilemap
+  - Handle: 5943531429193971840
+    Filepath: spritesheets/Minecraft/subtextures/133.lstex
+    Type: SubTexture
+  - Handle: 6005869881862288482
+    Filepath: spritesheets/Minecraft/subtextures/6.lstex
+    Type: SubTexture
+  - Handle: 6124909995019330875
+    Filepath: spritesheets/Minecraft/subtextures/202.lstex
+    Type: SubTexture
+  - Handle: 6289708013154077870
+    Filepath: spritesheets/Minecraft/subtextures/84.lstex
+    Type: SubTexture
+  - Handle: 6354905067468320204
+    Filepath: spritesheets/Minecraft/subtextures/25.lstex
+    Type: SubTexture
+  - Handle: 6375033278359098522
+    Filepath: spritesheets/Minecraft/subtextures/90.lstex
+    Type: SubTexture
+  - Handle: 6394060618669659216
+    Filepath: spritesheets/Minecraft/subtextures/107.lstex
+    Type: SubTexture
+  - Handle: 6429411604590845460
+    Filepath: spritesheets/Minecraft/subtextures/223.lstex
+    Type: SubTexture
+  - Handle: 6443511993823184422
+    Filepath: spritesheets/Minecraft/subtextures/186.lstex
+    Type: SubTexture
+  - Handle: 6476889874436897879
+    Filepath: spritesheets/Minecraft/subtextures/115.lstex
+    Type: SubTexture
+  - Handle: 6494681683619078035
+    Filepath: spritesheets/Player/subtextures/263.lstex
+    Type: SubTexture
+  - Handle: 6617274863804269643
+    Filepath: spritesheets/Minecraft/subtextures/89.lstex
+    Type: SubTexture
+  - Handle: 6684835825988116150
+    Filepath: spritesheets/Player/subtextures/256.lstex
+    Type: SubTexture
+  - Handle: 6704900250776945794
+    Filepath: spritesheets/Minecraft/subtextures/95.lstex
+    Type: SubTexture
+  - Handle: 6713241446480080492
+    Filepath: spritesheets/Minecraft/subtextures/97.lstex
+    Type: SubTexture
+  - Handle: 6722630667922320495
+    Filepath: spritesheets/Minecraft/subtextures/127.lstex
+    Type: SubTexture
+  - Handle: 6881910547788702100
+    Filepath: spritesheets/Minecraft/subtextures/153.lstex
+    Type: SubTexture
+  - Handle: 6989438386062424004
+    Filepath: spritesheets/Minecraft/subtextures/1.lstex
+    Type: SubTexture
+  - Handle: 7211542601428655338
+    Filepath: spritesheets/Minecraft/subtextures/7.lstex
+    Type: SubTexture
+  - Handle: 7221851282300552833
+    Filepath: spritesheets/Minecraft/subtextures/120.lstex
+    Type: SubTexture
+  - Handle: 7412862283875279444
+    Filepath: spritesheets/Minecraft/subtextures/47.lstex
+    Type: SubTexture
+  - Handle: 7517809301532396566
+    Filepath: spritesheets/Minecraft/subtextures/154.lstex
+    Type: SubTexture
+  - Handle: 7611896131423869301
+    Filepath: spritesheets/Minecraft/subtextures/167.lstex
+    Type: SubTexture
+  - Handle: 7624193876032766839
+    Filepath: spritesheets/Minecraft/subtextures/175.lstex
+    Type: SubTexture
+  - Handle: 7733251480722810737
+    Filepath: spritesheets/Minecraft/subtextures/63.lstex
+    Type: SubTexture
+  - Handle: 7829042667983920088
+    Filepath: spritesheets/Player/subtextures/261.lstex
+    Type: SubTexture
+  - Handle: 7912471677560475241
+    Filepath: tilemaps/level1/[A]Flower_pipo.png
+    Type: Texture
+  - Handle: 7957432982660621874
+    Filepath: spritesheets/Minecraft/subtextures/185.lstex
+    Type: SubTexture
+  - Handle: 8025616196165250223
+    Filepath: spritesheets/Minecraft/subtextures/22.lstex
+    Type: SubTexture
+  - Handle: 8082812234427364451
+    Filepath: spritesheets/Minecraft/subtextures/161.lstex
+    Type: SubTexture
+  - Handle: 8103822365934556828
+    Filepath: spritesheets/Minecraft/subtextures/59.lstex
+    Type: SubTexture
+  - Handle: 8147213134069129504
+    Filepath: spritesheets/Minecraft/subtextures/188.lstex
+    Type: SubTexture
+  - Handle: 8284330473873505410
+    Filepath: spritesheets/Minecraft/subtextures/179.lstex
+    Type: SubTexture
+  - Handle: 8291047167976579733
+    Filepath: spritesheets/Minecraft/subtextures/128.lstex
+    Type: SubTexture
+  - Handle: 8348688831600741775
+    Filepath: spritesheets/Minecraft/subtextures/236.lstex
+    Type: SubTexture
+  - Handle: 8435964273425931239
+    Filepath: spritesheets/Minecraft/subtextures/49.lstex
+    Type: SubTexture
+  - Handle: 8438047640208205215
+    Filepath: spritesheets/Minecraft/subtextures/177.lstex
+    Type: SubTexture
+  - Handle: 8463116952010216416
+    Filepath: spritesheets/Minecraft/subtextures/176.lstex
+    Type: SubTexture
+  - Handle: 8537794295016467343
+    Filepath: spritesheets/Minecraft/subtextures/33.lstex
+    Type: SubTexture
+  - Handle: 8587222724537226210
+    Filepath: spritesheets/Minecraft/subtextures/23.lstex
+    Type: SubTexture
+  - Handle: 8599456624208927011
+    Filepath: spritesheets/Minecraft/subtextures/201.lstex
+    Type: SubTexture
+  - Handle: 8647818272223553073
+    Filepath: spritesheets/Minecraft/subtextures/83.lstex
+    Type: SubTexture
+  - Handle: 8659956244602992251
+    Filepath: spritesheets/Minecraft/subtextures/32.lstex
+    Type: SubTexture
+  - Handle: 8739307036694659598
+    Filepath: spritesheets/Minecraft/subtextures/216.lstex
+    Type: SubTexture
+  - Handle: 8765345026648605048
+    Filepath: spritesheets/Minecraft/subtextures/248.lstex
+    Type: SubTexture
+  - Handle: 8815349450355077296
+    Filepath: spritesheets/Minecraft/subtextures/237.lstex
+    Type: SubTexture
+  - Handle: 8827994086528264267
+    Filepath: spritesheets/Minecraft/subtextures/85.lstex
+    Type: SubTexture
+  - Handle: 8992238755326151892
+    Filepath: spritesheets/Minecraft/subtextures/0.lstex
+    Type: SubTexture
+  - Handle: 9154711062562777005
+    Filepath: spritesheets/Minecraft/subtextures/130.lstex
+    Type: SubTexture
+  - Handle: 9279592999941753937
+    Filepath: spritesheets/Minecraft/subtextures/118.lstex
+    Type: SubTexture
+  - Handle: 9337328246646815234
+    Filepath: spritesheets/Minecraft/subtextures/170.lstex
+    Type: SubTexture
+  - Handle: 9416231253167944895
+    Filepath: spritesheets/Minecraft/subtextures/8.lstex
+    Type: SubTexture
+  - Handle: 9421520421426738219
+    Filepath: spritesheets/Minecraft/subtextures/246.lstex
+    Type: SubTexture
+  - Handle: 9422241112820485562
+    Filepath: spritesheets/Minecraft/subtextures/3.lstex
+    Type: SubTexture
+  - Handle: 9492619748364081020
+    Filepath: spritesheets/Minecraft/subtextures/62.lstex
+    Type: SubTexture
+  - Handle: 9580678765730188378
+    Filepath: spritesheets/Minecraft/subtextures/79.lstex
+    Type: SubTexture
+  - Handle: 9702522706407581649
+    Filepath: spritesheets/Minecraft/subtextures/77.lstex
+    Type: SubTexture
+  - Handle: 9897943102110589407
+    Filepath: spritesheets/Minecraft/subtextures/9.lstex
+    Type: SubTexture
+  - Handle: 9900422443823824775
+    Filepath: spritesheets/Minecraft/subtextures/39.lstex
+    Type: SubTexture
+  - Handle: 9910221881738296232
+    Filepath: spritesheets/Minecraft/subtextures/206.lstex
+    Type: SubTexture
+  - Handle: 9923428788012425046
+    Filepath: spritesheets/Minecraft/subtextures/222.lstex
+    Type: SubTexture
+  - Handle: 10044162527788418367
+    Filepath: spritesheets/Minecraft/subtextures/196.lstex
+    Type: SubTexture
+  - Handle: 10168652935324518776
+    Filepath: spritesheets/Player/subtextures/267.lstex
+    Type: SubTexture
+  - Handle: 10190365142379367913
+    Filepath: spritesheets/Minecraft/subtextures/52.lstex
+    Type: SubTexture
+  - Handle: 10285133824329667337
+    Filepath: spritesheets/Minecraft/subtextures/158.lstex
+    Type: SubTexture
+  - Handle: 10328289111502078550
+    Filepath: spritesheets/Minecraft/subtextures/199.lstex
+    Type: SubTexture
+  - Handle: 10381217682731069497
+    Filepath: spritesheets/Minecraft/subtextures/168.lstex
+    Type: SubTexture
+  - Handle: 10474270651356093277
+    Filepath: spritesheets/Minecraft/subtextures/65.lstex
+    Type: SubTexture
+  - Handle: 10500425411055034814
+    Filepath: spritesheets/Minecraft/subtextures/102.lstex
+    Type: SubTexture
+  - Handle: 10511867585747982474
+    Filepath: spritesheets/Minecraft/subtextures/191.lstex
+    Type: SubTexture
+  - Handle: 10581931756287769619
+    Filepath: spritesheets/Minecraft/subtextures/109.lstex
+    Type: SubTexture
+  - Handle: 10703590515597679923
+    Filepath: spritesheets/Minecraft/subtextures/144.lstex
+    Type: SubTexture
+  - Handle: 10785523747024386678
+    Filepath: spritesheets/Minecraft/subtextures/30.lstex
+    Type: SubTexture
+  - Handle: 10808062959695194957
+    Filepath: spritesheets/Minecraft/subtextures/218.lstex
+    Type: SubTexture
+  - Handle: 10872358072272141843
+    Filepath: scenes/TilemapTest.lscene
+    Type: Scene
+  - Handle: 10929037795400873912
+    Filepath: spritesheets/Minecraft/subtextures/110.lstex
+    Type: SubTexture
+  - Handle: 10942428348589679368
+    Filepath: spritesheets/Minecraft/subtextures/183.lstex
+    Type: SubTexture
+  - Handle: 11228767493928848459
+    Filepath: spritesheets/Player/subtextures/264.lstex
+    Type: SubTexture
+  - Handle: 11346036957091614597
+    Filepath: spritesheets/Minecraft/subtextures/209.lstex
+    Type: SubTexture
+  - Handle: 11488550449872617588
+    Filepath: spritesheets/Minecraft/subtextures/86.lstex
+    Type: SubTexture
+  - Handle: 11505126738201441836
+    Filepath: spritesheets/Player/subtextures/260.lstex
+    Type: SubTexture
+  - Handle: 11633046461192484065
+    Filepath: spritesheets/Minecraft/subtextures/139.lstex
+    Type: SubTexture
+  - Handle: 11647416685794305877
+    Filepath: spritesheets/Minecraft/subtextures/116.lstex
+    Type: SubTexture
+  - Handle: 11776616338427352533
+    Filepath: spritesheets/Minecraft/subtextures/166.lstex
+    Type: SubTexture
+  - Handle: 11791411422744238849
+    Filepath: spritesheets/Minecraft/subtextures/88.lstex
+    Type: SubTexture
+  - Handle: 11936936435433717130
+    Filepath: spritesheets/Minecraft/subtextures/20.lstex
+    Type: SubTexture
+  - Handle: 12005644136781655644
+    Filepath: tilemaps/level1/[A]WaterFall_pipo.png
+    Type: Texture
+  - Handle: 12089400917310439465
+    Filepath: spritesheets/Minecraft/subtextures/68.lstex
+    Type: SubTexture
+  - Handle: 12184638753537303307
+    Filepath: spritesheets/Minecraft/subtextures/28.lstex
+    Type: SubTexture
+  - Handle: 12185267999335297231
+    Filepath: spritesheets/Minecraft/subtextures/13.lstex
+    Type: SubTexture
+  - Handle: 12481259871881869381
+    Filepath: spritesheets/Minecraft/subtextures/81.lstex
+    Type: SubTexture
+  - Handle: 12496964468579055408
+    Filepath: spritesheets/Minecraft/subtextures/122.lstex
+    Type: SubTexture
+  - Handle: 12630834830920679046
+    Filepath: spritesheets/Minecraft/subtextures/93.lstex
+    Type: SubTexture
+  - Handle: 12678773977548523966
+    Filepath: spritesheets/Minecraft/subtextures/43.lstex
+    Type: SubTexture
+  - Handle: 12760709270210060798
+    Filepath: spritesheets/Minecraft/subtextures/180.lstex
+    Type: SubTexture
+  - Handle: 12768966817011236924
+    Filepath: spritesheets/Minecraft/subtextures/17.lstex
+    Type: SubTexture
+  - Handle: 13002232005813214039
+    Filepath: spritesheets/Minecraft/subtextures/231.lstex
+    Type: SubTexture
+  - Handle: 13017458390400164535
+    Filepath: spritesheets/Minecraft/subtextures/76.lstex
+    Type: SubTexture
+  - Handle: 13044420705208052151
+    Filepath: spritesheets/Minecraft/subtextures/82.lstex
+    Type: SubTexture
+  - Handle: 13063258893400377239
+    Filepath: spritesheets/Minecraft/subtextures/4.lstex
+    Type: SubTexture
+  - Handle: 13091981414330063567
+    Filepath: spritesheets/Minecraft/subtextures/11.lstex
+    Type: SubTexture
+  - Handle: 13092714367338065057
+    Filepath: spritesheets/Minecraft/subtextures/195.lstex
+    Type: SubTexture
+  - Handle: 13170922456131878509
+    Filepath: spritesheets/Minecraft/subtextures/129.lstex
+    Type: SubTexture
+  - Handle: 13172446914437167838
+    Filepath: spritesheets/Minecraft/subtextures/48.lstex
+    Type: SubTexture
+  - Handle: 13214509739466760025
+    Filepath: spritesheets/Minecraft/subtextures/58.lstex
+    Type: SubTexture
+  - Handle: 13269432864926502588
+    Filepath: spritesheets/Minecraft/subtextures/234.lstex
+    Type: SubTexture
+  - Handle: 13341511300078371502
+    Filepath: spritesheets/Minecraft/subtextures/38.lstex
+    Type: SubTexture
+  - Handle: 13399781116034791759
+    Filepath: spritesheets/Minecraft/subtextures/252.lstex
+    Type: SubTexture
+  - Handle: 13418526834331512970
+    Filepath: spritesheets/Minecraft/subtextures/21.lstex
+    Type: SubTexture
+  - Handle: 13512323305082328882
+    Filepath: spritesheets/Minecraft/subtextures/42.lstex
+    Type: SubTexture
+  - Handle: 13564040183453007777
+    Filepath: spritesheets/Minecraft/subtextures/64.lstex
+    Type: SubTexture
+  - Handle: 13640238266213222360
+    Filepath: spritesheets/Minecraft/subtextures/245.lstex
+    Type: SubTexture
+  - Handle: 13694875820162999295
+    Filepath: spritesheets/Minecraft/subtextures/198.lstex
+    Type: SubTexture
+  - Handle: 13724679666193158789
+    Filepath: spritesheets/Minecraft/subtextures/31.lstex
+    Type: SubTexture
+  - Handle: 13805311700244472817
+    Filepath: spritesheets/Minecraft/subtextures/239.lstex
+    Type: SubTexture
+  - Handle: 14031803719523931499
+    Filepath: spritesheets/Minecraft/subtextures/242.lstex
+    Type: SubTexture
+  - Handle: 14144264504696718857
+    Filepath: spritesheets/Minecraft/subtextures/50.lstex
+    Type: SubTexture
+  - Handle: 14148266441294958288
+    Filepath: spritesheets/Minecraft/subtextures/61.lstex
+    Type: SubTexture
+  - Handle: 14245915526276713545
+    Filepath: spritesheets/Minecraft/subtextures/135.lstex
+    Type: SubTexture
+  - Handle: 14307756406305320041
+    Filepath: spritesheets/Minecraft/subtextures/108.lstex
+    Type: SubTexture
+  - Handle: 14313898687311657572
+    Filepath: spritesheets/Minecraft/subtextures/131.lstex
+    Type: SubTexture
+  - Handle: 14325488283993804574
+    Filepath: spritesheets/Minecraft/subtextures/94.lstex
+    Type: SubTexture
+  - Handle: 14763162256456940921
+    Filepath: spritesheets/Minecraft/subtextures/212.lstex
+    Type: SubTexture
+  - Handle: 14808737762818762519
+    Filepath: spritesheets/Minecraft/subtextures/10.lstex
+    Type: SubTexture
+  - Handle: 14859388416263470504
+    Filepath: tilemaps/level1/[A]Grass_pipo.png
+    Type: Texture
+  - Handle: 14860355251179684312
+    Filepath: spritesheets/Minecraft/subtextures/219.lstex
+    Type: SubTexture
+  - Handle: 14886663462239324788
+    Filepath: spritesheets/Player/subtextures/266.lstex
+    Type: SubTexture
+  - Handle: 14958546345833537635
+    Filepath: spritesheets/Minecraft/subtextures/243.lstex
+    Type: SubTexture
+  - Handle: 14966965434164883613
+    Filepath: spritesheets/Minecraft/subtextures/155.lstex
+    Type: SubTexture
+  - Handle: 15043537339955302631
+    Filepath: tilemaps/level1/[A]Water_pipo.png
+    Type: Texture
+  - Handle: 15056836754341235615
+    Filepath: spritesheets/Minecraft/subtextures/249.lstex
+    Type: SubTexture
+  - Handle: 15087648032014590288
+    Filepath: spritesheets/Minecraft/subtextures/75.lstex
+    Type: SubTexture
+  - Handle: 15112405250377140102
+    Filepath: spritesheets/Minecraft/subtextures/16.lstex
+    Type: SubTexture
+  - Handle: 15197745091001728185
+    Filepath: spritesheets/Minecraft/subtextures/114.lstex
+    Type: SubTexture
+  - Handle: 15210629656972627503
+    Filepath: spritesheets/Minecraft/subtextures/137.lstex
+    Type: SubTexture
+  - Handle: 15222760091299595897
+    Filepath: spritesheets/Minecraft/subtextures/226.lstex
+    Type: SubTexture
+  - Handle: 15252549412512491511
+    Filepath: spritesheets/Minecraft/subtextures/184.lstex
+    Type: SubTexture
+  - Handle: 15311963429440387342
+    Filepath: spritesheets/Minecraft/subtextures/172.lstex
+    Type: SubTexture
+  - Handle: 15337977323838978960
+    Filepath: spritesheets/Minecraft/subtextures/215.lstex
+    Type: SubTexture
+  - Handle: 15343467129840347236
+    Filepath: spritesheets/Minecraft/subtextures/253.lstex
+    Type: SubTexture
+  - Handle: 15400714570881933102
+    Filepath: spritesheets/Minecraft/subtextures/254.lstex
+    Type: SubTexture
+  - Handle: 15421619799728160184
+    Filepath: spritesheets/Minecraft/subtextures/55.lstex
+    Type: SubTexture
+  - Handle: 15469734843265505714
+    Filepath: spritesheets/Minecraft/subtextures/101.lstex
+    Type: SubTexture
+  - Handle: 15532697190332736748
+    Filepath: spritesheets/Minecraft/subtextures/71.lstex
+    Type: SubTexture
+  - Handle: 15677741577331953753
+    Filepath: spritesheets/Minecraft/subtextures/29.lstex
+    Type: SubTexture
+  - Handle: 15702744723093495518
+    Filepath: spritesheets/Minecraft/subtextures/111.lstex
+    Type: SubTexture
+  - Handle: 15788599173068461629
+    Filepath: spritesheets/Minecraft/subtextures/229.lstex
+    Type: SubTexture
+  - Handle: 15887707945920234035
+    Filepath: spritesheets/Minecraft/subtextures/214.lstex
+    Type: SubTexture
+  - Handle: 15959574194193660842
+    Filepath: spritesheets/Minecraft/subtextures/157.lstex
+    Type: SubTexture
+  - Handle: 16016563262011592865
+    Filepath: spritesheets/Minecraft/subtextures/67.lstex
+    Type: SubTexture
+  - Handle: 16056135164529292041
+    Filepath: spritesheets/Minecraft/subtextures/178.lstex
+    Type: SubTexture
+  - Handle: 16065026686123376764
+    Filepath: spritesheets/Minecraft/subtextures/14.lstex
+    Type: SubTexture
+  - Handle: 16132462002391410488
+    Filepath: spritesheets/Minecraft/subtextures/73.lstex
+    Type: SubTexture
+  - Handle: 16272707971218618085
+    Filepath: spritesheets/Minecraft/subtextures/15.lstex
+    Type: SubTexture
+  - Handle: 16292727492513551952
+    Filepath: spritesheets/Minecraft/subtextures/113.lstex
+    Type: SubTexture
+  - Handle: 16344933718179733779
+    Filepath: spritesheets/Minecraft/subtextures/238.lstex
+    Type: SubTexture
+  - Handle: 16391541782966283288
+    Filepath: spritesheets/Minecraft/subtextures/156.lstex
+    Type: SubTexture
+  - Handle: 16445290221350004813
+    Filepath: spritesheets/Minecraft/subtextures/141.lstex
+    Type: SubTexture
+  - Handle: 16515652735103995313
+    Filepath: spritesheets/Minecraft/subtextures/18.lstex
+    Type: SubTexture
+  - Handle: 16521800783822298453
+    Filepath: spritesheets/Minecraft/subtextures/194.lstex
+    Type: SubTexture
+  - Handle: 16624549920181510315
+    Filepath: spritesheets/Player/subtextures/265.lstex
+    Type: SubTexture
+  - Handle: 16757553740978204881
+    Filepath: spritesheets/Minecraft/subtextures/143.lstex
+    Type: SubTexture
+  - Handle: 16780235351779865972
+    Filepath: spritesheets/Minecraft/subtextures/126.lstex
+    Type: SubTexture
+  - Handle: 16805148578892142898
+    Filepath: spritesheets/Player/subtextures/257.lstex
+    Type: SubTexture
+  - Handle: 17236788433554663814
+    Filepath: spritesheets/Minecraft/subtextures/40.lstex
+    Type: SubTexture
+  - Handle: 17299549964918751736
+    Filepath: spritesheets/Minecraft/subtextures/228.lstex
+    Type: SubTexture
+  - Handle: 17352860528473130453
+    Filepath: spritesheets/Minecraft/subtextures/124.lstex
+    Type: SubTexture
+  - Handle: 17358246351642631445
+    Filepath: spritesheets/Minecraft/subtextures/150.lstex
+    Type: SubTexture
+  - Handle: 17361234648027563571
+    Filepath: spritesheets/Minecraft/subtextures/36.lstex
+    Type: SubTexture
+  - Handle: 17544075221890954733
+    Filepath: spritesheets/Minecraft/subtextures/208.lstex
+    Type: SubTexture
+  - Handle: 17558442966982254022
+    Filepath: spritesheets/Minecraft/subtextures/112.lstex
+    Type: SubTexture
+  - Handle: 17610823037361343422
+    Filepath: spritesheets/Minecraft/subtextures/200.lstex
+    Type: SubTexture
+  - Handle: 17619615915722726192
+    Filepath: spritesheets/Minecraft/subtextures/138.lstex
+    Type: SubTexture
+  - Handle: 17699176284978736583
+    Filepath: spritesheets/Minecraft/subtextures/119.lstex
+    Type: SubTexture
+  - Handle: 17862951066634561743
+    Filepath: spritesheets/Minecraft/subtextures/24.lstex
+    Type: SubTexture
+  - Handle: 17994810891262433583
+    Filepath: spritesheets/Minecraft/subtextures/235.lstex
+    Type: SubTexture
+  - Handle: 18015622293178670898
+    Filepath: spritesheets/Minecraft/subtextures/12.lstex
+    Type: SubTexture
+  - Handle: 18027598736737763289
+    Filepath: spritesheets/Minecraft/subtextures/146.lstex
+    Type: SubTexture
+  - Handle: 18083398044287762041
+    Filepath: spritesheets/Minecraft/subtextures/152.lstex
+    Type: SubTexture
+  - Handle: 18095245320943201585
+    Filepath: spritesheets/Minecraft/subtextures/74.lstex
+    Type: SubTexture
+  - Handle: 18144650126005445357
+    Filepath: spritesheets/Minecraft/subtextures/163.lstex
+    Type: SubTexture
+  - Handle: 18158261090454071347
+    Filepath: spritesheets/Minecraft/subtextures/160.lstex
+    Type: SubTexture
+  - Handle: 18228535778690408276
+    Filepath: spritesheets/Player/subtextures/259.lstex
+    Type: SubTexture
+  - Handle: 18286223478632074385
+    Filepath: spritesheets/Minecraft/subtextures/87.lstex
+    Type: SubTexture
+  - Handle: 18297589334825789130
+    Filepath: textures/minecraft.png
+    Type: Texture
+  - Handle: 18339128006528602882
+    Filepath: spritesheets/Minecraft/subtextures/106.lstex
+    Type: SubTexture
+  - Handle: 18361871833829722385
+    Filepath: spritesheets/Minecraft/subtextures/56.lstex
+    Type: SubTexture

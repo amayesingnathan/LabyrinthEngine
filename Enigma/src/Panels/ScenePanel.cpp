@@ -3,7 +3,7 @@
 #include "SpriteSheetData.h"
 #include "../EditorLayer.h"
 #include "../Modals/BodySpecModal.h"
-#include "../Modals/MapSpecModal.h"
+#include "../Modals/NewMapModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
@@ -46,7 +46,7 @@ namespace Labyrinth {
 		mEditorData = &options;
 	}
 
-	void ScenePanel::onUpdate()
+	void ScenePanel::onUpdate(Timestep ts)
 	{
 		if (!mSelectedEntity || !mSelectedEntity.hasComponent<SpriteRendererComponent>()) return;
 
@@ -153,6 +153,9 @@ namespace Labyrinth {
 
 	void ScenePanel::onSelectionChange()
 	{
+		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+			mPreviousEntity = mSelectedEntity;
+
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = mContext->findEntity(selections.size() != 0 ? selections[0] : 0);
 	}
@@ -283,6 +286,25 @@ namespace Labyrinth {
 
 	void ScenePanel::DrawComponents()
 	{
+		if (ImGui::Button("<--") && mPreviousEntity)
+		{
+			Entity holdPrevious = mPreviousEntity;
+			Entity holdSelected = mSelectedEntity;
+
+			SelectionManager::DeselectAll(SelectionDomain::Scene);
+			SelectionManager::Select(SelectionDomain::Scene, holdPrevious.getUUID());
+			mPreviousEntity = holdSelected;
+		}
+
+		ImGui::SameLine(ImGui::GetWindowWidth() - 72);
+
+		if (ImGui::Button("Destroy"))
+		{
+			mSelectedEntity.destroy();
+			SelectionManager::DeselectAll(SelectionDomain::Scene);
+			return;
+		}
+
 		if (mSelectedEntity.hasComponent<TagComponent>())
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
@@ -306,14 +328,10 @@ namespace Labyrinth {
 			DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
 			DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
 			DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
+			DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
 			DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 			DrawAddComponentEntry<ScriptComponent>("Script");
-
-			if (!mSelectedEntity.hasComponent<TilemapComponent>())
-			{
-				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<MapSpecModal>("MapSpecModal", ModalButtons::OKCancel, mSelectedEntity);
-			}
+			DrawAddComponentEntry<TilemapControllerComponent>("Tilemap Controller");
 
 			ImGui::EndPopup();
 		}
@@ -326,7 +344,8 @@ namespace Labyrinth {
 			std::unordered_map<std::string, Entity> possibleParents;
 
 			// Create map of possible 
-			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) {
+			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) 
+			{
 				if (mSelectedEntity != entityID)
 				{
 					possibleParents.emplace(tc.tag + "    (ID = " + idc.id.to_string() + ")", Entity{entityID, mContext});
@@ -334,9 +353,9 @@ namespace Labyrinth {
 			});
 
 			std::string currentParentString = "None";
-			Entity parent(mSelectedEntity.getParent(), mContext);
+			Entity parent = mSelectedEntity.getParent();
 			if (parent)
-				currentParentString = parent.getComponent<TagComponent>().tag + "    (ID =" + parent.getUUID().to_string() + ")";
+				currentParentString = fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID());
 
 			if (ImGui::BeginCombo("Parent", currentParentString.c_str()))
 			{
@@ -454,10 +473,7 @@ namespace Labyrinth {
 				if (layerVal > component.MaxLayers) layerVal = component.MaxLayers;
 
 				if (layerVal != component.layer)
-				{
 					component.layer = layerVal;
-					mSelectedEntity.getComponent<TransformComponent>().translation.z = component.getNLayer();
-				}
 			}
 
 			ImGui::ColorEdit4("Colour", glm::value_ptr(component.colour));
@@ -580,12 +596,16 @@ namespace Labyrinth {
 			}
 
 			ImGui::Checkbox("Fixed Rotation", &component.fixedRotation);
+			ImGui::DragFloat("Mass", &component.mass, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Linear Drag", &component.linearDrag, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Angular Drag", &component.angularDrag, 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat("Gravity Scale", &component.gravityScale, 0.01f, 0.0f, 100.0f);
 		});
 
 		DrawComponent<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
 		{
 			ImGui::DragFloat2("Half Extents", glm::value_ptr(component.halfExtents), 0.01f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, -25.0f, 25.0f);
 			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
@@ -595,7 +615,7 @@ namespace Labyrinth {
 		DrawComponent<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
 		{
 			ImGui::DragFloat("Radius", &component.radius, 0.01f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, -25.0f, 25.0f);
 			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
@@ -635,14 +655,48 @@ namespace Labyrinth {
 			}
 		});
 
-		DrawComponent<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&, this](auto& component)
 		{
-			auto viewportPanelWidth = ImGui::GetContentRegionAvail();
-			ImGui::Text("Texture");
-			Ref<Texture> tilemapTex = component.tilemap->getTex() ? component.tilemap->getTex() : EditorResources::NoTexture;
-			ImGui::Image((ImTextureID)(intptr_t)tilemapTex->getRendererID(), {viewportPanelWidth.x - 15.0f, 100.0f}, {0, 1}, {1, 0});
-		});
+			ImVec2 cursorPos = ImGui::GetCursorPos();
+			auto imageSize = ImGui::GetContentRegionAvail();
+			imageSize = { imageSize.x - 15.0f, 150.0f };
 
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.tilemapHandle);
+			ImTextureID tex = (ImTextureID)(intptr_t)(tilemap ? tilemap->getTex()->getColourAttachmentRendererID() : EditorResources::NoTexture->getRendererID());
+			ImGui::Image(tex, imageSize, { 0, 1 }, { 1, 0 });
+
+			if (ImGui::BeginDragDropTarget())
+			{
+				if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("TILEMAP_ITEM"))
+				{
+					AssetHandle tilemapHandle = *(AssetHandle*)payload->Data;
+					component.tilemapHandle = tilemapHandle;
+					mContext->reloadMaps();
+				}
+				ImGui::EndDragDropTarget();
+			}
+
+			if (!tilemap)
+				return;
+
+			ImGui::SetCursorPos(cursorPos);
+			ImGui::PushStyleColor(ImGuiCol_ButtonHovered, EditorResources::HoveredColour);
+			EditorUI::GridControl(imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, &component](const TilePos& pos, const ImVec2& elementSize)
+			{
+				std::string name = fmt::format("##SelectTile({}, {})", pos.x, pos.y);
+
+				bool active = component.tileBehaviour.count(pos) != 0;
+				ImVec4 buttonColour = active ? EditorResources::HighlightedColour : EditorResources::ClearColour;
+				ImGui::PushStyleColor(ImGuiCol_Button, buttonColour);
+				if (ImGui::Button(name.c_str(), elementSize) && active)
+				{
+					SelectionManager::DeselectAll(SelectionDomain::Scene);
+					SelectionManager::Select(SelectionDomain::Scene, component.tileBehaviour[pos]);
+				}
+				ImGui::PopStyleColor();
+			});
+			ImGui::PopStyleColor();
+		});
 	}
 
 	void ScenePanel::DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags)

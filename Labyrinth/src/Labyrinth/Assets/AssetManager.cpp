@@ -29,6 +29,7 @@ namespace Labyrinth {
 		sMemoryAssets.clear();
 		sAssetRegistry.clear();
 		sLoadedAssets.clear();
+		sAssetTypeMap.clear();
 
 		AssetImporter::Shutdown();
 	}
@@ -45,6 +46,11 @@ namespace Labyrinth {
 	AssetType AssetManager::GetAssetTypeFromPath(const fs::path& path)
 	{
 		return GetAssetTypeFromExtension(path.extension().string());
+	}
+
+	AssetType AssetManager::GetAssetTypeFromHandle(AssetHandle handle)
+	{
+		return GetAssetTypeFromPath(GetMetadata(handle).filepath);
 	}
 
 	bool AssetManager::IsExtensionValid(const std::string& extension, AssetType type)
@@ -99,6 +105,31 @@ namespace Labyrinth {
 		return metadata.dataLoaded;
 	}
 
+	void AssetManager::DestroyAsset(AssetHandle assetHandle)
+	{
+		auto& metadata = GetMetadataInternal(assetHandle);
+		if (!metadata.valid())
+		{
+			LAB_CORE_ERROR("Trying to destroy invalid asset");
+			return;
+		}
+
+		LAB_CORE_ASSERT(sAssetRegistry.contains(assetHandle) != 0);
+
+		FileUtils::Remove(GetFileSystemPath(GetMetadata(assetHandle)));
+
+		auto& handles = sAssetTypeMap[GetAssetTypeFromHandle(assetHandle)];
+		handles.erase(std::remove(handles.begin(), handles.end(), assetHandle), handles.end());
+
+		if (sLoadedAssets.count(assetHandle) != 0)
+			sLoadedAssets.erase(assetHandle);
+
+		if (sMemoryAssets.count(assetHandle) != 0)
+			sMemoryAssets.erase(assetHandle);
+
+		sAssetRegistry.remove(assetHandle);
+	}
+
 	void AssetManager::LoadRegistry()
 	{
 		if (!fs::exists(sAssetRegPath))
@@ -139,6 +170,7 @@ namespace Labyrinth {
 			}
 
 			sAssetRegistry[metadata.handle] = metadata;
+			sAssetTypeMap[GetAssetTypeFromPath(filepath)].emplace_back(metadata.handle);
 		}
 	}
 

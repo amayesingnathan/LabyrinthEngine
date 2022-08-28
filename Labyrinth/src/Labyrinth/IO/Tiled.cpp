@@ -1,7 +1,6 @@
 #include "Lpch.h"
 #include "Tiled.h"
 
-
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/Tilemap/Tilemap.h"
 
@@ -9,6 +8,8 @@
 #include "rapidxml_utils.hpp"
 
 namespace Labyrinth {
+
+    static std::string sLevelName;
 
     static const std::unordered_map<std::string, TiledIO::Attribute> AttributeTable =
     {
@@ -18,9 +19,10 @@ namespace Labyrinth {
         {"height", TiledIO::Attribute::Height}
     };
 
-	void TiledIO::Open(const std::filesystem::path& path, std::vector<MapLayer>& layers, std::vector<SheetData>& sheets)
+	void TiledIO::Open(const std::filesystem::path& path, std::vector<TexMapLayer>& layers, std::vector<SheetData>& sheets)
 	{
         std::filesystem::path lvlName = path.stem();
+        sLevelName = lvlName.string();
         std::filesystem::path lvlLoc = path / lvlName;
         lvlLoc += ".tmx";
 
@@ -36,7 +38,7 @@ namespace Labyrinth {
         delete doc;
 	}
 
-    void TiledIO::GetLayers(rapidxml::xml_node<>* mapNode, std::vector<MapLayer>& layers)
+    void TiledIO::GetLayers(rapidxml::xml_node<>* mapNode, std::vector<TexMapLayer>& layers)
     {
         {
             i32 layerCount = 0;
@@ -48,15 +50,16 @@ namespace Labyrinth {
 
         rapidxml::xml_node<>* layerMetaData = GetChild(mapNode, "layer");
 
-        usize width = Cast<usize>(std::stoi(layerMetaData->first_attribute("width")->value()));
-        usize height = Cast<usize>(std::stoi(layerMetaData->first_attribute("height")->value()));
+        i32 width = Cast<i32>(std::stoi(layerMetaData->first_attribute("width")->value()));
+        i32 height = Cast<i32>(std::stoi(layerMetaData->first_attribute("height")->value()));
 
         std::string mapLine;
         std::string mapElement;
 
+        usize index = 0;
         for (rapidxml::xml_node<>* layer = GetChild(mapNode, "layer"); layer; layer = layer->next_sibling())
         {
-            MapLayer currLayer(width, height);
+            TexMapLayer currLayer(index, width, height);
             rapidxml::xml_node<>* layerData = GetChild(layer, "data");
             std::istringstream mapStream(layerData->value());
 
@@ -69,10 +72,11 @@ namespace Labyrinth {
                 while (std::getline(lineStream, mapElement, ','))
                 {
                     if (mapElement != "\r" && mapElement != "\n")
-                        currLayer.add(Cast<usize>(std::stoi(mapElement)));
+                        currLayer.add(Cast<i32>(std::stoi(mapElement)));
                 }
             }
             layers.emplace_back(std::move(currLayer));
+            index++;
         }
     }
 
@@ -80,7 +84,7 @@ namespace Labyrinth {
     {
         for (rapidxml::xml_node<>* tileset = GetChild(mapNode, "tileset"); std::string(tileset->name()) == "tileset"; tileset = tileset->next_sibling())
         {
-            usize firstGridID = Cast<usize>(std::stoll(tileset->first_attribute("firstgid")->value()));
+            i32 firstGridID = Cast<i32>(std::stoll(tileset->first_attribute("firstgid")->value()));
 
             //Some tilesets are included inline in file, some stored externally. 
             if (rapidxml::xml_attribute<>* source = tileset->first_attribute("source"))
@@ -96,7 +100,7 @@ namespace Labyrinth {
         std::sort(setData.begin(), setData.end());
     }
 
-    void TiledIO::GetTileData(const std::filesystem::path& tileset, usize firstID, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(const std::filesystem::path& tileset, i32 firstID, std::vector<SheetData>& setData)
     {
         //Remove .tsx extension and replace with .png
         std::filesystem::path tilesetPng = tileset.parent_path();
@@ -113,23 +117,25 @@ namespace Labyrinth {
         usize tileHeight = Cast<usize>(std::stoi(root->first_attribute("tileheight")->value()));
 
         //Build data struct for this tileset 
-        Ref<Texture2DSheet> sheet = Texture2DSheet::Create(tilesetPng.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID));
+        Ref<Texture2DSheet> sheet = AssetManager::CreateNewAsset<Texture2DSheet>(fmt::format("{}.lss", firstID), fmt::format("spritesheets/{0}-{1}", sLevelName, firstID),
+                                                                                    tilesetPng.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID));
         sheet->generateTileset(firstID);
-        setData.emplace_back(firstID, sheet);
+        setData.emplace_back(firstID, sheet->handle);
 
         delete doc;
     }
 
-    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, usize firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
+    void TiledIO::GetTileData(rapidxml::xml_node<>* tilesetNode, i32 firstID, const std::filesystem::path& pngPath, std::vector<SheetData>& setData)
     {
         usize tileWidth = Cast<usize>(std::stoi(tilesetNode->first_attribute("tilewidth")->value()));
         usize tileHeight = Cast<usize>(std::stoi(tilesetNode->first_attribute("tileheight")->value()));
         std::filesystem::path tilesetPath = pngPath;
         tilesetPath /= std::filesystem::path(GetChild(tilesetNode, "image")->first_attribute("source")->value());
 
-        Ref<Texture2DSheet> sheet = Texture2DSheet::Create(tilesetPath.string(), glm::vec2{ tileWidth, tileHeight }, std::to_string(firstID));
+        Ref<Texture2DSheet> sheet = AssetManager::CreateNewAsset<Texture2DSheet>(fmt::format("{}.lss", firstID), fmt::format("spritesheets/{0}-{1}", sLevelName, firstID),
+                                                                                    tilesetPath.string(), glm::vec2{tileWidth, tileHeight}, std::to_string(firstID));
         sheet->generateTileset(firstID);
-        setData.emplace_back(firstID, sheet);
+        setData.emplace_back(firstID, sheet->handle);
     }
 
     rapidxml::xml_node<>* TiledIO::GetChild(rapidxml::xml_node<>* inputNode, std::string sNodeFilter)

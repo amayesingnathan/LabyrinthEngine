@@ -9,7 +9,7 @@
 
 namespace Labyrinth {
 
-	class LAB_API EditorCamera : public Camera
+	class EditorCamera : public Camera
 	{
 	public:
 		EditorCamera() = default;

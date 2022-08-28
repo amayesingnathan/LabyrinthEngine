@@ -93,8 +93,8 @@ void Sandbox2D::onImGuiRender()
 	ImGui::ColorEdit4("Square Color", glm::value_ptr(mSquareColor));
 	ImGui::ColorEdit4("Square Color 2", glm::value_ptr(mSquareColor2));
 
-	uint32_t textureID = mCheckerboardTexture->getRendererID();
-	ImGui::Image((ImTextureID)(uintptr_t)textureID, ImVec2{ 1280, 720 });
+	//uint32_t textureID = mCheckerboardTexture->getRendererID();
+	//ImGui::Image((ImTextureID)(uintptr_t)textureID, ImVec2{ 1280, 720 });
 
 	ImGui::End();
 }
