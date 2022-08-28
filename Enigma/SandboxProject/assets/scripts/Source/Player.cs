@@ -10,54 +10,42 @@ namespace Sandbox
 {
     public class Player : Entity
     {
-        public float JumpCD { get; set; }
+        public const float MaxSpeed = 1.5f;
         public override void OnCreate()
         {
             Log.Info($"Player.OnCreate {ID}");
-            JumpCD = 0.0f;
         }
 
         public override void OnUpdate(float ts)
         {
             //Log.Info($"Player.OnUpdate: {ts}");
 
-            bool jumping = false;
             Vector2 jump = Vector2.Zero;
             Vector2 move = Vector2.Zero;
             if (Input.IsKeyPressed(KeyCode.A))
             {
-                move.X = -10.0f;
+                move.X = -1.0f;
             }
             else if (Input.IsKeyPressed(KeyCode.D))
             {
-                move.X = 10.0f;
+                move.X = 1.0f;
             }
+
             if (Input.IsKeyPressed(KeyCode.W))
             {
-                jump.Y = 150.0f;
+                jump.Y = 5.0f;
             }
 
-            if (JumpCD > 0.0f)
-                JumpCD -= ts;
-
             RigidBodyComponent rigidBody = GetComponent<RigidBodyComponent>();
-            TransformComponent transform = GetComponent<TransformComponent>();
+            Vector2 vel = rigidBody.LinearVelocity;
 
-            if (transform.Translation.Y <= 0.01f)
-                jumping = false;
-            else
-                jumping = true;
-
-            if (!move.IsZero() && !jumping)
+            if (!move.IsZero() && Math.Abs(vel.X) <= MaxSpeed)
             {
                 move *= ts;
                 rigidBody.ApplyLinearImpulse(move, Vector2.Zero, true);
             }
-            if (JumpCD <= 0.0f && !jump.IsZero())
-            {
+            if (vel.Y <= 0.0f && vel.Y >= -0.1f && !jump.IsZero())
                 rigidBody.AddForce(jump, Vector2.Zero, true);
-                JumpCD = 1.0f;
-            }
         }
     }
 }
