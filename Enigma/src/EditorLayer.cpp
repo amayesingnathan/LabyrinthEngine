@@ -122,6 +122,7 @@ namespace Labyrinth {
 		Renderer2D::ResetStats();
 
 		PanelManager::Update(ts);
+		ModalManager::Update(ts);
 
 		mFramebuffer->bind();
 		RenderCommand::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });

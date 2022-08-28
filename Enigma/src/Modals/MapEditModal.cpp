@@ -8,6 +8,8 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/ImGui/ImGuiUtils.h>
 #include <Labyrinth/IO/Input.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Renderer/RenderCommand.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -37,6 +39,49 @@ namespace Labyrinth {
     MapEditModal::MapEditModal(const Ref<Tilemap>& map) : EditorModal(), mTilemap(Tilemap::Clone(map)), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
     {
         mTilemap->RegenTexture(mDisplayColliders);
+
+        FramebufferSpec fbSpec;
+        fbSpec.width = 256;
+        fbSpec.height = 256;
+        fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
+        fbSpec.samples = 1;
+
+        mCurrentSubTexFBO = Framebuffer::Create(fbSpec);
+        mHoveredSubTexFBO = Framebuffer::Create(fbSpec);
+    }
+
+    void MapEditModal::onUpdate(Timestep ts)
+    {
+        if (mCurrentSubTex)
+        {
+            // Draw texture/subtexture to framebuffer
+            mCurrentSubTexFBO->bind();
+
+            RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            RenderCommand::Clear();
+
+            OrthographicCamera camera(-128.0, 128.0, -128.0, 128.0);
+            Renderer2D::BeginState(camera);
+            Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 256.0f, 256.0f }, (f32)mCurrentTexTile.rotation, mCurrentSubTex);
+            Renderer2D::EndState();
+            mCurrentSubTexFBO->unbind();
+        }
+
+        Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile.id);
+        if (hoveredSubtex)
+        {
+            // Draw texture/subtexture to framebuffer
+            mHoveredSubTexFBO->bind();
+
+            RenderCommand::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
+            RenderCommand::Clear();
+
+            OrthographicCamera camera(-128.0, 128.0, -128.0, 128.0);
+            Renderer2D::BeginState(camera);
+            Renderer2D::DrawRotatedQuad({ 0.0f, 0.0f }, { 256.0f, 256.0f }, (f32)mHoveredTexTile.rotation, hoveredSubtex);
+            Renderer2D::EndState();
+            mHoveredSubTexFBO->unbind();
+        }
     }
 
     void MapEditModal::onImGuiRender()
@@ -156,20 +201,14 @@ namespace Labyrinth {
                 subtexImageSize.y *= 0.5f;
 
                 ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
-                ImVec2 min(0, 1), max(1, 0);
 
-                Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile);
+                Ref<SubTexture2D> hoveredSubtex = mTilemap->getTileTex(mHoveredTexTile.id);
                 if (hoveredSubtex && !mPainting)
-                {
-                    selectedSubTex = (ImTextureID)(uintptr_t)hoveredSubtex->getBaseTex()->getRendererID();
-                    glm::vec2* coords = hoveredSubtex->getTexCoords();
-                    max = ImVec2(coords[1].x, coords[1].y);
-                    min = ImVec2(coords[3].x, coords[3].y);
-                }
+                    selectedSubTex = (ImTextureID)(uintptr_t)mHoveredSubTexFBO->getColourAttachmentRendererID();
 
                 ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
                 ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
-                ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+                ImGui::Image(selectedSubTex, subtexImageSize, ImVec2(0, 1), ImVec2(1, 0));
 
                 ImGui::EndChild();
             }
@@ -178,14 +217,6 @@ namespace Labyrinth {
         }
 
         ImGui::SameLine();
-
-        auto& colours = ImGui::GetStyle().Colors;
-        const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
-        const auto& buttonActive = colours[ImGuiCol_ButtonActive];
-
-        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
-        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
-        ImGui::PushStyleColor(ImGuiCol_Button, { 0.0f, 0.0f, 0.0f, 0.0f });
 
         // Centre
         {
@@ -196,7 +227,7 @@ namespace Labyrinth {
 
         ImGui::SameLine();
 
-        // Centre
+        // Right
         {
             ImGui::BeginGroup();
             ImGui::BeginChild("Sheets", ImVec2(0, 200));
@@ -213,8 +244,6 @@ namespace Labyrinth {
 
             ImGui::EndGroup();
         }
-
-        ImGui::PopStyleColor(3);
     }
 
     void MapEditModal::onComplete()
@@ -232,7 +261,7 @@ namespace Labyrinth {
     void MapEditModal::DrawMap()
     {
         mHoveredMapTile = TilePos();
-        mHoveredTexTile = -1;
+        mHoveredTexTile = TileData();
 
         ImVec2 pos = ImGui::GetCursorPos();
         
@@ -252,22 +281,27 @@ namespace Labyrinth {
         if (ImGui::Checkbox("Colliders", &mDisplayColliders))
             mTilemap->RegenTexture(mDisplayColliders);
 
-        ImGui::SetCursorPos(pos);
-        ImGuiButtonFlags flags = (mEditMode == EditMode::Behaviour) ? ImGuiButtonFlags_PressedOnClick : ImGuiButtonFlags_None;
+        auto& colours = ImGui::GetStyle().Colors;
+        const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+        const auto& buttonActive = colours[ImGuiCol_ButtonActive];
 
-        EditorUI::GridControl(imageSize, mMapWidth, mMapHeight, [this, flags](const TilePos& pos, ImVec2 elementSize)
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+        ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::ClearColour);
+
+        EditorUI::GridControl(pos, imageSize, mMapWidth, mMapHeight, [this](const TilePos& pos, ImVec2 elementSize)
         {
             std::string name = fmt::format("##MapTiles({}, {})", pos.x, pos.y);
 
-            if (ImGui::InvisibleButton(name.c_str(), elementSize, flags))
+            if (ImGui::Button(name.c_str(), elementSize) && mEditMode == EditMode::Behaviour)
                 mCurrentMapTile = pos;
 
             if (ImGui::BeginDragDropTarget())
             {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("MAP_EDIT_TEXTURE_ITEM"))
                 {
-                    i32 tileId = *(i32*)payload->Data;
-                    mTilemap->setTile(mCurrentLayer, pos, tileId);
+                    TileData tileData = *(TileData*)payload->Data;
+                    mTilemap->setTile(mCurrentLayer, pos, tileData);
                 }
                 ImGui::EndDragDropTarget();
             }
@@ -277,12 +311,13 @@ namespace Labyrinth {
                 mHoveredTexTile = mTilemap->getTile(mCurrentLayer, pos);
             }
         });
+
+        ImGui::PopStyleColor(3);
     }
 
     void MapEditModal::DrawSheet()
     {
-        f32 xpos = ImGui::GetCursorPosX();
-        f32 ypos = ImGui::GetCursorPosY();
+        ImVec2 firstPos = ImGui::GetCursorPos();
 
         auto sheetImageSize = ImGui::GetContentRegionAvail();
         sheetImageSize.y -= 10 * ImGui::GetFrameHeightWithSpacing();
@@ -329,27 +364,34 @@ namespace Labyrinth {
             subtexImageSize.y -= (3 * ImGui::GetFrameHeightWithSpacing() + 0.25f * subtexImageSize.y);
 
             ImTextureID selectedSubTex = (ImTextureID)(uintptr_t)EditorResources::NoTexture->getRendererID();
-            ImVec2 min(0, 1), max(1, 0);
 
             if (mCurrentSubTex)
-            {
-                selectedSubTex = (ImTextureID)(uintptr_t)mCurrentSubTex->getBaseTex()->getRendererID();
-                glm::vec2* coords = mCurrentSubTex->getTexCoords();
-                max = ImVec2(coords[1].x, coords[1].y);
-                min = ImVec2(coords[3].x, coords[3].y);
-            }
+                selectedSubTex = (ImTextureID)(uintptr_t)mCurrentSubTexFBO->getColourAttachmentRendererID();
 
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + 0.25f * subtexImageSize.x);
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.25f * subtexImageSize.y);
-            ImGui::Image(selectedSubTex, subtexImageSize, min, max);
+            ImVec2 pos = ImGui::GetCursorPos();
+
+            ImGui::SetCursorPosX(pos.x + 0.25f * subtexImageSize.x);
+            ImGui::SetCursorPosY(pos.y + 0.25f * subtexImageSize.y);
+            //EditorUI::RotatedImage(selectedSubTex, subtexImageSize, mCurrentTexTile.rotation, min, max);
+            ImGui::Image(selectedSubTex, subtexImageSize, ImVec2(0, 1), ImVec2(1, 0));
             ImGui::SameLine();
 
-            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 0.5f * (subtexImageSize.y - ImGui::GetFrameHeightWithSpacing()));
+            ImGui::SetCursorPosY(ImGui::GetCursorPosY() + (subtexImageSize.y - 4 * ImGui::GetFrameHeightWithSpacing()));
+
+            pos = ImGui::GetCursorPos();
             if (ImGui::Button("Clear Subtex"))
             {
-                mCurrentTexTile = -1;
+                mCurrentTexTile = TileData();
                 mCurrentSubTex = nullptr;
             }
+            pos.y += ImGui::GetFrameHeightWithSpacing();
+            ImGui::SetCursorPos(pos);
+            if (ImGui::Button("Rotate Right"))
+                mCurrentTexTile.rotation -= 90;
+            pos.y += ImGui::GetFrameHeightWithSpacing();
+            ImGui::SetCursorPos(pos);
+            if (ImGui::Button("Rotate Left"))
+                mCurrentTexTile.rotation += 90;
         }
 
         if (!sheet)
@@ -359,24 +401,33 @@ namespace Labyrinth {
         i32 tileCountY = (i32)sheet->getTileCountY();
         LAB_ASSERT(tileCountX > 0 && tileCountY > 0, "Tile sheet count too large!");
 
-        EditorUI::GridControl(sheetImageSize, tileCountX, tileCountY, [this, &sheet](const TilePos& pos, const ImVec2& elementSize) 
-        {
-            static i32 tileID = -1; // Must be static for lifetime to persist for use as payload.
+        auto& colours = ImGui::GetStyle().Colors;
+        const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+        const auto& buttonActive = colours[ImGuiCol_ButtonActive];
 
-            tileID = mCurrentSheet.firstID + (pos.x + (pos.y * sheet->getTileCountX()));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+        ImGui::PushStyleColor(ImGuiCol_Button, EditorResources::ClearColour);
+
+        EditorUI::GridControl(firstPos, sheetImageSize, tileCountX, tileCountY, [this, &sheet](const TilePos& pos, const ImVec2& elementSize) 
+        {
+            static TileData TileData; // Must be static for lifetime to persist for use as payload.
+
+            TileData.id = mCurrentSheet.firstID + (pos.x + (pos.y * sheet->getTileCountX()));
             std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
             if (ImGui::Button(name.c_str(), elementSize) && mEditMode == EditMode::Paint)
             {
-                mCurrentTexTile = tileID;
-                mCurrentSubTex = sheet->getSubTex(tileID);
+                mCurrentTexTile = TileData;
+                mCurrentSubTex = sheet->getSubTex(TileData.id);
             }
             if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
             {
-                ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &tileID, sizeof(i32));
+                ImGui::SetDragDropPayload("MAP_EDIT_TEXTURE_ITEM", &TileData, sizeof(TileData));
                 ImGui::EndDragDropSource();
             }
         });
 
+        ImGui::PopStyleColor(3);
     }
 
     bool MapEditModal::OnKeyPressed(KeyPressedEvent& e)

@@ -64,8 +64,8 @@ namespace Labyrinth {
 				mLayers.end());
 		}
 
-		i32 getTile(usize layer, const TilePos& pos) const;
-		void setTile(usize layer, TilePos pos, i32 id);
+		TileData getTile(usize layer, const TilePos& pos) const;
+		void setTile(usize layer, TilePos pos, TileData data);
 
 		Ref<SubTexture2D> getTileTex(i32 tileID) const;
 

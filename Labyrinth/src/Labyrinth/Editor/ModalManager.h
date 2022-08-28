@@ -59,6 +59,15 @@ namespace Labyrinth {
             return std::find_if(sModals.begin(), sModals.end(), [&](const ModalEntry& entry) { return title == entry.heading; }) != sModals.end();
         }
 
+        static void Update(Timestep ts)
+        {
+            for (ModalEntry& modalData : sModals)
+            {
+                if (modalData.modal && modalData.open)
+                    modalData.modal->onUpdate(ts);
+            }
+        }
+
     private:
         static void Render();
         static void RenderButtons(ModalEntry& modalData);

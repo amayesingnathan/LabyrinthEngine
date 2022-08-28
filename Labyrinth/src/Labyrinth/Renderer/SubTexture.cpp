@@ -119,6 +119,7 @@ namespace Labyrinth {
 	{
 		for (const auto& [id, handle] : mSubTextures)
 			AssetManager::DestroyAsset(handle);
+		FileUtils::RemoveDir(AssetManager::GetMetadata(handle).filepath.parent_path() / "subtextures");
 
 		mSubTextures.clear();
 	}

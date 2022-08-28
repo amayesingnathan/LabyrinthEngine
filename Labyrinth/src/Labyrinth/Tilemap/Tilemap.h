@@ -41,8 +41,8 @@ namespace Labyrinth {
 
 		void removeLayer(usize index) { mTexture->removeLayer(index); }
 
-		i32 getTile(usize layer, const TilePos& pos) { return mTexture->getTile(layer, pos); }
-		void setTile(usize layer, TilePos pos, i32 id) { mTexture->setTile(layer, pos, id); }
+		TileData getTile(usize layer, const TilePos& pos) { return mTexture->getTile(layer, pos); }
+		void setTile(usize layer, TilePos pos, TileData data) { mTexture->setTile(layer, pos, data); }
 
 		Ref<SubTexture2D> getTileTex(i32 id) const { return mTexture->getTileTex(id); }
 

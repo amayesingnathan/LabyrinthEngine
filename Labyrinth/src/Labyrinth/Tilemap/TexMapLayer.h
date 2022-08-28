@@ -7,32 +7,47 @@
 
 namespace Labyrinth {
 
+	using TileID = i32;
+	struct TileData
+	{
+		TileID id = -1;
+		i32 rotation = 0;
+
+		TileData() = default;
+		TileData(TileID _id, i32 _rotation) : id(_id), rotation(_rotation) {}
+
+		bool operator==(const TileData& other) const { return id == other.id && rotation == other.rotation; }
+		bool operator!=(const TileData& other) const { return !(*this == other); }
+	};
+
 	class TexMapLayer
 	{
 	public:
-		using TileID = i32;
-
-	public:
 		TexMapLayer() = default;
-		TexMapLayer(usize layer, i32 width, i32 height) : mIndex(layer), mTiles(width * height, -1), mWidth(width), mHeight(height) { }
+		TexMapLayer(usize layer, i32 width, i32 height) : mIndex(layer), mTiles(width * height), mWidth(width), mHeight(height) { }
 
-		TileID& operator[](const TilePos& pos) { return mTiles[pos.x + (mWidth * pos.y)]; }
-		TileID operator[](const TilePos& pos) const 
+		TileData& operator[](const TilePos& pos) { return mTiles[pos.x + (mWidth * pos.y)]; }
+		TileData operator[](const TilePos& pos) const
 		{ 
 			if (!pos.valid())
-				return -1;
+				return TileData();
 
 			usize index = (usize)(pos.x + (mWidth * pos.y));
 			if (index >= mTiles.size())
-				return -1;
+				return TileData();
 
 			return mTiles[index];
 		}
 
 		bool operator==(const TexMapLayer& other) const { return mIndex == other.mIndex; }
 
-		void add(TileID id) { mTiles.emplace_back(id); }
-		void set(usize index, TileID id) { mTiles[index] = id; }
+		void add(TileID id, i32 rotation = 0) { mTiles.emplace_back(id, rotation); }
+		void set(usize index, TileID id) { mTiles[index].id = id; }
+		void set(usize index, TileID id, i32 rotation) 
+		{ 
+			mTiles[index].id = id; 
+			mTiles[index].rotation = rotation;
+		}
 
 		i32 getWidth() const { return mWidth; }
 		i32 getHeight() const { return mHeight; }
@@ -47,7 +62,7 @@ namespace Labyrinth {
 
 	private:
 		usize mIndex = 0;
-		std::vector<TileID> mTiles;
+		std::vector<TileData> mTiles;
 		i32 mWidth = 0, mHeight = 0;
 
 		friend class TilemapTexture;
@@ -59,8 +74,8 @@ namespace Labyrinth {
 		mOut << YAML::BeginSeq;
 		mOut << layer.getLayer() << layer.getWidth() << layer.getHeight();
 
-		for (auto id : layer)
-			mOut << id;
+		for (auto tileData : layer)
+			mOut << tileData.id << tileData.rotation;
 
 		mOut << YAML::EndSeq;
 		return mOut;
@@ -78,8 +93,11 @@ namespace YAML {
 			node.push_back(rhs.getLayer());
 			node.push_back(rhs.getWidth());
 			node.push_back(rhs.getHeight());
-			for (auto id : rhs)
-				node.push_back(id);
+			for (auto tileData : rhs)
+			{
+				node.push_back(tileData.id);
+				node.push_back(tileData.rotation);
+			}
 			return node;
 		}
 
@@ -95,8 +113,8 @@ namespace YAML {
 			rhs = Labyrinth::TexMapLayer(layer, width, height);
 
 			usize index = 0;
-			for (it; it != node.end(); ++it, ++index)
-				rhs.set(index, it->as<i32>());
+			for (it; it != node.end(); ++index)
+				rhs.set(index, it++->as<i32>(), it++->as<i32>());
 
 			return true;
 		}

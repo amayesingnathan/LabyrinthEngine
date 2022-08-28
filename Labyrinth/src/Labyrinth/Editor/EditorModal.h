@@ -16,6 +16,7 @@ namespace Labyrinth {
         virtual ~EditorModal() { Application::BlockEsc(false); }
 
     protected:
+        virtual void onUpdate(Timestep ts) {}
         virtual void onImGuiRender() = 0;
         virtual void onComplete() {}
         virtual void onCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }

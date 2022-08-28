@@ -30,6 +30,8 @@ namespace Labyrinth
 		constexpr f64 Rad90 = Math::pi_2;
 		constexpr f64 Rad120 = 2.09343951023931954923084;
 		constexpr f64 Rad180 = Math::pi;
+		constexpr f64 Rad270 = 4.712388980384679857694;
+		constexpr f64 Rad360 = 6.28318530717958647692529;
 
 		constexpr f32 Rad5f = Cast<f32>(Rad5);
 		constexpr f32 Rad10f = Cast<f32>(Rad10);
@@ -40,6 +42,8 @@ namespace Labyrinth
 		constexpr f32 Rad90f = Cast<f32>(Rad90);
 		constexpr f32 Rad120f = Cast<f32>(Rad120);
 		constexpr f32 Rad180f = Cast<f32>(Rad180);
+		constexpr f32 Rad270f = Cast<f32>(Rad270);
+		constexpr f32 Rad360f = Cast<f32>(Rad360);
 	}
 
 	namespace Zero

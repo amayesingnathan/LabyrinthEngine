@@ -103,14 +103,14 @@ namespace Labyrinth {
 			{
 				for (usize x = 0; x < mWidth; x++)
 				{
-					i32 tileID = layer[{x, mHeight - y - 1}];
-					if (tileID == -1) continue;
+					auto tileData = layer[{x, mHeight - y - 1}];
+					if (tileData.id == -1) continue;
 
-					Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileID));
+					Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(GetSheet(tileData.id));
 					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
 					pos += 0.5f * TileSizeF;
 
-					Renderer2D::DrawQuad(pos, TileSizeF, sheet->getSubTex(tileID));
+					Renderer2D::DrawRotatedQuad(pos, TileSizeF, (f32)tileData.rotation, sheet->getSubTex(tileData.id));
 				}
 			}
 		}
@@ -133,21 +133,20 @@ namespace Labyrinth {
 		mTexture->unbind();
 	}
 
-	i32 TilemapTexture::getTile(usize layer, const TilePos& pos) const
+	TileData TilemapTexture::getTile(usize layer, const TilePos& pos) const
 	{
 		if (layer >= mLayers.size())
-			return -1;
+			return TileData();
 
 		return mLayers[layer][pos];
 	}
 
-	void TilemapTexture::setTile(usize layer, TilePos pos, i32 id)
+	void TilemapTexture::setTile(usize layer, TilePos pos, TileData data)
 	{
 		if (layer >= mLayers.size())
 			return;
 
-		i32& tileID = mLayers[layer][pos];
-		tileID = id;
+		mLayers[layer][pos] = data;
 	}
 
 	Ref<SubTexture2D> TilemapTexture::getTileTex(i32 tileID) const

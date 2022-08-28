@@ -18,6 +18,7 @@ namespace Labyrinth {
 	public:
 		MapEditModal(const Ref<Tilemap>& map);
 
+		void onUpdate(Timestep ts) override;
 		void onImGuiRender() override;
 		void onComplete() override;
 		void onEvent(Event& e) override;
@@ -35,19 +36,20 @@ namespace Labyrinth {
 		i32 mMapWidth, mMapHeight;
 
 		EditMode mEditMode = EditMode::Paint;
-
-		Ref<SubTexture2D> mCurrentSubTex = nullptr;
-
 		bool mPainting = false;
 		bool mDisplayColliders = true;
 
 		usize mCurrentLayer = 0;
-		TilePos mCurrentMapTile;
-		i32 mCurrentTexTile = -1;
 		SheetData mCurrentSheet;
+		Ref<SubTexture2D> mCurrentSubTex = nullptr;
+
+		TilePos mCurrentMapTile;
+		TileData mCurrentTexTile;
+		Ref<Framebuffer> mCurrentSubTexFBO = nullptr;
 
 		TilePos mHoveredMapTile;
-		i32 mHoveredTexTile = -1;
+		TileData mHoveredTexTile;
+		Ref<Framebuffer> mHoveredSubTexFBO = nullptr;
 	};
 
 }
