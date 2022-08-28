@@ -173,7 +173,11 @@ namespace Labyrinth {
 
                 bool selectedSolid = selectedHasData ? mTilemap->getTileData().at(mCurrentMapTile).solid : false;
                 if (ImGui::Checkbox("Solid", &selectedSolid))
+                {
                     mTilemap->setTileSolid(mCurrentMapTile, selectedSolid);
+                    if (mDisplayColliders)
+                        mTilemap->RegenTexture(mDisplayColliders);
+                }
 
 
                 ImGui::EndDisabled();

@@ -605,7 +605,7 @@ namespace Labyrinth {
 		DrawComponent<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
 		{
 			ImGui::DragFloat2("Half Extents", glm::value_ptr(component.halfExtents), 0.01f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, -25.0f, 25.0f);
 			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);
@@ -615,7 +615,7 @@ namespace Labyrinth {
 		DrawComponent<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
 		{
 			ImGui::DragFloat("Radius", &component.radius, 0.01f, 0.0f, 100.0f);
-			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, 0.0f, 100.0f);
+			ImGui::DragFloat2("Offset", glm::value_ptr(component.offset), 0.01f, -25.0f, 25.0f);
 			ImGui::DragFloat("Friction", &component.friction, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Density", &component.density, 0.01f, 0.0f, 100.0f);
 			ImGui::DragFloat("Restitution", &component.restitution, 0.01f, 0.0f, 100.0f);

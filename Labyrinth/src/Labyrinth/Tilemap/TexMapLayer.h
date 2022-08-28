@@ -114,7 +114,11 @@ namespace YAML {
 
 			usize index = 0;
 			for (it; it != node.end(); ++index)
-				rhs.set(index, it++->as<i32>(), it++->as<i32>());
+			{
+				i32 id = it++->as<i32>();
+				i32 rotation = it++->as<i32>();
+				rhs.set(index, id, rotation);
+			}
 
 			return true;
 		}
