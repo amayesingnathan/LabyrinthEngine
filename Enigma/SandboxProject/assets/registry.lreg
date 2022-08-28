@@ -1,4 +1,7 @@
 Assets:
+  - Handle: 73073156942218159
+    Filepath: scenes/Sandbox.lscene
+    Type: Scene
   - Handle: 106024140194134760
     Filepath: spritesheets/Minecraft/subtextures/192.lstex
     Type: SubTexture
@@ -512,9 +515,6 @@ Assets:
   - Handle: 10808062959695194957
     Filepath: spritesheets/Minecraft/subtextures/218.lstex
     Type: SubTexture
-  - Handle: 10872358072272141843
-    Filepath: scenes/TilemapTest.lscene
-    Type: Scene
   - Handle: 10929037795400873912
     Filepath: spritesheets/Minecraft/subtextures/110.lstex
     Type: SubTexture

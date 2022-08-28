@@ -1,8 +1,9 @@
 #pragma once
 
 #include "NetCommon.h"
-#include "TSQueue.h"
 #include "Message.h"
+
+#include <Labyrinth/Containers/TSQueue.h>
 
 namespace Labyrinth {
 

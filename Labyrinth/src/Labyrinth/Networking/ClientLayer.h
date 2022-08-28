@@ -2,9 +2,10 @@
 
 #include "NetCommon.h"
 #include "Message.h"
-#include "TSQueue.h"
 #include "Connection.h"
 #include "NetworkLayer.h"
+
+#include <Labyrinth/Containers/TSQueue.h>
 
 namespace Labyrinth {
 

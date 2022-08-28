@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Labyrinth/Maths/Vector2D.h"
-
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Scene/SceneCamera.h"
 #include "Labyrinth/Scripting/ScriptObject.h"
