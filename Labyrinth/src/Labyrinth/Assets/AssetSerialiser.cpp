@@ -25,7 +25,7 @@ namespace Labyrinth {
 		return result;
 	}
 
-	void SubTextureSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SubTextureSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<SubTexture2D> subtex = asset.to<SubTexture2D>();
 
@@ -84,7 +84,7 @@ namespace Labyrinth {
 		return true;
 	}
 
-	void TextureSheetSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void TextureSheetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<Texture2DSheet> sheet = asset.to<Texture2DSheet>();
 
@@ -163,7 +163,7 @@ namespace Labyrinth {
 		return true;
 	}
 
-	void SceneAssetSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SceneAssetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<Scene> scene = asset.to<Scene>(); 
 		SceneSerialiser serialiser(scene);
@@ -184,7 +184,7 @@ namespace Labyrinth {
 		return true;
 	}
 
-	void TilemapSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void TilemapSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<Tilemap> tilemap = asset.to<Tilemap>();
 

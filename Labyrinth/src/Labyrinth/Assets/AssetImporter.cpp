@@ -30,7 +30,7 @@ namespace Labyrinth {
 			return;
 		}
 
-		sSerialisers[asset->getAssetType()]->serialize(metadata, asset);
+		sSerialisers[asset->getAssetType()]->serialise(metadata, asset);
 	}
 
 	void AssetImporter::Serialise(const Ref<Asset>& asset)
