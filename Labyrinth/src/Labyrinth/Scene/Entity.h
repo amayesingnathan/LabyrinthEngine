@@ -7,21 +7,24 @@
 #include "Labyrinth/Core/System/Log.h"
 #include "Labyrinth/Core/UUID.h"
 
+#include <Labyrinth/Messaging/MessageBus.h>
+
 namespace Labyrinth {
 
 	struct RootComponent;
 	struct NodeComponent;
 	struct TransformComponent;
 
-	class Entity
+	class Entity : public BusNode
 	{
 	public:
 		Entity() : mEntID(entt::null) {}
 		Entity(entt::entity entID, const Ref<Scene>& scene);
 
-		Entity(const Entity& other) = default;
-		~Entity() {}
+	public: 
+		BUS_NODE_ID(getUUID())
 
+	public:
 		template<typename T, typename... Args>
 		T& addComponent(Args&&... args)
 		{

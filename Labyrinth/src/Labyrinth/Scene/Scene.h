@@ -13,6 +13,7 @@ class b2World;
 namespace Labyrinth {
 
 	class Entity;
+	class ContactListener;
 
 	class Scene : public Asset
 	{
@@ -103,6 +104,7 @@ namespace Labyrinth {
 		entt::registry mRegistry;
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
+		ContactListener* mContactListener = nullptr;
 
 		std::unordered_map<UUID, entt::entity> mEntityMap;
         

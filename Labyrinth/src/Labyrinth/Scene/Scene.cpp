@@ -6,6 +6,7 @@
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Scripting/NativeScript.h>
 
@@ -300,12 +301,12 @@ namespace Labyrinth {
 
 	void Scene::OnPhysicsStart()
 	{
+		LAB_CORE_ASSERT(!mPhysicsWorld, "Didn't delete previous physics world instance!");
 		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
 
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
 		{
 			Entity entity(e, Ref<Scene>(this));
-			UUID entityID = entity.getComponent<IDComponent>().id;
 
 			b2BodyDef bodyDef;
 			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
@@ -314,20 +315,20 @@ namespace Labyrinth {
 			bodyDef.fixedRotation = rbComponent.fixedRotation;
 
 			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
-			b2MassData massData = body->GetMassData();;
+			b2MassData massData = body->GetMassData();
 			massData.mass = rbComponent.mass;
 			body->SetMassData(&massData);
 			body->SetGravityScale(rbComponent.gravityScale);
 			body->SetLinearDamping(rbComponent.linearDrag);
 			body->SetAngularDamping(rbComponent.angularDrag);
-			body->GetUserData().pointer = (uintptr_t)entityID;
+			body->GetUserData().pointer = (uintptr_t)&entity.getUUID();
 
 			rbComponent.runtimeBody = body;
 		});
 
 		mRegistry.view<TransformComponent, BoxColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& bcComponent, const auto& rbComponent)
 		{
-			Entity entity = { e, this };
+			Entity entity = { e, Ref<Scene>(this) };
 
 			LAB_CORE_ASSERT(rbComponent.runtimeBody);
 			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
@@ -339,12 +340,13 @@ namespace Labyrinth {
 			fixtureDef.shape = &polygonShape;
 			fixtureDef.density = bcComponent.density;
 			fixtureDef.friction = bcComponent.friction;
+			fixtureDef.userData.pointer = (uintptr_t)&entity.getUUID();
 			body->CreateFixture(&fixtureDef);
 		});
 
 		mRegistry.view<TransformComponent, CircleColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
 		{
-			Entity entity = { e, this };
+			Entity entity = { e, Ref<Scene>(this) };
 
 			LAB_CORE_ASSERT(rbComponent.runtimeBody);
 			b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
@@ -356,12 +358,22 @@ namespace Labyrinth {
 			fixtureDef.shape = &circleShape;
 			fixtureDef.density = ccComponent.density;
 			fixtureDef.friction = ccComponent.friction;
+			fixtureDef.userData.pointer = (uintptr_t)&entity.getUUID();
 			body->CreateFixture(&fixtureDef);
 		});
+
+		LAB_CORE_ASSERT(!mContactListener, "Didn't delete previous listener instance!");
+		mContactListener = new ContactListener(Ref<Scene>(this));
+		mPhysicsWorld->SetContactListener(mContactListener);
 	}
 
 	void Scene::OnPhysicsStop()
 	{
+		LAB_CORE_ASSERT(mContactListener, "No listener instance!");
+		delete mContactListener;
+		mContactListener = nullptr;
+
+		LAB_CORE_ASSERT(mPhysicsWorld, "No physics world instance!");
 		delete mPhysicsWorld;
 		mPhysicsWorld = nullptr;
 	}
