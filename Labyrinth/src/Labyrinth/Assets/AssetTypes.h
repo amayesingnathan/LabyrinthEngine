@@ -20,38 +20,4 @@ namespace Labyrinth {
 		TextureSheet,
 		Tilemap
 	};
-
-	namespace AssetUtils {
-
-		inline AssetType AssetTypeFromString(const std::string& assetType)
-		{
-			if (assetType == "None")				return AssetType::None;
-			else if (assetType == "Scene")			return AssetType::Scene;
-			else if (assetType == "Texture")		return AssetType::Texture;
-			else if (assetType == "SubTexture")		return AssetType::SubTexture;
-			else if (assetType == "TextureSheet")	return AssetType::TextureSheet;
-			else if (assetType == "Tilemap")		return AssetType::Tilemap;
-
-			LAB_CORE_ASSERT(false, "Unknown Asset Type!");
-			return AssetType::None;
-		}
-
-		inline const char* AssetTypeToString(AssetType assetType)
-		{
-			switch (assetType)
-			{
-			case AssetType::None:			return "None";
-			case AssetType::Scene:			return "Scene";
-			case AssetType::Texture:		return "Texture";
-			case AssetType::SubTexture:		return "SubTexture";
-			case AssetType::TextureSheet:	return "TextureSheet";
-			case AssetType::Tilemap:		return "Tilemap";
-			}
-
-			LAB_CORE_ASSERT(false, "Unknown Asset Type");
-			return "None";
-		}
-	}
-
-
 }

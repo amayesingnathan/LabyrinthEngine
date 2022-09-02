@@ -6,6 +6,7 @@
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Project/Project.h>
+#include <Labyrinth/Tools/EnumUtils.h>
 #include <Labyrinth/Tools/StringUtils.h>
 
 namespace Labyrinth {
@@ -152,7 +153,7 @@ namespace Labyrinth {
 			AssetMetadata metadata;
 			metadata.handle = entry["Handle"].as<u64>();
 			metadata.filepath = filepath;
-			metadata.type = (AssetType)AssetUtils::AssetTypeFromString(entry["Type"].as<std::string>());
+			metadata.type = Enum::FromString<AssetType>(entry["Type"].as<std::string>());
 
 			if (metadata.type == AssetType::None)
 				continue;
@@ -227,7 +228,7 @@ namespace Labyrinth {
 			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(Handle, handle, out);
 			LAB_SERIALISE_PROPERTY(Filepath, entry.filepath, out);
-			LAB_SERIALISE_PROPERTY(Type, AssetUtils::AssetTypeToString(entry.type), out);
+			LAB_SERIALISE_PROPERTY(Type, Enum::ToString(entry.type), out);
 			out << YAML::EndMap;
 		}
 		out << YAML::EndSeq;
