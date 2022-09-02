@@ -3,6 +3,7 @@
 #include "../Panels/ScenePanel.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Containers/StaticString.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -13,9 +14,9 @@ namespace Labyrinth {
         ImGui::Text("Please enter the specifications for the tilemap:");
         ImGui::NewLine();
 
-        StaticBuffer<256> nameBuf(mMapName);
+        StaticString<256> nameBuf(mMapName);
         if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
-            mMapName = nameBuf.string();
+            mMapName = nameBuf.toString();
 
         ImGui::InputInt("Width", &mMapWidth);
         ImGui::InputInt("Height", &mMapHeight);

@@ -6,6 +6,7 @@
 #include "../Modals/NewMapModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Containers/StaticString.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
@@ -103,9 +104,9 @@ namespace Labyrinth {
 	{
 		ImGui::Begin("Scene Hierarchy");
 
-		StaticBuffer<256> buffer(mContext->getName());
-		if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-			mContext->setName(buffer.string());
+		StaticString<256> buffer(mContext->getName());
+		if (ImGui::InputText("##Tag", buffer, buffer.length()))
+			mContext->setName(buffer.toString());
 
 		ImGui::SameLine();
 
@@ -309,9 +310,9 @@ namespace Labyrinth {
 		{
 			std::string& tag = mSelectedEntity.getComponent<TagComponent>();
 
-			StaticBuffer<256> buffer(tag);
-			if (ImGui::InputText("##Tag", buffer, sizeof(buffer)))
-				tag = buffer.string();
+			StaticString<256> buffer(tag);
+			if (ImGui::InputText("##Tag", buffer, buffer.length()))
+				tag = buffer.toString();
 		}
 
 		ImGui::SameLine();

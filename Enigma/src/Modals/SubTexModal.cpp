@@ -1,6 +1,7 @@
 #include "SubTexModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Containers/StaticString.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 
@@ -24,9 +25,9 @@ namespace Labyrinth {
 
 	void SubTexModal::onImGuiRender()
 	{
-		StaticBuffer<256> buffer(mName);
-		if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-			mName = buffer.string();
+		StaticString<256> buffer(mName);
+		if (ImGui::InputText("Name", buffer, buffer.length()))
+			mName = buffer.toString();
 
 		float xpos = ImGui::GetCursorPosX();
 		float ypos = ImGui::GetCursorPosY();
@@ -85,7 +86,7 @@ namespace Labyrinth {
 		if (CheckSelection())
 		{
 			mPayload.subTexName = mName;
-			mPayload.currentSubTex = mPayload.currentSheet->getSubTex(std::hash<std::string>()(mName));
+			mPayload.currentSubTex = mPayload.currentSheet->getSubTex((i32)std::hash<std::string>()(mName));
 		}
 		else
 			ModalManager::OpenWarning("Invalid selection", "Selection was not valid!");

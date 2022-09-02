@@ -1,6 +1,6 @@
 #include "SettingsModal.h"
 
-#include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Containers/StaticString.h>
 
 namespace Labyrinth {
 
@@ -27,13 +27,13 @@ namespace Labyrinth {
 
         ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
 
-        StaticBuffer<256> workingDirBuffer(mSettings.workingDir.string());
-        if (ImGui::InputText("Working Directory", workingDirBuffer, sizeof(workingDirBuffer)))
-            mSettings.workingDir = workingDirBuffer.string();
+        StaticString<256> workingDirBuffer(mSettings.workingDir.string());
+        if (ImGui::InputText("Working Directory", workingDirBuffer, workingDirBuffer.length()))
+            mSettings.workingDir = workingDirBuffer.toString();
 
-        StaticBuffer<256> coreAssemblyBuffer(mSettings.scriptConfig.coreAssemblyPath.string());
-        if (ImGui::InputText("Core Assembly Path", coreAssemblyBuffer, sizeof(coreAssemblyBuffer)))
-            mSettings.scriptConfig.coreAssemblyPath = coreAssemblyBuffer.string();
+        StaticString<256> coreAssemblyBuffer(mSettings.scriptConfig.coreAssemblyPath.string());
+        if (ImGui::InputText("Core Assembly Path", coreAssemblyBuffer, workingDirBuffer.length()))
+            mSettings.scriptConfig.coreAssemblyPath = coreAssemblyBuffer.toString();
 
         std::string resolutionStr = mSettings.resolution.toString();
         if (ImGui::BeginCombo("Resolution", resolutionStr.c_str()))
@@ -52,9 +52,9 @@ namespace Labyrinth {
             ImGui::EndCombo();
         }
 
-        StaticBuffer<256> projectBuffer(mSettings.startupProject.string());
-        if (ImGui::InputText("Startup Project", projectBuffer, projectBuffer.size()))
-            mSettings.startupProject = projectBuffer.string();
+        StaticString<256> projectBuffer(mSettings.startupProject.string());
+        if (ImGui::InputText("Startup Project", projectBuffer, projectBuffer.length()))
+            mSettings.startupProject = projectBuffer.toString();
 
         ImGui::SameLine();
 

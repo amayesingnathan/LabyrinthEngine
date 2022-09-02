@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Containers/Buffer.h>
 
 namespace Labyrinth {
 
