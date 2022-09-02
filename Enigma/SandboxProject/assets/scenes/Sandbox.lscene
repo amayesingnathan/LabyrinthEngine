@@ -1,961 +1,15 @@
 Scene: TilemapTest
 Entities:
-  - Entity: 179829238807882175
-    TagComponent:
-      Tag: (9, 24)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-2.03125, -1.70000005, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [9, 24]
-  - Entity: 541612259650448805
-    TagComponent:
-      Tag: (25, 18)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.96875, -0.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [25, 18]
-  - Entity: 576293886187503485
-    TagComponent:
-      Tag: (14, 17)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.46875, -0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [14, 17]
-  - Entity: 596169468949141583
-    TagComponent:
-      Tag: (22, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.03125, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [22, 23]
-  - Entity: 632555178950418422
-    TagComponent:
-      Tag: (19, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [1.09375, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [19, 23]
-  - Entity: 635794428752139906
-    TagComponent:
-      Tag: (26, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [3.28125, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [26, 22]
-  - Entity: 987029323433082529
-    TagComponent:
-      Tag: (1, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-4.53125, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [1, 20]
-  - Entity: 1972675529696895583
-    TagComponent:
-      Tag: (23, 19)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.34375, -0.699999988, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [23, 19]
-  - Entity: 1994276992504321234
-    TagComponent:
-      Tag: (4, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-3.59375, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [4, 22]
-  - Entity: 2160533020521740275
-    TagComponent:
-      Tag: (31, 17)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [4.84375, -0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [31, 17]
-  - Entity: 2324074353360754755
-    TagComponent:
-      Tag: (11, 24)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-1.40625, -1.70000005, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [11, 24]
-  - Entity: 2616665109877907269
-    TagComponent:
-      Tag: (14, 25)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.46875, -1.89999998, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [14, 25]
-  - Entity: 3443575124589283380
-    TagComponent:
-      Tag: (0, 19)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-4.84375, -0.699999988, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [0, 19]
-  - Entity: 3626751105424891513
-    TagComponent:
-      Tag: (19, 13)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [1.09375, 0.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [19, 13]
-  - Entity: 3909741478410126571
-    TagComponent:
-      Tag: (17, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [0.46875, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [17, 23]
-  - Entity: 3948150260103786419
-    TagComponent:
-      Tag: (20, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [1.40625, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [20, 23]
-  - Entity: 3983710246022297168
-    TagComponent:
-      Tag: (23, 13)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.34375, 0.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [23, 13]
-  - Entity: 4638900360906204546
-    TagComponent:
-      Tag: (29, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [4.21875, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [29, 20]
-  - Entity: 5000927836659257583
-    TagComponent:
-      Tag: Tiles
-    Parent: 18236344740095204921
-    Children:
-      - Handle: 6249677327781367765
-      - Handle: 11021193971477221401
-      - Handle: 1994276992504321234
-      - Handle: 3443575124589283380
-      - Handle: 5057726070202322310
-      - Handle: 15469792323462351022
-      - Handle: 13192894500526442344
-      - Handle: 987029323433082529
-      - Handle: 14847746300702712440
-      - Handle: 17123301891479180378
-      - Handle: 12058538938611463174
-      - Handle: 2616665109877907269
-      - Handle: 12396877845251870337
-      - Handle: 15912998452417555839
-      - Handle: 16884684897977433135
-      - Handle: 10333463066064431770
-      - Handle: 7530103224170019058
-      - Handle: 16456258936542886765
-      - Handle: 6401462818207000670
-      - Handle: 13977928843390155039
-      - Handle: 14010492769089080252
-      - Handle: 6579814701848017565
-      - Handle: 15257298793054514706
-      - Handle: 15287657416477376124
-      - Handle: 179829238807882175
-      - Handle: 596169468949141583
-      - Handle: 2324074353360754755
-      - Handle: 3948150260103786419
-      - Handle: 7187366301664756745
-      - Handle: 6874953187026755203
-      - Handle: 16883618249535081360
-      - Handle: 3909741478410126571
-      - Handle: 632555178950418422
-      - Handle: 1972675529696895583
-      - Handle: 8896583041663556535
-      - Handle: 3626751105424891513
-      - Handle: 6208362463636514655
-      - Handle: 13357941213289399482
-      - Handle: 635794428752139906
-      - Handle: 13497395663007074962
-      - Handle: 2160533020521740275
-      - Handle: 12027698421258643183
-      - Handle: 7965227253583310570
-      - Handle: 16109089946217585377
-      - Handle: 10585577995197316130
-      - Handle: 4638900360906204546
-      - Handle: 15908401641009419008
-      - Handle: 12758317568265307394
-      - Handle: 10244627321044402212
-      - Handle: 5320271413549142343
-      - Handle: 17407352227431393880
-      - Handle: 576293886187503485
-      - Handle: 6815537323931034716
-      - Handle: 5620102882380299778
-      - Handle: 9726129204330763854
-      - Handle: 541612259650448805
-      - Handle: 18044492357206963224
-      - Handle: 12941314753594479685
-      - Handle: 17355555491971704669
-      - Handle: 13669498368466932397
-      - Handle: 9800615483401543050
-      - Handle: 12379442496887200038
-      - Handle: 5780760559284331310
-      - Handle: 12682003090079577379
-      - Handle: 13934656090979670788
-      - Handle: 17634295320270790087
-      - Handle: 9269039077473897937
-      - Handle: 3983710246022297168
-      - Handle: 15285567087260704987
-  - Entity: 5057726070202322310
-    TagComponent:
-      Tag: (5, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-3.28125, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [5, 22]
-  - Entity: 5320271413549142343
-    TagComponent:
-      Tag: (31, 16)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [4.84375, -0.100000001, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [31, 16]
-  - Entity: 5620102882380299778
-    TagComponent:
-      Tag: (23, 21)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.34375, -1.10000002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [23, 21]
-  - Entity: 5780760559284331310
-    TagComponent:
-      Tag: (19, 14)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [1.09375, 0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [19, 14]
-  - Entity: 6208362463636514655
-    TagComponent:
-      Tag: (24, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.65625, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [24, 22]
-  - Entity: 6249677327781367765
-    TagComponent:
-      Tag: (21, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [1.71875, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [21, 23]
-  - Entity: 6401462818207000670
-    TagComponent:
-      Tag: (7, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-2.65625, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [7, 23]
-  - Entity: 6579814701848017565
-    TagComponent:
-      Tag: (6, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-2.96875, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [6, 22]
-  - Entity: 6815537323931034716
-    TagComponent:
-      Tag: (22, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.03125, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [22, 22]
-  - Entity: 6874953187026755203
-    TagComponent:
-      Tag: (16, 24)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [0.15625, -1.70000005, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [16, 24]
-  - Entity: 7187366301664756745
-    TagComponent:
-      Tag: (24, 16)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.65625, -0.100000001, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [24, 16]
-  - Entity: 7530103224170019058
-    TagComponent:
-      Tag: (10, 25)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-1.71875, -1.89999998, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [10, 25]
-  - Entity: 7965227253583310570
-    TagComponent:
-      Tag: (0, 17)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-4.84375, -0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [0, 17]
-  - Entity: 8896583041663556535
-    TagComponent:
-      Tag: (23, 22)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.34375, -1.30000007, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [23, 22]
-  - Entity: 9269039077473897937
+  - Entity: 118658929174343383
     TagComponent:
       Tag: (23, 12)
-    Parent: 5000927836659257583
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.34375, 0.699999988, 0]
+      Position: [2.34375, 0.623437464, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -967,7 +21,7 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -975,16 +29,16 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [23, 12]
-  - Entity: 9726129204330763854
+  - Entity: 187732612992542965
     TagComponent:
-      Tag: (24, 18)
-    Parent: 5000927836659257583
+      Tag: (9, 24)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.65625, -0.5, 0]
+      Position: [-2.03125, -1.5140624, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -996,7 +50,399 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [9, 24]
+  - Entity: 218117697890535520
+    TagComponent:
+      Tag: (30, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [4.53125, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [30, 19]
+  - Entity: 752960430557011524
+    TagComponent:
+      Tag: (14, 17)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.46875, -0.267187476, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [14, 17]
+  - Entity: 1090994607367508169
+    TagComponent:
+      Tag: (15, 18)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.15625, -0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [15, 18]
+  - Entity: 1151419462449486961
+    TagComponent:
+      Tag: (24, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.65625, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [24, 22]
+  - Entity: 1182214636683420588
+    TagComponent:
+      Tag: (16, 17)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [0.15625, -0.267187476, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [16, 17]
+  - Entity: 1552558616785169064
+    TagComponent:
+      Tag: (11, 24)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.40625, -1.5140624, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [11, 24]
+  - Entity: 1682477591442549776
+    TagComponent:
+      Tag: (24, 15)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.65625, 0.089062497, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [24, 15]
+  - Entity: 2227418346319750481
+    TagComponent:
+      Tag: (10, 25)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.71875, -1.69218743, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [10, 25]
+  - Entity: 2990261592928910523
+    TagComponent:
+      Tag: (24, 13)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.65625, 0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [24, 13]
+  - Entity: 3278228147196289131
+    TagComponent:
+      Tag: (22, 12)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.03125, 0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [22, 12]
+  - Entity: 3473164846851709534
+    TagComponent:
+      Tag: (23, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.34375, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [23, 19]
+  - Entity: 3521949268324141802
+    TagComponent:
+      Tag: (0, 18)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.84375, -0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [0, 18]
+  - Entity: 3620824542635187602
+    TagComponent:
+      Tag: (8, 23)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.34375, -1.3359375, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [8, 23]
+  - Entity: 3635512117499394651
+    TagComponent:
+      Tag: (24, 18)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.65625, -0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -1004,16 +450,16 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [24, 18]
-  - Entity: 9800615483401543050
+  - Entity: 4779211229624564054
     TagComponent:
-      Tag: (10, 19)
-    Parent: 5000927836659257583
+      Tag: (15, 17)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-1.71875, -0.699999988, 0]
+      Position: [-0.15625, -0.267187476, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1025,7 +471,328 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [15, 17]
+  - Entity: 4814152851038574483
+    TagComponent:
+      Tag: (27, 21)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [3.59375, -0.979687452, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [27, 21]
+  - Entity: 4851868024951552408
+    TagComponent:
+      Tag: (9, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.03125, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [9, 19]
+  - Entity: 5051720195365039439
+    TagComponent:
+      Tag: (7, 23)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.65625, -1.3359375, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [7, 23]
+  - Entity: 5428124495434731128
+    TagComponent:
+      Tag: Tiles
+    Parent: 18236344740095204921
+    Children:
+      - Handle: 15105397992062486635
+      - Handle: 3521949268324141802
+      - Handle: 12120062534866538435
+      - Handle: 15321410584774783038
+      - Handle: 8693840428838962491
+      - Handle: 7496088230550028337
+      - Handle: 11318251702712959768
+      - Handle: 8155577588078404726
+      - Handle: 7651245134285452863
+      - Handle: 8066732148647308054
+      - Handle: 17568280779360864296
+      - Handle: 17254877717407918667
+      - Handle: 1682477591442549776
+      - Handle: 10774150334915650235
+      - Handle: 11305547318468076302
+      - Handle: 14435982980565021870
+      - Handle: 2227418346319750481
+      - Handle: 13114513280489827960
+      - Handle: 5051720195365039439
+      - Handle: 18305804768842146259
+      - Handle: 13454109083406283245
+      - Handle: 10390562977089851378
+      - Handle: 3620824542635187602
+      - Handle: 7629062506746234867
+      - Handle: 187732612992542965
+      - Handle: 10013087486641142911
+      - Handle: 1552558616785169064
+      - Handle: 8647505535086002112
+      - Handle: 7568064392338313525
+      - Handle: 16528836762016692643
+      - Handle: 5745348155150840244
+      - Handle: 17720865725120118004
+      - Handle: 14151371141939882152
+      - Handle: 3473164846851709534
+      - Handle: 8907354451668156541
+      - Handle: 6887528140374326034
+      - Handle: 1151419462449486961
+      - Handle: 4779211229624564054
+      - Handle: 5498070355288535708
+      - Handle: 4814152851038574483
+      - Handle: 8759926564561737856
+      - Handle: 9346706672604558511
+      - Handle: 14485857512061217176
+      - Handle: 9196001339386928827
+      - Handle: 12270214261570098359
+      - Handle: 13781825579130880047
+      - Handle: 218117697890535520
+      - Handle: 13002104889175290532
+      - Handle: 5839323081629585855
+      - Handle: 8972921213197679348
+      - Handle: 15564400907763014388
+      - Handle: 752960430557011524
+      - Handle: 14796492737782418952
+      - Handle: 5566324617729815158
+      - Handle: 3635512117499394651
+      - Handle: 7592250583010997528
+      - Handle: 10012422757870477573
+      - Handle: 17502969006854570459
+      - Handle: 5826232992536188845
+      - Handle: 4851868024951552408
+      - Handle: 6344756221590189173
+      - Handle: 1090994607367508169
+      - Handle: 7014651777953279495
+      - Handle: 1182214636683420588
+      - Handle: 11417847900796049727
+      - Handle: 3278228147196289131
+      - Handle: 118658929174343383
+      - Handle: 18210945151004145205
+      - Handle: 2990261592928910523
+  - Entity: 5498070355288535708
+    TagComponent:
+      Tag: (26, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [3.28125, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [26, 22]
+  - Entity: 5566324617729815158
+    TagComponent:
+      Tag: (23, 21)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.34375, -0.979687452, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [23, 21]
+  - Entity: 5745348155150840244
+    TagComponent:
+      Tag: (11, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.40625, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [11, 19]
+  - Entity: 5826232992536188845
+    TagComponent:
+      Tag: (26, 21)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [3.28125, -0.979687452, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [26, 21]
+  - Entity: 5839323081629585855
+    TagComponent:
+      Tag: (31, 18)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [4.84375, -0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [31, 18]
+  - Entity: 6344756221590189173
+    TagComponent:
+      Tag: (10, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.71875, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -1033,6 +800,442 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [10, 19]
+  - Entity: 6887528140374326034
+    TagComponent:
+      Tag: (19, 13)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [1.09375, 0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [19, 13]
+  - Entity: 7014651777953279495
+    TagComponent:
+      Tag: (19, 14)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [1.09375, 0.267187476, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [19, 14]
+  - Entity: 7496088230550028337
+    TagComponent:
+      Tag: (12, 24)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.09375, -1.5140624, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [12, 24]
+  - Entity: 7568064392338313525
+    TagComponent:
+      Tag: (24, 16)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.65625, -0.089062497, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [24, 16]
+  - Entity: 7592250583010997528
+    TagComponent:
+      Tag: (25, 18)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.96875, -0.4453125, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [25, 18]
+  - Entity: 7629062506746234867
+    TagComponent:
+      Tag: (25, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.96875, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [25, 22]
+  - Entity: 7651245134285452863
+    TagComponent:
+      Tag: (13, 24)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.78125, -1.5140624, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [13, 24]
+  - Entity: 8066732148647308054
+    TagComponent:
+      Tag: (18, 23)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [0.78125, -1.3359375, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [18, 23]
+  - Entity: 8155577588078404726
+    TagComponent:
+      Tag: (1, 20)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.53125, -0.801562488, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [1, 20]
+  - Entity: 8647505535086002112
+    TagComponent:
+      Tag: (20, 23)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [1.40625, -1.3359375, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [20, 23]
+  - Entity: 8693840428838962491
+    TagComponent:
+      Tag: (5, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-3.28125, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [5, 22]
+  - Entity: 8759926564561737856
+    TagComponent:
+      Tag: (31, 17)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [4.84375, -0.267187476, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [31, 17]
+  - Entity: 8907354451668156541
+    TagComponent:
+      Tag: (23, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.34375, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [23, 22]
+  - Entity: 8972921213197679348
+    TagComponent:
+      Tag: (31, 16)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [4.84375, -0.089062497, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [31, 16]
+  - Entity: 9196001339386928827
+    TagComponent:
+      Tag: (28, 21)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [3.90625, -0.979687452, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [28, 21]
+  - Entity: 9346706672604558511
+    TagComponent:
+      Tag: (10, 20)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.71875, -0.801562488, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [10, 20]
   - Entity: 9894210757912956858
     TagComponent:
       Tag: Player
@@ -1057,24 +1260,24 @@ Entities:
       AngularDrag: 0.0500000007
       GravityScale: 1
     BoxColliderComponent:
-      HalfExtents: [0.449999988, 0.449999988]
-      Offset: [0, -0.00999999978]
+      HalfExtents: [0.370000005, 0.370000005]
+      Offset: [0.0299999993, -0.0299999993]
       Density: 0.5
       Friction: 1
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: Sandbox.Player
-  - Entity: 10244627321044402212
+  - Entity: 10012422757870477573
     TagComponent:
-      Tag: (31, 18)
-    Parent: 5000927836659257583
+      Tag: (25, 19)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [4.84375, -0.5, 0]
+      Position: [2.96875, -0.623437464, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1086,24 +1289,39 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [31, 18]
-  - Entity: 10333463066064431770
+      Position: [25, 19]
+  - Entity: 10013087486641142911
     TagComponent:
-      Tag: (6, 21)
-    Parent: 5000927836659257583
+      Tag: (22, 23)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-2.96875, -1.10000002, 0]
+      Position: [2.03125, -1.3359375, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [22, 23]
+  - Entity: 10390562977089851378
+    TagComponent:
+      Tag: (6, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.96875, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1115,24 +1333,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [6, 21]
-  - Entity: 10585577995197316130
+      Position: [6, 22]
+  - Entity: 10774150334915650235
     TagComponent:
-      Tag: (24, 17)
-    Parent: 5000927836659257583
+      Tag: (3, 21)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.65625, -0.300000012, 0]
+      Position: [-3.90625, -0.979687452, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1144,24 +1362,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [24, 17]
-  - Entity: 11021193971477221401
+      Position: [3, 21]
+  - Entity: 11305547318468076302
     TagComponent:
-      Tag: (0, 18)
-    Parent: 5000927836659257583
+      Tag: (15, 25)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-4.84375, -0.5, 0]
+      Position: [-0.15625, -1.69218743, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1173,227 +1391,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [0, 18]
-  - Entity: 12027698421258643183
-    TagComponent:
-      Tag: (10, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-1.71875, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [10, 20]
-  - Entity: 12058538938611463174
-    TagComponent:
-      Tag: (2, 21)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-4.21875, -1.10000002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [2, 21]
-  - Entity: 12379442496887200038
-    TagComponent:
-      Tag: (15, 18)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.15625, -0.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [15, 18]
-  - Entity: 12396877845251870337
-    TagComponent:
-      Tag: (24, 15)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.65625, 0.100000001, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [24, 15]
-  - Entity: 12682003090079577379
-    TagComponent:
-      Tag: (16, 17)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [0.15625, -0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [16, 17]
-  - Entity: 12758317568265307394
-    TagComponent:
-      Tag: (9, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-2.03125, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [9, 20]
-  - Entity: 12941314753594479685
-    TagComponent:
-      Tag: (25, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.96875, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [25, 20]
-  - Entity: 13192894500526442344
+      Position: [15, 25]
+  - Entity: 11318251702712959768
     TagComponent:
       Tag: (0, 20)
-    Parent: 5000927836659257583
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-4.84375, -0.900000036, 0]
+      Position: [-4.84375, -0.801562488, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1405,7 +1420,7 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -1413,103 +1428,16 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [0, 20]
-  - Entity: 13357941213289399482
-    TagComponent:
-      Tag: (15, 17)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.15625, -0.300000012, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [15, 17]
-  - Entity: 13497395663007074962
-    TagComponent:
-      Tag: (27, 21)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [3.59375, -1.10000002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [27, 21]
-  - Entity: 13669498368466932397
-    TagComponent:
-      Tag: (9, 19)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-2.03125, -0.699999988, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [9, 19]
-  - Entity: 13934656090979670788
+  - Entity: 11417847900796049727
     TagComponent:
       Tag: (18, 14)
-    Parent: 5000927836659257583
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [0.78125, 0.300000012, 0]
+      Position: [0.78125, 0.267187476, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1521,7 +1449,7 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -1529,16 +1457,16 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [18, 14]
-  - Entity: 13977928843390155039
+  - Entity: 12120062534866538435
     TagComponent:
-      Tag: (31, 15)
-    Parent: 5000927836659257583
+      Tag: (4, 22)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [4.84375, 0.100000001, 0]
+      Position: [-3.59375, -1.15781248, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1550,24 +1478,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [31, 15]
-  - Entity: 14010492769089080252
+      Position: [4, 22]
+  - Entity: 12270214261570098359
     TagComponent:
-      Tag: (16, 16)
-    Parent: 5000927836659257583
+      Tag: (24, 17)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [0.15625, -0.100000001, 0]
+      Position: [2.65625, -0.267187476, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1579,7 +1507,94 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [24, 17]
+  - Entity: 13002104889175290532
+    TagComponent:
+      Tag: (9, 20)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-2.03125, -0.801562488, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [9, 20]
+  - Entity: 13114513280489827960
+    TagComponent:
+      Tag: (23, 20)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.34375, -0.801562488, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [23, 20]
+  - Entity: 13454109083406283245
+    TagComponent:
+      Tag: (16, 16)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [0.15625, -0.089062497, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
@@ -1587,16 +1602,16 @@ Entities:
     TileComponent:
       Controller: 18236344740095204921
       Position: [16, 16]
-  - Entity: 14847746300702712440
+  - Entity: 13781825579130880047
     TagComponent:
-      Tag: (13, 24)
-    Parent: 5000927836659257583
+      Tag: (29, 20)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-0.78125, -1.70000005, 0]
+      Position: [4.21875, -0.801562488, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1608,24 +1623,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [13, 24]
-  - Entity: 15257298793054514706
+      Position: [29, 20]
+  - Entity: 14151371141939882152
     TagComponent:
-      Tag: (8, 23)
-    Parent: 5000927836659257583
+      Tag: (19, 23)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-2.34375, -1.5, 0]
+      Position: [1.09375, -1.3359375, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1637,24 +1652,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [8, 23]
-  - Entity: 15285567087260704987
+      Position: [19, 23]
+  - Entity: 14435982980565021870
     TagComponent:
-      Tag: (24, 13)
-    Parent: 5000927836659257583
+      Tag: (6, 21)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.65625, 0.5, 0]
+      Position: [-2.96875, -0.979687452, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1666,39 +1681,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [24, 13]
-  - Entity: 15287657416477376124
+      Position: [6, 21]
+  - Entity: 14485857512061217176
     TagComponent:
-      Tag: (25, 22)
-    Parent: 5000927836659257583
+      Tag: (0, 17)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.96875, -1.30000007, 0]
+      Position: [-4.84375, -0.267187476, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [25, 22]
-  - Entity: 15469792323462351022
-    TagComponent:
-      Tag: (12, 24)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [-1.09375, -1.70000005, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1710,14 +1710,130 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [12, 24]
+      Position: [0, 17]
+  - Entity: 14796492737782418952
+    TagComponent:
+      Tag: (22, 22)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [2.03125, -1.15781248, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [22, 22]
+  - Entity: 15105397992062486635
+    TagComponent:
+      Tag: (21, 23)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [1.71875, -1.3359375, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [21, 23]
+  - Entity: 15321410584774783038
+    TagComponent:
+      Tag: (0, 19)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.84375, -0.623437464, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [0, 19]
+  - Entity: 15564400907763014388
+    TagComponent:
+      Tag: (27, 20)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [3.59375, -0.801562488, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: Sandbox.Tunnel
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [27, 20]
   - Entity: 15901214814456052562
     TagComponent:
       Tag: Camera
@@ -1725,7 +1841,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0, 0, 17]
+      Position: [0, 0, 14.1999998]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     CameraComponent:
@@ -1739,16 +1855,16 @@ Entities:
         OrthographicFar: 1
       Primary: true
       FixedAspectRatio: false
-  - Entity: 15908401641009419008
+  - Entity: 16528836762016692643
     TagComponent:
-      Tag: (30, 19)
-    Parent: 5000927836659257583
+      Tag: (16, 24)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [4.53125, -0.699999988, 0]
+      Position: [0.15625, -1.5140624, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1760,24 +1876,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [30, 19]
-  - Entity: 15912998452417555839
+      Position: [16, 24]
+  - Entity: 17254877717407918667
     TagComponent:
-      Tag: (3, 21)
-    Parent: 5000927836659257583
+      Tag: (14, 25)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-3.90625, -1.10000002, 0]
+      Position: [-0.46875, -1.69218743, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1789,24 +1905,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [3, 21]
-  - Entity: 16109089946217585377
+      Position: [14, 25]
+  - Entity: 17502969006854570459
     TagComponent:
-      Tag: (28, 21)
-    Parent: 5000927836659257583
+      Tag: (25, 20)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [3.90625, -1.10000002, 0]
+      Position: [2.96875, -0.801562488, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1818,24 +1934,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [28, 21]
-  - Entity: 16456258936542886765
+      Position: [25, 20]
+  - Entity: 17568280779360864296
     TagComponent:
-      Tag: (23, 20)
-    Parent: 5000927836659257583
+      Tag: (2, 21)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [2.34375, -0.900000036, 0]
+      Position: [-4.21875, -0.979687452, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1847,24 +1963,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [23, 20]
-  - Entity: 16883618249535081360
+      Position: [2, 21]
+  - Entity: 17720865725120118004
     TagComponent:
-      Tag: (11, 19)
-    Parent: 5000927836659257583
+      Tag: (17, 23)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-1.40625, -0.699999988, 0]
+      Position: [0.46875, -1.3359375, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1876,24 +1992,24 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [11, 19]
-  - Entity: 16884684897977433135
+      Position: [17, 23]
+  - Entity: 18210945151004145205
     TagComponent:
-      Tag: (15, 25)
-    Parent: 5000927836659257583
+      Tag: (23, 13)
+    Parent: 5428124495434731128
     Children:
       []
     TransformComponent:
-      Position: [-0.15625, -1.89999998, 0]
+      Position: [2.34375, 0.4453125, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
+      Scale: [0.3125, 0.178124994, 1]
     RigidBodyComponent:
       Type: 0
       FixedRotation: false
@@ -1905,309 +2021,193 @@ Entities:
       HalfExtents: [0.5, 0.5]
       Offset: [0, 0]
       Density: 0.5
-      Friction: 0.5
+      Friction: 0
       Restitution: 0
       RestitutionThreshold: 0.5
     ScriptComponent:
       ClassName: ""
     TileComponent:
       Controller: 18236344740095204921
-      Position: [15, 25]
-  - Entity: 17123301891479180378
-    TagComponent:
-      Tag: (18, 23)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [0.78125, -1.5, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [18, 23]
-  - Entity: 17355555491971704669
-    TagComponent:
-      Tag: (26, 21)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [3.28125, -1.10000002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [26, 21]
-  - Entity: 17407352227431393880
-    TagComponent:
-      Tag: (27, 20)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [3.59375, -0.900000036, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: Sandbox.Tunnel
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [27, 20]
-  - Entity: 17634295320270790087
-    TagComponent:
-      Tag: (22, 12)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.03125, 0.699999988, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [22, 12]
-  - Entity: 18044492357206963224
-    TagComponent:
-      Tag: (25, 19)
-    Parent: 5000927836659257583
-    Children:
-      []
-    TransformComponent:
-      Position: [2.96875, -0.699999988, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.3125, 0.200000003, 1]
-    RigidBodyComponent:
-      Type: 0
-      FixedRotation: false
-      Mass: 1
-      LinearDrag: 0.00999999978
-      AngularDrag: 0.0500000007
-      GravityScale: 1
-    BoxColliderComponent:
-      HalfExtents: [0.5, 0.5]
-      Offset: [0, 0]
-      Density: 0.5
-      Friction: 0.5
-      Restitution: 0
-      RestitutionThreshold: 0.5
-    ScriptComponent:
-      ClassName: ""
-    TileComponent:
-      Controller: 18236344740095204921
-      Position: [25, 19]
+      Position: [23, 13]
   - Entity: 18236344740095204921
     TagComponent:
       Tag: Tilemap
     Parent: 0
     Children:
-      - Handle: 5000927836659257583
+      - Handle: 5428124495434731128
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [10, 6.4000001, 1]
+      Scale: [10, 5.80000019, 1]
     ScriptComponent:
       ClassName: ""
     TilemapControllerComponent:
       Tilemap: 5814310491370245355
       Behaviour:
         - Position: [21, 23]
-          Entity: 6249677327781367765
+          Entity: 15105397992062486635
         - Position: [0, 18]
-          Entity: 11021193971477221401
+          Entity: 3521949268324141802
         - Position: [4, 22]
-          Entity: 1994276992504321234
+          Entity: 12120062534866538435
         - Position: [0, 19]
-          Entity: 3443575124589283380
+          Entity: 15321410584774783038
         - Position: [5, 22]
-          Entity: 5057726070202322310
+          Entity: 8693840428838962491
         - Position: [12, 24]
-          Entity: 15469792323462351022
+          Entity: 7496088230550028337
         - Position: [0, 20]
-          Entity: 13192894500526442344
+          Entity: 11318251702712959768
         - Position: [1, 20]
-          Entity: 987029323433082529
+          Entity: 8155577588078404726
         - Position: [13, 24]
-          Entity: 14847746300702712440
+          Entity: 7651245134285452863
         - Position: [18, 23]
-          Entity: 17123301891479180378
+          Entity: 8066732148647308054
         - Position: [2, 21]
-          Entity: 12058538938611463174
+          Entity: 17568280779360864296
         - Position: [14, 25]
-          Entity: 2616665109877907269
+          Entity: 17254877717407918667
         - Position: [24, 15]
-          Entity: 12396877845251870337
+          Entity: 1682477591442549776
         - Position: [3, 21]
-          Entity: 15912998452417555839
+          Entity: 10774150334915650235
         - Position: [15, 25]
-          Entity: 16884684897977433135
+          Entity: 11305547318468076302
         - Position: [6, 21]
-          Entity: 10333463066064431770
+          Entity: 14435982980565021870
         - Position: [10, 25]
-          Entity: 7530103224170019058
+          Entity: 2227418346319750481
         - Position: [23, 20]
-          Entity: 16456258936542886765
+          Entity: 13114513280489827960
         - Position: [7, 23]
-          Entity: 6401462818207000670
+          Entity: 5051720195365039439
         - Position: [31, 15]
-          Entity: 13977928843390155039
+          Entity: 18305804768842146259
         - Position: [16, 16]
-          Entity: 14010492769089080252
+          Entity: 13454109083406283245
         - Position: [6, 22]
-          Entity: 6579814701848017565
+          Entity: 10390562977089851378
         - Position: [8, 23]
-          Entity: 15257298793054514706
+          Entity: 3620824542635187602
         - Position: [25, 22]
-          Entity: 15287657416477376124
+          Entity: 7629062506746234867
         - Position: [22, 23]
-          Entity: 596169468949141583
+          Entity: 10013087486641142911
         - Position: [9, 24]
-          Entity: 179829238807882175
+          Entity: 187732612992542965
         - Position: [11, 24]
-          Entity: 2324074353360754755
+          Entity: 1552558616785169064
         - Position: [20, 23]
-          Entity: 3948150260103786419
+          Entity: 8647505535086002112
         - Position: [24, 16]
-          Entity: 7187366301664756745
+          Entity: 7568064392338313525
         - Position: [11, 19]
-          Entity: 16883618249535081360
+          Entity: 5745348155150840244
         - Position: [16, 24]
-          Entity: 6874953187026755203
+          Entity: 16528836762016692643
         - Position: [17, 23]
-          Entity: 3909741478410126571
+          Entity: 17720865725120118004
         - Position: [19, 23]
-          Entity: 632555178950418422
+          Entity: 14151371141939882152
         - Position: [23, 19]
-          Entity: 1972675529696895583
+          Entity: 3473164846851709534
         - Position: [23, 22]
-          Entity: 8896583041663556535
+          Entity: 8907354451668156541
         - Position: [24, 22]
-          Entity: 6208362463636514655
+          Entity: 1151419462449486961
         - Position: [19, 13]
-          Entity: 3626751105424891513
+          Entity: 6887528140374326034
         - Position: [15, 17]
-          Entity: 13357941213289399482
+          Entity: 4779211229624564054
         - Position: [26, 22]
-          Entity: 635794428752139906
+          Entity: 5498070355288535708
         - Position: [27, 21]
-          Entity: 13497395663007074962
+          Entity: 4814152851038574483
         - Position: [31, 17]
-          Entity: 2160533020521740275
+          Entity: 8759926564561737856
         - Position: [10, 20]
-          Entity: 12027698421258643183
+          Entity: 9346706672604558511
         - Position: [0, 17]
-          Entity: 7965227253583310570
+          Entity: 14485857512061217176
         - Position: [28, 21]
-          Entity: 16109089946217585377
+          Entity: 9196001339386928827
         - Position: [24, 17]
-          Entity: 10585577995197316130
+          Entity: 12270214261570098359
         - Position: [29, 20]
-          Entity: 4638900360906204546
+          Entity: 13781825579130880047
         - Position: [30, 19]
-          Entity: 15908401641009419008
+          Entity: 218117697890535520
         - Position: [9, 20]
-          Entity: 12758317568265307394
+          Entity: 13002104889175290532
         - Position: [31, 18]
-          Entity: 10244627321044402212
+          Entity: 5839323081629585855
         - Position: [31, 16]
-          Entity: 5320271413549142343
+          Entity: 8972921213197679348
         - Position: [27, 20]
-          Entity: 17407352227431393880
+          Entity: 15564400907763014388
         - Position: [14, 17]
-          Entity: 576293886187503485
+          Entity: 752960430557011524
         - Position: [22, 22]
-          Entity: 6815537323931034716
+          Entity: 14796492737782418952
         - Position: [23, 21]
-          Entity: 5620102882380299778
+          Entity: 5566324617729815158
         - Position: [24, 18]
-          Entity: 9726129204330763854
+          Entity: 3635512117499394651
         - Position: [25, 18]
-          Entity: 541612259650448805
+          Entity: 7592250583010997528
         - Position: [25, 19]
-          Entity: 18044492357206963224
+          Entity: 10012422757870477573
         - Position: [25, 20]
-          Entity: 12941314753594479685
+          Entity: 17502969006854570459
         - Position: [26, 21]
-          Entity: 17355555491971704669
+          Entity: 5826232992536188845
         - Position: [9, 19]
-          Entity: 13669498368466932397
+          Entity: 4851868024951552408
         - Position: [10, 19]
-          Entity: 9800615483401543050
+          Entity: 6344756221590189173
         - Position: [15, 18]
-          Entity: 12379442496887200038
+          Entity: 1090994607367508169
         - Position: [19, 14]
-          Entity: 5780760559284331310
+          Entity: 7014651777953279495
         - Position: [16, 17]
-          Entity: 12682003090079577379
+          Entity: 1182214636683420588
         - Position: [18, 14]
-          Entity: 13934656090979670788
+          Entity: 11417847900796049727
         - Position: [22, 12]
-          Entity: 17634295320270790087
+          Entity: 3278228147196289131
         - Position: [23, 12]
-          Entity: 9269039077473897937
+          Entity: 118658929174343383
         - Position: [23, 13]
-          Entity: 3983710246022297168
+          Entity: 18210945151004145205
         - Position: [24, 13]
-          Entity: 15285567087260704987
+          Entity: 2990261592928910523
+  - Entity: 18305804768842146259
+    TagComponent:
+      Tag: (31, 15)
+    Parent: 5428124495434731128
+    Children:
+      []
+    TransformComponent:
+      Position: [4.84375, 0.089062497, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.3125, 0.178124994, 1]
+    RigidBodyComponent:
+      Type: 0
+      FixedRotation: false
+      Mass: 1
+      LinearDrag: 0.00999999978
+      AngularDrag: 0.0500000007
+      GravityScale: 1
+    BoxColliderComponent:
+      HalfExtents: [0.5, 0.5]
+      Offset: [0, 0]
+      Density: 0.5
+      Friction: 0
+      Restitution: 0
+      RestitutionThreshold: 0.5
+    ScriptComponent:
+      ClassName: ""
+    TileComponent:
+      Controller: 18236344740095204921
+      Position: [31, 15]

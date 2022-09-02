@@ -632,7 +632,7 @@ namespace Labyrinth {
 			DrawChildControllerElement("Scale", component.deltaScale, sController.deltaScale, sLastController.deltaScale, -5.0f, 5.0f, ImGuiSliderFlags_Logarithmic);
 		});
 
-		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
+		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&, this](auto& component)
 		{
 			if (ImGui::BeginCombo("Class", component.className.c_str()))
 			{
@@ -654,6 +654,8 @@ namespace Labyrinth {
 
 				ImGui::EndCombo();
 			}
+
+			DrawScriptComponentFields(ScriptEngine::GetScriptInstance(mSelectedEntity.getUUID()));
 		});
 
 		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&, this](auto& component)
@@ -716,6 +718,199 @@ namespace Labyrinth {
 			displayElement = Zero::Vec3;
 
 		lastDisplay = displayElement;
+	}
+
+	void ScenePanel::DrawScriptComponentFields(Ref<ScriptObject> instance)
+	{
+		if (!instance)
+			return;
+
+		const auto& fields = instance->getScriptClass()->getFields();
+		for (const auto& [type, name, field] : fields)
+		{
+			switch (type)
+			{
+			case ScriptFieldType::Boolean:
+			{
+				bool data;
+				instance->getFieldValue(name, data);
+				if (ImGui::Checkbox(name.c_str(), &data))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Int8:
+			{
+				i8 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < Limits::i8Min)
+						val = Limits::i8Min;
+					if (val > Limits::i8Max)
+						val = Limits::i8Max;
+
+					data = (i8)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::Int16:
+			{
+				i16 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < Limits::i16Min)
+						val = Limits::i16Min;
+					if (val > Limits::i16Max)
+						val = Limits::i16Max;
+
+					data = (i16)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::Int32:
+			{
+				i32 data;
+				instance->getFieldValue(name, data);
+
+				if (ImGui::DragInt(name.c_str(), &data))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Int64:
+			{
+				i64 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					data = (i64)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::UInt8:
+			{
+				u8 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+					if (val > 255)
+						val = 255;
+
+					data = (u8)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::UInt16:
+			{
+				u16 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+					if (val > Limits::u16Max)
+						val = Limits::u16Max;
+
+					data = (u16)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::UInt32:
+			{
+				u32 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+
+					data = (u32)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::UInt64:
+			{
+				u64 data;
+				instance->getFieldValue(name, data);
+
+				i32 val = (i32)data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					data = (u64)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::Float:
+			{
+				f32 data;
+				instance->getFieldValue(name, data);
+				if (ImGui::DragFloat(name.c_str(), &data))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Double:
+			{
+				f64 data;
+				instance->getFieldValue(name, data);
+
+				f32 val = (f32)data;
+				if (ImGui::DragFloat(name.c_str(), &val))
+				{
+					data = (f64)val;
+					instance->setFieldValue(name, data);
+				}
+				break;
+			}
+			case ScriptFieldType::Vector2:
+			{
+				glm::vec2 data;
+				instance->getFieldValue(name, data);
+
+				if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(data)))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Vector3:
+			{
+				glm::vec3 data;
+				instance->getFieldValue(name, data);
+
+				if (ImGui::DragFloat3(name.c_str(), glm::value_ptr(data)))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Vector4:
+			{
+				glm::vec4 data;
+				instance->getFieldValue(name, data);
+
+				if (ImGui::DragFloat4(name.c_str(), glm::value_ptr(data)))
+					instance->setFieldValue(name, data);
+				break;
+			}
+			}
+		}
 	}
 
 	void ScenePanel::AssetTypeWarning()

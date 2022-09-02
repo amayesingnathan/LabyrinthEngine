@@ -51,12 +51,12 @@ namespace Labyrinth {
 		std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 
 		auto scene = sData->context;
-		scene->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
+		scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 		{
-			Entity e = { entity, scene };
+			Entity entity = { e, scene };
 			if (scriptClasses.count(sc.className) != 0)
 			{
-				sc.instance = ScriptObject::Create(scriptClasses[sc.className], e.getUUID());
+				sc.instance =  ScriptObject::Create(scriptClasses[sc.className], entity.getUUID());
 				sc.initialised = true;
 				sc.instance->onStart();
 			}
@@ -67,7 +67,7 @@ namespace Labyrinth {
 	{
 		sData->context->getEntitiesWith<ScriptComponent>().each([&](auto& sc)
 		{
-			sc.instance = nullptr;
+			sc.instance.reset();
 			sc.initialised = false;
 		});
 	}
@@ -90,7 +90,7 @@ namespace Labyrinth {
 		{
 			scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 			{
-				sc.instance = nullptr;
+				sc.instance.reset();
 				sc.initialised = false;
 			});
 		}
@@ -101,12 +101,12 @@ namespace Labyrinth {
 		{
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 			auto scene = sData->context;
-			scene->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
+			scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 			{
-				Entity e = { entity, scene };
+				Entity entity = { e, scene };
 				if (scriptClasses.count(sc.className) != 0)
 				{
-					sc.instance = ScriptObject::Create(scriptClasses[sc.className], e.getUUID());
+					sc.instance = ScriptObject::Create(scriptClasses[sc.className], entity.getUUID());
 					sc.initialised = true;
 					sc.instance->onStart();
 				}
@@ -123,11 +123,25 @@ namespace Labyrinth {
 
 		scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 		{
-			sc.instance = nullptr;
+			sc.instance.reset();
 			sc.initialised = false;
 		});
+
 		ScriptEngineInternal::UnloadAssembly(ScriptEngineInternal::GetAppAssemblyInfo());
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetAppClasses() { return ScriptEngineInternal::GetAppAssemblyInfo()->classes; }
+
+	Ref<ScriptObject> ScriptEngine::GetScriptInstance(UUID id)
+	{
+		if (!sData->context)
+			return nullptr;
+
+		Entity entity = sData->context->findEntity(id);
+		if (!entity.hasComponent<ScriptComponent>())
+			return nullptr;
+
+		return entity.getComponent<ScriptComponent>().instance;
+	}
+
 }

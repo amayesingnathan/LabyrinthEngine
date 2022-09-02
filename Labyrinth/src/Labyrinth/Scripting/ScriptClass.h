@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ScriptFwd.h"
+#include "FieldTypes.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 
@@ -36,6 +37,9 @@ namespace Labyrinth {
 
 		operator MonoClass* () { return mMonoClass; }
 
+		const ScriptField* getField(const std::string& name) const;
+		const std::vector<ScriptField>& getFields() const { return mFields; }
+
 		bool valid() { return mMonoClass; }
 
 		static Ref<ScriptClass> Create(const std::string& classNamespace, const std::string& className) { return Ref<ScriptClass>::Create(classNamespace, className); }
@@ -50,6 +54,10 @@ namespace Labyrinth {
 		std::string mClassName;
 
 		MonoClass* mMonoClass = nullptr;
+
+		std::vector<ScriptField> mFields;
+
+		friend class ScriptEngineInternal;
 	};
 
 }

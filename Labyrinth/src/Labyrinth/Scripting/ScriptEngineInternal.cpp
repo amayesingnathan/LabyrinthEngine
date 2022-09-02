@@ -228,8 +228,25 @@ namespace Labyrinth {
 			if (!monoClass)
 				continue;
 
-			if (mono_class_is_subclass_of(monoClass, *sInternalData->entityClass, false))
-				assembly->classes[fullname] = ScriptClass::Create(monoClass);
+			bool isEntity = mono_class_is_subclass_of(monoClass, *sInternalData->entityClass, false);
+
+			if (!isEntity)
+				continue;
+
+			Ref<ScriptClass> scriptClass = ScriptClass::Create(monoClass)
+				;
+			void* iterator = nullptr;
+			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+			{
+				if (!(ScriptUtils::GetFieldAccessibility(field) & Accessibility::Public))
+					continue;
+
+				const char* fieldTypeName = mono_type_get_name(mono_field_get_type(field));
+				const char* fieldName = mono_field_get_name(field);
+				scriptClass->mFields.emplace_back(ScriptFieldTypes::Get(fieldTypeName), fieldName, field);
+			}
+
+			assembly->classes[fullname] = scriptClass;
 		}
 	}
 

@@ -129,11 +129,11 @@ namespace Labyrinth {
 			if (!IsInSquare(firstSquare.pos, lastSquare, selectedSquare.pos)) return false;
 		}
 
-		float width = Cast<float>(lastSquare.first - firstSquare.pos.first + 1);
-		float height = Cast<float>(lastSquare.second - firstSquare.pos.second + 1);
+		f32 width = (f32)(lastSquare.first - firstSquare.pos.first + 1);
+		f32 height = (f32)(lastSquare.second - firstSquare.pos.second + 1);
 
-		mSheet->createSubTex(std::hash<std::string>()(mName), mName,
-			{ Cast<float>(firstSquare.pos.second), Cast<float>(firstSquare.pos.first) }, 
+		mSheet->createSubTex((i32)std::hash<std::string>()(mName), mName,
+			{ (f32)firstSquare.pos.second, (f32)firstSquare.pos.first },
 			{ width, height });
 
 		return true;

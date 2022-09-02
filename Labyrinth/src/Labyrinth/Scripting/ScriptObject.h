@@ -42,6 +42,8 @@ namespace Labyrinth {
 		bool valid() const { return mInstance; }
 		MonoObject* obj() { return mInstance; }
 
+		Ref<ScriptClass> getScriptClass() const { return mClass; }
+
 		template<typename... Args>
 		ScriptObject invokeMethod(const std::string& name, Args&&... args)
 		{
@@ -52,8 +54,51 @@ namespace Labyrinth {
 			return result;
 		}
 
+		template<typename T>
+		void getFieldValue(const std::string& fieldName, T& result)
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Template type is not valid for this field type!");
+
+			GetFieldValueInternal(scriptField, &result);
+		}
+
+		template<typename T>
+		T getFieldValue(const std::string& fieldName)
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Template type is not valid for this field type!");
+
+			T result = T();
+			GetFieldValueInternal(scriptField, &result);
+
+			return result;
+		}
+
+		template<typename T>
+		void setFieldValue(const std::string& fieldName, T& fieldVal)
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Value is not a valid type for this field!");
+
+			SetFieldValueInternal(scriptField, &fieldVal);
+		}
+
 		template<typename... Args>
 		static Ref<ScriptObject> Create(Args&&... args) { return Ref<ScriptObject>::Create(std::forward<Args>(args)...); }
+
+	private:
+		void GetFieldValueInternal(const ScriptField* scriptField, void* result);
+		void SetFieldValueInternal(const ScriptField* scriptField, void* fieldVal);
 
 	private:
 		Ref<ScriptClass> mClass = nullptr;

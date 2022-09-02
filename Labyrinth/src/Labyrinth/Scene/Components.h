@@ -189,7 +189,7 @@ namespace Labyrinth {
 	struct ScriptComponent
 	{
 		std::string className;
-		Ref<ScriptObject> instance = nullptr;
+		Ref<ScriptObject> instance;
 		bool initialised = false;
 
 		ScriptComponent() = default;
@@ -242,7 +242,7 @@ namespace Labyrinth {
 	{
 		glm::vec2 halfExtents = { 0.5f, 0.5f };
 		glm::vec2 offset = { 0.0f, 0.0f };
-		f32 friction = 0.5f;
+		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;
@@ -257,7 +257,7 @@ namespace Labyrinth {
 	{
 		f32 radius = 0.5f;
 		glm::vec2 offset = { 0.0f, 0.0f };
-		f32 friction = 0.5f;
+		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;

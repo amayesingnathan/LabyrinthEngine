@@ -24,5 +24,6 @@ namespace Labyrinth {
 		static void UnloadAppAssembly();
 
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetAppClasses();
+		static Ref<ScriptObject> GetScriptInstance(UUID id);
 	};
 }
