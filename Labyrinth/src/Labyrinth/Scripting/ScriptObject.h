@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScriptUtils.h"
-#include "ScriptClass.h"
+#include "ScriptCache.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 
@@ -55,7 +55,7 @@ namespace Labyrinth {
 		}
 
 		template<typename T>
-		void getFieldValue(const std::string& fieldName, T& result)
+		void getFieldValue(const std::string& fieldName, T& result) const
 		{
 			const ScriptField* scriptField = mClass->getField(fieldName);
 			if (!scriptField)
@@ -67,7 +67,7 @@ namespace Labyrinth {
 		}
 
 		template<typename T>
-		T getFieldValue(const std::string& fieldName)
+		T getFieldValue(const std::string& fieldName) const
 		{
 			const ScriptField* scriptField = mClass->getField(fieldName);
 			if (!scriptField)
@@ -93,11 +93,13 @@ namespace Labyrinth {
 			SetFieldValueInternal(scriptField, &fieldVal);
 		}
 
+		void setFieldValues(const FieldValues& fieldVals);
+
 		template<typename... Args>
 		static Ref<ScriptObject> Create(Args&&... args) { return Ref<ScriptObject>::Create(std::forward<Args>(args)...); }
 
 	private:
-		void GetFieldValueInternal(const ScriptField* scriptField, void* result);
+		void GetFieldValueInternal(const ScriptField* scriptField, void* result) const;
 		void SetFieldValueInternal(const ScriptField* scriptField, void* fieldVal);
 
 	private:

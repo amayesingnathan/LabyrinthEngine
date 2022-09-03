@@ -49,7 +49,8 @@ namespace Labyrinth {
 		}
 
 		void DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags = ImGuiSliderFlags_None);
-		void DrawScriptComponentFields(Ref<ScriptObject> instance);
+		void DrawScriptClassFields(Entity entity);
+		void DrawScriptInstanceFields(Entity entity);
 
 		void AssetTypeWarning();
 

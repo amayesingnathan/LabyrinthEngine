@@ -56,9 +56,11 @@ namespace Labyrinth {
 			Entity entity = { e, scene };
 			if (scriptClasses.count(sc.className) != 0)
 			{
-				sc.instance =  ScriptObject::Create(scriptClasses[sc.className], entity.getUUID());
+				UUID id = entity.getUUID();
+				sc.instance =  ScriptObject::Create(scriptClasses[sc.className], id);
 				sc.initialised = true;
 				sc.instance->onStart();
+				sc.instance->setFieldValues(ScriptCache::GetFields(id));
 			}
 		});
 	}
@@ -106,9 +108,11 @@ namespace Labyrinth {
 				Entity entity = { e, scene };
 				if (scriptClasses.count(sc.className) != 0)
 				{
-					sc.instance = ScriptObject::Create(scriptClasses[sc.className], entity.getUUID());
+					UUID id = entity.getUUID();
+					sc.instance = ScriptObject::Create(scriptClasses[sc.className], id);
 					sc.initialised = true;
 					sc.instance->onStart();
+					sc.instance->setFieldValues(ScriptCache::GetFields(id));
 				}
 			});
 		}
@@ -128,6 +132,15 @@ namespace Labyrinth {
 		});
 
 		ScriptEngineInternal::UnloadAssembly(ScriptEngineInternal::GetAppAssemblyInfo());
+	}
+
+	Ref<ScriptClass> ScriptEngine::GetAppClass(const std::string& name)
+	{
+		const auto& classes = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
+		if (classes.count(name) == 0)
+			return nullptr;
+
+		return classes.at(name);
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetAppClasses() { return ScriptEngineInternal::GetAppAssemblyInfo()->classes; }

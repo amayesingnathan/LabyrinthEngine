@@ -6,16 +6,22 @@
 #include "../Modals/NewMapModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+
 #include <Labyrinth/Containers/StaticString.h>
+
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
+
 #include <Labyrinth/ImGui/ImGuiUtils.h>
+
 #include <Labyrinth/IO/Input.h>
+
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Renderer/RenderCommand.h>
 
 #include <Labyrinth/Scripting/ScriptEngine.h>
+#include <Labyrinth/Scripting/ScriptCache.h>
 
 #include <glm/gtc/type_ptr.hpp>
 
@@ -634,6 +640,7 @@ namespace Labyrinth {
 
 		DrawComponent<ScriptComponent>("Script", mSelectedEntity, [&, this](auto& component)
 		{
+			UUID id = mSelectedEntity.getUUID();
 			if (ImGui::BeginCombo("Class", component.className.c_str()))
 			{
 				// Display "None" at the top of the list
@@ -646,7 +653,11 @@ namespace Labyrinth {
 					bool isSelected = component.className == key;
 
 					if (ImGui::Selectable(key.c_str(), isSelected))
+					{
+						ScriptCache::RemoveEntity(id);
 						component.className = key;
+						ScriptCache::RegisterEntity(id, klass);
+					}
 
 					if (isSelected)
 						ImGui::SetItemDefaultFocus();
@@ -655,7 +666,10 @@ namespace Labyrinth {
 				ImGui::EndCombo();
 			}
 
-			DrawScriptComponentFields(ScriptEngine::GetScriptInstance(mSelectedEntity.getUUID()));
+			if (component.instance)
+				DrawScriptInstanceFields(mSelectedEntity);
+			else
+				DrawScriptClassFields(mSelectedEntity);
 		});
 
 		DrawComponent<TilemapControllerComponent>("Tilemap", mSelectedEntity, [&, this](auto& component)
@@ -720,12 +734,166 @@ namespace Labyrinth {
 		lastDisplay = displayElement;
 	}
 
-	void ScenePanel::DrawScriptComponentFields(Ref<ScriptObject> instance)
+	void ScenePanel::DrawScriptClassFields(Entity entity)
 	{
-		if (!instance)
-			return;
+		UUID id = entity.getUUID();
+		for (auto& [name, fieldValue] : ScriptCache::GetFields(id))
+		{
+			switch (fieldValue.field.type)
+			{
+			case ScriptFieldType::Boolean:
+			{
+				bool* data = ScriptCache::GetFieldValue<bool>(id, name);
 
-		const auto& fields = instance->getScriptClass()->getFields();
+				ImGui::Checkbox(name.c_str(), data);
+				break;
+			}
+			case ScriptFieldType::Int8:
+			{
+				i8* data = ScriptCache::GetFieldValue<i8>(id, name);
+
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < Limits::i8Min)
+						val = Limits::i8Min;
+					if (val > Limits::i8Max)
+						val = Limits::i8Max;
+
+					*data = (i8)val;
+				}
+				break;
+			}
+			case ScriptFieldType::Int16:
+			{
+				i16* data = ScriptCache::GetFieldValue<i16>(id, name);
+
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < Limits::i16Min)
+						val = Limits::i16Min;
+					if (val > Limits::i16Max)
+						val = Limits::i16Max;
+
+					*data = (i16)val;
+				}
+				break;
+			}
+			case ScriptFieldType::Int32:
+			{
+				i32* data = ScriptCache::GetFieldValue<i32>(id, name);
+				ImGui::DragInt(name.c_str(), data);
+				break;
+			}
+			case ScriptFieldType::Int64:
+			{
+				i64* data = ScriptCache::GetFieldValue<i64>(id, name);
+
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+					*data = (i64)val;
+				break;
+			}
+			case ScriptFieldType::UInt8:
+			{
+				u8* data = ScriptCache::GetFieldValue<u8>(id, name);
+
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+					if (val > Limits::u8Max)
+						val = Limits::u8Max;
+
+					*data = (u8)val;
+				}
+				break;
+			}
+			case ScriptFieldType::UInt16:
+			{
+				u16* data = ScriptCache::GetFieldValue<u16>(id, name);
+
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+					if (val > Limits::u16Max)
+						val = Limits::u16Max;
+
+					*data = (u16)val;
+				}
+				break;
+			}
+			case ScriptFieldType::UInt32:
+			{
+				u32* data = ScriptCache::GetFieldValue<u32>(id, name);
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+
+					*data = (u32)val;
+				}
+				break;
+			}
+			case ScriptFieldType::UInt64:
+			{
+				u64* data = ScriptCache::GetFieldValue<u64>(id, name);
+				i32 val = (i32)*data;
+				if (ImGui::DragInt(name.c_str(), &val))
+				{
+					if (val < 0)
+						val = 0;
+
+					*data = (u64)val;
+				}
+				break;
+			}
+			case ScriptFieldType::Float:
+			{
+				f32* data = ScriptCache::GetFieldValue<f32>(id, name);
+				ImGui::DragFloat(name.c_str(), data);
+				break;
+			}
+			case ScriptFieldType::Double:
+			{
+				f64* data = ScriptCache::GetFieldValue<f64>(id, name);
+				f32 val = (f32)*data;
+				if (ImGui::DragFloat(name.c_str(), &val))
+					*data = (f64)val;
+				break;
+			}
+			case ScriptFieldType::Vector2:
+			{
+				glm::vec2* data = ScriptCache::GetFieldValue<glm::vec2>(id, name);
+				ImGui::DragFloat2(name.c_str(), &data->x);
+				break;
+			}
+			case ScriptFieldType::Vector3:
+			{
+				glm::vec3* data = ScriptCache::GetFieldValue<glm::vec3>(id, name);
+				ImGui::DragFloat3(name.c_str(), &data->x);
+				break;
+			}
+			case ScriptFieldType::Vector4:
+			{
+				glm::vec4* data = ScriptCache::GetFieldValue<glm::vec4>(id, name);
+				ImGui::DragFloat4(name.c_str(), &data->x);
+				break;
+			}
+			}
+		}
+	}
+
+	void ScenePanel::DrawScriptInstanceFields(Entity entity)
+	{
+		auto& script = entity.getComponent<ScriptComponent>();
+
+		const auto& fields = script.instance->getScriptClass()->getFields();
 		for (const auto& [type, name, field] : fields)
 		{
 			switch (type)
@@ -733,15 +901,15 @@ namespace Labyrinth {
 			case ScriptFieldType::Boolean:
 			{
 				bool data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 				if (ImGui::Checkbox(name.c_str(), &data))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			case ScriptFieldType::Int8:
 			{
 				i8 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -752,14 +920,14 @@ namespace Labyrinth {
 						val = Limits::i8Max;
 
 					data = (i8)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::Int16:
 			{
 				i16 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -770,36 +938,36 @@ namespace Labyrinth {
 						val = Limits::i16Max;
 
 					data = (i16)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::Int32:
 			{
 				i32 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				if (ImGui::DragInt(name.c_str(), &data))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			case ScriptFieldType::Int64:
 			{
 				i64 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
 				{
 					data = (i64)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::UInt8:
 			{
 				u8 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -810,14 +978,14 @@ namespace Labyrinth {
 						val = 255;
 
 					data = (u8)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::UInt16:
 			{
 				u16 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -828,14 +996,14 @@ namespace Labyrinth {
 						val = Limits::u16Max;
 
 					data = (u16)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::UInt32:
 			{
 				u32 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -844,69 +1012,69 @@ namespace Labyrinth {
 						val = 0;
 
 					data = (u32)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::UInt64:
 			{
 				u64 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				i32 val = (i32)data;
 				if (ImGui::DragInt(name.c_str(), &val))
 				{
 					data = (u64)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::Float:
 			{
 				f32 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 				if (ImGui::DragFloat(name.c_str(), &data))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			case ScriptFieldType::Double:
 			{
 				f64 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				f32 val = (f32)data;
 				if (ImGui::DragFloat(name.c_str(), &val))
 				{
 					data = (f64)val;
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				}
 				break;
 			}
 			case ScriptFieldType::Vector2:
 			{
 				glm::vec2 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				if (ImGui::DragFloat2(name.c_str(), glm::value_ptr(data)))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			case ScriptFieldType::Vector3:
 			{
 				glm::vec3 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				if (ImGui::DragFloat3(name.c_str(), glm::value_ptr(data)))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			case ScriptFieldType::Vector4:
 			{
 				glm::vec4 data;
-				instance->getFieldValue(name, data);
+				script.instance->getFieldValue(name, data);
 
 				if (ImGui::DragFloat4(name.c_str(), glm::value_ptr(data)))
-					instance->setFieldValue(name, data);
+					script.instance->setFieldValue(name, data);
 				break;
 			}
 			}

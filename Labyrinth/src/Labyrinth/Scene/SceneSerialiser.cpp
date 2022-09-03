@@ -396,6 +396,9 @@ namespace Labyrinth {
 			{
 				auto& sc = deserializedEntity.addComponent<ScriptComponent>();
 				sc.className = scriptComponent["ClassName"].as<std::string>();
+
+				if (!sc.className.empty())
+					ScriptCache::RegisterEntity(uuid, sc.className);
 			}
 
 			auto tmcComponent = entity["TilemapControllerComponent"];

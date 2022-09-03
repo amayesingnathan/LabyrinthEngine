@@ -1,5 +1,7 @@
 #pragma once
 
+#include "ScriptFwd.h"
+
 #include <Labyrinth/Core/System/Assert.h>
 #include <Labyrinth/Scene/Entity.h>
 
@@ -29,6 +31,18 @@ namespace Labyrinth {
 		Float, Double,
 		Vector2, Vector3, Vector4,
 		Entity
+	};
+
+	using FieldID = UUID;
+
+	struct ScriptField
+	{
+		ScriptFieldType type = ScriptFieldType::None;
+		std::string name;
+		MonoClassField* field = nullptr;
+
+		ScriptField() = default;
+		ScriptField(ScriptFieldType t, const std::string& n, MonoClassField* f) : type(t), name(n), field(f) {}
 	};
 
 	class ScriptFieldTypes
@@ -86,14 +100,5 @@ namespace Labyrinth {
 			{ ScriptFieldType::Vector4,	typeid(glm::vec4) },
 			{ ScriptFieldType::Entity,	typeid(UUID) }
 		};
-	};
-
-	struct ScriptField
-	{
-		ScriptFieldType type;
-		std::string name;
-		MonoClassField* field;
-
-		ScriptField(ScriptFieldType t, const std::string& n, MonoClassField* f) : type(t), name(n), field(f) {}
 	};
 }
