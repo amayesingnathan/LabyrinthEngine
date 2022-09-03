@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/Buffer.h"
-#include "Labyrinth/Assets/Asset.h"
+#include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Assets/Asset.h>
 
 #include <string>
 #include <regex>

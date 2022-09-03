@@ -132,13 +132,6 @@ namespace Labyrinth {
 			memset(data, 0, _Size);
 			memcpy(data, _data, _Size);
 		}
-		StaticBuffer(const std::string& string)
-		{
-			LAB_CORE_ASSERT(string.size() <= _Size);
-
-			memset(data, 0, _Size);
-			memcpy(data, string.c_str(), string.size());;
-		}
 
 		template<usize _Other>
 		StaticBuffer(const StaticBuffer<_Other>& buffer)
@@ -150,12 +143,6 @@ namespace Labyrinth {
 				memcpy(data, buffer.data, _Size);
 		}
 
-		operator char*() 
-		{
-			LAB_CORE_ASSERT(data[_Size - 1] == 0); // At least the last character should be null
-			return (char*)data;
-		}
-
 		byte& operator[](usize index)
 		{
 			return data[index];
@@ -164,12 +151,6 @@ namespace Labyrinth {
 		byte operator[](usize index) const
 		{
 			return data[index];
-		}
-
-		const char* string() const 
-		{
-			LAB_CORE_ASSERT(data[_Size - 1] == 0); // At least the last character should be null
-			return (const char*)data;
 		}
 
 		constexpr usize size() const { return _Size; }

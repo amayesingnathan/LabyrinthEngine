@@ -2,7 +2,7 @@
 
 #include "../EditorLayer.h"
 
-#include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Containers/StaticString.h>
 #include <Labyrinth/Project/Project.h>
 
 #include <imgui/imgui.h>
@@ -21,13 +21,13 @@ namespace Labyrinth {
 		fs::path fullProjectPath = mProjectPath / mProjectName;
 		ImGui::Text("Full Project Path: %s", fullProjectPath.string().c_str());
 
-		StaticBuffer<256> nameBuffer(mProjectName);
-		if (ImGui::InputText("Name", nameBuffer, nameBuffer.size()))
-			mProjectName = nameBuffer.string();
+		StaticString<256> nameBuffer(mProjectName);
+		if (ImGui::InputText("Name", nameBuffer, nameBuffer.length()))
+			mProjectName = nameBuffer.toString();
 
-		StaticBuffer<256> pathBuffer(mProjectPath.string());
-		if (ImGui::InputText("Path", pathBuffer, pathBuffer.size()))
-			mProjectPath = pathBuffer.string();
+		StaticString<256> pathBuffer(mProjectPath.string());
+		if (ImGui::InputText("Path", pathBuffer, pathBuffer.length()))
+			mProjectPath = pathBuffer.toString();
 
 		ImGui::SameLine();
 

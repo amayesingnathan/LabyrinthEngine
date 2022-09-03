@@ -3,6 +3,7 @@
 #include "../Modals/SubTexModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Containers/StaticString.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
@@ -73,9 +74,9 @@ namespace Labyrinth {
 						ImGui::Text("Please enter the width and height of each tile in the sprite sheet:");
 						ImGui::NewLine();
 
-						StaticBuffer<256> buffer(mPanelData.sheetName);
-						if (ImGui::InputText("Name", buffer, sizeof(buffer)))
-							mPanelData.sheetName = buffer.string();
+						StaticString<256> buffer(mPanelData.sheetName);
+						if (ImGui::InputText("Name", buffer, buffer.length()))
+							mPanelData.sheetName = buffer.toString();
 
 						ImGui::InputInt("Width", &tileWidth);
 						ImGui::InputInt("Height", &tileHeight);

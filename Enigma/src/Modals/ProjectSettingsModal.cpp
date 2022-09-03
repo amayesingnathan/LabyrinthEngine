@@ -1,7 +1,7 @@
 #include "ProjectSettingsModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Containers/StaticString.h>
 #include <Labyrinth/IO/Filesystem.h>
 
 namespace Labyrinth {
@@ -15,9 +15,9 @@ namespace Labyrinth {
         ImGui::Text("Project Settings");
 
         {   // Project Name
-            StaticBuffer<256> buffer(mProject->mSettings.name);
-            if (ImGui::InputText("Name", buffer, buffer.size()))
-                mProject->mSettings.name = buffer.string();
+            StaticString<256> buffer(mProject->mSettings.name);
+            if (ImGui::InputText("Name", buffer, buffer.length()))
+                mProject->mSettings.name = buffer.toString();
         }
         {   // Asset Directory
             if (ImGui::Button("Asset Directory"))

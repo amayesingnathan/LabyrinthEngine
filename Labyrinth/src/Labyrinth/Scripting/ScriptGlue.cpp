@@ -6,7 +6,7 @@
 
 #include <Labyrinth/Assets/AssetManager.h>
 
-#include <Labyrinth/Core/Buffer.h>
+#include <Labyrinth/Containers/Buffer.h>
 
 #include <Labyrinth/IO/Input.h>
 

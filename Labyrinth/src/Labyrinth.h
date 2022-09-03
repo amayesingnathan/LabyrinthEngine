@@ -10,10 +10,12 @@
 #include "Labyrinth/Core/System/Types.h"
 
 #include "Labyrinth/Core/Application.h"
-#include "Labyrinth/Core/Buffer.h"
 #include "Labyrinth/Core/Layer.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Core/CameraController.h"
+
+#include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Containers/StaticString.h>
 
 #include "Labyrinth/IO/Input.h"
 #include "Labyrinth/IO/KeyCodes.h"
