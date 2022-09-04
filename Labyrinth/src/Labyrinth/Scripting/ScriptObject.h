@@ -62,10 +62,8 @@ namespace Labyrinth {
 				return;
 
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Template type is not valid for this field type!");
-
 			GetFieldValueInternal(scriptField, &result);
 		}
-
 		template<typename T>
 		T getFieldValue(const std::string& fieldName) const
 		{
@@ -80,6 +78,7 @@ namespace Labyrinth {
 
 			return result;
 		}
+		void getEntityFieldValue(const std::string& fieldName, UUID& result) const;
 
 		template<typename T>
 		void setFieldValue(const std::string& fieldName, T& fieldVal)
@@ -109,5 +108,4 @@ namespace Labyrinth {
 		MonoMethod* mOnStartMethod = nullptr;
 		MonoMethod* mOnUpdateMethod = nullptr;
 	};
-
 }

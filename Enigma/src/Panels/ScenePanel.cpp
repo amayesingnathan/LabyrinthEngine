@@ -176,26 +176,23 @@ namespace Labyrinth {
 		flags |= ImGuiTreeNodeFlags_SpanAvailWidth;
 
 		bool opened = ImGui::TreeNodeEx((void*)(u64)(u32)entity, flags, tag.c_str());
-		if (ImGui::IsItemClicked())
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
 			SelectionManager::DeselectAll(SelectionDomain::Scene);
 			SelectionManager::Select(SelectionDomain::Scene, entity.getUUID());
 		}
 		if (ImGui::BeginDragDropSource())
 		{
-			Entity* dragEntity = &entity;
-			ImGui::SetDragDropPayload("ENTITY_ITEM", dragEntity, sizeof(Entity));
+			ImGui::SetDragDropPayload("ENTITY_ITEM", &entity.getUUID(), sizeof(UUID));
 			ImGui::EndDragDropSource();
 		}
 		if (ImGui::BeginDragDropTarget())
 		{
 			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ITEM"))
 			{
-				Entity* dragEntity = Cast<Entity>(payload->Data);
-				if (*dragEntity != entity)
-				{
-					dragEntity->setParent(entity);
-				}
+				Entity dragEntity = mContext->findEntity(*Cast<UUID>(payload->Data));
+				if (dragEntity != entity)
+					dragEntity.setParent(entity);
 			}
 			ImGui::EndDragDropTarget();
 		}
@@ -736,21 +733,21 @@ namespace Labyrinth {
 
 	void ScenePanel::DrawScriptClassFields(Entity entity)
 	{
-		UUID id = entity.getUUID();
-		for (auto& [name, fieldValue] : ScriptCache::GetFields(id))
+		UUID entID = entity.getUUID();
+		for (auto& [name, fieldValue] : ScriptCache::GetFields(entID))
 		{
-			switch (fieldValue.field.type)
+			switch (fieldValue.type)
 			{
 			case ScriptFieldType::Boolean:
 			{
-				bool* data = ScriptCache::GetFieldValue<bool>(id, name);
+				bool* data = ScriptCache::GetFieldValue<bool>(entID, name);
 
 				ImGui::Checkbox(name.c_str(), data);
 				break;
 			}
 			case ScriptFieldType::Int8:
 			{
-				i8* data = ScriptCache::GetFieldValue<i8>(id, name);
+				i8* data = ScriptCache::GetFieldValue<i8>(entID, name);
 
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -766,7 +763,7 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::Int16:
 			{
-				i16* data = ScriptCache::GetFieldValue<i16>(id, name);
+				i16* data = ScriptCache::GetFieldValue<i16>(entID, name);
 
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -782,13 +779,13 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::Int32:
 			{
-				i32* data = ScriptCache::GetFieldValue<i32>(id, name);
+				i32* data = ScriptCache::GetFieldValue<i32>(entID, name);
 				ImGui::DragInt(name.c_str(), data);
 				break;
 			}
 			case ScriptFieldType::Int64:
 			{
-				i64* data = ScriptCache::GetFieldValue<i64>(id, name);
+				i64* data = ScriptCache::GetFieldValue<i64>(entID, name);
 
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -797,7 +794,7 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::UInt8:
 			{
-				u8* data = ScriptCache::GetFieldValue<u8>(id, name);
+				u8* data = ScriptCache::GetFieldValue<u8>(entID, name);
 
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -813,7 +810,7 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::UInt16:
 			{
-				u16* data = ScriptCache::GetFieldValue<u16>(id, name);
+				u16* data = ScriptCache::GetFieldValue<u16>(entID, name);
 
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
@@ -829,7 +826,7 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::UInt32:
 			{
-				u32* data = ScriptCache::GetFieldValue<u32>(id, name);
+				u32* data = ScriptCache::GetFieldValue<u32>(entID, name);
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
 				{
@@ -842,7 +839,7 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::UInt64:
 			{
-				u64* data = ScriptCache::GetFieldValue<u64>(id, name);
+				u64* data = ScriptCache::GetFieldValue<u64>(entID, name);
 				i32 val = (i32)*data;
 				if (ImGui::DragInt(name.c_str(), &val))
 				{
@@ -855,13 +852,13 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::Float:
 			{
-				f32* data = ScriptCache::GetFieldValue<f32>(id, name);
+				f32* data = ScriptCache::GetFieldValue<f32>(entID, name);
 				ImGui::DragFloat(name.c_str(), data);
 				break;
 			}
 			case ScriptFieldType::Double:
 			{
-				f64* data = ScriptCache::GetFieldValue<f64>(id, name);
+				f64* data = ScriptCache::GetFieldValue<f64>(entID, name);
 				f32 val = (f32)*data;
 				if (ImGui::DragFloat(name.c_str(), &val))
 					*data = (f64)val;
@@ -869,20 +866,38 @@ namespace Labyrinth {
 			}
 			case ScriptFieldType::Vector2:
 			{
-				glm::vec2* data = ScriptCache::GetFieldValue<glm::vec2>(id, name);
+				glm::vec2* data = ScriptCache::GetFieldValue<glm::vec2>(entID, name);
 				ImGui::DragFloat2(name.c_str(), &data->x);
 				break;
 			}
 			case ScriptFieldType::Vector3:
 			{
-				glm::vec3* data = ScriptCache::GetFieldValue<glm::vec3>(id, name);
+				glm::vec3* data = ScriptCache::GetFieldValue<glm::vec3>(entID, name);
 				ImGui::DragFloat3(name.c_str(), &data->x);
 				break;
 			}
 			case ScriptFieldType::Vector4:
 			{
-				glm::vec4* data = ScriptCache::GetFieldValue<glm::vec4>(id, name);
+				glm::vec4* data = ScriptCache::GetFieldValue<glm::vec4>(entID, name);
 				ImGui::DragFloat4(name.c_str(), &data->x);
+				break;
+			}
+			case ScriptFieldType::Entity:
+			{
+				UUID* data = ScriptCache::GetFieldValue<UUID>(entID, name);
+				const std::string& tag = (*data) ? mContext->findEntity(*data).getTag() : "No Entity";
+				ImGui::Button(tag.c_str());
+				if (ImGui::BeginDragDropTarget())
+				{
+					if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("ENTITY_ITEM"))
+					{
+						UUID dragID = *Cast<UUID>(payload->Data);
+						*data = dragID;
+					}
+					ImGui::EndDragDropTarget();
+				}
+				ImGui::SameLine();
+				ImGui::Text(name.c_str());
 				break;
 			}
 			}
@@ -1075,6 +1090,19 @@ namespace Labyrinth {
 
 				if (ImGui::DragFloat4(name.c_str(), glm::value_ptr(data)))
 					script.instance->setFieldValue(name, data);
+				break;
+			}
+			case ScriptFieldType::Entity:
+			{
+				UUID data = 0;
+				script.instance->getEntityFieldValue(name, data);
+				Entity entity = mContext->findEntity(data);
+				const std::string& tag = entity ? entity.getTag() : "No Entity";
+
+				ImGui::Button(tag.c_str());
+				ImGui::SameLine();
+				ImGui::Text(name.c_str());
+
 				break;
 			}
 			}

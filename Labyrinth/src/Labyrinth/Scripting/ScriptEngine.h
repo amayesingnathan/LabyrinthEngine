@@ -23,6 +23,7 @@ namespace Labyrinth {
 		static void ReloadAssembly(const std::filesystem::path& assemblyPath);
 		static void UnloadAppAssembly();
 
+		static Ref<ScriptClass> GetEntityClass() { return ScriptEngineInternal::GetCoreEntityClass(); }
 		static Ref<ScriptClass> GetAppClass(const std::string& name);
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetAppClasses();
 		static Ref<ScriptObject> GetScriptInstance(UUID id);

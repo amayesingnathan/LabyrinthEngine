@@ -74,6 +74,7 @@ namespace Labyrinth {
 		friend class ScriptEngine;
 		friend class ScriptClass;
 		friend class ScriptGlue;
+		friend class ScriptObject;
 		friend class MarshalUtils;
 		friend class GlueFunctions;
 	};

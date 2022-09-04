@@ -138,6 +138,7 @@ namespace Labyrinth {
 		LAB_CORE_INFO("[ScriptEngine] Successfully loaded core assembly from: {0}", sInternalData->config.coreAssemblyPath);
 
 		sInternalData->entityClass = Ref<ScriptClass>::Create(mono_class_from_name(coreAssemblyInfo->assemblyImage, "Labyrinth", "Entity"));
+		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(*sInternalData->entityClass, "ID"));
 		LAB_CORE_ASSERT(sInternalData->entityClass->valid())
 
 #ifdef LAB_DEBUG

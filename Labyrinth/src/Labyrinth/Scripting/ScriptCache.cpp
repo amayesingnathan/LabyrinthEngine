@@ -5,10 +5,10 @@
 
 namespace Labyrinth {
 
-	FieldValue::FieldValue(const ScriptField& f) :
-		field(f)
+	FieldInitialiser::FieldInitialiser(const ScriptField& field) :
+		type(field.type)
 	{
-		switch (field.type)
+		switch (type)
 		{
 		case ScriptFieldType::Boolean:	value = new bool(); break;
 		case ScriptFieldType::Int8:		value = new i8(); break;
@@ -24,6 +24,7 @@ namespace Labyrinth {
 		case ScriptFieldType::Vector2:	value = new glm::vec2(); break;
 		case ScriptFieldType::Vector3:	value = new glm::vec3(); break;
 		case ScriptFieldType::Vector4:	value = new glm::vec4(); break;
+		case ScriptFieldType::Entity:	value = new UUID(0); break;
 		}
 	}
 
