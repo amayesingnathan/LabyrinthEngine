@@ -1,23 +1,12 @@
 #pragma once
 
 #include "ScriptFwd.h"
+#include "FieldTypes.h"
 
 #include <string>
 #include <filesystem>
 
 namespace Labyrinth {
-
-	namespace Accessibility
-	{
-		enum : uint8_t
-		{
-			None = 0,
-			Private = (1 << 0),
-			Internal = (1 << 1),
-			Protected = (1 << 2),
-			Public = (1 << 3)
-		};
-	}
 
 	class ScriptUtils
 	{
@@ -80,6 +69,8 @@ namespace Labyrinth {
 		}
 
 		static bool CheckMonoError(MonoError& error);
+
+		static u8 GetFieldAccessibility(MonoClassField* field);
 
 	private:
 		static MonoMethod* GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc);

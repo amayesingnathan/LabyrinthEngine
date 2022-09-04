@@ -138,6 +138,7 @@ namespace Labyrinth {
 		LAB_CORE_INFO("[ScriptEngine] Successfully loaded core assembly from: {0}", sInternalData->config.coreAssemblyPath);
 
 		sInternalData->entityClass = Ref<ScriptClass>::Create(mono_class_from_name(coreAssemblyInfo->assemblyImage, "Labyrinth", "Entity"));
+		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(*sInternalData->entityClass, "ID"));
 		LAB_CORE_ASSERT(sInternalData->entityClass->valid())
 
 #ifdef LAB_DEBUG
@@ -228,8 +229,25 @@ namespace Labyrinth {
 			if (!monoClass)
 				continue;
 
-			if (mono_class_is_subclass_of(monoClass, *sInternalData->entityClass, false))
-				assembly->classes[fullname] = ScriptClass::Create(monoClass);
+			bool isEntity = mono_class_is_subclass_of(monoClass, *sInternalData->entityClass, false);
+
+			if (!isEntity)
+				continue;
+
+			Ref<ScriptClass> scriptClass = ScriptClass::Create(monoClass)
+				;
+			void* iterator = nullptr;
+			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
+			{
+				if (!(ScriptUtils::GetFieldAccessibility(field) & Accessibility::Public))
+					continue;
+
+				const char* fieldTypeName = mono_type_get_name(mono_field_get_type(field));
+				const char* fieldName = mono_field_get_name(field);
+				scriptClass->mFields.emplace_back(ScriptFieldTypes::Get(fieldTypeName), fieldName, field);
+			}
+
+			assembly->classes[fullname] = scriptClass;
 		}
 	}
 

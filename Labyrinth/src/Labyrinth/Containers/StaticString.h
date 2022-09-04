@@ -17,7 +17,7 @@ namespace Labyrinth {
 
 		constexpr usize length() const { return _Size; }
 
-		operator char* ()
+		operator char*()
 		{
 			LAB_CORE_ASSERT(data[_Size - 1] == 0); // At least the last character should be null
 			return (char*)data;

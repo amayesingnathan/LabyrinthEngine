@@ -51,14 +51,16 @@ namespace Labyrinth {
 		std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 
 		auto scene = sData->context;
-		scene->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
+		scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 		{
-			Entity e = { entity, scene };
+			Entity entity = { e, scene };
 			if (scriptClasses.count(sc.className) != 0)
 			{
-				sc.instance = ScriptObject::Create(scriptClasses[sc.className], e.getUUID());
+				UUID id = entity.getUUID();
+				sc.instance =  ScriptObject::Create(scriptClasses[sc.className], id);
 				sc.initialised = true;
 				sc.instance->onStart();
+				sc.instance->setFieldValues(ScriptCache::GetFields(id));
 			}
 		});
 	}
@@ -67,7 +69,7 @@ namespace Labyrinth {
 	{
 		sData->context->getEntitiesWith<ScriptComponent>().each([&](auto& sc)
 		{
-			sc.instance = nullptr;
+			sc.instance.reset();
 			sc.initialised = false;
 		});
 	}
@@ -90,7 +92,7 @@ namespace Labyrinth {
 		{
 			scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 			{
-				sc.instance = nullptr;
+				sc.instance.reset();
 				sc.initialised = false;
 			});
 		}
@@ -101,14 +103,16 @@ namespace Labyrinth {
 		{
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 			auto scene = sData->context;
-			scene->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
+			scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 			{
-				Entity e = { entity, scene };
+				Entity entity = { e, scene };
 				if (scriptClasses.count(sc.className) != 0)
 				{
-					sc.instance = ScriptObject::Create(scriptClasses[sc.className], e.getUUID());
+					UUID id = entity.getUUID();
+					sc.instance = ScriptObject::Create(scriptClasses[sc.className], id);
 					sc.initialised = true;
 					sc.instance->onStart();
+					sc.instance->setFieldValues(ScriptCache::GetFields(id));
 				}
 			});
 		}
@@ -123,11 +127,34 @@ namespace Labyrinth {
 
 		scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
 		{
-			sc.instance = nullptr;
+			sc.instance.reset();
 			sc.initialised = false;
 		});
+
 		ScriptEngineInternal::UnloadAssembly(ScriptEngineInternal::GetAppAssemblyInfo());
 	}
 
+	Ref<ScriptClass> ScriptEngine::GetAppClass(const std::string& name)
+	{
+		const auto& classes = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
+		if (classes.count(name) == 0)
+			return nullptr;
+
+		return classes.at(name);
+	}
+
 	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetAppClasses() { return ScriptEngineInternal::GetAppAssemblyInfo()->classes; }
+
+	Ref<ScriptObject> ScriptEngine::GetScriptInstance(UUID id)
+	{
+		if (!sData->context)
+			return nullptr;
+
+		Entity entity = sData->context->findEntity(id);
+		if (!entity.hasComponent<ScriptComponent>())
+			return nullptr;
+
+		return entity.getComponent<ScriptComponent>().instance;
+	}
+
 }

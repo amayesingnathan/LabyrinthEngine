@@ -16,7 +16,7 @@ namespace Labyrinth {
 
 		// NOTE: We can't use this image for anything other than loading the assembly because this image doesn't have a reference to the assembly
 		MonoImageOpenStatus status;
-		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), fileData.size, 1, &status, 0);
+		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), (u32)fileData.size, 1, &status, 0);
 
 		if (status != MONO_IMAGE_OK)
 		{
@@ -93,6 +93,50 @@ namespace Labyrinth {
 			mono_error_cleanup(&error);
 		}
 		return hasError;
+	}
+
+	u8 ScriptUtils::GetFieldAccessibility(MonoClassField* field)
+	{
+		u8 accessibility = (u8)Accessibility::None;
+		u32 accessFlag = mono_field_get_flags(field) & MONO_FIELD_ATTR_FIELD_ACCESS_MASK;
+
+		switch (accessFlag)
+		{
+		case MONO_FIELD_ATTR_PRIVATE:
+		{
+			accessibility = Accessibility::Private;
+			break;
+		}
+		case MONO_FIELD_ATTR_FAM_AND_ASSEM:
+		{
+			accessibility |= Accessibility::Protected;
+			accessibility |= Accessibility::Internal;
+			break;
+		}
+		case MONO_FIELD_ATTR_ASSEMBLY:
+		{
+			accessibility = Accessibility::Internal;
+			break;
+		}
+		case MONO_FIELD_ATTR_FAMILY:
+		{
+			accessibility = Accessibility::Protected;
+			break;
+		}
+		case MONO_FIELD_ATTR_FAM_OR_ASSEM:
+		{
+			accessibility |= Accessibility::Private;
+			accessibility |= Accessibility::Protected;
+			break;
+		}
+		case MONO_FIELD_ATTR_PUBLIC:
+		{
+			accessibility = Accessibility::Public;
+			break;
+		}
+		}
+
+		return accessibility;
 	}
 
 	MonoMethod* ScriptUtils::GetMethodInternal(MonoClass* classInstance, const char* methodName, int argc)

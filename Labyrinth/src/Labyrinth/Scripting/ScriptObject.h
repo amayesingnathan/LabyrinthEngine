@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScriptUtils.h"
-#include "ScriptClass.h"
+#include "ScriptCache.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 
@@ -42,6 +42,8 @@ namespace Labyrinth {
 		bool valid() const { return mInstance; }
 		MonoObject* obj() { return mInstance; }
 
+		Ref<ScriptClass> getScriptClass() const { return mClass; }
+
 		template<typename... Args>
 		ScriptObject invokeMethod(const std::string& name, Args&&... args)
 		{
@@ -52,8 +54,52 @@ namespace Labyrinth {
 			return result;
 		}
 
+		template<typename T>
+		void getFieldValue(const std::string& fieldName, T& result) const
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Template type is not valid for this field type!");
+			GetFieldValueInternal(scriptField, &result);
+		}
+		template<typename T>
+		T getFieldValue(const std::string& fieldName) const
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Template type is not valid for this field type!");
+
+			T result = T();
+			GetFieldValueInternal(scriptField, &result);
+
+			return result;
+		}
+		void getEntityFieldValue(const std::string& fieldName, UUID& result) const;
+
+		template<typename T>
+		void setFieldValue(const std::string& fieldName, T& fieldVal)
+		{
+			const ScriptField* scriptField = mClass->getField(fieldName);
+			if (!scriptField)
+				return;
+
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(scriptField->type), "Value is not a valid type for this field!");
+
+			SetFieldValueInternal(scriptField, &fieldVal);
+		}
+
+		void setFieldValues(const FieldValues& fieldVals);
+
 		template<typename... Args>
 		static Ref<ScriptObject> Create(Args&&... args) { return Ref<ScriptObject>::Create(std::forward<Args>(args)...); }
+
+	private:
+		void GetFieldValueInternal(const ScriptField* scriptField, void* result) const;
+		void SetFieldValueInternal(const ScriptField* scriptField, void* fieldVal);
 
 	private:
 		Ref<ScriptClass> mClass = nullptr;
@@ -62,5 +108,4 @@ namespace Labyrinth {
 		MonoMethod* mOnStartMethod = nullptr;
 		MonoMethod* mOnUpdateMethod = nullptr;
 	};
-
 }

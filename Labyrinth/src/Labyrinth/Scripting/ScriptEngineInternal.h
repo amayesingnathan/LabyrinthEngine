@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScriptFwd.h"
-#include "ScriptClass.h"
+#include "ScriptObject.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 #include <Labyrinth/IO/Filesystem.h>
@@ -74,6 +74,7 @@ namespace Labyrinth {
 		friend class ScriptEngine;
 		friend class ScriptClass;
 		friend class ScriptGlue;
+		friend class ScriptObject;
 		friend class MarshalUtils;
 		friend class GlueFunctions;
 	};

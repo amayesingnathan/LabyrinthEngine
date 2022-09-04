@@ -39,6 +39,17 @@ namespace Labyrinth {
 		return mono_class_get_method_from_name(mMonoClass, name.c_str(), argc);
 	}
 
+	const ScriptField* ScriptClass::getField(const std::string& name) const
+	{
+		auto it = std::find_if(mFields.begin(), mFields.end(), [&name](const ScriptField& field) { return field.name == name; });
+
+		if (it == mFields.end())
+			return nullptr;
+
+		return &(*it);
+
+	}
+
 	MonoObject* ScriptClass::InstantiateInternal(void** argv, int argc)
 	{
 		MonoMethod* constructor = ScriptEngineInternal::GetCoreEntityClass()->getMethod(".ctor", 1);
