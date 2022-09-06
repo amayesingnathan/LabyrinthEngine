@@ -3,6 +3,8 @@
 #include "ScriptFwd.h"
 #include "FieldTypes.h"
 
+#include <Labyrinth/Core/System/Reflection.h>
+
 #include <string>
 #include <filesystem>
 
@@ -24,7 +26,7 @@ namespace Labyrinth {
 				([&]()
 					{
 						const void* tmp = nullptr;
-						if constexpr (IsPointer<Args>())
+						if constexpr (TypeData<Args>::IsPointer)
 							tmp = args;
 						else
 							tmp = &args;
