@@ -3,6 +3,7 @@
 #include "Labyrinth/Assets/Asset.h"
 #include "Labyrinth/Core/UUID.h"
 #include "Labyrinth/Core/Timestep.h"
+#include "Labyrinth/ECS/Registry.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/RenderStack.h"
 
@@ -101,6 +102,8 @@ namespace Labyrinth {
 		std::string mName;
 
 		entt::registry mRegistry;
+		ECS::Registry mRegistry2;
+
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
 
