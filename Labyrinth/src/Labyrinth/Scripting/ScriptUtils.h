@@ -26,7 +26,7 @@ namespace Labyrinth {
 				([&]()
 					{
 						const void* tmp = nullptr;
-						if constexpr (TypeData<Args>::IsPointer)
+						if constexpr (TypeInfo<Args>::IsPointer)
 							tmp = args;
 						else
 							tmp = &args;
