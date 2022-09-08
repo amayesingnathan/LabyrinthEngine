@@ -53,7 +53,7 @@ namespace Labyrinth {
 		template<typename Component, typename Compare, typename Sort = entt::std_sort, typename... Args>
 		void sort(Compare compare, Sort algo = Sort{}, Args&&... args)
 		{
-			m_Registry.sort<Component>(compare, algo, std::forward<Args>(args)...);
+			mRegistry.sort<Component>(compare, algo, std::forward<Args>(args)...);
 		}
 
 		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);

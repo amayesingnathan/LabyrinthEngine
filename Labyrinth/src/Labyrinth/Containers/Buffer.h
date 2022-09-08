@@ -84,7 +84,7 @@ namespace Labyrinth {
 		template<typename T>
 		T& read(usize _offset = 0)
 		{
-			return *(T*)((byte*)data + offset);
+			return *(T*)((byte*)data + _offset);
 		}
 
 		Buffer copyBytes(usize _size, usize _offset = 0)

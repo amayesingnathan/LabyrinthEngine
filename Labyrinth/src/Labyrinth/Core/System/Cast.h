@@ -58,17 +58,12 @@ namespace Labyrinth {
 	constexpr To& CastToRelative(From& target)
 	{
 		LAB_STATIC_ASSERT(std::is_base_of<From, To>::value || std::is_base_of<To, From>::value);
-		try
-		{
 
-			To* toPtr = &target;
-			toPtr = dynamic_cast<To*>(targetPtr);
-			return *toPtr;
-		}
-		catch
-		{
-			LAB_CORE_ASSERT(false, "Bad cast! Return value was null!");
-		}
+		From* targetPtr = &target;
+		To* toPtr = dynamic_cast<To*>(targetPtr);
+
+		LAB_CORE_ASSERT(toPtr, "Bad cast! Return value was null!");
+		return *toPtr;
 	}
 
 	template<typename Base, typename Derived>

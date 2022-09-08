@@ -183,7 +183,7 @@ namespace Labyrinth {
 
 	void Scene::DestroyEntity(Entity entity, bool linkChildren)
 	{
-		Entity& parent = entity.getParent();
+		Entity parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
@@ -583,7 +583,7 @@ namespace Labyrinth {
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
-		static_assert(false);
+		//static_assert(false);
 	}
 #endif
 

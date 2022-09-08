@@ -40,7 +40,7 @@ namespace Labyrinth {
 
 #define LAB_REGISTER_COMPONENT(Type) \
 		{\
-			MonoType* managedType = mono_reflection_type_from_name("Labyrinth." #Type, ScriptEngineInternal::GetCoreAssemblyInfo()->assemblyImage);\
+			MonoType* managedType = mono_reflection_type_from_name((char*)"Labyrinth." #Type, ScriptEngineInternal::GetCoreAssemblyInfo()->assemblyImage);\
 			if (managedType)\
 			{\
 				sCreateComponentFuncs[managedType] = [](Entity& entity) { entity.addComponent<Type>(); };\

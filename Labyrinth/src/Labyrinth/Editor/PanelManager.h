@@ -32,7 +32,7 @@ namespace Labyrinth {
 	private:
 		static std::vector<PanelItem>& GetPanels() { return sPanels; }
 
-		static auto Find(const std::string& key) { return std::find_if(sPanels.begin(), sPanels.end(), [&key](const PanelItem& panel) { return key == panel.key; }); }
+		static std::vector<PanelItem>::iterator Find(const std::string& key) { return std::find_if(sPanels.begin(), sPanels.end(), [&key](const PanelItem& panel) { return key == panel.key; }); }
 
 	private:
 		template<typename T>

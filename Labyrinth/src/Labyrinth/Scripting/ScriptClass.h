@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ScriptFwd.h"
-#include "FieldTypes.h"
+#include "ScriptUtils.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 
