@@ -41,6 +41,9 @@ namespace Labyrinth {
             return long_name.substr(first, long_name.length() - first);
         }
 #endif
+
+        template<typename T, typename R>
+        inline static constexpr bool IsSame() { return std::is_same<T, R>::value; }
     }
 
     template<typename T>
@@ -56,5 +59,23 @@ namespace Labyrinth {
         inline static constexpr bool IsArray = std::is_array<T>::value;
         inline static constexpr bool IsConst = std::is_const<T>::value;
         inline static constexpr bool IsStandard = std::is_standard_layout<T>::value;
+        template<typename R>
+        inline static constexpr bool IsSameAs = Reflection::IsSame<T, R>();
+    };
+
+    template<typename T>
+    struct FunctionInfo;
+
+    template<typename R, typename... Args>
+    struct FunctionInfo<std::function<R(Args...)>>
+    {
+        static constexpr usize ArgC = sizeof...(Args);
+        using ReturnType = R;
+
+        template <usize i>
+        struct Arg
+        {
+            using Type = typename std::tuple_element<i, std::tuple<Args...>>::type;
+        };
     };
 }
