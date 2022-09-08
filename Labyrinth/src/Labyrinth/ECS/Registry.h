@@ -2,6 +2,7 @@
 
 #include "EntityManager.h"
 #include "ComponentManager.h"
+#include "ComponentView.h"
 
 namespace Labyrinth::ECS {
 
@@ -26,6 +27,13 @@ namespace Labyrinth::ECS {
 
         template<typename T>
         void remove(EntityID entity) { mComponentManager->RemoveComponent<T>(entity); }
+
+        template<typename... Component>
+        ComponentView<Component...> view() 
+        {
+            auto pools = mComponentManager->GetComponentPools<Component...>();
+            return ComponentView(pools);
+        }
 
         template<typename T>
         T& get(EntityID entity) { mComponentManager->GetComponent<T>(entity); }

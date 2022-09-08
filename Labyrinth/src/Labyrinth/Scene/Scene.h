@@ -43,11 +43,13 @@ namespace Labyrinth {
 		template<typename Component, typename... Other, typename... Exclude>
 		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})
 		{
+			auto view = mRegistry2.view<Component, Other...>();
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
 		template<typename Component, typename... Other, typename... Exclude>
 		const auto getEntitiesWith(entt::exclude_t<Exclude...> = {}) const
 		{
+			auto view = mRegistry2.view<Component, Other...>();
 			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
 		}
 

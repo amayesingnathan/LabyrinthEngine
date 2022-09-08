@@ -65,6 +65,21 @@ namespace Labyrinth::ECS {
             return mComponentPools[poolIndex];
         }
 
+        template<typename... T>
+        std::array<Ref<IComponentPool>, sizeof...(T)> GetComponentPools()
+        {
+            std::array<Ref<IComponentPool>, sizeof...(T)> pools;
+            usize i = 0;
+            ([&, this]
+            {
+                LAB_CORE_ASSERT(HasComponentPool<T>(), "Manager does not have component type registered!");
+
+                ComponentIndex poolIndex = mPoolIndices[Component<T>::Type];
+                pools[i++] = mComponentPools[poolIndex];
+            } (), ...);
+            return pools;
+        }
+
         void EntityDestroyed(EntityID entity)
         {
             for (Ref<IComponentPool> pool : mComponentPools)

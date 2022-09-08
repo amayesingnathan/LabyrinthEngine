@@ -19,6 +19,20 @@ namespace Labyrinth::ECS {
     public:
         virtual ~IComponentPool() = default;
         virtual void tryDestroy(EntityID entity) = 0;
+        virtual bool exists(EntityID entity) = 0;
+        virtual usize size() const = 0;
+
+        virtual std::vector<EntityID>::iterator begin() = 0;
+        virtual std::vector<EntityID>::const_iterator begin() const = 0;
+        virtual std::vector<EntityID>::iterator end() = 0;
+        virtual std::vector<EntityID>::const_iterator end() const = 0;
+
+        template<typename T>
+        Ref<T> to() const
+        { 
+            LAB_STATIC_ASSERT(IsDerivedFrom<IComponentPool, T>);
+            return Ref<T>(this); 
+        }
     };
     
     template<typename T>
@@ -90,6 +104,19 @@ namespace Labyrinth::ECS {
             usize uindex = (usize)index;
             return mComponentList[uindex];
         }
+
+        bool exists(EntityID entity) const override
+        {
+            LAB_CORE_ASSERT(entity > 0 && entity < MAX_ENTITIES, "Invalid entity!");
+            return mEntityIndices[(usize)entity] > 0;
+        }
+
+        usize size() const override { return mEntityList.size(); }
+
+        std::vector<EntityID>::iterator begin() override { return mEntityList.begin(); }
+        std::vector<EntityID>::const_iterator begin() const override { return mEntityList.cbegin(); }
+        std::vector<EntityID>::iterator end() override { return mEntityList.end(); }
+        std::vector<EntityID>::const_iterator end() const override { return mEntityList.cend(); }
     
     private:
         std::array<i32, MAX_ENTITIES> mEntityIndices;
@@ -97,5 +124,6 @@ namespace Labyrinth::ECS {
         std::vector<T> mComponentList;
         
         friend class ComponentManager;
+        friend class ComponentView;
     };
 }
