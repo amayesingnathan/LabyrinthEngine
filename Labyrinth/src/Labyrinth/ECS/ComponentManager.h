@@ -57,6 +57,13 @@ namespace Labyrinth::ECS {
         }
 
         template<typename T>
+        bool HasComponent(EntityID entity) const
+        {
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
+            return pool->exists(entity);
+        }
+
+        template<typename T>
         Ref<ComponentPool<T>> GetComponentPool()
         {
             LAB_CORE_ASSERT(HasComponentPool<T>(), "Manager does not have component type registered!");

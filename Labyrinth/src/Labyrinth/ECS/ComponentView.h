@@ -3,6 +3,7 @@
 #include "ComponentPool.h"
 
 #include <Labyrinth/Core/System/Ref.h>
+#include <Labyrinth/Core/System/Reflection.h>
 
 #include <array>
 
@@ -22,7 +23,7 @@ namespace Labyrinth::ECS {
 				mPools[i] = std::move(pools[i]);
 		}
 
-		void each(std::function<void(T&...)> function)
+		void each(std::function<void(EntityID, T&...)> function)
 		{
 			Ref<IComponentPool> smallestPool = GetSmallest();
 			for (EntityID entity : *smallestPool)
@@ -43,12 +44,13 @@ namespace Labyrinth::ECS {
 				if (!validEntity)
 					continue;
 
-				function(std::get<T>(GenTuple(entity))...);
+				// Create tuple of components and unpack into function
+				function(entity, std::get<T&>(GenTuple(entity))...);
 			}
 		}
 
 	private:
-		Ref<IComponentPool> GetSmallest() const
+		Ref<IComponentPool> GetSmallest()
 		{
 			auto it = std::min_element(mPools.begin(), mPools.end(), [](const Ref<IComponentPool>& pool1, const Ref<IComponentPool>& pool2) 
 			{
@@ -61,7 +63,7 @@ namespace Labyrinth::ECS {
 		}
 
 		template<usize index>
-		auto& ToTupleElement(EntityID entity) const
+		auto& ToTupleElement(EntityID entity)
 		{
 			using ElementType = typename std::tuple_element<index, ComponentTuple>::type;
 			Ref<ComponentPool<ElementType>> pool = mPools[index];
@@ -69,15 +71,8 @@ namespace Labyrinth::ECS {
 		}
 
 		template <usize... Is>
-		auto GenTupleImpl(EntityID entity, std::index_sequence<Is...>)
-		{
-			return std::make_tuple(ToTupleElement<Is>(entity)...);
-		}
-
-		auto GenTuple(EntityID entity)
-		{
-			return GenTupleImpl(entity, std::make_index_sequence<ComponentList::Size>{});
-		}
+		auto GenTupleImpl(EntityID entity, std::index_sequence<Is...>) { return std::tie(ToTupleElement<Is>(entity)...); }
+		auto GenTuple(EntityID entity) { return GenTupleImpl(entity, std::make_index_sequence<ComponentList::Size>{}); }
 
 	private:
 		std::array<Ref<IComponentPool>, ComponentList::Size> mPools;

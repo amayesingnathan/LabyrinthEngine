@@ -26,7 +26,7 @@ namespace Labyrinth::ECS {
         T& emplace(EntityID entity, Args&&... args) { return mComponentManager->AddComponent<T>(entity, std::forward<Args>(args)...); }
 
         template<typename T>
-        void remove(EntityID entity) { mComponentManager->RemoveComponent<T>(entity); }
+        void erase(EntityID entity) { mComponentManager->RemoveComponent<T>(entity); }
 
         template<typename... Component>
         ComponentView<Component...> view() 
@@ -36,9 +36,12 @@ namespace Labyrinth::ECS {
         }
 
         template<typename T>
-        T& get(EntityID entity) { mComponentManager->GetComponent<T>(entity); }
+        bool all_of(EntityID entity) { return mComponentManager->HasComponent<T>(); }
+
         template<typename T>
-        const T& get(EntityID entity) const { mComponentManager->GetComponent<T>(entity); }
+        T& get(EntityID entity) { return mComponentManager->GetComponent<T>(entity); }
+        template<typename T>
+        const T& get(EntityID entity) const { return mComponentManager->GetComponent<T>(entity); }
 
     private:
         Single<EntityManager> mEntityManager;
