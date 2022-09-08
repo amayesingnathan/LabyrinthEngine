@@ -19,7 +19,7 @@ namespace Labyrinth::ECS {
     public:
         virtual ~IComponentPool() = default;
         virtual void tryDestroy(EntityID entity) = 0;
-        virtual bool exists(EntityID entity) = 0;
+        virtual bool exists(EntityID entity) const = 0;
         virtual usize size() const = 0;
 
         virtual std::vector<EntityID>::iterator begin() = 0;
@@ -45,14 +45,15 @@ namespace Labyrinth::ECS {
         }
     
     private:
-        void insert(EntityID entity, const T& component)
+        template<typename... Args>
+        T& insert(EntityID entity, Args&&... args)
         {
-            if (entity < 0)
-                return;
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES);
             
-            mEntityIndices[(usize)entity] = mEntityList.size();
+            mEntityIndices[(usize)entity] = (i32)mEntityList.size();
             mEntityList.push_back(entity);
-            mComponentList.emplace_back(component);
+            mComponentList.emplace_back(std::forward<Args>(args)...);
+            return mComponentList.back();
         }
         
         void tryDestroy(EntityID entity) override
@@ -84,10 +85,10 @@ namespace Labyrinth::ECS {
         
         T& get(EntityID entity)
         {
-            LAB_CORE_ASSERT(entity > 0 && entity < MAX_ENTITIES, "Invalid entity!");
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES, "Invalid entity!");
             
             i32 index = mEntityIndices[(usize)entity];
-            LAB_CORE_ASSERT(index > 0, "Entity does not have component!");
+            LAB_CORE_ASSERT(index >= 0, "Entity does not have component!");
             LAB_CORE_ASSERT(index < mComponentList.size(), "Internal error! Returned index is greater than number of components in pool");
 
             usize uindex = (usize)index;
@@ -95,10 +96,10 @@ namespace Labyrinth::ECS {
         }
         const T& get(EntityID entity) const
         {
-            LAB_CORE_ASSERT(entity > 0 && entity < MAX_ENTITIES, "Invalid entity!");
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES, "Invalid entity!");
 
             i32 index = mEntityIndices[(usize)entity];
-            LAB_CORE_ASSERT(index > 0, "Entity does not have component!");
+            LAB_CORE_ASSERT(index >= 0, "Entity does not have component!");
             LAB_CORE_ASSERT(index < mComponentList.size(), "Internal error! Returned index is greater than number of components in pool");
 
             usize uindex = (usize)index;
@@ -107,8 +108,8 @@ namespace Labyrinth::ECS {
 
         bool exists(EntityID entity) const override
         {
-            LAB_CORE_ASSERT(entity > 0 && entity < MAX_ENTITIES, "Invalid entity!");
-            return mEntityIndices[(usize)entity] > 0;
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES, "Invalid entity!");
+            return mEntityIndices[(usize)entity] >= 0;
         }
 
         usize size() const override { return mEntityList.size(); }
@@ -124,6 +125,7 @@ namespace Labyrinth::ECS {
         std::vector<T> mComponentList;
         
         friend class ComponentManager;
+        template<typename... T>
         friend class ComponentView;
     };
 }

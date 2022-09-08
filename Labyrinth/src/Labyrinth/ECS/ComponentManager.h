@@ -22,42 +22,42 @@ namespace Labyrinth::ECS {
         {
             LAB_CORE_ASSERT(!HasComponentPool<T>(), "Component type is already registered!");
 
-            mPoolIndices.insert(Component<T>::Type, mComponentPools.size());
+            mPoolIndices.emplace(Component<T>::Type, mComponentPools.size());
             mComponentPools.push_back(Ref<ComponentPool<T>>::Create());
         }
 
-        template<typename T>
-        void AddComponent(EntityID entity, const T& component)
+        template<typename T, typename... Args>
+        T& AddComponent(EntityID entity, Args&&... args)
         {
             if (!HasComponentPool<T>())
                 RegisterType<T>();
 
-            Ref<T> pool = GetComponentPool<T>();
-            pool->insert(entity, component);
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
+            return pool->insert(entity, std::forward<Args>(args)...);
         }
 
         template<typename T>
         T& GetComponent(EntityID entity)
         {
-            Ref<T> pool = GetComponentPool<T>();
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             return pool->get(entity);
         }
         template<typename T>
         const T& GetComponent(EntityID entity) const
         {
-            Ref<T> pool = GetComponentPool<T>();
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             return pool->get(entity);
         }
 
         template<typename T>
         void RemoveComponent(EntityID entity)
         {
-            Ref<T> pool = GetComponentPool<T>();
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             pool->destroy(entity);
         }
 
         template<typename T>
-        Ref<T> GetComponentPool()
+        Ref<ComponentPool<T>> GetComponentPool()
         {
             LAB_CORE_ASSERT(HasComponentPool<T>(), "Manager does not have component type registered!");
 
@@ -72,7 +72,7 @@ namespace Labyrinth::ECS {
             usize i = 0;
             ([&, this]
             {
-                LAB_CORE_ASSERT(HasComponentPool<T>(), "Manager does not have component type registered!");
+                LAB_CORE_ASSERT(HasComponentPool<T>());
 
                 ComponentIndex poolIndex = mPoolIndices[Component<T>::Type];
                 pools[i++] = mComponentPools[poolIndex];

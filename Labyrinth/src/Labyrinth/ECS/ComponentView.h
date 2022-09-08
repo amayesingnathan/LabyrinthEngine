@@ -1,7 +1,6 @@
 #pragma once
 
 #include "ComponentPool.h"
-#include "ComponentList.h"
 
 #include <Labyrinth/Core/System/Ref.h>
 
@@ -9,23 +8,12 @@
 
 namespace Labyrinth::ECS {
 
-	template <typename F, usize... Is>
-	auto gen_tuple_impl(F func, std::index_sequence<Is...>) 
-	{
-		return std::make_tuple(func(Is)...);
-	}
-
-	template <usize N, typename F>
-	auto gen_tuple(F func) 
-	{
-		return gen_tuple_impl(func, std::make_index_sequence<N>{});
-	}
-
 	template<typename... T>
 	class ComponentView
 	{
 	public:
 		using ComponentList = TypeList<T...>;
+		using ComponentTuple  = typename ComponentList::Tuple;
 
 	public:
 		ComponentView(std::array<Ref<IComponentPool>, ComponentList::Size>& pools) 
@@ -34,14 +22,12 @@ namespace Labyrinth::ECS {
 				mPools[i] = std::move(pools[i]);
 		}
 
-		void each(std::function<void(ComponentList::Tuple)> function)
+		void each(std::function<void(T&...)> function)
 		{
 			Ref<IComponentPool> smallestPool = GetSmallest();
-			for (EntityID entity : smallestPool)
+			for (EntityID entity : *smallestPool)
 			{
 				bool validEntity = true;
-				ComponentList::Tuple parameters;
-
 				for (Ref<IComponentPool> pool : mPools)
 				{
 					if (pool == smallestPool)
@@ -54,12 +40,10 @@ namespace Labyrinth::ECS {
 					}
 				}
 
-				//////////////TODO//////////////
-				ComponentList::Tuple params = gen_tuple<ComponentList::Size>([](usize index) {});
-				////////////////////////////////
+				if (!validEntity)
+					continue;
 
-				if (valid)
-					function(parameters)
+				function(std::get<T>(GenTuple(entity))...);
 			}
 		}
 
@@ -68,12 +52,31 @@ namespace Labyrinth::ECS {
 		{
 			auto it = std::min_element(mPools.begin(), mPools.end(), [](const Ref<IComponentPool>& pool1, const Ref<IComponentPool>& pool2) 
 			{
-				pool1->size() < pool2->size();
+				return pool1->size() < pool2->size();
 			});
 			if (it == mPools.end())
 				return nullptr;
 
 			return *it;
+		}
+
+		template<usize index>
+		auto& ToTupleElement(EntityID entity) const
+		{
+			using ElementType = typename std::tuple_element<index, ComponentTuple>::type;
+			Ref<ComponentPool<ElementType>> pool = mPools[index];
+			return pool->get(entity);
+		}
+
+		template <usize... Is>
+		auto GenTupleImpl(EntityID entity, std::index_sequence<Is...>)
+		{
+			return std::make_tuple(ToTupleElement<Is>(entity)...);
+		}
+
+		auto GenTuple(EntityID entity)
+		{
+			return GenTupleImpl(entity, std::make_index_sequence<ComponentList::Size>{});
 		}
 
 	private:
