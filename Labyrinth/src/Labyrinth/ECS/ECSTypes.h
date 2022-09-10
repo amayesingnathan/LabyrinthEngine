@@ -12,18 +12,10 @@ namespace Labyrinth::ECS {
 
     using ComponentType = std::string;
 
-    template<typename... Type>
-    struct TypeList
-    {
-        static constexpr usize Size = sizeof...(Type);
+    namespace TypeUtils {
 
-        using TupleType = std::tuple<Type...>;
-        
-        template<typename T>
-        static constexpr bool Contains = std::disjunction<std::is_same<T, Type>...>::value;
-
-        template<usize I, typename T>
-        static constexpr usize IndexFunction() 
+        template<usize I, typename T, typename TupleType>
+        inline static constexpr usize IndexFunction()
         {
             LAB_STATIC_ASSERT(I < std::tuple_size<TupleType>::value, "The element is not in the tuple");
 
@@ -35,8 +27,23 @@ namespace Labyrinth::ECS {
                 return IndexFunction<I + 1, T, TupleType>();
             }
         }
+    }
+
+    template<typename... Types>
+    struct TypeList
+    {
+        static constexpr usize Size = sizeof...(Types);
+
+        using TupleType = std::tuple<Types...>;
+        
+        template<typename T>
+        static constexpr bool Contains = std::disjunction<std::is_same<T, Types>...>::value;
 
         template<typename T>
-        static constexpr usize Index = IndexFunction<0, T>();
+        static constexpr usize Index = TypeUtils::IndexFunction<0, T, TupleType>();
+
+        template<usize I>
+        using Type = typename std::tuple_element<I, TupleType>::type;
+
     };
 }

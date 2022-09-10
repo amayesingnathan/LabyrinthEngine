@@ -79,7 +79,7 @@ namespace Labyrinth::ECS {
 		template<usize index>
 		auto& ToTupleElement(EntityID entity)
 		{
-			using ElementType = typename std::tuple_element<index, ComponentTuple>::type;
+			using ElementType = typename ComponentList::Type<index>;
 			Ref<ComponentPool<ElementType>> pool = mPools[index];
 			return pool->get(entity);
 		}
