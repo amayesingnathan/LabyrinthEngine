@@ -20,7 +20,6 @@ project "Enigma"
 		"%{wks.location}/Labyrinth/dependencies",
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
-		"%{IncludeDir.entt}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.magic_enum}",
