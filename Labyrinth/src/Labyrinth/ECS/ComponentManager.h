@@ -18,7 +18,7 @@ namespace Labyrinth::ECS {
         bool HasComponentPool() const { return mPoolIndices.count(Component<T>::Type) != 0; }
 
         template<typename T>
-        void RegisterType()
+        void RegisterType() const
         {
             LAB_CORE_ASSERT(!HasComponentPool<T>(), "Component type is already registered!");
 
@@ -36,15 +36,41 @@ namespace Labyrinth::ECS {
             return pool->insert(entity, std::forward<Args>(args)...);
         }
 
+        template<typename T, typename... Args>
+        T& AddOrReplaceComponent(EntityID entity, Args&&... args)
+        {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
+            return pool->insert_or_replace(entity, std::forward<Args>(args)...);
+        }
+
+        template<typename T, typename... Args>
+        T& ReplaceComponent(EntityID entity, Args&&... args)
+        {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
+            Ref<ComponentPool<T>> pool = GetComponentPool<T>();
+            return pool->replace(entity, std::forward<Args>(args)...);
+        }
+
         template<typename T>
         T& GetComponent(EntityID entity)
         {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
             Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             return pool->get(entity);
         }
         template<typename T>
         const T& GetComponent(EntityID entity) const
         {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
             Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             return pool->get(entity);
         }
@@ -52,36 +78,44 @@ namespace Labyrinth::ECS {
         template<typename T>
         void RemoveComponent(EntityID entity)
         {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
             Ref<ComponentPool<T>> pool = GetComponentPool<T>();
-            pool->destroy(entity);
+            pool->tryDestroy(entity);
         }
 
         template<typename T>
         bool HasComponent(EntityID entity) const
         {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
+
             Ref<ComponentPool<T>> pool = GetComponentPool<T>();
             return pool->exists(entity);
         }
 
         template<typename T>
-        Ref<ComponentPool<T>> GetComponentPool()
+        Ref<ComponentPool<T>> GetComponentPool() const
         {
-            LAB_CORE_ASSERT(HasComponentPool<T>(), "Manager does not have component type registered!");
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
 
-            ComponentIndex poolIndex = mPoolIndices[Component<T>::Type];
+            ComponentIndex poolIndex = mPoolIndices.at(Component<T>::Type);
             return mComponentPools[poolIndex];
         }
 
         template<typename... T>
-        std::array<Ref<IComponentPool>, sizeof...(T)> GetComponentPools()
+        std::array<Ref<IComponentPool>, sizeof...(T)> GetComponentPools() const
         {
             std::array<Ref<IComponentPool>, sizeof...(T)> pools;
             usize i = 0;
             ([&, this]
             {
-                LAB_CORE_ASSERT(HasComponentPool<T>());
+                if (!HasComponentPool<T>())
+                    RegisterType<T>();
 
-                ComponentIndex poolIndex = mPoolIndices[Component<T>::Type];
+                ComponentIndex poolIndex = mPoolIndices.at(Component<T>::Type);
                 pools[i++] = mComponentPools[poolIndex];
             } (), ...);
             return pools;
@@ -96,8 +130,8 @@ namespace Labyrinth::ECS {
     private:
         using ComponentIndex = usize;
 
-        std::vector<Ref<IComponentPool>> mComponentPools;
-        std::unordered_map<ComponentType, ComponentIndex> mPoolIndices;
+        mutable std::vector<Ref<IComponentPool>> mComponentPools;
+        mutable std::unordered_map<ComponentType, ComponentIndex> mPoolIndices;
 
         friend class Registry;
     };

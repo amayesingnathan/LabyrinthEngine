@@ -25,7 +25,7 @@ namespace Labyrinth::ECS {
 
     void EntityManager::Destroy(EntityID entity)
     {
-        LAB_CORE_ASSERT(entity > 0 && entity < MAX_ENTITIES, "Invalid entity!");
+        LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES, "Invalid entity!");
 
         mAvailableIDs.push_back(entity);
         --mEntityCount;

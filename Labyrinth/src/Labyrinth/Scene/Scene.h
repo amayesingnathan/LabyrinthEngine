@@ -7,8 +7,6 @@
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/RenderStack.h"
 
-#include "entt.hpp"
-
 class b2World;
 
 namespace Labyrinth {
@@ -28,8 +26,8 @@ namespace Labyrinth {
 		Entity CreateEntity(const std::string& name);
 		Entity CreateEntity(const std::string& name, Entity parent);
 
-		Entity CreateEntityWithID(const UUID& id, const std::string& name);
-		Entity CreateEntityWithID(const UUID& id, const std::string& name, Entity parent);
+		Entity CreateEntityWithID(UUID id, const std::string& name);
+		Entity CreateEntityWithID(UUID id, const std::string& name, Entity parent);
 
 		Entity CloneEntity(Entity copy);
 		Entity CloneChild(Entity copy, Entity newParent);
@@ -40,23 +38,16 @@ namespace Labyrinth {
 		Entity getEntityByTag(const std::string& tag);
 		Entity getChildByTag(const std::string& tag, Entity parent);
 
-		template<typename Component, typename... Other, typename... Exclude>
-		auto getEntitiesWith(entt::exclude_t<Exclude...> = {})
+		template<typename Component, typename... Other>
+		auto getEntitiesWith()
+		{
+			return mRegistry.view<Component, Other...>();
+		}
+		template<typename Component, typename... Other>
+		const auto getEntitiesWith() const
 		{
 			auto view = mRegistry2.view<Component, Other...>();
-			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
-		}
-		template<typename Component, typename... Other, typename... Exclude>
-		const auto getEntitiesWith(entt::exclude_t<Exclude...> = {}) const
-		{
-			auto view = mRegistry2.view<Component, Other...>();
-			return mRegistry.view<Component, Other...>(entt::exclude<Exclude...>);
-		}
-
-		template<typename Component, typename Compare, typename Sort = entt::std_sort, typename... Args>
-		void sort(Compare compare, Sort algo = Sort{}, Args&&... args)
-		{
-			mRegistry.sort<Component>(compare, algo, std::forward<Args>(args)...);
+			return mRegistry.view<Component, Other...>();
 		}
 
 		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);
@@ -103,13 +94,12 @@ namespace Labyrinth {
 	private:
 		std::string mName;
 
-		entt::registry mRegistry;
-		ECS::Registry mRegistry2;
+		ECS::Registry mRegistry;
 
 		Single<RenderStack> mRenderStack;
 		b2World* mPhysicsWorld = nullptr;
 
-		std::unordered_map<UUID, entt::entity> mEntityMap;
+		std::unordered_map<UUID, ECS::EntityID> mEntityMap;
         
 		u32 mViewportWidth = 0, mViewportHeight = 0;
 

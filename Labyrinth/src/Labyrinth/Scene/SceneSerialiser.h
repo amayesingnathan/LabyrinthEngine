@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Scene.h"
-
 #include "Labyrinth/Renderer/SubTexture.h"
 
 namespace YAML {
@@ -10,6 +8,9 @@ namespace YAML {
 }
 
 namespace Labyrinth {
+
+	class Scene;
+	class Entity;
 
 	class SceneSerialiser
 	{

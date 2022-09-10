@@ -16,8 +16,8 @@ namespace Labyrinth {
 	class Entity
 	{
 	public:
-		Entity() : mEntID(entt::null) {}
-		Entity(entt::entity entID, const Ref<Scene>& scene);
+		Entity() : mEntID(ECS::NullEnt) {}
+		Entity(ECS::EntityID entID, const Ref<Scene>& scene);
 
 		Entity(const Entity& other) = default;
 		~Entity() {}
@@ -100,13 +100,13 @@ namespace Labyrinth {
 		std::string& getTag();
 		const std::string& getTag() const;
 
-		operator entt::entity() const { return mEntID; }
+		operator ECS::EntityID() const { return mEntID; }
 		operator u32() const { return Cast<u32>(mEntID); }
 
 		operator UUID() const { return getUUID(); }
 		operator u64() const { return getUUID(); }
 
-		operator bool() const { return (mEntID != entt::null && mScene.valid()); }
+		operator bool() const { return (mEntID != ECS::NullEnt && mScene.valid()); }
 
 		bool operator==(const Entity& other) const
 		{
@@ -146,7 +146,7 @@ namespace Labyrinth {
 		void removeChild(Entity child);
 
 	private:
-		entt::entity mEntID{ entt::null };
+		ECS::EntityID mEntID{ ECS::NullEnt };
 		WeakRef<Scene> mScene;
 
 		friend Scene;

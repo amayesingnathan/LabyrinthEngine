@@ -3,6 +3,7 @@
 #include "ECSTypes.h"
 
 #include <Labyrinth/Core/System/Ref.h>
+#include <Labyrinth/Core/System/Reflection.h>
 
 #include <vector>
 
@@ -11,7 +12,7 @@ namespace Labyrinth::ECS {
     template<typename T>
     struct Component
     {
-        inline static const ComponentType Type = typeid(T);
+        inline static std::string Type = std::string(TypeInfo<T>::Name);
     };
     
     class IComponentPool : public RefCounted
@@ -49,11 +50,24 @@ namespace Labyrinth::ECS {
         T& insert(EntityID entity, Args&&... args)
         {
             LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES);
-            
-            mEntityIndices[(usize)entity] = (i32)mEntityList.size();
-            mEntityList.push_back(entity);
-            mComponentList.emplace_back(std::forward<Args>(args)...);
-            return mComponentList.back();
+            LAB_CORE_ASSERT(!exists(entity));
+
+            return AddInternal(entity, std::forward<Args>(args)...);
+        }
+        template<typename... Args>
+        T& insert_or_replace(EntityID entity, Args&&... args)
+        {
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES);
+
+            return AddInternal(entity, std::forward<Args>(args)...);
+        }
+        template<typename... Args>
+        T& replace(EntityID entity, Args&&... args)
+        {
+            LAB_CORE_ASSERT(entity >= 0 && entity < MAX_ENTITIES);
+            LAB_CORE_ASSERT(exists(entity));
+
+            return AddInternal(entity, std::forward<Args>(args)...);
         }
         
         void tryDestroy(EntityID entity) override
@@ -72,11 +86,14 @@ namespace Labyrinth::ECS {
             
             // Overwrite the data of entity to destroy with data from end of Entity/Component lists.
             EntityID lastEntity = mEntityList.back();
-            mEntityList[destroyUIndex] = lastEntity;
-            mComponentList[destroyUIndex] = std::move(mComponentList.back());
+            if (mEntityList[destroyUIndex] != lastEntity)
+            {
+                mEntityList[destroyUIndex] = lastEntity;
+                mComponentList[destroyUIndex] = std::move(mComponentList.back());
 
-            // Set the index of the newly moved entity to the overwritten data;
-            mEntityIndices[(usize)lastEntity] = destroyIndex;
+                // Set the index of the newly moved entity to the overwritten data;
+                mEntityIndices[(usize)lastEntity] = destroyIndex;
+            }
             
             // Remove (now moved) data at end of lists.
             mEntityList.pop_back();
@@ -118,6 +135,16 @@ namespace Labyrinth::ECS {
         std::vector<EntityID>::const_iterator begin() const override { return mEntityList.cbegin(); }
         std::vector<EntityID>::iterator end() override { return mEntityList.end(); }
         std::vector<EntityID>::const_iterator end() const override { return mEntityList.cend(); }
+
+    private:
+        template<typename... Args>
+        T& AddInternal(EntityID entity, Args&&... args)
+        {
+            mEntityIndices[(usize)entity] = (i32)mEntityList.size();
+            mEntityList.push_back(entity);
+            mComponentList.emplace_back(std::forward<Args>(args)...);
+            return mComponentList.back();
+        }
     
     private:
         std::array<i32, MAX_ENTITIES> mEntityIndices;

@@ -5,7 +5,7 @@
 
 namespace Labyrinth {
 
-	Entity::Entity(entt::entity entID, const Ref<Scene>& scene)
+	Entity::Entity(ECS::EntityID entID, const Ref<Scene>& scene)
 		: mEntID(entID), mScene(scene)
 	{
 	}
@@ -22,7 +22,7 @@ namespace Labyrinth {
 	void Entity::destroy()
 	{
 		mScene->DestroyEntity(*this);
-		mEntID = entt::null;
+		mEntID = ECS::NullEnt;
 		mScene = nullptr;
 	}
 

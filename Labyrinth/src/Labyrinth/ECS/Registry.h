@@ -24,19 +24,23 @@ namespace Labyrinth::ECS {
 
         template<typename T, typename... Args>
         T& emplace(EntityID entity, Args&&... args) { return mComponentManager->AddComponent<T>(entity, std::forward<Args>(args)...); }
+        template<typename T, typename... Args>
+        T& emplace_or_replace(EntityID entity, Args&&... args) { return mComponentManager->AddOrReplaceComponent<T>(entity, std::forward<Args>(args)...); }
+        template<typename T, typename... Args>
+        T& replace(EntityID entity, Args&&... args) { return mComponentManager->ReplaceComponent<T>(entity, std::forward<Args>(args)...); }
 
         template<typename T>
         void erase(EntityID entity) { mComponentManager->RemoveComponent<T>(entity); }
 
         template<typename... Component>
-        ComponentView<Component...> view() 
+        ComponentView<Component...> view() const
         {
             auto pools = mComponentManager->GetComponentPools<Component...>();
             return ComponentView<Component...>(pools);
         }
 
         template<typename T>
-        bool all_of(EntityID entity) { return mComponentManager->HasComponent<T>(); }
+        bool all_of(EntityID entity) const { return mComponentManager->HasComponent<T>(entity); }
 
         template<typename T>
         T& get(EntityID entity) { return mComponentManager->GetComponent<T>(entity); }
