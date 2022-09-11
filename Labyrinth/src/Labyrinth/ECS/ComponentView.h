@@ -15,13 +15,12 @@ namespace Labyrinth::ECS {
 	public:
 		using ComponentList = TypeList<T...>;
 		using ComponentTuple  = typename ComponentList::TupleType;
+		using PoolTuple = std::tuple<Ref<ComponentPool<T>>...>;
 
 	public:
-		ComponentView(std::array<Ref<IComponentPool>, ComponentList::Size>& pools) 
+		ComponentView(const PoolTuple& pools)
+			: mPools(pools)
 		{
-			for (usize i = 0; i < ComponentList::Size; i++)
-				mPools[i] = std::move(pools[i]);
-
 			BuildEntityList();
 		}
 
@@ -40,7 +39,7 @@ namespace Labyrinth::ECS {
 			LAB_STATIC_ASSERT(ComponentList::Contains<U>, "Template is not a component in this view!");
 			LAB_CORE_ASSERT(ValidEntity(entity), "This entity does not have all the required components!");
 
-			Ref<ComponentPool<U>> pool = mPools[ComponentList::Index<U>];
+			Ref<ComponentPool<U>> pool = std::get<ComponentList::Index<U>>(mPools);
 			return pool->get(entity);
 		}
 
@@ -52,54 +51,62 @@ namespace Labyrinth::ECS {
 		auto end() const { return mValidEntities.cend(); }
 
 	private:
-		Ref<IComponentPool> GetSmallest()
-		{
-			auto it = std::min_element(mPools.begin(), mPools.end(), [](const Ref<IComponentPool>& pool1, const Ref<IComponentPool>& pool2) 
-			{
-				return pool1->size() < pool2->size();
-			});
-			if (it == mPools.end())
-				return nullptr;
-
-			return *it;
-		}
-
 		void BuildEntityList()
 		{
 			mValidEntities.clear();
 			Ref<IComponentPool> smallestPool = GetSmallest();
 
-			for (EntityID entity : *smallestPool)
+			for (EntityID entity : smallestPool)
 			{
-				if (ValidEntity(entity, smallestPool))
+				if (ValidEntity(entity))
 					mValidEntities.push_back(entity);
 			}
+		}
+
+		Ref<IComponentPool> GetSmallestImpl(Ref<ComponentPool<T>>... pools)
+		{
+			usize finalPoolSize = -1;
+			Ref<IComponentPool> pool = nullptr;
+			([&, this]
+			{
+				usize poolSize = pools->size();
+				if (poolSize < finalPoolSize)
+				{
+					pool = pools;
+					finalPoolSize = poolSize;
+				}
+			} (), ...);
+
+			return pool;
+		}
+		Ref<IComponentPool> GetSmallest()
+		{
+			return std::apply(&ComponentView<T...>::GetSmallestImpl, std::tuple_cat(std::make_tuple(this), mPools));
+		}
+
+		bool ValidEntityImpl(Ref<ComponentPool<T>>... pools)
+		{
+			bool exists = true;
+			([&, this]
+			{
+				if (!pools->exists(mCheckEntity))
+					exists = false;
+			} (), ...);
+
+			return exists;
+		}
+		bool ValidEntity(EntityID entity)
+		{
+			mCheckEntity = entity;
+			return std::apply(&ComponentView<T...>::ValidEntityImpl, std::tuple_cat(std::make_tuple(this), mPools));
 		}
 
 		template<usize index>
 		auto& ToTupleElement(EntityID entity)
 		{
 			using ElementType = typename ComponentList::Type<index>;
-			Ref<ComponentPool<ElementType>> pool = mPools[index];
+			Ref<ComponentPool<ElementType>> pool = std::get<index>(mPools);
 			return pool->get(entity);
-		}
-
-		bool ValidEntity(EntityID entity, const Ref<IComponentPool>& smallestPool)
-		{
-			for (Ref<IComponentPool> pool : mPools)
-			{
-				if (pool == smallestPool)
-					continue;
-
-				if (!pool->exists(entity))
-					return false;
-			}
-
-			return true;
-		}
-		bool ValidEntity(EntityID entity)
-		{
-			return ValidEntity(entity, GetSmallest());
 		}
 
 		template <usize... Is>
@@ -108,8 +115,9 @@ namespace Labyrinth::ECS {
 		auto GenTuple(EntityID entity) { return GenTupleImpl(entity, std::make_index_sequence<ComponentList::Size>{}); }
 
 	private:
-		std::array<Ref<IComponentPool>, ComponentList::Size> mPools;
+		PoolTuple mPools;
 		std::vector<EntityID> mValidEntities;
+		EntityID mCheckEntity;
 	};
 
 }

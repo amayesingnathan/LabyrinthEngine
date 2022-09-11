@@ -11,6 +11,12 @@ namespace Labyrinth::ECS {
     class ComponentManager
     {
     public:
+        using ComponentIndex = usize;
+
+        template<typename... T>
+        using PoolIndexList = std::array<ComponentIndex, sizeof...(T)>;
+
+    public:
         ComponentManager() = default;
 
     private:
@@ -106,19 +112,9 @@ namespace Labyrinth::ECS {
         }
 
         template<typename... T>
-        std::array<Ref<IComponentPool>, sizeof...(T)> GetComponentPools() const
+        std::tuple<Ref<ComponentPool<T>>...> GetComponentPools() const
         {
-            std::array<Ref<IComponentPool>, sizeof...(T)> pools;
-            usize i = 0;
-            ([&, this]
-            {
-                if (!HasComponentPool<T>())
-                    RegisterType<T>();
-
-                ComponentIndex poolIndex = mPoolIndices.at(Component<T>::Type);
-                pools[i++] = mComponentPools[poolIndex];
-            } (), ...);
-            return pools;
+            return std::make_tuple<Ref<ComponentPool<T>>...>(ToTupleElement<T>()...);
         }
 
         void EntityDestroyed(EntityID entity)
@@ -128,8 +124,17 @@ namespace Labyrinth::ECS {
         };
 
     private:
-        using ComponentIndex = usize;
+        template<typename T>
+        Ref<ComponentPool<T>> ToTupleElement() const
+        {
+            if (!HasComponentPool<T>())
+                RegisterType<T>();
 
+            ComponentIndex poolIndex = mPoolIndices.at(Component<T>::Type);
+            return mComponentPools[poolIndex];
+        }
+
+    private:
         mutable std::vector<Ref<IComponentPool>> mComponentPools;
         mutable std::unordered_map<ComponentType, ComponentIndex> mPoolIndices;
 

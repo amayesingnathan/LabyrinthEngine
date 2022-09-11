@@ -38,16 +38,15 @@ namespace Labyrinth {
 		Entity getEntityByTag(const std::string& tag);
 		Entity getChildByTag(const std::string& tag, Entity parent);
 
-		template<typename Component, typename... Other>
+		template<typename... Components>
 		auto getEntitiesWith()
 		{
-			return mRegistry.view<Component, Other...>();
+			return mRegistry.view<Components...>();
 		}
-		template<typename Component, typename... Other>
+		template<typename... Components>
 		const auto getEntitiesWith() const
 		{
-			auto view = mRegistry2.view<Component, Other...>();
-			return mRegistry.view<Component, Other...>();
+			return mRegistry.view<Components...>();
 		}
 
 		void getSheetsInUse(std::vector<Ref<class Texture2DSheet>>& sheets);

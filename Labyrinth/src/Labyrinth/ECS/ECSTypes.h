@@ -19,8 +19,8 @@ namespace Labyrinth::ECS {
         {
             LAB_STATIC_ASSERT(I < std::tuple_size<TupleType>::value, "The element is not in the tuple");
 
-            using Val = typename std::tuple_element<I, TupleType>::type;
-            if constexpr (TypeInfo<Val>::IsSameAs<T>) {
+            using IndexType = typename std::tuple_element<I, TupleType>::type;
+            if constexpr (TypeInfo<IndexType>::IsSameAs<T>) {
                 return I;
             }
             else {
