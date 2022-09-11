@@ -9,6 +9,7 @@
 
 namespace Labyrinth::ECS {
 
+	// Using a view when changes were made to the registry after instantiation of the view is undefined behaviour. 
 	template<typename... T>
 	class ComponentView
 	{
@@ -60,6 +61,7 @@ namespace Labyrinth::ECS {
 			{
 				if (ValidEntity(entity))
 					mValidEntities.push_back(entity);
+
 			}
 		}
 
