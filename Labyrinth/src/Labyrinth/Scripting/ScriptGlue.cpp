@@ -40,7 +40,7 @@ namespace Labyrinth {
 
 #define LAB_REGISTER_COMPONENT(Type) \
 		{\
-			MonoType* managedType = mono_reflection_type_from_name("Labyrinth." #Type, ScriptEngineInternal::GetCoreAssemblyInfo()->assemblyImage);\
+			MonoType* managedType = mono_reflection_type_from_name((char*)"Labyrinth." #Type, ScriptEngineInternal::GetCoreAssemblyInfo()->assemblyImage);\
 			if (managedType)\
 			{\
 				sCreateComponentFuncs[managedType] = [](Entity& entity) { entity.addComponent<Type>(); };\
@@ -230,7 +230,7 @@ namespace Labyrinth {
 		auto entityClass = ScriptEngineInternal::GetCoreEntityClass();
 		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), *entityClass, entities.size());
 		u32 i = 0;
-		entities.each([&i, result, &entityClass](const auto& idComp)
+		entities.each([&i, result, &entityClass](auto entity, const auto& idComp)
 		{
 			MonoObject* boxed = entityClass->instantiate(idComp.id);
 			mono_array_setref(result, i++, boxed);

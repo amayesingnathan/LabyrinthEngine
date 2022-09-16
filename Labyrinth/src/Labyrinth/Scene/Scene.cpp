@@ -33,11 +33,11 @@ namespace Labyrinth {
 	}
 
 	template<typename... Component>
-	static void CopyComponent(const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
+	static void CopyComponent(const ECS::Registry& src, ECS::Registry& dest, const std::unordered_map<UUID, ECS::EntityID>& entMap)
 	{
 		([&]()
 		{
-			src.view<Component, IDComponent>().each([&dest, &entMap](const auto& component, const auto& id)
+			src.view<Component, IDComponent>().each([&dest, &entMap](auto entity, const auto& component, const auto& id)
 				{
 					LAB_CORE_ASSERT(entMap.count(id) != 0);
 					dest.emplace_or_replace<Component>(entMap.at(id), component);
@@ -45,13 +45,13 @@ namespace Labyrinth {
 		}(), ...);
 	}
 	template<typename... Component>
-	static void CopyComponent(ComponentGroup<Component...>, const entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& entMap)
+	static void CopyComponent(ComponentGroup<Component...>, const ECS::Registry& src, ECS::Registry& dest, const std::unordered_map<UUID, ECS::EntityID>& entMap)
 	{
 		CopyComponent<Component...>(src, dest, entMap);
 	}
-	static void CopyAllComponents(entt::registry& src, entt::registry& dest, const std::unordered_map<UUID, entt::entity>& enttMap)
+	static void CopyAllComponents(ECS::Registry& src, ECS::Registry& dest, const std::unordered_map<UUID, ECS::EntityID>& entMap)
 	{
-		CopyComponent(AllComponents{}, src, dest, enttMap);
+		CopyComponent(AllComponents{}, src, dest, entMap);
 	}
 
 	template<typename... Component>
@@ -90,9 +90,9 @@ namespace Labyrinth {
 		newScene->mViewportWidth = mViewportWidth;
 		newScene->mViewportHeight = mViewportHeight;
 
-		std::unordered_map<UUID, entt::entity> entMap;
+		std::unordered_map<UUID, ECS::EntityID> entMap;
 
-		mRegistry.view<IDComponent, TagComponent>().each([&](const auto& idComp, const auto& tagComp)
+		mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
 		{
 			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
 		});
@@ -121,16 +121,16 @@ namespace Labyrinth {
 		return CreateEntityWithID(UUID(), name, parent);
 	}
 
-	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name)
+	Entity Scene::CreateEntityWithID(UUID id, const std::string& name)
 	{
 		return CreateEntityWithID(id, name, Entity());
 	}
 
-	Entity Scene::CreateEntityWithID(const UUID& id, const std::string& name, Entity parent)
+	Entity Scene::CreateEntityWithID(UUID id, const std::string& name, Entity parent)
 	{
 		Entity newEnt(mRegistry.create(), Ref<Scene>(this));
 
-		newEnt.addComponent<IDComponent>(id);
+		newEnt.addComponent<IDComponent>().id = id;
 		newEnt.addComponent<TransformComponent>();
 
 		newEnt.addComponent<RootComponent>();
@@ -140,7 +140,7 @@ namespace Labyrinth {
 		auto& tag = newEnt.addComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
-		mEntityMap[id] = (entt::entity)newEnt.getEntID();
+		mEntityMap[id] = (ECS::EntityID)newEnt.getEntID();
 
 		return newEnt;
 	}
@@ -183,7 +183,7 @@ namespace Labyrinth {
 
 	void Scene::DestroyEntity(Entity entity, bool linkChildren)
 	{
-		Entity& parent = entity.getParent();
+		Entity parent = entity.getParent();
 
 		if (parent)  //Remove entity from parents list of children
 			parent.removeChild(entity);
@@ -368,15 +368,15 @@ namespace Labyrinth {
 
 	void Scene::BuildScene()
 	{
-		mRegistry.group<SpriteRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& srComponent, const auto& trComponent)
+		mRegistry.view<SpriteRendererComponent, TransformComponent>().each([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
 			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
 		});
-		mRegistry.group<CircleRendererComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& crComponent, const auto& trComponent)
+		mRegistry.view<CircleRendererComponent, TransformComponent>().each([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
 			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
 		});
-		mRegistry.group<TilemapControllerComponent>(entt::get<TransformComponent>).each([this](auto entity, const auto& tmcComponent, const auto& trComponent)
+		mRegistry.view<TilemapControllerComponent, TransformComponent>().each([this](auto entity, const auto& tmcComponent, const auto& trComponent)
 		{
 			mRenderStack->addTilemap(trComponent, tmcComponent, (i32)entity);
 		});
@@ -409,7 +409,7 @@ namespace Labyrinth {
 		const int32_t poslIters = 2;
 		mPhysicsWorld->Step(ts, velIters, poslIters);
 
-		mRegistry.group<RigidBodyComponent>(entt::get<TransformComponent>).each([this](const auto& rbComponent, auto& trComponent)
+		mRegistry.view<RigidBodyComponent, TransformComponent>().each([this](auto entity, const auto& rbComponent, auto& trComponent)
 		{
 			b2Body* body = Cast<b2Body>(rbComponent.runtimeBody);
 			const auto& pos = body->GetPosition();
@@ -564,7 +564,7 @@ namespace Labyrinth {
 		mViewportHeight = height;
 
 		// Resize our non-FixedAspectRatio cameras
-		mRegistry.view<CameraComponent>().each([this](auto& cameraComponent){
+		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent){
 			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
 		});
@@ -583,7 +583,7 @@ namespace Labyrinth {
 	template<typename T>
 	void Scene::onComponentAdded(Entity entity, T& component)
 	{
-		static_assert(false);
+		//static_assert(false);
 	}
 #endif
 

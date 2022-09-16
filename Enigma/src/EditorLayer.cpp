@@ -169,7 +169,7 @@ namespace Labyrinth {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
 		{
 			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY); 
-			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((entt::entity)pixelData, mCurrentScene);
+			mHoveredEntity = (pixelData == -1) ? Entity() : Entity((ECS::EntityID)pixelData, mCurrentScene);
 		}
 
 		mFramebuffer->unbind();
@@ -860,7 +860,7 @@ namespace Labyrinth {
 
 		if (mEditorData.displayColliders)
 		{
-			mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](const auto& tc, const auto& bcc)
+			mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](auto entity, const auto& tc, const auto& bcc)
 			{
 				glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
 
@@ -872,7 +872,7 @@ namespace Labyrinth {
 				Renderer2D::DrawRect(transform, mEditorData.colliderColour);
 			});
 
-			mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](const auto& tc, const auto& ccc)
+			mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](auto entity, const auto& tc, const auto& ccc)
 			{
 				glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
 

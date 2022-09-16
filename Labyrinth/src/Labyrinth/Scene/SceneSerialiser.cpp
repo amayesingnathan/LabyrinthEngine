@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "SceneSerialiser.h"
 
+#include "Scene.h"
 #include "Entity.h"
 #include "Components.h"
 
@@ -27,7 +28,7 @@ namespace Labyrinth {
 		out << YAML::Value << YAML::BeginSeq;
 
 		// Sort entities by UUID (for better serializing)
-		std::map<UUID, entt::entity> sortedEntityMap;
+		std::map<UUID, ECS::EntityID> sortedEntityMap;
 		mScene->getEntitiesWith<IDComponent>().each([&](auto entity, auto& idComp) 
 		{
 			sortedEntityMap[idComp.id] = entity;

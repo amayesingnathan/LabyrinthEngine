@@ -148,6 +148,11 @@ namespace Labyrinth {
 			return Ref<T>(new T(std::forward<Args>(args)...));
 		}
 
+		auto begin() { return mData->begin(); }
+		auto begin() const { return mData->cbegin(); }
+		auto end() { return mData->end(); }
+		auto end() const { return mData->cend(); }
+
 	private:
 		void IncRef() const
 		{

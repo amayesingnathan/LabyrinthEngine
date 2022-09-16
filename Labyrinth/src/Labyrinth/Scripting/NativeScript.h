@@ -14,7 +14,7 @@ namespace Labyrinth {
 		template<typename T>
 		T& getComponent()
 		{
-			return mEntity.getComponent<T>();
+			return mScriptEntity.getComponent<T>();
 		}
 
 		bool isComplete() const { return mComplete; }

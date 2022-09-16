@@ -27,8 +27,8 @@ namespace Labyrinth {
 		static void SetField(UUID entID, const std::string& field, const T& val)
 		{
 			T* fieldVal = new T(val);
-			FieldInitialiser& init = sCachedFields[id][field];
-			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(init.field.type), "Template parameter is not a valid type for this field!");
+			FieldInitialiser& init = sCachedFields[entID][field];
+			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(init.type), "Template parameter is not a valid type for this field!");
 			init.value = fieldVal;
 		}
 		static void UnsetField(UUID entID, const std::string& field);

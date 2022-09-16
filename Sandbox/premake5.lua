@@ -21,7 +21,6 @@ project "Sandbox"
         "%{IncludeDir.spdlog}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.json}",
-		"%{IncludeDir.entt}",
 		"%{IncludeDir.yaml_cpp}",
     }
 	

@@ -67,7 +67,7 @@ namespace Labyrinth {
 
 	void ScriptEngine::OnRuntimeStop()
 	{
-		sData->context->getEntitiesWith<ScriptComponent>().each([&](auto& sc)
+		sData->context->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
 		{
 			sc.instance.reset();
 			sc.initialised = false;
@@ -90,7 +90,7 @@ namespace Labyrinth {
 		auto scene = sData->context;
 		if (scene)
 		{
-			scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
+			scene->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
 			{
 				sc.instance.reset();
 				sc.initialised = false;
@@ -125,7 +125,7 @@ namespace Labyrinth {
 		if (!scene)
 			return;
 
-		scene->getEntitiesWith<ScriptComponent>().each([=](auto& sc)
+		scene->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
 			sc.instance.reset();
 			sc.initialised = false;

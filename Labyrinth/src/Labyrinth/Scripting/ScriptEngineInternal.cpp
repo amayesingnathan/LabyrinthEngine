@@ -112,13 +112,13 @@ namespace Labyrinth {
 	{
 		if (sInternalData->appDomain)
 		{
-			sInternalData->newAppDomain = mono_domain_create_appdomain("LabScriptRuntime", nullptr);
+			sInternalData->newAppDomain = mono_domain_create_appdomain((char*)"LabScriptRuntime", nullptr);
 			mono_domain_set(sInternalData->newAppDomain, true);
 			sInternalData->delayedShutdown = true;
 		}
 		else
 		{
-			sInternalData->appDomain = mono_domain_create_appdomain("LabScriptRuntime", nullptr);
+			sInternalData->appDomain = mono_domain_create_appdomain((char*)"LabScriptRuntime", nullptr);
 			mono_domain_set(sInternalData->appDomain, true);
 			sInternalData->delayedShutdown = false;
 		}

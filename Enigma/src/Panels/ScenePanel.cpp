@@ -348,11 +348,11 @@ namespace Labyrinth {
 			std::unordered_map<std::string, Entity> possibleParents;
 
 			// Create map of possible 
-			mContext->mRegistry.group<TagComponent>(entt::get<IDComponent>).each([&](auto entityID, auto& tc, auto& idc) 
+			mContext->mRegistry.view<TagComponent, IDComponent>().each([&](auto entityID, auto& tc, auto& idc)
 			{
-				if (mSelectedEntity != entityID)
+				if (mSelectedEntity != Entity{ entityID, mContext } )
 				{
-					possibleParents.emplace(tc.tag + "    (ID = " + idc.id.to_string() + ")", Entity{entityID, mContext});
+					possibleParents.emplace(fmt::format("{}\rID = ({})", tc.tag, idc.id.to_string()), Entity{entityID, mContext});
 				}
 			});
 
@@ -406,7 +406,7 @@ namespace Labyrinth {
 					auto cams = mContext->mRegistry.view<CameraComponent>();
 					for (auto id : cams)
 					{
-						if (mSelectedEntity != id)
+						if (mSelectedEntity.getEntID() != id)
 						{
 							auto& primaryOther = cams.get<CameraComponent>(id).primary;
 							primaryOther = false;
