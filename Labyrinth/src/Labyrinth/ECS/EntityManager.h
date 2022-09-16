@@ -11,6 +11,7 @@ namespace Labyrinth::ECS {
     public:
         EntityManager()
         {
+            mAvailableIDs.reserve(MAX_ENTITIES);
             mAvailableIDs.emplace_back(0);
         }
 

@@ -2,20 +2,12 @@
 
 #include "ComponentPool.h"
 
-#include <Labyrinth/Core/System/Assert.h>
-
 #include <unordered_map>
 
 namespace Labyrinth::ECS {
 
     class ComponentManager
     {
-    public:
-        using ComponentIndex = usize;
-
-        template<typename... T>
-        using PoolIndexList = std::array<ComponentIndex, sizeof...(T)>;
-
     public:
         ComponentManager() = default;
 
@@ -123,7 +115,6 @@ namespace Labyrinth::ECS {
                 pool->tryDestroy(entity);
         };
 
-    private:
         template<typename T>
         Ref<ComponentPool<T>> ToTupleElement() const
         {
@@ -135,6 +126,8 @@ namespace Labyrinth::ECS {
         }
 
     private:
+        using ComponentIndex = usize;
+
         mutable std::vector<Ref<IComponentPool>> mComponentPools;
         mutable std::unordered_map<ComponentType, ComponentIndex> mPoolIndices;
 

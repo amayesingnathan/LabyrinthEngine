@@ -12,7 +12,7 @@ namespace Labyrinth::ECS {
     template<typename T>
     struct Component
     {
-        inline static std::string Type = std::string(TypeInfo<T>::Name);
+        static constexpr std::string_view Type = TypeInfo<T>::Name;
     };
     
     class IComponentPool : public RefCounted
@@ -27,13 +27,6 @@ namespace Labyrinth::ECS {
         virtual std::vector<EntityID>::const_iterator begin() const = 0;
         virtual std::vector<EntityID>::iterator end() = 0;
         virtual std::vector<EntityID>::const_iterator end() const = 0;
-
-        template<typename T>
-        Ref<T> to() const
-        { 
-            LAB_STATIC_ASSERT(IsDerivedFrom<IComponentPool, T>);
-            return Ref<T>(this); 
-        }
     };
     
     template<typename T>

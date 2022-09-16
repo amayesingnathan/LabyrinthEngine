@@ -2,11 +2,6 @@
 
 #include "ComponentPool.h"
 
-#include <Labyrinth/Core/System/Ref.h>
-#include <Labyrinth/Core/System/Reflection.h>
-
-#include <array>
-
 namespace Labyrinth::ECS {
 
 	// Using a view when changes were made to the registry after instantiation of the view is undefined behaviour. 
@@ -37,8 +32,8 @@ namespace Labyrinth::ECS {
 		template<typename U>
 		U& get(EntityID entity)
 		{
-			LAB_STATIC_ASSERT(ComponentList::Contains<U>, "Template is not a component in this view!");
-			LAB_CORE_ASSERT(ValidEntity(entity), "This entity does not have all the required components!");
+			LAB_STATIC_ASSERT(ComponentList::Contains<U>, "Template argument is not a component type in this view!");
+			LAB_CORE_ASSERT(Contains(entity), "View does not contain this entity!");
 
 			Ref<ComponentPool<U>> pool = std::get<ComponentList::Index<U>>(mPools);
 			return pool->get(entity);
@@ -52,6 +47,11 @@ namespace Labyrinth::ECS {
 		auto end() const { return mValidEntities.cend(); }
 
 	private:
+		bool Contains(EntityID entity) const
+		{
+			return std::find(mValidEntities.begin(), mValidEntities.end(), entity) != mValidEntities.end();
+		}
+
 		void BuildEntityList()
 		{
 			mValidEntities.clear();
@@ -61,7 +61,6 @@ namespace Labyrinth::ECS {
 			{
 				if (ValidEntity(entity))
 					mValidEntities.push_back(entity);
-
 			}
 		}
 

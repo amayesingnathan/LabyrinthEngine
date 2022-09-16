@@ -10,7 +10,7 @@ namespace Labyrinth::ECS {
     constexpr EntityID MAX_ENTITIES = Limits::i16Max;
     constexpr EntityID NullEnt = -1;
 
-    using ComponentType = std::string;
+    using ComponentType = std::string_view;
 
     namespace TypeUtils {
 
