@@ -12,6 +12,12 @@ namespace Labyrinth::ECS {
 
     using ComponentType = std::string_view;
 
+    template<typename T>
+    struct Component
+    {
+        static constexpr ComponentType Type = TypeInfo<T>::Name;
+    };
+
     namespace TypeUtils {
 
         template<usize I, typename T, typename TupleType>

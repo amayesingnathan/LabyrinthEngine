@@ -8,12 +8,6 @@
 #include <vector>
 
 namespace Labyrinth::ECS {
-
-    template<typename T>
-    struct Component
-    {
-        static constexpr std::string_view Type = TypeInfo<T>::Name;
-    };
     
     class IComponentPool : public RefCounted
     {
