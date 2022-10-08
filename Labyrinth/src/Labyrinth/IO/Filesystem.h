@@ -13,7 +13,7 @@ namespace Labyrinth {
 		static void Read(const fs::path& filepath, std::string& string);
 
 		static void Write(const fs::path& filepath, Buffer buffer);
-		static void Write(const fs::path& filepath, const std::string& string);
+		static void Write(const fs::path& filepath, std::string_view string);
 
 		static void Create(const fs::path& filepath);
 		static void CreateDir(const fs::path& filepath);

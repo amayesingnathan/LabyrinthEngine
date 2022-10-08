@@ -78,7 +78,7 @@ namespace Labyrinth {
 		stream.write(buffer.as<char>(), buffer.size);
 	}
 
-	void FileUtils::Write(const fs::path& filepath, const std::string& string)
+	void FileUtils::Write(const fs::path& filepath, std::string_view string)
 	{
 		std::ofstream stream(filepath, std::ios::binary);
 
@@ -92,7 +92,7 @@ namespace Labyrinth {
 		if (string.size() == 0)
 			return;
 
-		stream.write(string.c_str(), string.size());
+		stream.write(string.data(), string.size());
 	}
 
 	void FileUtils::Create(const fs::path& filepath)
