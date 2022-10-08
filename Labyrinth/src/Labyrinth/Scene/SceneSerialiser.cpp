@@ -7,6 +7,7 @@
 
 #include "Labyrinth/Assets/AssetManager.h"
 #include "Labyrinth/IO/YAML.h"
+#include "Labyrinth/Tools/EnumUtils.h"
 
 #include <fstream>
 
@@ -226,6 +227,37 @@ namespace Labyrinth {
 			const auto& scriptComponent = entity.getComponent<ScriptComponent>();
 			LAB_SERIALISE_PROPERTY(ClassName, scriptComponent.className, out);
 
+			out << YAML::Key << "Fields";
+			out << YAML::Value << YAML::BeginSeq;
+			for (const auto& [fieldName, field] : ScriptCache::GetFields(uuid))
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(Name, fieldName, out);
+				LAB_SERIALISE_PROPERTY(Type, Enum::ToString(field.type), out);
+
+				switch(field.type)
+				{
+				case ScriptFieldType::Boolean:	LAB_SERIALISE_PROPERTY(Value, field.value.get<bool>(), out); break;
+				case ScriptFieldType::Int8:		LAB_SERIALISE_PROPERTY(Value, field.value.get<i8>(), out); break;
+				case ScriptFieldType::Int16:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i16>(), out); break;
+				case ScriptFieldType::Int32:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i32>(), out); break;
+				case ScriptFieldType::Int64:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i64>(), out); break;
+				case ScriptFieldType::UInt8:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u8>(), out); break;
+				case ScriptFieldType::UInt16:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u16>(), out); break;
+				case ScriptFieldType::UInt32:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u32>(), out); break;
+				case ScriptFieldType::UInt64:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u64>(), out); break;
+				case ScriptFieldType::Float:	LAB_SERIALISE_PROPERTY(Value, field.value.get<f32>(), out); break;
+				case ScriptFieldType::Double:	LAB_SERIALISE_PROPERTY(Value, field.value.get<f64>(), out); break;
+				case ScriptFieldType::Vector2:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec2>(), out); break;
+				case ScriptFieldType::Vector3:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec3>(), out); break;
+				case ScriptFieldType::Vector4:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec4>(), out); break;
+				case ScriptFieldType::Entity:	LAB_SERIALISE_PROPERTY(Value, field.value.get<UUID>(), out); break;
+				default: break;
+				}
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
+
 			out << YAML::EndMap; // ScriptComponent
 		}
 
@@ -400,6 +432,40 @@ namespace Labyrinth {
 
 				if (!sc.className.empty())
 					ScriptCache::RegisterEntity(uuid, sc.className);
+
+				auto scriptFields = scriptComponent["Fields"];
+				if (scriptFields)
+				{
+					for (auto field : scriptFields)
+					{
+						std::string name;
+						std::string type;
+
+						LAB_DESERIALISE_PROPERTY(Name, name, field);
+						LAB_DESERIALISE_PROPERTY(Type, type, field);
+
+						ScriptFieldType fieldType = Enum::FromString<ScriptFieldType>(type);
+						switch (fieldType)
+						{
+						case ScriptFieldType::Boolean:	ScriptCache::SetField(uuid, name, field["Value"].as<bool>()); break;
+						case ScriptFieldType::Int8:		ScriptCache::SetField(uuid, name, field["Value"].as<i8>()); break;
+						case ScriptFieldType::Int16:	ScriptCache::SetField(uuid, name, field["Value"].as<i16>()); break;
+						case ScriptFieldType::Int32:	ScriptCache::SetField(uuid, name, field["Value"].as<i32>()); break;
+						case ScriptFieldType::Int64:	ScriptCache::SetField(uuid, name, field["Value"].as<i64>()); break;
+						case ScriptFieldType::UInt8:	ScriptCache::SetField(uuid, name, field["Value"].as<u8>()); break;
+						case ScriptFieldType::UInt16:	ScriptCache::SetField(uuid, name, field["Value"].as<u16>()); break;
+						case ScriptFieldType::UInt32:	ScriptCache::SetField(uuid, name, field["Value"].as<u32>()); break;
+						case ScriptFieldType::UInt64:	ScriptCache::SetField(uuid, name, field["Value"].as<u64>()); break;
+						case ScriptFieldType::Float:	ScriptCache::SetField(uuid, name, field["Value"].as<f32>()); break;
+						case ScriptFieldType::Double:	ScriptCache::SetField(uuid, name, field["Value"].as<f64>()); break;
+						case ScriptFieldType::Vector2:	ScriptCache::SetField(uuid, name, field["Value"].as<glm::vec2>()); break;
+						case ScriptFieldType::Vector3:	ScriptCache::SetField(uuid, name, field["Value"].as<glm::vec3>()); break;
+						case ScriptFieldType::Vector4:	ScriptCache::SetField(uuid, name, field["Value"].as<glm::vec4>()); break;
+						case ScriptFieldType::Entity:	ScriptCache::SetField(uuid, name, UUID(field["Value"].as<u64>())); break;
+						default: break;
+						}
+					}
+				}
 			}
 
 			auto tmcComponent = entity["TilemapControllerComponent"];

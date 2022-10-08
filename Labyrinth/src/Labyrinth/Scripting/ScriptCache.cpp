@@ -5,27 +5,32 @@
 
 namespace Labyrinth {
 
-	FieldInitialiser::FieldInitialiser(const ScriptField& field) :
-		type(field.type)
+	FieldBuffer::FieldBuffer(ScriptFieldType type)
 	{
 		switch (type)
 		{
-		case ScriptFieldType::Boolean:	value = new bool(); break;
-		case ScriptFieldType::Int8:		value = new i8(); break;
-		case ScriptFieldType::Int16:	value = new i16(); break;
-		case ScriptFieldType::Int32:	value = new i32(); break;
-		case ScriptFieldType::Int64:	value = new i64(); break;
-		case ScriptFieldType::UInt8:	value = new u8(); break;
-		case ScriptFieldType::UInt16:	value = new u16(); break;
-		case ScriptFieldType::UInt32:	value = new u32(); break;
-		case ScriptFieldType::UInt64:	value = new u64(); break;
-		case ScriptFieldType::Float:	value = new f32(); break;
-		case ScriptFieldType::Double:	value = new f64(); break;
-		case ScriptFieldType::Vector2:	value = new glm::vec2(); break;
-		case ScriptFieldType::Vector3:	value = new glm::vec3(); break;
-		case ScriptFieldType::Vector4:	value = new glm::vec4(); break;
-		case ScriptFieldType::Entity:	value = new UUID(0); break;
+		case ScriptFieldType::Boolean:	set<bool>(); break;
+		case ScriptFieldType::Int8:		set<i8>();; break;
+		case ScriptFieldType::Int16:	set<i16>();; break;
+		case ScriptFieldType::Int32:	set<i32>();; break;
+		case ScriptFieldType::Int64:	set<i64>();; break;
+		case ScriptFieldType::UInt8:	set<u8>();; break;
+		case ScriptFieldType::UInt16:	set<u16>();; break;
+		case ScriptFieldType::UInt32:	set<u32>();; break;
+		case ScriptFieldType::UInt64:	set<u64>();; break;
+		case ScriptFieldType::Float:	set<f32>();; break;
+		case ScriptFieldType::Double:	set<f64>();; break;
+		case ScriptFieldType::Vector2:	set<glm::vec2>();; break;
+		case ScriptFieldType::Vector3:	set<glm::vec3>();; break;
+		case ScriptFieldType::Vector4:	set<glm::vec4>();; break;
+		case ScriptFieldType::Entity:	set<UUID>(0);; break;
+		default: break;
 		}
+	}
+
+	FieldInitialiser::FieldInitialiser(const ScriptField& field) :
+		type(field.type), value(field.type)
+	{
 	}
 
 	void ScriptCache::RegisterEntity(UUID id, const std::string& scriptClass)
@@ -46,10 +51,8 @@ namespace Labyrinth {
 	{
 		auto& cachedFields = sCachedFields[id];
 		for (auto& [fieldName, field] : cachedFields)
-		{
-			delete field.value;
-			field.value = nullptr;
-		}
+			field.value.release();
+
 		sCachedFields.erase(id);
 	}
 
@@ -57,7 +60,6 @@ namespace Labyrinth {
 	{
 		auto& cachedFields = sCachedFields[entID];
 		auto& field = cachedFields[fieldName];
-		delete field.value;
-		field.value = nullptr;
+		field.value.release();
 	}
 }

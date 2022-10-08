@@ -22,11 +22,14 @@ namespace Labyrinth {
 				continue;
 			}
 
-			void* data = field.value;
+			if (!field.value)
+				continue;
+
+			void* data = field.value.data;
 			Ref<ScriptObject> entity = nullptr;
 			if (field.type == ScriptFieldType::Entity)
 			{
-				entity = ScriptObject::Create(ScriptEngine::GetEntityClass(), *(UUID*)field.value);
+				entity = ScriptObject::Create(ScriptEngine::GetEntityClass(), field.value.read<UUID>());
 				data = entity->obj();
 			}
 

@@ -15,6 +15,7 @@ namespace Labyrinth {
 		Buffer(std::nullptr_t) {}
 		Buffer(void* _data, usize _size) : data(_data), size(_size) {}
 		Buffer(usize _size) { allocate(_size); }
+
 		Buffer(const Buffer& buffer)
 		{
 			LAB_CORE_ASSERT(buffer.data && buffer.size);
@@ -83,6 +84,12 @@ namespace Labyrinth {
 
 		template<typename T>
 		T& read(usize _offset = 0)
+		{
+			return *(T*)((byte*)data + _offset);
+		}
+
+		template<typename T>
+		const T& read(usize _offset = 0) const
 		{
 			return *(T*)((byte*)data + _offset);
 		}

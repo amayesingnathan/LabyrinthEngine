@@ -3,12 +3,39 @@
 #include "FieldTypes.h"
 #include "ScriptClass.h"
 
+#include "Labyrinth/Containers/Buffer.h"
+
 namespace Labyrinth {
+
+	struct FieldBuffer : Buffer
+	{
+		FieldBuffer() = default;
+		FieldBuffer(ScriptFieldType type);
+
+		template<typename T>
+		void set(const T& val = T())
+		{
+			constexpr usize newSize = sizeof(T);
+			if (size != newSize)
+			{
+				release();
+				allocate(newSize);
+			}
+
+			append(&val, newSize);
+		}
+
+		template<typename T>
+		const T& get() const
+		{
+			return read<T>();
+		}
+	};
 
 	struct FieldInitialiser
 	{
 		ScriptFieldType type = ScriptFieldType::None;
-		void* value = nullptr;
+		FieldBuffer value;
 
 		FieldInitialiser() = default;
 		FieldInitialiser(const ScriptField& f);
@@ -26,10 +53,9 @@ namespace Labyrinth {
 		template<typename T>
 		static void SetField(UUID entID, const std::string& field, const T& val)
 		{
-			T* fieldVal = new T(val);
 			FieldInitialiser& init = sCachedFields[entID][field];
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(init.type), "Template parameter is not a valid type for this field!");
-			init.value = fieldVal;
+			init.value.set(val);
 		}
 		static void UnsetField(UUID entID, const std::string& field);
 
@@ -42,7 +68,10 @@ namespace Labyrinth {
 			auto& fieldValue = cachedFields[fieldName];
 
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(fieldValue.type), "Template parameter is not a valid type for this field!");
-			return (T*)fieldValue.value;
+			if (!fieldValue.value)
+				return nullptr;
+
+			return fieldValue.value.as<T>();
 		}
 
 	private:
