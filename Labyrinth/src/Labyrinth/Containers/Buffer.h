@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Assert.h>
+#include <Labyrinth/Core/System/Base.h>
 
 namespace Laby {
 
@@ -22,10 +22,6 @@ namespace Laby {
 
 		static Buffer Copy(const void* data, usize size);
 
-	private:
-		void allocate(usize size);
-		void release();
-
 	public:
 		template<typename T>
 		T& read(usize offset = 0) { return *(T*)((Byte*)mData + offset); }
@@ -37,11 +33,17 @@ namespace Laby {
 
 		Buffer copyBytes(usize size, usize offset = 0);
 
+		usize size() const { return mSize; }
+
 	public:
 		operator bool() const { return mData != nullptr; }
 
 		Byte& operator[](usize index) { return ((Byte*)mData)[index]; }
 		const Byte& operator[](usize index) const { return ((Byte*)mData)[index]; }
+
+	private:
+		void allocate(usize size);
+		void release();
 
 	private:
 		void* mData = nullptr;

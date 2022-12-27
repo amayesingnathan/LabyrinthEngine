@@ -1,7 +1,7 @@
 #pragma once
 
 //Labyrinth Core Includes
-//#include "Labyrinth/Core/System/Base.h"
+#include "Labyrinth/Core/System/Base.h"
 //#include "Labyrinth/Core/System/Log.h"
 //#include "Labyrinth/Core/System/Assert.h"
 //#include "Labyrinth/Core/System/Platform.h"
