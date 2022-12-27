@@ -1,6 +1,6 @@
 project "Labyrinth"
     language "C++"
-    cppdialect "C++17"
+    cppdialect "C++20"
 		
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
