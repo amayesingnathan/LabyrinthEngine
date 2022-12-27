@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Platform.h"
+#include "Types.h"
 
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)
