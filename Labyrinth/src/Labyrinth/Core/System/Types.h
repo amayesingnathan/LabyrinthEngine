@@ -19,6 +19,8 @@ namespace Laby {
 	using f32 = float;
 	using f64 = double;
 
+	using Byte = u8;
+
 	struct Limits
 	{
 		static constexpr i32 i8Min = -127;
