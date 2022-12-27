@@ -1,19 +1,9 @@
 #pragma once
 
 //Labyrinth Core Includes
-#include "Labyrinth/Core/System/Base.h"
-#include "Labyrinth/Core/System/Log.h"
-#include "Labyrinth/Core/System/Assert.h"
-#include "Labyrinth/Core/System/Platforms.h"
-#include "Labyrinth/Core/System/Ref.h"
-#include "Labyrinth/Core/System/Cast.h"
-#include "Labyrinth/Core/System/Types.h"
 
-#include "Labyrinth/Tools/Profiling.h"
 
-#include "Labyrinth/Maths/Constant.h"
-
-//STL Containers/Types
+//C++ Standard Library
 #include <vector>
 #include <array>
 #include <string>
@@ -23,8 +13,6 @@
 #include <unordered_set>
 #include <list>
 #include <forward_list>
-
-//STL Functions
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -37,7 +25,7 @@
 #include <regex>
 #include <variant>
 
-//C Library Functions
+//C Standard Library
 #include <cstdlib>
 #include <cstdint>
 #include <cmath>
