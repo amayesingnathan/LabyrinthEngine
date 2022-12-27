@@ -28,9 +28,9 @@ namespace Laby {
 
 	public:
 		template<typename T>
-		T& read(usize offset = 0) { return *(T*)((byte*)mData + offset); }
+		T& read(usize offset = 0) { return *(T*)((Byte*)mData + offset); }
 		template<typename T>
-		const T& read(usize offset = 0) const { return *(T*)((byte*)mData + offset); }
+		const T& read(usize offset = 0) const { return *(T*)((Byte*)mData + offset); }
 
 		template<typename T>
 		T* as() const { return (T*)mData; }
