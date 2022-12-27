@@ -10,7 +10,7 @@ namespace Laby {
 	class RefCounted;
 
 	template<typename T>
-	concept RefCountable = std::is_base_of_v<RefCounted, T>;
+	concept RefCountable = DerivedFrom<RefCounted, T>;
 
 	class RefCounted
 	{
