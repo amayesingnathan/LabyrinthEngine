@@ -1,5 +1,8 @@
 #pragma once
 
+#include <memory>
+
+#include "Assert.h"
 #include "Platform.h"
 #include "Types.h"
 

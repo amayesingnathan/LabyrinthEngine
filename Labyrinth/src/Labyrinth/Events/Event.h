@@ -25,11 +25,11 @@ namespace Laby {
 		EventCategoryMouseButton = LAB_BIT(4)
 	};
 
-#define EVENT_CLASS_TYPE(type)  static constexpr EventType GetStaticType() { return EventType::type; }\
-								virtual constexpr EventType getEventType() const override { return GetStaticType(); }\
-								virtual constexpr char* getName() const override { return #type; }
+#define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::type; }\
+								virtual EventType getEventType() const override { return GetStaticType(); }\
+								virtual const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual constexpr i32 getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual i32 getCategoryFlags() const override { return category; }
 
 	class Event
 	{
@@ -38,9 +38,9 @@ namespace Laby {
 	public:
 		virtual ~Event() = default;
 
-		virtual constexpr EventType getEventType() const = 0;
-		virtual constexpr char* getName() const = 0;
-		virtual constexpr i32 getCategoryFlags() const = 0;
+		virtual EventType getEventType() const = 0;
+		virtual const char* getName() const = 0;
+		virtual i32 getCategoryFlags() const = 0;
 		virtual std::string toString() const { return getName(); }
 
 		bool isInCategory(EventCategory category)
@@ -64,7 +64,7 @@ namespace Laby {
 		template<typename T, typename F>
 		void dispatch(const F& func)
 		{
-			if constexpr (mEvent.getEventType() != T::GetStaticType())
+			if (mEvent.getEventType() != T::GetStaticType())
 				return;
 
 			if (mEvent.handled)

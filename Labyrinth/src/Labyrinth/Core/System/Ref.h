@@ -2,7 +2,7 @@
 
 #include <unordered_set>
 
-#include "Types.h"
+#include "Base.h"
 #include "Reflection.h"
 
 namespace Laby {

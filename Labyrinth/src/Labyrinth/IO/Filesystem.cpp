@@ -72,10 +72,10 @@ namespace Laby {
 			return;
 		}
 
-		if (buffer.size == 0)
+		if (buffer.size() == 0)
 			return;
 
-		stream.write(buffer.as<char>(), buffer.size);
+		stream.write(buffer.as<char>(), buffer.size());
 	}
 
 	void FileUtils::Write(const fs::path& filepath, std::string_view string)
