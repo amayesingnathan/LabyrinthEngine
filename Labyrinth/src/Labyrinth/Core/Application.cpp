@@ -15,7 +15,6 @@ namespace Laby {
 			std::filesystem::current_path(mSpecification.workingDir);
 
 		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
-		mWindow->setEventCallback(LAB_BIND_EVENT_FUNC(Application::OnEvent));
 
 		//Renderer::Init();
 		//ScriptEngine::Init(spec.scriptConfig);
@@ -32,6 +31,42 @@ namespace Laby {
 			delete layer;
 		}
 	}
+
+	void Application::onEvent(Event& e)
+	{
+		LocalEventDispatcher dispatcher(e);
+		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(OnWindowClose));
+		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OnWindowResize));
+		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressed));
+	}
+
+	bool Application::OnWindowClose(WindowCloseEvent& e)
+	{
+		Application::Close();
+		return true;
+	}
+
+	bool Application::OnWindowResize(WindowResizeEvent& e)
+	{
+
+		if (e.width == 0 || e.height == 0)
+		{
+			mState.minimised = true;
+			return false;
+		}
+
+		mState.minimised = false;
+		return false;
+	}
+
+	bool Application::OnKeyPressed(KeyPressedEvent& e)
+	{
+		if (e.keyCode == Key::Escape)
+			Application::Close();
+
+		return false;
+	}
+
 	void Application::Run(int argc, char** argv)
 	{
 		CreateApplication(argc, argv);
@@ -41,6 +76,8 @@ namespace Laby {
 			f32 time = Stopwatch::GetTime();
 			Timestep timestep = time - sInstance->mState.lastFrameTime;
 			sInstance->mState.lastFrameTime = time;
+
+			EventManager::Dispatch();
 
 			if (!sInstance->mState.minimised)
 			{

@@ -15,7 +15,6 @@
 namespace Laby {
 
 	ImGuiLayer::ImGuiLayer()
-		: Layer("ImGuiLayer")
 	{
 	}
 
@@ -68,8 +67,8 @@ namespace Laby {
 			return;
 
 		ImGuiIO& io = ImGui::GetIO();
-		e.handled |= e.isInCategory(EventCategoryMouse) & io.WantCaptureMouse;
-		e.handled |= e.isInCategory(EventCategoryKeyboard) & io.WantCaptureKeyboard;
+		e.handled |= (e.type & EVENT_CATEGORY_MOUSE) && io.WantCaptureMouse;
+		e.handled |= (e.type & EVENT_CATEGORY_KEY) && io.WantCaptureKeyboard;
 	}
 
 	void ImGuiLayer::begin()
@@ -78,7 +77,6 @@ namespace Laby {
 		ImGui_ImplGlfw_NewFrame();
 		ImGui::NewFrame();
 		ImGuizmo::BeginFrame();
-
 	}
 
 	void ImGuiLayer::end()

@@ -41,7 +41,6 @@ namespace Laby {
 		void setTitle(const std::string& title);
 
 		//Attributes
-		void setEventCallback(const EventCallbackFunc& callback) { mData.eventCallback = callback; }
 		void setVSync(bool enabled);
 		bool isVSync() const;
 
@@ -63,8 +62,6 @@ namespace Laby {
 			std::string title;
 			u32 width, height;
 			bool vSync;
-
-			EventCallbackFunc eventCallback;
 		};
 
 		WindowData mData;

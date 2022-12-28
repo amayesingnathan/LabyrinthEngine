@@ -6,6 +6,8 @@
 #include <Labyrinth/Core/LayerStack.h>
 #include <Labyrinth/Core/Window.h>
 
+#include <Labyrinth/Events/IEventListener.h>
+
 #include <Labyrinth/ImGui/ImGuiLayer.h>
 
 #include <Labyrinth/IO/Filesystem.h>
@@ -42,8 +44,11 @@ namespace Laby {
 
 	};
 
-	class Application
+	class Application : public IEventListener
 	{
+	public:
+		LISTENING_EVENTS(WindowClose | WindowResize | KeyPressed)
+
 	public:
 		Application(const ApplicationSpec& spec);
 		~Application();
@@ -51,6 +56,13 @@ namespace Laby {
 	public:
 		Window& getWindow() { return *mWindow; }
 		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
+
+		void onEvent(Event& e) override;
+
+	private:
+		bool OnWindowClose(WindowCloseEvent& e);
+		bool OnWindowResize(WindowResizeEvent& e);
+		bool OnKeyPressed(KeyPressedEvent& e);
 
 	protected:
 		void PushLayer(Layer* layer) { mLayerStack.pushLayer(layer); }

@@ -3,6 +3,7 @@
 
 #include "GLFW/glfw3.h"
 
+#include <Labyrinth/Events/EventManager.h>
 
 namespace Laby {
 
@@ -80,6 +81,127 @@ namespace Laby {
 
 		glfwSetWindowUserPointer(mWindow, &mData);
 		setVSync(true);
+
+		// Set GLFW callbacks
+		glfwSetWindowSizeCallback(mWindow, [](GLFWwindow* window, int width, int height)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+			data.width = width;
+			data.height = height;
+
+			Event event;
+			event.type = WindowResize;
+			event.data = WindowResizeEvent(width, height);
+
+			EventManager::Post(event);
+		});
+
+		glfwSetWindowCloseCallback(mWindow, [](GLFWwindow* window)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			Event event;
+			event.type = WindowClose;
+			event.data = WindowCloseEvent();
+
+			EventManager::Post(event);
+		});
+
+		glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				Event event;
+				event.type = KeyPressed;
+				event.data = KeyPressedEvent{ (KeyCode)key, false };
+
+				EventManager::Post(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				Event event;
+				event.type = KeyReleased;
+				event.data = KeyReleasedEvent{ (KeyCode)key };
+
+				EventManager::Post(event);
+				break;
+			}
+			case GLFW_REPEAT:
+			{
+				Event event;
+				event.type = KeyPressed;
+				event.data = KeyPressedEvent{ (KeyCode)key, true };
+
+				EventManager::Post(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetCharCallback(mWindow, [](GLFWwindow* window, unsigned int keycode)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		
+			Event event;
+			event.type = KeyTyped;
+			event.data = KeyTypedEvent(keycode);
+
+			EventManager::Post(event);
+		});
+
+		glfwSetMouseButtonCallback(mWindow, [](GLFWwindow* window, int button, int action, int mods)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			switch (action)
+			{
+			case GLFW_PRESS:
+			{
+				Event event;
+				event.type = MouseButtonPressed;
+				event.data = MouseButtonPressedEvent{ MouseCode(button) };
+
+				EventManager::Post(event);
+				break;
+			}
+			case GLFW_RELEASE:
+			{
+				Event event;
+				event.type = MouseButtonReleased;
+				event.data = MouseButtonReleasedEvent{ MouseCode(button) };
+
+				EventManager::Post(event);
+				break;
+			}
+			}
+		});
+
+		glfwSetScrollCallback(mWindow, [](GLFWwindow* window, f64 xOffset, f64 yOffset)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			Event event;
+			event.type = MouseScrolled;
+			event.data = MouseScrolledEvent((f32)xOffset, (f32)yOffset);
+
+			EventManager::Post(event);
+		});
+
+		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, f64 xPos, f64 yPos)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		
+			Event event;
+			event.type = MouseMoved;
+			event.data = MouseMovedEvent((f32)xPos, (f32)yPos);
+
+			EventManager::Post(event);
+		});
 	}
 
 	void Window::Shutdown()
