@@ -1,85 +1,50 @@
 #pragma once
 
-#include "Labyrinth/Core/System/Base.h"
+#include <variant>
 
-#include <sstream>
+#include "ApplicationEvent.h"
+#include "KeyEvent.h"
+#include "MouseEvent.h"
 
 namespace Laby {
 
-	enum class EventType
+	using EventData = std::variant<
+		WindowResizeEvent, WindowCloseEvent, WindowFocusEvent, WindowFocusLostEvent,
+		AppTickEvent, AppUpdateEvent, AppRenderEvent,
+		KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
+		MouseMovedEvent, MouseScrolledEvent,
+		MouseButtonPressedEvent, MouseButtonReleasedEvent
+	>;
+
+	struct Event
 	{
-		None = -1,
-		WindowClose, WindowResize, WindowFocus, WindowLostFoucus, WindowMoved,
-		AppTick, AppUpdate, AppRender,
-		KeyPressed, KeyReleased, KeyTyped,
-		MouseButtonPressed, MouseButtonReleased, MouseMoved, MouseScrolled
-	};
-
-	enum EventCategory
-	{
-		None					 = 0,
-		EventCategoryApplication = LAB_BIT(0),
-		EventCategoryInput		 = LAB_BIT(1),
-		EventCategoryKeyboard	 = LAB_BIT(2),
-		EventCategoryMouse		 = LAB_BIT(3),
-		EventCategoryMouseButton = LAB_BIT(4)
-	};
-
-#define EVENT_CLASS_TYPE(type)  static EventType GetStaticType() { return EventType::type; }\
-								virtual EventType getEventType() const override { return GetStaticType(); }\
-								virtual const char* getName() const override { return #type; }
-
-#define EVENT_CLASS_CATEGORY(category) virtual i32 getCategoryFlags() const override { return category; }
-
-	class Event
-	{
-		friend class EventDispatcher;
-
-	public:
-		virtual ~Event() = default;
-
-		virtual EventType getEventType() const = 0;
-		virtual const char* getName() const = 0;
-		virtual i32 getCategoryFlags() const = 0;
-		virtual std::string toString() const { return getName(); }
-
-		bool isInCategory(EventCategory category)
-		{
-			return getCategoryFlags() & category;
-		}
-
-	public:
 		bool handled = false;
-
-	private:
+		EventType type = EventType::None;
+		EventData data;
 	};
 
-	class EventDispatcher
+	class LocalEventDispatcher
 	{
 	public:
-		EventDispatcher(Event& event)
+		LocalEventDispatcher(Event& event)
 			: mEvent(event) {}
 
-		//F deduced by compiler
-		template<typename T, typename F>
-		void dispatch(const F& func)
+		template<typename T>
+		using EventFunc = std::function<bool(T&)>;
+
+		template<typename T>
+		void dispatch(EventFunc<T> func)
 		{
-			if (mEvent.getEventType() != T::GetStaticType())
+			if (mEvent.type != T::GetStaticType())
 				return;
 
 			if (mEvent.handled)
 				return;
 
-			mEvent.handled = func(static_cast<T&>(mEvent));
+			mEvent.handled = func(std::get<T>(mEvent.data));
 		}
 
 	private:
 		Event& mEvent;
 	};
-
-	inline std::ostream& operator<<(std::ostream& os, const Event& e)
-	{
-		return os << e.toString();
-	}
-
 }
