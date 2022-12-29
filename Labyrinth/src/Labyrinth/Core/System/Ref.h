@@ -2,15 +2,14 @@
 
 #include <unordered_set>
 
-#include "Base.h"
-#include "Reflection.h"
+#include "Cast.h"
 
 namespace Laby {
 
 	class RefCounted;
 
 	template<typename T>
-	concept RefCountable = DerivedFrom<RefCounted, T>;
+	concept RefCountable = DerivedFrom<T, RefCounted>;
 
 	class RefCounted
 	{
@@ -56,14 +55,14 @@ namespace Laby {
 		template<typename Other>
 		Ref(const Ref<Other>& other)
 		{
-			mData = Cast<T>(other.mData);
+			mData = StaticCast<T>(other.mData);
 			IncRef();
 		}
 
 		template<typename Other>
 		Ref(Ref<Other>&& other)
 		{
-			mData = Cast<T>(other.mData);
+			mData = StaticCast<T>(other.mData);
 			other.mData = nullptr;
 		}
 
