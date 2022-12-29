@@ -8,7 +8,7 @@ namespace Laby {
 	class ImGuiLayer : public Layer
 	{
 	public:
-		LISTENING_EVENTS(EVENT_CATEGORY_MOUSE | EVENT_CATEGORY_KEY)
+		LISTENING_EVENTS(EVENT_CATEGORY_MOUSE, EVENT_CATEGORY_KEY)
 
 	public:
 		ImGuiLayer();

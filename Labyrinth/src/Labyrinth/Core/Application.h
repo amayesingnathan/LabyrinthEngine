@@ -47,7 +47,7 @@ namespace Laby {
 	class Application : public IEventListener
 	{
 	public:
-		LISTENING_EVENTS(WindowClose | WindowResize | KeyPressed)
+		LISTENING_EVENTS(WindowClose, WindowResize, KeyPressed)
 
 	public:
 		Application(const ApplicationSpec& spec);
@@ -69,8 +69,8 @@ namespace Laby {
 		void PushOverlay(Layer* overlay) { mLayerStack.pushOverlay(overlay); }
 
 	public:
-		static Application& Get() { return *sInstance; }
 		static void Run(int argc, char** argv);
+		static Application& Get() { return *sInstance; }
 		static void Close() { if (!sInstance->mState.blockExit) sInstance->mState.running = false; }
 
 		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }

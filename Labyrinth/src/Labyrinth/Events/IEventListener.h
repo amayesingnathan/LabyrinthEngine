@@ -18,6 +18,6 @@ namespace Laby {
 		bool accept(EventTypeFlag type) const { return (getListeningEvents() & type); }
 	};
 
-#define LISTENING_EVENTS(events)  static constexpr EventTypeFlag GetStaticType() { return events; }\
-								  virtual EventTypeFlag getListeningEvents() const override { return GetStaticType(); }
+#define LISTENING_EVENTS(...)	static constexpr EventTypeFlag GetStaticType() { return EXPAND_EVENTS(__VA_ARGS__); }\
+								virtual EventTypeFlag getListeningEvents() const override { return GetStaticType(); }
 }

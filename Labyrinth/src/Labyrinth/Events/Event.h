@@ -19,7 +19,7 @@ namespace Laby {
 	struct Event
 	{
 		bool handled = false;
-		EventType type = EventType::None;
+		EventType::Flag type = EventType::None;
 		EventData data;
 	};
 
