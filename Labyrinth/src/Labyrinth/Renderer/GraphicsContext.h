@@ -2,17 +2,22 @@
 
 #include <Labyrinth/Core/System/Ref.h>
 
+struct GLFWwindow;
+
 namespace Laby {
 
-	class GraphicsContext : public RefCounted
+	class GraphicsContext
 	{
 	public:
-		virtual ~GraphicsContext() = default;
+		GraphicsContext(GLFWwindow* windowHandle);
 
-		virtual void init() = 0;
-		virtual void swapBuffers() = 0;
+		virtual void init();
+		virtual void swapBuffers();
 
-		static Single<GraphicsContext> Create(void* window);
+		static Single<GraphicsContext> Create(void* window) { return MakeSingle<GraphicsContext>((GLFWwindow*)window); }
+
+	private:
+		GLFWwindow* mWindowHandle;
 	};
 
 }

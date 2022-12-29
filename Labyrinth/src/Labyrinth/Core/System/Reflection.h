@@ -79,15 +79,15 @@ namespace Laby {
         static constexpr bool IsStandard    = std::is_standard_layout_v<T>;
 
         template<typename R>
-        static constexpr bool IsBaseOf      = std::is_base_of<R, T>::value;
+        static constexpr bool IsBaseOf      = std::is_base_of_v<R, T>;
 
         template<typename R>
         static constexpr bool IsSameAs      = Reflection::IsSame<T, R>();
     };
 
 
-    template<typename Base, typename Derived>
-    concept DerivedFrom = std::derived_from<Base, Derived>;
+    template<typename Derived, typename Base>
+    concept DerivedFrom = std::is_base_of_v<Base, Derived>;
 
     template<typename T>
     struct FunctionTraits;
