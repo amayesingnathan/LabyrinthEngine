@@ -67,8 +67,8 @@ namespace Laby {
 			return;
 
 		ImGuiIO& io = ImGui::GetIO();
-		e.handled |= (e.type & EVENT_CATEGORY_MOUSE) && io.WantCaptureMouse;
-		e.handled |= (e.type & EVENT_CATEGORY_KEY) && io.WantCaptureKeyboard;
+		e.handled |= (e.type & EventType::EVENT_CATEGORY_MOUSE) && io.WantCaptureMouse;
+		e.handled |= (e.type & EventType::EVENT_CATEGORY_KEY) && io.WantCaptureKeyboard;
 	}
 
 	void ImGuiLayer::begin()

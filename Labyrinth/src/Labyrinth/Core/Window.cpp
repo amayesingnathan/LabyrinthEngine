@@ -71,6 +71,9 @@ namespace Laby {
 		LAB_CORE_INFO("Creating window {0} ({1}, {2})", mData.title, mData.width, mData.height);
 
 		{
+#if defined(LAB_DEBUG)
+			glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 			mWindow = glfwCreateWindow((int)mData.width, (int)mData.height, mData.title.c_str(), nullptr, nullptr);
 			++sGLFWWindowCount;
 		}
@@ -90,7 +93,7 @@ namespace Laby {
 			data.height = height;
 
 			Event event;
-			event.type = WindowResize;
+			event.type = EventType::WindowResize;
 			event.data = WindowResizeEvent(width, height);
 
 			EventManager::Post(event);
@@ -101,7 +104,7 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			Event event;
-			event.type = WindowClose;
+			event.type = EventType::WindowClose;
 			event.data = WindowCloseEvent();
 
 			EventManager::Post(event);
@@ -116,7 +119,7 @@ namespace Laby {
 			case GLFW_PRESS:
 			{
 				Event event;
-				event.type = KeyPressed;
+				event.type = EventType::KeyPressed;
 				event.data = KeyPressedEvent{ (KeyCode)key, false };
 
 				EventManager::Post(event);
@@ -125,7 +128,7 @@ namespace Laby {
 			case GLFW_RELEASE:
 			{
 				Event event;
-				event.type = KeyReleased;
+				event.type = EventType::KeyReleased;
 				event.data = KeyReleasedEvent{ (KeyCode)key };
 
 				EventManager::Post(event);
@@ -134,7 +137,7 @@ namespace Laby {
 			case GLFW_REPEAT:
 			{
 				Event event;
-				event.type = KeyPressed;
+				event.type = EventType::KeyPressed;
 				event.data = KeyPressedEvent{ (KeyCode)key, true };
 
 				EventManager::Post(event);
@@ -148,7 +151,7 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		
 			Event event;
-			event.type = KeyTyped;
+			event.type = EventType::KeyTyped;
 			event.data = KeyTypedEvent(keycode);
 
 			EventManager::Post(event);
@@ -163,7 +166,7 @@ namespace Laby {
 			case GLFW_PRESS:
 			{
 				Event event;
-				event.type = MouseButtonPressed;
+				event.type = EventType::MouseButtonPressed;
 				event.data = MouseButtonPressedEvent{ MouseCode(button) };
 
 				EventManager::Post(event);
@@ -172,7 +175,7 @@ namespace Laby {
 			case GLFW_RELEASE:
 			{
 				Event event;
-				event.type = MouseButtonReleased;
+				event.type = EventType::MouseButtonReleased;
 				event.data = MouseButtonReleasedEvent{ MouseCode(button) };
 
 				EventManager::Post(event);
@@ -186,7 +189,7 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			Event event;
-			event.type = MouseScrolled;
+			event.type = EventType::MouseScrolled;
 			event.data = MouseScrolledEvent((f32)xOffset, (f32)yOffset);
 
 			EventManager::Post(event);
@@ -197,7 +200,7 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		
 			Event event;
-			event.type = MouseMoved;
+			event.type = EventType::MouseMoved;
 			event.data = MouseMovedEvent((f32)xPos, (f32)yPos);
 
 			EventManager::Post(event);
