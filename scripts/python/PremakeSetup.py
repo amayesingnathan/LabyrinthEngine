@@ -5,9 +5,9 @@ import requests
 from pathlib import Path
 
 if platform.system() == "Windows":
-    import WindowsUtils as Utils
+    import UtilsWindows as Utils
 elif platform.system() == "Linux":
-    import LinuxUtils as Utils
+    import UtilsLinux as Utils
 
 def GetLatestPremakeVersion():
     LATEST_ENTRY = 0
@@ -18,8 +18,8 @@ def GetLatestPremakeVersion():
     }
     response = requests.request("GET", url, headers = headers)
     if (response.status_code != 200) :
-        return "5.0.0-beta1" # default if lookup fails
-    return response.json()[LATEST_ENTRY][TAG_FIELD][1:] # Strip 'v' character out of tag name. Ex: v5.0.0-beta1 -> 5.0.0-beta1
+        return "5.0.0-beta2" # default if lookup fails
+    return response.json()[LATEST_ENTRY][TAG_FIELD][1:] # Strip 'v' character out of tag name. Ex: v5.0.0-beta2 -> 5.0.0-beta2
 
     
 class PremakeConfiguration:
@@ -66,7 +66,7 @@ class PremakeConfiguration:
         print("Downloading {0:s} to {1:s}".format(cls.premakeZipUrls, premakePath))
         Utils.DownloadFile(cls.premakeZipUrls, premakePath)
         print("Extracting", premakePath)
-        Utils.UnzipFile(premakePath, deleteZipFile=True)
+        Utils.UnpackFile(premakePath, [".exe"], deleteZipFile=True)
         print(f"Premake {cls.premakeVersion} has been downloaded to '{cls.premakeDirectory}'")
 
         premakeLicensePath = f"{cls.premakeDirectory}/LICENSE.txt"
