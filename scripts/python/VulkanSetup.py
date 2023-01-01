@@ -5,9 +5,9 @@ import platform
 from pathlib import Path
 
 if platform.system() == "Windows":
-    import WindowsUtils as Utils
+    import UtilsWindows as Utils
 elif platform.system() == "Linux":
-    import LinuxUtils as Utils
+    import UtilsLinux as Utils
 
 from io import BytesIO
 from urllib.request import urlopen

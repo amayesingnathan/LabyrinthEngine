@@ -7,15 +7,6 @@ if [ $# -eq 0 ] ; then
   echo "Please specify debug or release build with -d or -r. Build both with -dr."
 fi
 
-# If premake binary does not exist then build it
-PREMAKE_BIN=dependencies/premake/bin/premake5
-if [ ! -f "$PREMAKE_BIN" ]; then
-  pushd dependencies/premake-core
-  make -f Bootstrap.mak linux
-  mv ./bin/release/premake5 ../premake/bin/
-  popd #dependencies/premake-core
-fi
-
 # Get system architecture
 architecture=""
 case $(arch) in
