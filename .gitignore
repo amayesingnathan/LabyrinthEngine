@@ -33,6 +33,7 @@ Makefile.in
 
 #Assets
 assets/
+!Labyrinth/src/Labyrinth/Assets
 !Enigma/SandboxProject/assets/
 
 # Directories
