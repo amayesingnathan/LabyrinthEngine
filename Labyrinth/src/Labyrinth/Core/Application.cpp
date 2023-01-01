@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include <Labyrinth/IO/JSON.h>
+#include <Labyrinth/Renderer/Renderer.h>
 #include <Labyrinth/Tools/Utils.h>
 
 namespace Laby {
@@ -16,7 +17,7 @@ namespace Laby {
 
 		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
 
-		//Renderer::Init();
+		Renderer::Init();
 		//ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiLayer = new ImGuiLayer();
@@ -30,6 +31,7 @@ namespace Laby {
 			layer->onDetach();
 			delete layer;
 		}
+		Renderer::Shutdown();
 	}
 
 	void Application::onEvent(Event& e)

@@ -13,11 +13,8 @@ namespace Laby {
 
 			for (IEventListener* listener : sListeners)
 			{
-				if (listener->accept(e.type))
+				if (!e.handled && listener->accept(e.type))
 					listener->onEvent(e);
-
-				if (e.handled)
-					break;
 			}
 
 			sEventQueue.pop();

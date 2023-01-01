@@ -110,7 +110,7 @@ namespace Laby {
 		u32 mStride = 0;
 	};
 
-	class VertexBuffer : public RefCounted
+	class VertexBuffer : public virtual RefCounted
 	{
 	public:
 		VertexBuffer(u32 size);
@@ -130,7 +130,7 @@ namespace Laby {
 		BufferLayout mLayout;
 	};
 
-	class IndexBuffer : public RefCounted
+	class IndexBuffer : public virtual RefCounted
 	{
 	public:
 		IndexBuffer(u32* indices, u32 count);

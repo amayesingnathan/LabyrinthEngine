@@ -31,6 +31,9 @@ namespace Laby {
 		template<typename T>
 		T* as() const { return (T*)mData; }
 
+		Byte* data() { return (Byte*)mData; }
+		const Byte* data() const { return (Byte*)mData; }
+
 		Buffer copyBytes(usize size, usize offset = 0);
 
 		usize size() const { return mSize; }
