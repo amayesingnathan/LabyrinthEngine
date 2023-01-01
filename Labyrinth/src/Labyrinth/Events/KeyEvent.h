@@ -10,6 +10,8 @@ namespace Laby {
 		KeyCode keyCode;
 		bool repeat;
 
+		KeyPressedEvent(KeyCode key, bool repeated) : keyCode(key), repeat(repeated) {}
+
 		EVENT_DATA_TYPE(KeyPressed)
 	};
 
@@ -17,12 +19,16 @@ namespace Laby {
 	{
 		KeyCode keyCode;
 
+		KeyReleasedEvent(KeyCode key) : keyCode(key) {}
+
 		EVENT_DATA_TYPE(KeyReleased)
 	};
 
 	struct KeyTypedEvent
 	{
 		KeyCode keyCode;
+
+		KeyTypedEvent(KeyCode key) : keyCode(key) {}
 
 		EVENT_DATA_TYPE(KeyTyped)
 	};

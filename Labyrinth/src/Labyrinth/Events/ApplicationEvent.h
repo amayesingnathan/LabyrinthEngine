@@ -8,6 +8,8 @@ namespace Laby {
 	{
 		u32 width, height;
 
+		WindowResizeEvent(u32 w, u32 h) : width(w), height(h) {}
+
 		EVENT_DATA_TYPE(WindowResize)
 	};
 
