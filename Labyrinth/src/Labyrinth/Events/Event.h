@@ -1,6 +1,6 @@
 #pragma once
 
-#include <variant>
+#include <Labyrinth/Core/System/Reflection.h>
 
 #include "ApplicationEvent.h"
 #include "KeyEvent.h"
@@ -8,19 +8,29 @@
 
 namespace Laby {
 
-	using EventData = std::variant<
-		WindowResizeEvent, WindowCloseEvent, WindowFocusEvent, WindowFocusLostEvent,
+	using AllEvents = TypeList<
+		WindowCloseEvent, WindowResizeEvent, WindowFocusEvent, WindowFocusLostEvent,
 		AppTickEvent, AppUpdateEvent, AppRenderEvent,
 		KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
-		MouseMovedEvent, MouseScrolledEvent,
-		MouseButtonPressedEvent, MouseButtonReleasedEvent
+		MouseButtonPressedEvent, MouseButtonReleasedEvent,
+		MouseMovedEvent, MouseScrolledEvent
 	>;
+
+	template<typename T>
+	concept IsEvent = AllEvents::Contains<T>;
 
 	struct Event
 	{
 		bool handled = false;
-		EventType::Flag type = EventType::None;
-		EventData data;
+		EventTypeFlag type = EventType::None;
+		AllEvents::VariantType data;
+
+		template<IsEvent TEvent, typename... TArgs>
+		void init(TArgs&&... args) 
+		{
+			type = LAB_BIT(AllEvents::Index<TEvent>);
+			data = TEvent(std::forward<TArgs>(args)...);
+		}
 	};
 
 	class LocalEventDispatcher

@@ -10,7 +10,7 @@ namespace Laby {
 	namespace EventType {
 
 		enum Flag : u32
-		{
+		{	// New events must be added to AllEvents struct in same order
 			None = 0,
 			WindowClose = LAB_BIT(0), WindowResize = LAB_BIT(1), WindowFocus = LAB_BIT(2), WindowLostFocus = LAB_BIT(3), WindowMoved = LAB_BIT(4),
 			AppTick = LAB_BIT(5), AppUpdate = LAB_BIT(6), AppRender = LAB_BIT(7),
@@ -28,7 +28,7 @@ namespace Laby {
 
 #define EVENT_DATA_TYPE(type)	static EventType::Flag GetStaticType() { return EventType::type; }
 
-	// Add events here also
+	// Add extra events here also
 #define EVENT_TYPE1(a)								EventType::##a
 #define EVENT_TYPE2(a,b)							EventType::##a | EventType::##b
 #define EVENT_TYPE3(a,b,c)							EventType::##a | EventType::##b | EventType::##c

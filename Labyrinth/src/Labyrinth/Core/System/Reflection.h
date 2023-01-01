@@ -4,6 +4,8 @@
 #include <functional>
 #include <type_traits>
 #include <concepts>
+#include <tuple>
+#include <variant>
 
 #include "Types.h"
 
@@ -60,8 +62,6 @@ namespace Laby {
         }
 #endif
 
-        template<typename T, typename R>
-        static constexpr bool IsSame() { return std::is_same<T, R>::value; }
     }
 
     template<typename T>
@@ -79,10 +79,10 @@ namespace Laby {
         static constexpr bool IsStandard    = std::is_standard_layout_v<T>;
 
         template<typename R>
-        static constexpr bool IsBaseOf      = std::is_base_of_v<R, T>;
+        static constexpr bool IsBaseOf      = std::is_base_of_v<T, R>;
 
         template<typename R>
-        static constexpr bool IsSameAs      = Reflection::IsSame<T, R>();
+        static constexpr bool IsSameAs      = std::is_same_v<T, R>;
     };
 
 
@@ -103,5 +103,39 @@ namespace Laby {
         {
             using Type = typename std::tuple_element<i, std::tuple<Args...>>::type;
         };
+    };
+
+    namespace TypeUtils {
+
+        template<usize I, typename T, typename TupleType>
+        static constexpr usize IndexFunction()
+        {
+            LAB_STATIC_ASSERT(I < std::tuple_size_v<TupleType>, "The element is not in the tuple");
+
+            using IndexType = typename std::tuple_element<I, TupleType>::type;
+
+            if constexpr (std::is_same_v<T, IndexType>)
+                return I;
+            else 
+                return IndexFunction<I + 1, T, TupleType>();
+        }
+    }
+
+    template<typename... Types>
+    struct TypeList
+    {
+        static constexpr usize Size = sizeof...(Types);
+
+        using TupleType = std::tuple<Types...>;
+        using VariantType = std::variant<Types...>;
+
+        template<typename T>
+        static constexpr bool Contains = std::disjunction<std::is_same<T, Types>...>::value;
+
+        template<typename T>
+        static constexpr usize Index = TypeUtils::IndexFunction<0, T, TupleType>();
+
+        template<usize I>
+        using Type = typename std::tuple_element<I, TupleType>::type;
     };
 }

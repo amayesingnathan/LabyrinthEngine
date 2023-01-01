@@ -12,7 +12,13 @@ namespace Laby {
 	{
 	public:
 		static void RegisterListener(IEventListener* listener) { sListeners.emplace_back(listener); }
-		static void Post(const Event& event) { sEventQueue.emplace(event); }
+
+		template<IsEvent TEvent, typename... TArgs>
+		static void Post(TArgs&&... args)
+		{
+			Event& e = sEventQueue.emplace();
+			e.init<TEvent>(std::forward<TArgs>(args)...);
+		}
 
 		static void Dispatch();
 

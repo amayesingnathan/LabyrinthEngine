@@ -92,22 +92,14 @@ namespace Laby {
 			data.width = width;
 			data.height = height;
 
-			Event event;
-			event.type = EventType::WindowResize;
-			event.data = WindowResizeEvent(width, height);
-
-			EventManager::Post(event);
+			EventManager::Post<WindowResizeEvent>(width, height);
 		});
 
 		glfwSetWindowCloseCallback(mWindow, [](GLFWwindow* window)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-			Event event;
-			event.type = EventType::WindowClose;
-			event.data = WindowCloseEvent();
-
-			EventManager::Post(event);
+			EventManager::Post<WindowCloseEvent>();
 		});
 
 		glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -118,29 +110,17 @@ namespace Laby {
 			{
 			case GLFW_PRESS:
 			{
-				Event event;
-				event.type = EventType::KeyPressed;
-				event.data = KeyPressedEvent{ (KeyCode)key, false };
-
-				EventManager::Post(event);
+				EventManager::Post<KeyPressedEvent>((KeyCode)key, false);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				Event event;
-				event.type = EventType::KeyReleased;
-				event.data = KeyReleasedEvent{ (KeyCode)key };
-
-				EventManager::Post(event);
+				EventManager::Post<KeyReleasedEvent>((KeyCode)key);
 				break;
 			}
 			case GLFW_REPEAT:
 			{
-				Event event;
-				event.type = EventType::KeyPressed;
-				event.data = KeyPressedEvent{ (KeyCode)key, true };
-
-				EventManager::Post(event);
+				EventManager::Post<KeyPressedEvent>((KeyCode)key, true);
 				break;
 			}
 			}
@@ -150,11 +130,7 @@ namespace Laby {
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		
-			Event event;
-			event.type = EventType::KeyTyped;
-			event.data = KeyTypedEvent(keycode);
-
-			EventManager::Post(event);
+			EventManager::Post<KeyTypedEvent>(keycode);
 		});
 
 		glfwSetMouseButtonCallback(mWindow, [](GLFWwindow* window, int button, int action, int mods)
@@ -165,20 +141,12 @@ namespace Laby {
 			{
 			case GLFW_PRESS:
 			{
-				Event event;
-				event.type = EventType::MouseButtonPressed;
-				event.data = MouseButtonPressedEvent{ MouseCode(button) };
-
-				EventManager::Post(event);
+				EventManager::Post<MouseButtonPressedEvent>(button);
 				break;
 			}
 			case GLFW_RELEASE:
 			{
-				Event event;
-				event.type = EventType::MouseButtonReleased;
-				event.data = MouseButtonReleasedEvent{ MouseCode(button) };
-
-				EventManager::Post(event);
+				EventManager::Post<MouseButtonReleasedEvent>(button);
 				break;
 			}
 			}
@@ -188,22 +156,14 @@ namespace Laby {
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-			Event event;
-			event.type = EventType::MouseScrolled;
-			event.data = MouseScrolledEvent((f32)xOffset, (f32)yOffset);
-
-			EventManager::Post(event);
+			EventManager::Post<MouseScrolledEvent>((f32)xOffset, (f32)yOffset);
 		});
 
 		glfwSetCursorPosCallback(mWindow, [](GLFWwindow* window, f64 xPos, f64 yPos)
 		{
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		
-			Event event;
-			event.type = EventType::MouseMoved;
-			event.data = MouseMovedEvent((f32)xPos, (f32)yPos);
-
-			EventManager::Post(event);
+			EventManager::Post<MouseMovedEvent>((f32)xPos, (f32)yPos);
 		});
 	}
 
