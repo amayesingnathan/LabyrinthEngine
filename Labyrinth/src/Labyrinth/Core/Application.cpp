@@ -2,6 +2,7 @@
 #include "Application.h"
 
 #include <Labyrinth/IO/JSON.h>
+#include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Renderer/Renderer.h>
 #include <Labyrinth/Tools/Utils.h>
 
@@ -31,7 +32,9 @@ namespace Laby {
 			layer->onDetach();
 			delete layer;
 		}
+
 		Renderer::Shutdown();
+		Project::SetInactive();
 	}
 
 	void Application::onEvent(Event& e)

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Labyrinth/Assets/Asset.h>
 #include <Labyrinth/Containers/Buffer.h>
 
 #include "IRenderable.h"
@@ -8,8 +9,11 @@ typedef unsigned int GLenum;
 
 namespace Laby {
 
-	class Texture2D : public IRenderable
+	class Texture2D : public IRenderable, public Asset
 	{
+	public:
+		ASSET_STATIC_TYPE(AssetType::Texture)
+		
 	public:
 		Texture2D(i32 width, i32 height);
 		Texture2D(const std::string& path);
