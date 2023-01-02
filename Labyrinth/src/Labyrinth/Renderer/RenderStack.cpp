@@ -77,6 +77,19 @@ namespace Laby {
 		targetLayer->addQuad(trComp, srComp, entID);
 	}
 
+	void RenderStack::addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID)
+	{
+		RenderLayer* targetLayer = getLayer(crComp.layer);
+
+		if (!targetLayer)
+		{
+			targetLayer = new RenderLayer(crComp.layer);
+			pushLayer(targetLayer);
+		}
+
+		targetLayer->addCircle(trComp, crComp, entID);
+	}
+
 	void RenderStack::draw()
 	{
 		std::sort(mLayers.begin(), mLayers.end(), [](const auto& lhs, const auto& rhs)

@@ -1,7 +1,7 @@
 #include "Lpch.h"
 #include "StringUtils.h"
 
-namespace Labyrinth::Utils {
+namespace Laby::Utils {
 
 	namespace String {
 
