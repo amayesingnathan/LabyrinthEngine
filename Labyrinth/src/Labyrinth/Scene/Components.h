@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Labyrinth/Assets/Asset.h"
-#include "Labyrinth/Scene/SceneCamera.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/quaternion.hpp>
 
-#include <variant>
+#include <Labyrinth/Assets/Asset.h>
+#include <Labyrinth/Scene/SceneCamera.h>
+#include <Labyrinth/Scripting/ScriptObject.h>
 
 namespace Laby {
 
@@ -181,6 +180,20 @@ namespace Laby {
 	};
 
 
+	// Scripting
+
+	struct ScriptComponent
+	{
+		std::string className;
+		Ref<ScriptObject> instance;
+		bool initialised = false;
+
+		ScriptComponent() = default;
+		ScriptComponent(const ScriptComponent&) = default;
+		ScriptComponent(const std::string& name) : className(name) {}
+	};
+
+
 	// Physics
 
 	struct RigidBodyComponent
@@ -238,6 +251,7 @@ namespace Laby {
 		CameraComponent,
 		RigidBodyComponent,
 		BoxColliderComponent,
-		CircleColliderComponent
+		CircleColliderComponent,
+		ScriptComponent
 	>;
 }
