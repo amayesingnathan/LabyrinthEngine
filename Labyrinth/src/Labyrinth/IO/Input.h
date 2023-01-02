@@ -3,8 +3,6 @@
 #include "Labyrinth/IO/KeyCodes.h"
 #include "Labyrinth/IO/MouseCodes.h"
 
-#include <glm/glm.hpp>
-
 namespace Laby {
 
 	class Input

@@ -2,7 +2,7 @@
 
 #include <unordered_set>
 
-#include "Cast.h"
+#include "Base.h"
 
 namespace Laby {
 
@@ -168,5 +168,40 @@ namespace Laby {
 		friend class Ref;
 
 		mutable T* mData;
+	};
+
+
+	template<RefCountable T>
+	class WeakRef
+	{
+	public:
+		WeakRef() = default;
+
+		WeakRef(Ref<T> ref)
+		{
+			mData = ref.data();
+		}
+
+		WeakRef(T* instance)
+		{
+			mData = instance;
+		}
+
+		T* operator->() { return mData; }
+		const T* operator->() const { return mData; }
+
+		T& operator*() { return *mData; }
+		const T& operator*() const { return *mData; }
+
+		bool valid() const { return mData ? RefTracker::IsTracked(mData) : false; }
+		operator bool() const { return valid(); }
+
+		Ref<T> lock() const
+		{
+			return Ref<T>(mData);
+		}
+
+	private:
+		T* mData = nullptr;
 	};
 }

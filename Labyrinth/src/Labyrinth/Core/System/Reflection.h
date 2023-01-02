@@ -7,8 +7,6 @@
 #include <tuple>
 #include <variant>
 
-#include "Types.h"
-
 #if defined(__GNUC__) || (defined(__MWERKS__) && (__MWERKS__ >= 0x3000)) || (defined(__ICC) && (__ICC >= 600)) || defined(__ghs__)
 #    define LAB_FUNC_SIGNATURE __PRETTY_FUNCTION__
 #    define LAB_FUNC_SIGNATURE_PREFIX '='
@@ -96,9 +94,9 @@ namespace Laby {
     struct FunctionTraits<std::function<R(Args...)>>
     {
         using ReturnType = R;
-        static constexpr usize ArgC = sizeof...(Args);
+        static constexpr size_t ArgC = sizeof...(Args);
 
-        template <usize i>
+        template <size_t i>
         struct Arg
         {
             using Type = typename std::tuple_element<i, std::tuple<Args...>>::type;
@@ -107,8 +105,8 @@ namespace Laby {
 
     namespace TypeUtils {
 
-        template<usize I, typename T, typename TupleType>
-        static constexpr usize IndexFunction()
+        template<size_t I, typename T, typename TupleType>
+        static constexpr size_t IndexFunction()
         {
             LAB_STATIC_ASSERT(I < std::tuple_size_v<TupleType>, "The element is not in the tuple");
 
@@ -121,21 +119,21 @@ namespace Laby {
         }
     }
 
-    template<typename... Types>
+    template<typename... T>
     struct TypeList
     {
-        static constexpr usize Size = sizeof...(Types);
+        static constexpr size_t Size = sizeof...(T);
 
-        using TupleType = std::tuple<Types...>;
-        using VariantType = std::variant<Types...>;
+        using TupleType = std::tuple<T...>;
+        using VariantType = std::variant<T...>;
 
-        template<typename T>
-        static constexpr bool Contains = std::disjunction<std::is_same<T, Types>...>::value;
+        template<typename R>
+        static constexpr bool Contains = std::disjunction<std::is_same<R, T>...>::value;
 
-        template<typename T>
-        static constexpr usize Index = TypeUtils::IndexFunction<0, T, TupleType>();
+        template<typename R>
+        static constexpr size_t Index = TypeUtils::IndexFunction<0, R, TupleType>();
 
-        template<usize I>
+        template<size_t I>
         using Type = typename std::tuple_element<I, TupleType>::type;
     };
 }

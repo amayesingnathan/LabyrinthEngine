@@ -2,8 +2,6 @@
 
 #include <Labyrinth/Core/System/Ref.h>
 
-#include <glm/glm.hpp>
-
 typedef unsigned int GLenum;
 
 namespace Laby {
