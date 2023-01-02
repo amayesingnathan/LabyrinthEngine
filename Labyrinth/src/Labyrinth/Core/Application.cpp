@@ -19,7 +19,7 @@ namespace Laby {
 		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
 
 		Renderer::Init();
-		//ScriptEngine::Init(spec.scriptConfig);
+		ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiLayer = new ImGuiLayer();
 		PushOverlay(mImGuiLayer);
@@ -33,6 +33,7 @@ namespace Laby {
 			delete layer;
 		}
 
+		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
 		Project::SetInactive();
 	}

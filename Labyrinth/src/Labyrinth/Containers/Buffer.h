@@ -44,11 +44,11 @@ namespace Laby {
 		Byte& operator[](usize index) { return ((Byte*)mData)[index]; }
 		const Byte& operator[](usize index) const { return ((Byte*)mData)[index]; }
 
-	private:
+	protected:
 		void allocate(usize size);
 		void release();
 
-	private:
+	protected:
 		void* mData = nullptr;
 		usize mSize = 0;
 	};
