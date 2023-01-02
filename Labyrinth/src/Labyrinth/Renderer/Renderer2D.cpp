@@ -2,7 +2,11 @@
 #include "Renderer2D.h"
 
 #include "Renderer.h"
+#include "SubTexture.h"
 #include "Camera.h"
+
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Scene/Components.h>
 
 namespace Laby {
 
@@ -65,15 +69,22 @@ namespace Laby {
 
 	void Renderer2D::BeginState()
 	{
-		sRenderData.cameraMatrix = glm::mat4(1.0f);
-		sRenderData.cameraUniformBuffer->setData(&sRenderData.cameraMatrix, sizeof(Renderer2DData::CameraData));
+		BeginState(glm::mat4{ 1.0f });
+	}
 
-		StartBatch();
+	void Renderer2D::BeginState(const Camera& camera, const glm::mat4& transform)
+	{
+		BeginState(camera.getProjection() * glm::inverse(transform));
 	}
 
 	void Renderer2D::BeginState(const Camera& camera)
 	{
-		sRenderData.cameraMatrix = camera.getViewProjection();
+		BeginState(camera.getViewProjection());
+	}
+
+	void Renderer2D::BeginState(const glm::mat4& cameraTransform)
+	{
+		sRenderData.cameraMatrix = cameraTransform;
 		sRenderData.cameraUniformBuffer->setData(&sRenderData.cameraMatrix, sizeof(Renderer2DData::CameraData));
 
 		StartBatch();
@@ -190,6 +201,57 @@ namespace Laby {
 		sRenderData.stats.quadCount++;
 	}
 
+	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID)
+	{
+		if (!src.hasTex())
+		{
+			DrawQuad(transform, src.colour, entityID);
+			return;
+		}
+
+		switch (src.type)
+		{
+		case SpriteRendererComponent::TexType::Texture:
+		{
+			Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(src.handle);
+			if (!tex) 
+				return;
+
+			DrawQuad(transform, tex, src.tilingFactor, src.colour, entityID);
+			break;
+		}
+		case SpriteRendererComponent::TexType::SubTexture:
+		{
+			Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(src.handle);
+			if (!subtex) 
+				return;
+
+			DrawQuad(transform, subtex, src.tilingFactor, src.colour, entityID);
+			break;
+		}
+		}
+	}
+
+	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, f32 thickness, i32 entityID)
+	{
+		if (sRenderData.circleIndexCount >= Renderer2DData::MaxIndices)
+			NextBatch();
+
+		for (usize i = 0; i < 4; i++)
+		{
+			sRenderData.circleVertexBufferPtr->worldPosition = transform * Renderer2DData::QuadVertexPositions[i];
+			sRenderData.circleVertexBufferPtr->thickness = thickness;
+			sRenderData.circleVertexBufferPtr->localPosition = Renderer2DData::QuadVertexPositions[i] * 2.0f;
+			sRenderData.circleVertexBufferPtr->colour = colour;
+			sRenderData.circleVertexBufferPtr->entityID = entityID;
+			sRenderData.circleVertexBufferPtr++;
+		}
+
+		sRenderData.circleIndexCount += 6;
+
+		sRenderData.stats.quadCount++;
+	}
+
 	void Renderer2D::StartBatch()
 	{
 		sRenderData.quadIndexCount = 0;
@@ -211,6 +273,17 @@ namespace Laby {
 
 			sRenderData.quadShader->bind();
 			Renderer::DrawIndexed(sRenderData.quadVertexArray, sRenderData.quadIndexCount);
+			sRenderData.stats.drawCalls++;
+		}
+
+		// Circles
+		if (sRenderData.circleIndexCount)
+		{
+			u32 circleDataSize = (u32)((u8*)sRenderData.circleVertexBufferPtr - (u8*)sRenderData.circleVertexBufferBase);
+			sRenderData.circleVertexBuffer->setData(sRenderData.circleVertexBufferBase, circleDataSize);
+
+			sRenderData.circleShader->bind();
+			Renderer::DrawIndexed(sRenderData.circleVertexArray, sRenderData.circleIndexCount);
 			sRenderData.stats.drawCalls++;
 		}
 	}

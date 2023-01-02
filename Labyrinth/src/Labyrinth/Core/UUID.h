@@ -17,7 +17,6 @@ namespace Laby {
 	private:
 		u64 mID;
 	};
-
 }
 
 namespace std {

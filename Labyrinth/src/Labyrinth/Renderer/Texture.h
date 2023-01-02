@@ -19,6 +19,8 @@ namespace Laby {
 		Texture2D(const std::string& path);
 		~Texture2D();
 
+		bool loaded() const { return mRendererID != -1; }
+
 		u32 getRendererID() const override { return mRendererID; }
 		void bind(u32 slot = 0) const override;
 

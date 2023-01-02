@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include "Camera.h"
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Events/Event.h"
@@ -16,6 +14,8 @@ namespace Laby {
 
 		void onUpdate(Timestep ts);
 		void onEvent(Event& e);
+
+		glm::mat4 getViewProjection() const override { return mProjection * mView; }
 
 		inline f32 getDistance() const { return mDistance; }
 		inline void setDistance(f32 distance) { mDistance = distance; }
@@ -51,6 +51,8 @@ namespace Laby {
 		f32 ZoomSpeed() const;
 
 	private:
+		glm::mat4 mView;
+
 		f32 mFOV = 45.0f, mAspectRatio = 1.778f, mNearClip = 0.1f, mFarClip = 1000.0f;
 
 		glm::vec3 mPosition = { 0.0f, 0.0f, 0.0f };

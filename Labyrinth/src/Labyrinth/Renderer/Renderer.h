@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
 #include <Labyrinth/Core/System/Base.h>
 
 #include "VertexArray.h"
