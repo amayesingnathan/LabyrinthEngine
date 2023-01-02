@@ -18,9 +18,10 @@ project "Sandbox"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
 		"%{wks.location}/Labyrinth/dependencies",
-        "%{IncludeDir.spdlog}",
+		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.json}",
+        "%{IncludeDir.spdlog}",
 		"%{IncludeDir.yaml_cpp}",
     }
 	
