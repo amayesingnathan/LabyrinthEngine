@@ -232,6 +232,11 @@ namespace Laby {
 		}
 	}
 
+	void Renderer2D::DrawCircle(const TransformComponent& transform, const CircleRendererComponent& crc, i32 entityID)
+	{
+		DrawCircle(transform, crc.colour, crc.thickness, entityID);
+	}
+
 	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, f32 thickness, i32 entityID)
 	{
 		if (sRenderData.circleIndexCount >= Renderer2DData::MaxIndices)

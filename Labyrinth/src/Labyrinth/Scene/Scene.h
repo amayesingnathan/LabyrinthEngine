@@ -80,9 +80,6 @@ namespace Laby {
 
 		void StepPhysics2D(Timestep ts);
 
-		template<typename T>
-		void onComponentAdded(Entity entity, T& component);
-
 	private:
 		std::string mName;
 

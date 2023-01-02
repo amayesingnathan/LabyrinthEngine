@@ -31,7 +31,7 @@ namespace Laby {
 		static void DrawRotatedQuad(const glm::vec2& position, const glm::vec2& size, f32 rotation, const Ref<IRenderable>& texture, f32 tilingFactor = 1.0f, const glm::vec4& tintColour = glm::vec4(1.0f), i32 entityID = -1);
 
 		static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID);
-		static void DrawCircle(const TransformComponent& transform, const CircleRendererComponent& src, i32 entityID = -1);
+		static void DrawCircle(const TransformComponent& transform, const CircleRendererComponent& crc, i32 entityID = -1);
 
 		static void ResetStats();
 		static const RenderStatistics& GetStats();

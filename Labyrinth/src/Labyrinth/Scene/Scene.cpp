@@ -306,15 +306,14 @@ namespace Laby {
 		const int32_t poslIters = 2;
 		mPhysicsWorld->Step(ts, velIters, poslIters);
 
-		mRegistry.view<RigidBodyComponent, TransformComponent>().each([this](auto entity, const auto& rbComponent, auto& trComponent)
-			{
-				b2Body* body = Cast<b2Body>(rbComponent.runtimeBody);
-				const auto& pos = body->GetPosition();
-				trComponent.translation.x = pos.x;
-				trComponent.translation.y = pos.y;
-				trComponent.rotation.z = body->GetAngle();
-			});
-
+		mRegistry.view<RigidBodyComponent, TransformComponent>().each([this](auto entity, auto& rbComponent, auto& trComponent)
+		{
+			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
+			const auto& pos = body->GetPosition();
+			trComponent.translation.x = pos.x;
+			trComponent.translation.y = pos.y;
+			trComponent.rotation.z = body->GetAngle();
+		});
 	}
 
 	Entity Scene::findEntity(UUID findID)
