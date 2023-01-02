@@ -29,7 +29,9 @@ project "Labyrinth"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
         "%{IncludeDir.RenderAPI}",
-        "%{IncludeDir.stb_image}",
+        "%{IncludeDir.asio}",
+        "%{IncludeDir.box2d}",
+		"%{IncludeDir.entt}",
         "%{IncludeDir.glad}",
         "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
@@ -38,13 +40,12 @@ project "Labyrinth"
         "%{IncludeDir.json}",
         "%{IncludeDir.magic_enum}",
         "%{IncludeDir.mono}",
-        "%{IncludeDir.spdlog}",
-        "%{IncludeDir.rapidxml}",
-        "%{IncludeDir.yaml_cpp}",
-        "%{IncludeDir.asio}",
         "%{IncludeDir.pfd}",
-        "%{IncludeDir.box2d}",
+        "%{IncludeDir.rapidxml}",
+        "%{IncludeDir.spdlog}",
+        "%{IncludeDir.stb_image}",
         "%{IncludeDir.VulkanSDK}",
+        "%{IncludeDir.yaml_cpp}",
     }
 
 	links

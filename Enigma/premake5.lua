@@ -18,13 +18,14 @@ project "Enigma"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
 		"%{wks.location}/Labyrinth/dependencies",
-        "%{IncludeDir.spdlog}",
+		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.ImGuizmo}",
+		"%{IncludeDir.json}",
 		"%{IncludeDir.magic_enum}",
+        "%{IncludeDir.spdlog}",
         "%{IncludeDir.yaml_cpp}",
-		"%{IncludeDir.json}"
     }
 	
     links
