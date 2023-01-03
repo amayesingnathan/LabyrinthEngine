@@ -115,8 +115,8 @@ namespace Laby {
 #define LAB_DESERIALISE_PROPERTY(propName, destination, node) destination = node[#propName] ? node[#propName].as<decltype(destination)>() : decltype(destination)()
 
 #define LAB_DESERIALISE_PROPERTY_ASSET(propName, destination, inputData, assetClass)\
-		{AssetHandle assetHandle = inputData[#propName] ? inputData[#propName].as<u64>() : 0;\
-		if (AssetManager::IsAssetHandleValid(assetHandle))\
-		{ destination = AssetManager::GetAsset<assetClass>(assetHandle); }\
+		{Laby::AssetHandle assetHandle = inputData[#propName] ? inputData[#propName].as<Laby::u64>() : 0;\
+		if (Laby::AssetManager::IsAssetHandleValid(assetHandle))\
+		{ destination = Laby::AssetManager::GetAsset<Laby::##assetClass>(assetHandle); }\
 		else\
 		{ LAB_CORE_ERROR("Tried to load invalid asset {0}.", #assetClass); }}

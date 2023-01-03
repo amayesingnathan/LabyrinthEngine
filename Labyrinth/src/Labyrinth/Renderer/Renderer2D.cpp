@@ -59,7 +59,7 @@ namespace Laby {
 
 		sRenderData.textureSlots[0] = sRenderData.whiteTexture;
 
-		sRenderData.cameraUniformBuffer = Ref<UniformBuffer>::Create(sizeof(Renderer2DData::CameraData), 0);
+		sRenderData.cameraUniformBuffer = Ref<UniformBuffer>::Create((u32)sizeof(Renderer2DData::CameraData), 0);
 	}
 
 	void Renderer2D::Shutdown()
@@ -274,7 +274,7 @@ namespace Laby {
 			sRenderData.quadVertexBuffer->setData(sRenderData.quadVertexBufferBase, quadDataSize);
 
 			for (u32 i = 0; i < sRenderData.textureSlotIndex; i++)
-				sRenderData.textureSlots[i]->bind(i);
+				sRenderData.textureSlots[i]->bindTexture(i);
 
 			sRenderData.quadShader->bind();
 			Renderer::DrawIndexed(sRenderData.quadVertexArray, sRenderData.quadIndexCount);

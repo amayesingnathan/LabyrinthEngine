@@ -103,7 +103,7 @@ namespace Laby {
 		return buffer;
 	}
 
-	void Texture2D::bind(u32 slot) const
+	void Texture2D::bindTexture(u32 slot) const
 	{
 		glBindTextureUnit(slot, mRendererID);
 	}

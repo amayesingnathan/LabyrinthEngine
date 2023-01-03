@@ -216,6 +216,7 @@ namespace Laby {
 	{
 		glm::vec2 halfExtents = { 0.5f, 0.5f };
 		glm::vec2 offset = { 0.0f, 0.0f };
+
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
@@ -231,6 +232,7 @@ namespace Laby {
 	{
 		f32 radius = 0.5f;
 		glm::vec2 offset = { 0.0f, 0.0f };
+
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
@@ -240,6 +242,19 @@ namespace Laby {
 
 		CircleColliderComponent() = default;
 		CircleColliderComponent(const CircleColliderComponent&) = default;
+	};
+
+	struct PolygonColliderComponent
+	{
+		static constexpr usize MaxPolygonVertices = 8;
+
+		glm::vec2 vertices[MaxPolygonVertices];
+		i32 vertexCount = 0;
+
+		f32 friction = 0.25f;
+		f32 density = 0.5f;
+		f32 restitution = 0.0f;
+		f32 restitutionThreshold = 0.5f;
 	};
 
 	using AllComponents = TypeList

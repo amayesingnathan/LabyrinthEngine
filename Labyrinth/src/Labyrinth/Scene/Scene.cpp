@@ -69,6 +69,33 @@ namespace Laby {
 		delete mPhysicsWorld;
 	}
 
+	//Ref<Scene> CloneScene()
+	//{
+	//	Ref<Scene> newScene = Ref<Scene>::Create(mName);
+	//	newScene->mViewportWidth = mViewportWidth;
+	//	newScene->mViewportHeight = mViewportHeight;
+
+	//	std::unordered_map<UUID, EntityID> entMap;
+
+	//	mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
+	//	{
+	//		entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
+	//	});
+
+	//	CopyAllComponents(mRegistry, newScene->mRegistry, entMap);
+
+	//	newScene->mRegistry.view<IDComponent, NodeComponent>().each([&](auto e, const auto& idComp, const auto& nodeComp)
+	//	{
+	//		if (nodeComp.parent)
+	//		{
+	//			Entity entity{ e, newScene };
+	//			entity.removeComponent<RootComponent>();
+	//		}
+	//	});
+
+	//	return newScene;
+	//}
+
 	Entity Scene::CreateEntity(const std::string& name)
 	{
 		return CreateEntityWithID(UUID(), name, Entity());
@@ -167,6 +194,12 @@ namespace Laby {
 			else DestroyEntityR(childEnt, entity);
 		}
 
+		//if (entity.hasComponent<TileComponent>())
+		//{
+		//	const auto& tile = entity.getComponent<TileComponent>();
+		//	Entity tilemapController = { mEntityMap.at(tile.tilemapEntity), Ref<Scene>(this) };
+		//	tilemapController.getComponent<TilemapControllerComponent>().tileBehaviour.erase(tile.pos);
+		//}
 		mEntityMap.erase(entity.getUUID());
 		mRegistry.destroy(entity);
 	}
@@ -199,66 +232,135 @@ namespace Laby {
 		}
 	}
 
+	//void Scene::reloadMaps()
+	//{
+	//	mRegistry.view<TilemapControllerComponent>().each([this](auto e, auto& tmcComponent)
+	//		{
+	//			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcComponent.tilemapHandle);
+
+	//			if (!tilemap)
+	//			{
+	//				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+	//				return;
+	//			}
+
+	//			Entity entity{ e, Ref<Scene>(this) };
+	//			if (!entity.hasComponent<ScriptComponent>())
+	//				entity.addComponent<ScriptComponent>();
+
+	//			const auto& mapTransform = entity.getTransform();
+	//			i32 width = tilemap->getWidth();
+	//			i32 height = tilemap->getHeight();
+	//			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
+	//			Entity tiles = getChildByTag("Tiles", entity);
+	//			if (tiles)
+	//				DestroyEntity(tiles);
+
+	//			tiles = CreateEntity("Tiles", entity);
+	//			tiles.removeComponent<TransformComponent>();
+
+	//			tmcComponent.tileBehaviour.clear();
+	//			for (const auto& [pos, spec] : tilemap->getTileData())
+	//			{
+	//				std::string tileName = fmt::format("({}, {})", pos.x, pos.y);
+	//				Entity tile = CreateEntity(tileName, tiles);
+	//				auto& tileTransform = tile.getTransform();
+	//				tileTransform.translation.x = tileSize.x * (pos.x - 0.5f * (f32)(width - 1));
+	//				tileTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - pos.y);
+	//				tileTransform.scale = tileSize;
+
+	//				tile.addComponent<ScriptComponent>(spec.script);
+	//				tile.addComponent<TileComponent>(pos, entity.getUUID());
+	//				if (spec.solid)
+	//				{
+	//					tile.addComponent<RigidBodyComponent>();
+	//					tile.addComponent<BoxColliderComponent>();
+	//				}
+
+	//				tmcComponent.tileBehaviour[pos] = tile.getUUID();
+	//			}
+	//		});
+	//}
+
 	void Scene::OnPhysicsStart()
 	{
 		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
 
 		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
-			{
-				Entity entity(e, Ref<Scene>(this));
-				UUID entityID = entity.getComponent<IDComponent>().id;
+		{
+			Entity entity(e, Ref<Scene>(this));
+			UUID entityID = entity.getComponent<IDComponent>().id;
 
-				b2BodyDef bodyDef;
-				bodyDef.type = BodyTypeToBox2D(rbComponent.type);
-				bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
-				bodyDef.angle = trComponent.rotation.z;
-				bodyDef.fixedRotation = rbComponent.fixedRotation;
+			b2BodyDef bodyDef;
+			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
+			bodyDef.angle = trComponent.rotation.z;
+			bodyDef.fixedRotation = rbComponent.fixedRotation;
 
-				b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
-				b2MassData massData = body->GetMassData();;
-				massData.mass = rbComponent.mass;
-				body->SetMassData(&massData);
-				body->SetGravityScale(rbComponent.gravityScale);
-				body->SetLinearDamping(rbComponent.linearDrag);
-				body->SetAngularDamping(rbComponent.angularDrag);
-				body->GetUserData().pointer = (uintptr_t)entityID;
+			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
+			b2MassData massData = body->GetMassData();;
+			massData.mass = rbComponent.mass;
+			body->SetMassData(&massData);
+			body->SetGravityScale(rbComponent.gravityScale);
+			body->SetLinearDamping(rbComponent.linearDrag);
+			body->SetAngularDamping(rbComponent.angularDrag);
+			body->GetUserData().pointer = (uintptr_t)entityID;
 
-				rbComponent.runtimeBody = body;
-			});
+			rbComponent.runtimeBody = body;
+		});
 
 		mRegistry.view<TransformComponent, BoxColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& bcComponent, const auto& rbComponent)
-			{
-				Entity entity = { e, this };
+		{
+			Entity entity = { e, this };
 
-				LAB_CORE_ASSERT(rbComponent.runtimeBody);
-				b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
 
-				b2PolygonShape polygonShape;
-				polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
+			b2PolygonShape polygonShape;
+			polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &polygonShape;
-				fixtureDef.density = bcComponent.density;
-				fixtureDef.friction = bcComponent.friction;
-				body->CreateFixture(&fixtureDef);
-			});
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &polygonShape;
+			fixtureDef.density = bcComponent.density;
+			fixtureDef.friction = bcComponent.friction;
+			body->CreateFixture(&fixtureDef);
+		});
 
 		mRegistry.view<TransformComponent, CircleColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
-			{
-				Entity entity = { e, this };
+		{
+			Entity entity = { e, this };
 
-				LAB_CORE_ASSERT(rbComponent.runtimeBody);
-				b2Body* body = static_cast<b2Body*>(rbComponent.runtimeBody);
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
 
-				b2CircleShape circleShape;
-				circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
+			b2CircleShape circleShape;
+			circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
 
-				b2FixtureDef fixtureDef;
-				fixtureDef.shape = &circleShape;
-				fixtureDef.density = ccComponent.density;
-				fixtureDef.friction = ccComponent.friction;
-				body->CreateFixture(&fixtureDef);
-			});
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &circleShape;
+			fixtureDef.density = ccComponent.density;
+			fixtureDef.friction = ccComponent.friction;
+			body->CreateFixture(&fixtureDef);
+		});
+
+		mRegistry.view<TransformComponent, PolygonColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& pcComponent, const auto& rbComponent)
+		{
+			Entity entity = { e, this };
+
+			LAB_CORE_ASSERT(rbComponent.runtimeBody);
+			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
+
+			LAB_CORE_ASSERT(pcComponent.vertexCount);
+			b2PolygonShape polygonShape;
+			polygonShape.Set((b2Vec2*)pcComponent.vertices, pcComponent.vertexCount);
+
+			b2FixtureDef fixtureDef;
+			fixtureDef.shape = &polygonShape;
+			fixtureDef.density = pcComponent.density;
+			fixtureDef.friction = pcComponent.friction;
+			body->CreateFixture(&fixtureDef);
+		});
 	}
 
 	void Scene::OnPhysicsStop()
@@ -316,6 +418,35 @@ namespace Laby {
 		});
 	}
 
+	//void Scene::UpdateScripts(Timestep ts)
+	//{
+	//	// Update scripts
+	//	mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
+	//		{
+	//			if (!nsc.complete && !nsc.instance)
+	//			{
+	//				nsc.instance = nsc.instantiateScript();
+	//				nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
+	//				nsc.instance->onStart();
+	//			}
+
+	//			nsc.instance->onUpdate(ts);
+
+	//			if (nsc.instance->isComplete())
+	//			{
+	//				nsc.complete = true;
+	//				nsc.instance->onStop();
+	//				nsc.destroyScript();
+	//			}
+	//		});
+
+	//	mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
+	//		{
+	//			if (sc.instance)
+	//				sc.instance->onUpdate(ts);
+	//		});
+	//}
+
 	Entity Scene::findEntity(UUID findID)
 	{
 		if (mEntityMap.count(findID) == 0) return Entity();
@@ -351,14 +482,38 @@ namespace Laby {
 		return Entity{};
 	}
 
+	//void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
+	//{
+	//	sheets.clear();
+	//	mRegistry.view<SpriteRendererComponent>().each([&sheets](auto entity, auto& srComponent)
+	//		{
+	//			if (srComponent.type == SpriteRendererComponent::TexType::SubTexture)
+	//			{
+	//				Ref<Texture2DSheet> texSheet = AssetManager::GetAsset<SubTexture2D>(srComponent.handle)->getSheet();
+	//				if (std::find_if(sheets.begin(), sheets.end(),
+	//					[&texSheet](const Ref<Texture2DSheet>& match) {
+	//						return texSheet == match;
+	//					})
+	//					== sheets.end())
+	//					sheets.emplace_back(texSheet);
+	//			}
+	//		});
+	//}
+
 	void Scene::onRuntimeStart()
 	{
 		OnPhysicsStart();
+
+		//ScriptEngine::SetContext(Ref<Scene>(this));
+		//ScriptEngine::OnRuntimeStart();
 	}
 
 	void Scene::onRuntimeStop()
 	{
 		OnPhysicsStop();
+
+		//ScriptEngine::OnRuntimeStop();
+		//ScriptEngine::SetContext(nullptr);
 	}
 
 	void Scene::onSimulationStart()
@@ -373,6 +528,7 @@ namespace Laby {
 
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
+		//UpdateScripts(ts);
 		StepPhysics2D(ts);
 
 		Entity camera = getPrimaryCameraEntity();
