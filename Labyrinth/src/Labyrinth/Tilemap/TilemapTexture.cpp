@@ -39,7 +39,7 @@ namespace Laby {
 					pos += 0.5f * TileSizeF;
 
 					const auto& tileData = layer(x, y);
-					Renderer2D::DrawRotatedQuad(pos, TileSizeF, (f32)tileData.rotation, mTilePalette[tileData.textureID]);
+					Renderer2D::DrawRotatedQuad(pos, TileSizeF, tileData.rotation, mTilePalette[tileData.textureID]);
 				}
 			}
 		}

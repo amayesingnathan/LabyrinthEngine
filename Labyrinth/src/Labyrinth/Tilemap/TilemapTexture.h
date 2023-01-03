@@ -3,7 +3,7 @@
 #include <Labyrinth/Renderer/Framebuffer.h>
 #include <Labyrinth/Renderer/OrthographicCamera.h>
 
-#include "TilemapRenderLayer.h"
+#include "TileRenderLayer.h"
 #include "TilePalette.h"
 
 namespace Laby {
@@ -18,7 +18,7 @@ namespace Laby {
 
 	private:
 		usize mWidth = 0, mHeight = 0;
-		std::vector<TilemapRenderLayer> mLayers;
+		std::vector<TileRenderLayer> mLayers;
 		TilePalette mTilePalette;
 
 		Ref<Framebuffer> mFramebuffer = nullptr;

@@ -11,13 +11,13 @@ namespace Laby {
 		f32 rotation;
 	};
 
-	class TilemapRenderLayer : public Grid<TileRenderData>
+	class TileRenderLayer : public Grid<TileRenderData>
 	{
 	public:
-		TilemapRenderLayer(usize layer, usize width, usize height)
+		TileRenderLayer(usize layer, usize width, usize height)
 			: Grid<TileRenderData>(width, height), mIndex(layer) {}
 
-		bool operator==(const TilemapRenderLayer& other) const { return mIndex == other.mIndex; }
+		bool operator==(const TileRenderLayer& other) const { return mIndex == other.mIndex; }
 
 		usize getLayer() const { return mIndex; }
 
@@ -36,10 +36,10 @@ namespace Laby {
 		mOut << YAML::EndMap; // TileData
 	}
 
-	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TilemapRenderLayer& layer)
+	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderLayer& layer)
 	{
-		mOut << YAML::Key << "TilemapRenderLayer";
-		mOut << YAML::BeginMap; // TilemapRenderLayer
+		mOut << YAML::Key << "TileRenderLayer";
+		mOut << YAML::BeginMap; // TileRenderLayer
 
 		LAB_SERIALISE_PROPERTY(Layer, layer.getLayer(), mOut);
 		LAB_SERIALISE_PROPERTY(Width, layer.getWidth(), mOut);
@@ -57,7 +57,7 @@ namespace Laby {
 		}
 		mOut << YAML::EndSeq;
 
-		mOut << YAML::EndMap; // TilemapRenderLayer
+		mOut << YAML::EndMap; // TileRenderLayer
 	}
 }
 
@@ -78,24 +78,24 @@ namespace YAML {
 	};
 
 	template<>
-	struct convert<Laby::TilemapRenderLayer>
+	struct convert<Laby::TileRenderLayer>
 	{
-		inline static bool decode(const Node& node, Laby::TilemapRenderLayer& rhs)
+		inline static bool decode(const Node& node, Laby::TileRenderLayer& rhs)
 		{
-			auto tilemapRenderLayer = node["TilemapRenderLayer"];
-			if (!tilemapRenderLayer)
+			auto TileRenderLayer = node["TileRenderLayer"];
+			if (!TileRenderLayer)
 				return false;
 
 			Laby::usize layer, width, height;
-			LAB_DESERIALISE_PROPERTY(Layer, layer, tilemapRenderLayer);
-			LAB_DESERIALISE_PROPERTY(Width, width, tilemapRenderLayer);
-			LAB_DESERIALISE_PROPERTY(Height, height, tilemapRenderLayer);
+			LAB_DESERIALISE_PROPERTY(Layer, layer, TileRenderLayer);
+			LAB_DESERIALISE_PROPERTY(Width, width, TileRenderLayer);
+			LAB_DESERIALISE_PROPERTY(Height, height, TileRenderLayer);
 
-			auto tiles = tilemapRenderLayer["Tiles"];
+			auto tiles = TileRenderLayer["Tiles"];
 			if (!tiles)
 				return false;
 
-			rhs = Laby::TilemapRenderLayer(layer, width, height);
+			rhs = Laby::TileRenderLayer(layer, width, height);
 
 			Laby::usize index = 0;
 			for (auto tile : tiles)
