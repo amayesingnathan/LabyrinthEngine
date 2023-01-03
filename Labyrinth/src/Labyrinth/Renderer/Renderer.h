@@ -17,6 +17,9 @@ namespace Laby {
 		static void Clear();
 
 		static void DrawIndexed(const Ref<VertexArray>& vertexArray, u32 indexCount = 0);
+
+		static void EnableDepth();
+		static void DisableDepth();
 	};
 
 }

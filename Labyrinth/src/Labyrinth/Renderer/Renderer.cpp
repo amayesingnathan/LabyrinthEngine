@@ -77,4 +77,14 @@ namespace Laby {
 		vertexArray->unbind();
 #endif
 	}
+
+	void Renderer::EnableDepth()
+	{
+		glEnable(GL_DEPTH_TEST);
+	}
+
+	void Renderer::DisableDepth()
+	{
+		glDisable(GL_DEPTH_TEST);
+	}
 }

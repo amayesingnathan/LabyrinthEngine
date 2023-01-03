@@ -48,6 +48,8 @@ namespace Laby {
 			return mRegistry.view<Components...>();
 		}
 
+		//void getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets);
+
 		void onRuntimeStart();
 		void onRuntimeStop();
 
@@ -67,6 +69,8 @@ namespace Laby {
 		bool hasName() const { return (mName != "Untitled" && mName != ""); }
 
 		void transformChildren();
+
+		//void reloadMaps();
 
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);

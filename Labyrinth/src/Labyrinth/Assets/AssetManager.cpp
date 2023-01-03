@@ -114,7 +114,7 @@ namespace Laby {
 			return;
 		}
 
-		LAB_CORE_ASSERT(sAssetRegistry.contains(assetHandle) != 0);
+		LAB_CORE_ASSERT(sAssetRegistry.contains(assetHandle));
 
 		FileUtils::Remove(GetFileSystemPath(GetMetadata(assetHandle)));
 
