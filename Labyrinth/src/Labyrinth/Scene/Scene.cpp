@@ -28,7 +28,7 @@ namespace Laby {
 		return b2_staticBody;
 	}
 
-	template<typename... Component>
+	template<IsComponent... Component>
 	static void CopyComponent(TypeList<Component...>, const Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
 	{
 		([&]()
@@ -45,7 +45,7 @@ namespace Laby {
 		CopyComponent(AllComponents{}, src, dest, entMap);
 	}
 
-	template<typename... Component>
+	template<IsComponent... Component>
 	static void CopyComponent(TypeList<Component...>, Entity src, Entity dest)
 	{
 		([&]()

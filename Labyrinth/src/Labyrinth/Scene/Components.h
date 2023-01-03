@@ -269,4 +269,7 @@ namespace Laby {
 		CircleColliderComponent,
 		ScriptComponent
 	>;
+
+	template<typename T>
+	concept IsComponent = AllComponents::Contains<T>;
 }
