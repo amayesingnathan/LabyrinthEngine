@@ -29,7 +29,7 @@ namespace Laby {
 
 		Renderer2D::BeginState(mCamera);
 
-		for (const TilemapRenderLayer& layer : mLayers)
+		for (const TileRenderLayer& layer : mLayers)
 		{
 			for (usize y = 0; y < mHeight; y++)
 			{

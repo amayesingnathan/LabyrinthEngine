@@ -3,6 +3,8 @@
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/YAML.h>
 
+struct b2Vec2;
+
 namespace Laby {
 
 	struct TileBehaviourData
@@ -11,15 +13,38 @@ namespace Laby {
 		std::string script;
 	};
 
-	class TileBehaviourLayer : public Grid<TileBehaviourData>
+	using TileBehaviourGrid = Grid<TileBehaviourData>;
+	using GridPos = TileBehaviourGrid::GridPos;
+	using Shape = std::vector<GridPos>;
+
+	struct ChainShape
+	{
+		glm::vec2* vertices = nullptr;
+		i32 vertexCount = 0;
+
+		ChainShape(const Shape& shape);
+		void free() { delete[] vertices; }
+		const b2Vec2* get() const { return StaticCast<b2Vec2>(vertices); }
+	};
+
+	class TileBehaviourLayer : public TileBehaviourGrid
 	{
 	public:
-		TileBehaviourLayer(usize width, usize height)
-			: Grid<TileRenderData>(width, height) {}
 
+	public:
+		TileBehaviourLayer(usize width, usize height)
+			: TileBehaviourGrid(width, height) {}
+
+		std::vector<ChainShape> getShapes() const;
 
 	private:
+		f32 GetAngle(const GridPos& p, const GridPos& q) const;
+		f32 GetDistance(const GridPos& p, const GridPos& q) const;
 
+		ChainShape TraverseShape(const Shape& shape) const;
+		std::vector<GridPos> GetEdgeVertices(const Shape& vertices) const;
+		std::vector<Shape> GetContiguousShapes() const;
+		Shape FloodFill(usize x, usize y, Grid<bool>& checkedGrid) const;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)

@@ -10,12 +10,26 @@ namespace Laby {
 	class Grid
 	{
 	public:
+		struct GridPos 
+		{ 
+			usize x = Limits::usizeMax, y = Limits::usizeMax;
+
+			GridPos() = default;
+			GridPos(usize _x, usize _y) : x(_x), y(_y) {} 
+
+			bool operator==(const GridPos& other) { return (x == other.x && y == other.y); }
+		};
+
+	public:
 		Grid(usize width, usize height)
 			: mWidth(width), mHeight(height), mData(width * height)
 		{}
 
 		T& operator()(usize x, usize y) { return mData[x + (mWidth * y)]; }
 		const T& operator()(usize x, usize y) const { return mData[x + (mWidth * y)]; }
+
+		T& operator()(const GridPos& pos) { return mData[pos.x + (mWidth * pos.y)]; }
+		const T& operator()(const GridPos& pos) const { return mData[pos.x + (mWidth * pos.y)]; }
 
 		void set(usize index, const T& data) { mData[index] = data; }
 
@@ -29,8 +43,17 @@ namespace Laby {
 		auto end() { return mData.end(); }
 		auto end() const { return mData.cend(); }
 
+	protected:
+		T& At(usize x, usize y) { return mData[x + (mWidth * y)]; }
+		const T& At(usize x, usize y) const { return mData[x + (mWidth * y)]; }
+
+		T& At(const GridPos& pos) { return mData[pos.x + (mWidth * pos.y)]; }
+		const T& At(const GridPos& pos) const { return mData[pos.x + (mWidth * pos.y)]; }
+
+	protected:
+		const usize mWidth = 0, mHeight = 0;
+
 	private:
-		usize mWidth = 0, mHeight = 0;
 		std::vector<T> mData;
 	};
 
