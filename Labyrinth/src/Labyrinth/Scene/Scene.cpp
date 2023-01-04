@@ -6,12 +6,15 @@
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
+#include <Labyrinth/Tilemap/Tilemap.h>
 
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
 #include <box2d/b2_polygon_shape.h>
 #include <box2d/b2_circle_shape.h>
+#include <box2d/b2_chain_shape.h>
 
 namespace Laby {
 
@@ -344,21 +347,21 @@ namespace Laby {
 			body->CreateFixture(&fixtureDef);
 		});
 
-		mRegistry.view<TransformComponent, PolygonColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& pcComponent, const auto& rbComponent)
+		mRegistry.view<TransformComponent, ChainColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
 		{
 			Entity entity = { e, this };
 
 			LAB_CORE_ASSERT(rbComponent.runtimeBody);
 			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
 
-			LAB_CORE_ASSERT(pcComponent.vertexCount);
-			b2PolygonShape polygonShape;
-			polygonShape.Set((b2Vec2*)pcComponent.vertices, pcComponent.vertexCount);
+			LAB_CORE_ASSERT(ccComponent.vertexCount);
+			b2ChainShape chainShape;
+			chainShape.CreateLoop(ccComponent.getVertices(), ccComponent.vertexCount);
 
 			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &polygonShape;
-			fixtureDef.density = pcComponent.density;
-			fixtureDef.friction = pcComponent.friction;
+			fixtureDef.shape = &chainShape;
+			fixtureDef.density = ccComponent.density;
+			fixtureDef.friction = ccComponent.friction;
 			body->CreateFixture(&fixtureDef);
 		});
 	}
@@ -367,6 +370,59 @@ namespace Laby {
 	{
 		delete mPhysicsWorld;
 		mPhysicsWorld = nullptr;
+	}
+
+	void Scene::CreateTilemapEntities()
+	{
+		mRegistry.view<TilemapComponent>().each([this](auto e, const auto& tilemapComponent)
+		{
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tilemapComponent.tilemapHandle);
+		
+			if (!tilemap)
+			{
+				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+				return;
+			}
+
+			const std::string& mapName = tilemap->getName();
+			usize width = tilemap->getWidth();
+			usize height = tilemap->getHeight();
+
+			Entity mapEntity = { e, this };
+			const auto& mapTransform = mapEntity.getTransform();
+			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
+			Entity shapesEntity = CreateEntity("Shapes", mapEntity);
+			shapesEntity.removeComponent<TransformComponent>();
+				
+			usize i = 1;
+			for (const ChainShape& shape : tilemap->getPhysicsShapes())
+			{
+				Entity shapeEntity = CreateEntity(fmt::format("{}-Shape{}", mapName, i), shapesEntity);
+				auto& shapeTransform = shapeEntity.getTransform();
+
+				const glm::vec2& centroid = shape.centroid();
+				const glm::vec2& extents = shape.extents;
+
+				shapeTransform.translation.x = tileSize.x * (centroid.x - 0.5f * (f32)(width - 1));
+				shapeTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - centroid.y);
+				shapeTransform.scale = { tileSize.x * extents.x, tileSize.y * extents.y, tileSize.z };
+
+				shapeEntity.addComponent<RigidBodyComponent>();
+				shapeEntity.addComponent<ChainColliderComponent>(shape);
+			}
+		});
+	}
+
+	void Scene::CleanupTilemapEntities()
+	{
+		mRegistry.view<TilemapComponent>().each([this](auto e, const auto& tilemapComponent)
+		{
+			Entity mapEntity = { e, this };
+			Entity shapesEntity = getChildByTag("Shapes", mapEntity);
+			if (shapesEntity)
+				DestroyEntity(shapesEntity);
+		});
 	}
 
 	void Scene::BuildScene()
@@ -502,27 +558,35 @@ namespace Laby {
 
 	void Scene::onRuntimeStart()
 	{
+		CreateTilemapEntities();
+
 		OnPhysicsStart();
 
-		//ScriptEngine::SetContext(Ref<Scene>(this));
-		//ScriptEngine::OnRuntimeStart();
+		ScriptEngine::SetContext(Ref<Scene>(this));
+		ScriptEngine::OnRuntimeStart();
 	}
 
 	void Scene::onRuntimeStop()
 	{
+		CleanupTilemapEntities();
+
 		OnPhysicsStop();
 
-		//ScriptEngine::OnRuntimeStop();
-		//ScriptEngine::SetContext(nullptr);
+		ScriptEngine::OnRuntimeStop();
+		ScriptEngine::SetContext(nullptr);
 	}
 
 	void Scene::onSimulationStart()
 	{
+		CreateTilemapEntities();
+
 		OnPhysicsStart();
 	}
 
 	void Scene::onSimulationStop()
 	{
+		CleanupTilemapEntities();
+
 		OnPhysicsStop();
 	}
 

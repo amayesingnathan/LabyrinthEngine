@@ -78,6 +78,9 @@ namespace Laby {
 		void OnPhysicsStart();
 		void OnPhysicsStop();
 
+		void CreateTilemapEntities();
+		void CleanupTilemapEntities();
+
 		void BuildScene();
 		void DrawScene(EditorCamera& camera);
 		void DrawScene(Camera& camera, const glm::mat4& transform);
