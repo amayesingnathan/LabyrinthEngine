@@ -8,6 +8,9 @@
 #include <Labyrinth/Assets/Asset.h>
 #include <Labyrinth/Scene/SceneCamera.h>
 #include <Labyrinth/Scripting/ScriptObject.h>
+#include <Labyrinth/Tilemap/TileBehaviourLayer.h>
+
+struct b2Vec2;
 
 namespace Laby {
 
@@ -244,17 +247,34 @@ namespace Laby {
 		CircleColliderComponent(const CircleColliderComponent&) = default;
 	};
 
-	struct PolygonColliderComponent
+	struct ChainColliderComponent
 	{
-		static constexpr usize MaxPolygonVertices = 8;
-
-		glm::vec2 vertices[MaxPolygonVertices];
+		glm::vec2* vertices = nullptr;
 		i32 vertexCount = 0;
 
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;
+
+		ChainColliderComponent() = default;
+		ChainColliderComponent(const ChainColliderComponent&) = default;
+		ChainColliderComponent(const ChainShape& shape) :
+			vertices(shape.vertices), vertexCount(shape.vertexCount) {}
+		~ChainColliderComponent() { delete[] vertices; }
+
+		const b2Vec2* getVertices() const { return (b2Vec2*)vertices; }
+	};
+
+
+	// Tilemaps
+
+	struct TilemapComponent
+	{
+		AssetHandle tilemapHandle = 0;
+
+		TilemapComponent() = default;
+		TilemapComponent(const TilemapComponent&) = default;
 	};
 
 	using AllComponents = TypeList
@@ -267,7 +287,9 @@ namespace Laby {
 		RigidBodyComponent,
 		BoxColliderComponent,
 		CircleColliderComponent,
-		ScriptComponent
+		ChainColliderComponent,
+		ScriptComponent,
+		TilemapComponent
 	>;
 
 	template<typename T>

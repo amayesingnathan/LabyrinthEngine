@@ -37,6 +37,7 @@ namespace Laby {
 		static constexpr usize usizeMax = (usize)SIZE_MAX;
 
 		static constexpr f32 f32Min = FLT_EPSILON;
+		static constexpr f32 f32Max = FLT_MAX;
 	};
 
 	struct Math

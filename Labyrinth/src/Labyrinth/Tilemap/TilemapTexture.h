@@ -17,7 +17,7 @@ namespace Laby {
 		void RenderTexture();
 
 	private:
-		usize mWidth = 0, mHeight = 0;
+		const usize mWidth = 0, mHeight = 0;
 		std::vector<TileRenderLayer> mLayers;
 		TilePalette mTilePalette;
 

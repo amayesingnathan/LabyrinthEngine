@@ -3,8 +3,6 @@
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/YAML.h>
 
-struct b2Vec2;
-
 namespace Laby {
 
 	struct TileBehaviourData
@@ -21,16 +19,14 @@ namespace Laby {
 	{
 		glm::vec2* vertices = nullptr;
 		i32 vertexCount = 0;
+		glm::vec2 extents;
 
-		ChainShape(const Shape& shape);
-		void free() { delete[] vertices; }
-		const b2Vec2* get() const { return StaticCast<b2Vec2>(vertices); }
+		ChainShape(const Shape& shape, const glm::vec2& ex);
+		glm::vec2 centroid() const;
 	};
 
 	class TileBehaviourLayer : public TileBehaviourGrid
 	{
-	public:
-
 	public:
 		TileBehaviourLayer(usize width, usize height)
 			: TileBehaviourGrid(width, height) {}
@@ -38,13 +34,8 @@ namespace Laby {
 		std::vector<ChainShape> getShapes() const;
 
 	private:
-		f32 GetAngle(const GridPos& p, const GridPos& q) const;
-		f32 GetDistance(const GridPos& p, const GridPos& q) const;
-
-		ChainShape TraverseShape(const Shape& shape) const;
-		std::vector<GridPos> GetEdgeVertices(const Shape& vertices) const;
 		std::vector<Shape> GetContiguousShapes() const;
-		Shape FloodFill(usize x, usize y, Grid<bool>& checkedGrid) const;
+		Shape FloodFill(usize x, usize y, Grid<GridBool>& checkedGrid) const;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)
@@ -107,7 +98,7 @@ namespace YAML {
 			if (!TileBehaviourLayer)
 				return false;
 
-			Laby::usize layer, width, height;
+			Laby::usize width, height;
 			LAB_DESERIALISE_PROPERTY(Width, width, TileBehaviourLayer);
 			LAB_DESERIALISE_PROPERTY(Height, height, TileBehaviourLayer);
 

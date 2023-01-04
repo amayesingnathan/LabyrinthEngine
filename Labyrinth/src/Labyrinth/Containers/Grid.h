@@ -17,8 +17,18 @@ namespace Laby {
 			GridPos() = default;
 			GridPos(usize _x, usize _y) : x(_x), y(_y) {} 
 
-			bool operator==(const GridPos& other) { return (x == other.x && y == other.y); }
+			bool operator==(const GridPos& other) const { return (x == other.x && y == other.y); }
+			bool operator<(const GridPos& other) const
+			{
+				if (y == other.y)
+					return x < other.x;
+				return y < other.y;
+			}
 		};
+
+		using GridBool = u8;
+		static constexpr int GridTrue = 1;
+		static constexpr int GridFalse = 0;
 
 	public:
 		Grid(usize width, usize height)
@@ -51,7 +61,7 @@ namespace Laby {
 		const T& At(const GridPos& pos) const { return mData[pos.x + (mWidth * pos.y)]; }
 
 	protected:
-		const usize mWidth = 0, mHeight = 0;
+		usize mWidth = 0, mHeight = 0;
 
 	private:
 		std::vector<T> mData;
