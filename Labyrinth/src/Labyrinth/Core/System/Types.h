@@ -33,6 +33,10 @@ namespace Laby {
 		static constexpr i32 i16Max = 32767;
 		static constexpr i32 u8Max = 255;
 		static constexpr i32 u16Max = 65535;
+
+		static constexpr usize usizeMax = (usize)SIZE_MAX;
+
+		static constexpr f32 f32Min = FLT_EPSILON;
 	};
 
 	struct Math
