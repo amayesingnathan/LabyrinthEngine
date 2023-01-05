@@ -3,8 +3,11 @@
 # Change working directory to the root of the engine.
 pushd "$(dirname ${BASH_SOURCE[0]})/.."
 
+echo "Generating make files..."
+dependencies/premake/bin/premake5 gmake
+
 if [ $# -eq 0 ] ; then
-  echo "Please specify debug or release build with -d or -r. Build both with -dr."
+  echo "To build, please specify debug or release build with -d or -r. Build both with -dr."
 fi
 
 # Get system architecture
@@ -22,12 +25,10 @@ do
     d) 
       debugarch="${architecture}d"
       echo "Building projects $debugarch."
-      dependencies/premake/bin/premake5 gmake
       make config=$debugarch
       ;;
     r) 
       echo "Building projects $architecture."
-      dependencies/premake/bin/premake5 gmake
       make config=$architecture
       ;;
     *) 
