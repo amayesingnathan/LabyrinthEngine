@@ -16,6 +16,9 @@ namespace Laby {
 
 	void TilePalette::add(AssetHandle spriteSheet)
 	{
+		LAB_CORE_ASSERT(!mSpriteSheets.contains(spriteSheet), "Palette already has this spritesheet!");
+
+		mSpriteSheets.emplace(spriteSheet);
 		Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(spriteSheet);
 		for (AssetHandle sprite : sheet->getSubTextures())
 			mTileset.emplace(mNextIndex++, AssetManager::GetAsset<SubTexture2D>(sprite));

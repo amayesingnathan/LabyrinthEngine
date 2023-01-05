@@ -24,7 +24,7 @@ namespace Laby {
 		return result;
 	}
 
-	void SubTextureSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SubTextureSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<SubTexture2D> subtex = asset.to<SubTexture2D>();
 
@@ -79,7 +79,7 @@ namespace Laby {
 		return true;
 	}
 
-	void TextureSheetSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void TextureSheetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<Texture2DSheet> sheet = asset.to<Texture2DSheet>();
 
@@ -136,7 +136,7 @@ namespace Laby {
 		return true;
 	}
 
-	void SceneAssetSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SceneAssetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
 		Ref<Scene> scene = asset.to<Scene>();
 		SceneSerialiser serialiser(scene);
@@ -157,116 +157,92 @@ namespace Laby {
 		return true;
 	}
 
-	//void TilemapSerialiser::serialize(const AssetMetadata& metadata, const Ref<Asset>& asset) const
-	//{
-	//	Ref<Tilemap> tilemap = asset.to<Tilemap>();
+	void TilemapSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	{
+		Ref<Tilemap> tilemap = asset.to<Tilemap>();
 
-	//	std::filesystem::path sheetPath = "assets" / metadata.filepath.parent_path();
-	//	if (!std::filesystem::exists(sheetPath))
-	//		std::filesystem::create_directories(sheetPath);
+		std::filesystem::path sheetPath = "assets" / metadata.filepath.parent_path();
+		if (!std::filesystem::exists(sheetPath))
+			std::filesystem::create_directories(sheetPath);
 
-	//	YAML::Emitter out;
-	//	out << YAML::BeginMap; // Tilemap
-	//	out << YAML::Key << "Tilemap" << YAML::Value;
-	//	{
-	//		out << YAML::BeginMap;
+		YAML::Emitter out;
+		out << YAML::BeginMap; // Tilemap
+		out << YAML::Key << "Tilemap" << YAML::Value;
+		{
+			out << YAML::BeginMap;
 
-	//		LAB_SERIALISE_PROPERTY(Name, tilemap->getName(), out);
-	//		LAB_SERIALISE_PROPERTY(Width, tilemap->getWidth(), out);
-	//		LAB_SERIALISE_PROPERTY(Height, tilemap->getHeight(), out);
+			LAB_SERIALISE_PROPERTY(Name, tilemap->getName(), out);
+			LAB_SERIALISE_PROPERTY(Width, tilemap->getWidth(), out);
+			LAB_SERIALISE_PROPERTY(Height, tilemap->getHeight(), out);
 
-	//		out << YAML::Key << "SpriteSheets";
-	//		out << YAML::Value << YAML::BeginSeq;
-	//		for (const SheetData& sheetData : tilemap->getSheets())
-	//		{
-	//			out << YAML::BeginMap;
-	//			LAB_SERIALISE_PROPERTY(FirstID, sheetData.firstID, out);
-	//			LAB_SERIALISE_PROPERTY(SheetHandle, sheetData.sheet, out);
-	//			out << YAML::EndMap;
-	//		}
-	//		out << YAML::EndSeq;
+			out << YAML::Key << "SpriteSheets";
+			out << YAML::Value << YAML::BeginSeq;
+			for (AssetHandle sheet : tilemap->getSheets())
+			{
+				out << YAML::BeginMap;
+				LAB_SERIALISE_PROPERTY(SheetHandle, sheet, out);
+				out << YAML::EndMap;
+			}
+			out << YAML::EndSeq;
 
-	//		out << YAML::Key << "TextureLayers";
-	//		out << YAML::Value << YAML::BeginSeq;
-	//		for (const TexMapLayer& layer : tilemap->getLayers())
-	//		{
-	//			out << YAML::BeginMap;
-	//			LAB_SERIALISE_PROPERTY(Layer, layer, out);
-	//			out << YAML::EndMap;
-	//		}
-	//		out << YAML::EndSeq;
+			out << YAML::Key << "Texture";
+			out << YAML::Value << YAML::BeginSeq;
+			for (const TileRenderLayer& layer : tilemap->getLayers())
+				LAB_SERIALISE_PROPERTY(RenderLayer, layer, out);
 
-	//		out << YAML::Key << "TileBehaviour";
-	//		out << YAML::Value << YAML::BeginSeq;
-	//		for (const auto& [pos, spec] : tilemap->getTileData())
-	//		{
-	//			out << YAML::BeginMap;
-	//			LAB_SERIALISE_PROPERTY(TilePos, pos, out);
-	//			LAB_SERIALISE_PROPERTY(Spec, spec, out);
-	//			out << YAML::EndMap;
-	//		}
-	//		out << YAML::EndSeq;
+			out << YAML::EndSeq;
 
-	//		out << YAML::EndMap;
-	//	}
+			LAB_SERIALISE_PROPERTY(BehaviourLayer, tilemap->getBehaviour(), out);
 
-	//	out << YAML::EndMap; // Tilemap
+			out << YAML::EndMap;
+		}
 
-	//	FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
-	//}
+		out << YAML::EndMap; // Tilemap
 
-	//bool TilemapSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
-	//{
-	//	fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
-	//	std::string str;
-	//	FileUtils::Read(assetPath, str);
-	//	YAML::Node root = YAML::Load(str);
-	//	YAML::Node mapNode = root["Tilemap"];
+		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
+	}
 
-	//	std::string mapName;
-	//	i32 mapWidth, mapHeight;
+	bool TilemapSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	{
+		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
+		std::string str;
+		FileUtils::Read(assetPath, str);
+		YAML::Node root = YAML::Load(str);
+		YAML::Node mapNode = root["Tilemap"];
 
-	//	LAB_DESERIALISE_PROPERTY(Name, mapName, mapNode);
-	//	LAB_DESERIALISE_PROPERTY(Width, mapWidth, mapNode);
-	//	LAB_DESERIALISE_PROPERTY(Height, mapHeight, mapNode);
+		std::string mapName;
+		i32 mapWidth, mapHeight;
 
-	//	Ref<Tilemap> tilemap = Ref<Tilemap>::Create(mapName, mapWidth, mapHeight);
+		LAB_DESERIALISE_PROPERTY(Name, mapName, mapNode);
+		LAB_DESERIALISE_PROPERTY(Width, mapWidth, mapNode);
+		LAB_DESERIALISE_PROPERTY(Height, mapHeight, mapNode);
 
-	//	auto mapSheets = mapNode["SpriteSheets"];
-	//	for (auto sheet : mapSheets)
-	//	{
-	//		i32 firstID;
-	//		u64 handle;
-	//		LAB_DESERIALISE_PROPERTY(FirstID, firstID, sheet);
-	//		LAB_DESERIALISE_PROPERTY(SheetHandle, handle, sheet);
+		Ref<Tilemap> tilemap = Ref<Tilemap>::Create(mapName, mapWidth, mapHeight);
 
-	//		tilemap->addSheet(firstID, handle);
-	//	}
+		auto mapSheets = mapNode["SpriteSheets"];
+		for (auto sheet : mapSheets)
+		{
+			u64 handle;
+			LAB_DESERIALISE_PROPERTY(SheetHandle, handle, sheet);
 
-	//	auto mapLayers = mapNode["TextureLayers"];
-	//	for (auto texLayer : mapLayers)
-	//	{
-	//		TexMapLayer layer;
-	//		LAB_DESERIALISE_PROPERTY(Layer, layer, texLayer);
-	//		tilemap->addLayer(layer);
-	//	}
+			tilemap->addSheet(handle);
+		}
 
-	//	tilemap->RegenTexture();
+		auto mapLayers = mapNode["Texture"];
+		for (auto texLayer : mapLayers)
+		{
+			TileRenderLayer renderLayer;
+			LAB_DESERIALISE_PROPERTY(RenderLayer, renderLayer, texLayer);
+			tilemap->addLayer(std::move(renderLayer));
+		}
 
-	//	auto tileBehaviour = mapNode["TileBehaviour"];
-	//	for (auto tile : tileBehaviour)
-	//	{
-	//		TilePos pos;
-	//		TileSpec spec;
-	//		LAB_DESERIALISE_PROPERTY(TilePos, pos, tile);
-	//		LAB_DESERIALISE_PROPERTY(Spec, spec, tile);
+		TileBehaviourLayer behaviourLayer;
+		LAB_DESERIALISE_PROPERTY(BehaviourLayer, behaviourLayer, mapNode);
+		tilemap->setBehaviour(std::move(behaviourLayer));
 
-	//		tilemap->setTileData(pos, spec);
-	//	}
+		asset = tilemap;
+		asset->handle = metadata.handle;
 
-	//	asset = tilemap;
-	//	asset->handle = metadata.handle;
-
-	//	return true;
-	//}
+		return true;
+	}
 }

@@ -13,6 +13,16 @@ namespace Laby {
 	public:
 		TilemapTexture(usize width, usize height);
 
+		void addSheet(AssetHandle handle) { mTilePalette.add(handle); }
+
+		void addLayer() { mLayers.emplace_back(mLayers.size(), mWidth, mHeight); }
+
+		const std::vector<TileRenderLayer>& getLayers() const { return mLayers; }
+		const std::unordered_set<AssetHandle>& getSheets() const { return mTilePalette.getSheets(); }
+
+	private:
+		void addLayer(TileRenderLayer&& layer) { mLayers.emplace_back(std::move(layer)); RenderTexture();}
+
 	private:
 		void RenderTexture();
 

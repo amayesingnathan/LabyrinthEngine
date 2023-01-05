@@ -37,6 +37,7 @@ namespace Laby {
 		static constexpr int GridFalse = 0;
 
 	public:
+		Grid() = default;
 		Grid(usize width, usize height)
 			: mWidth(width), mHeight(height), mData(width * height)
 		{}
