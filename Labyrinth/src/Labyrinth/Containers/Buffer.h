@@ -4,6 +4,9 @@
 
 namespace Laby {
 
+	template<typename T>
+	concept IsStandard = std::is_standard_layout_v<T>;
+
 	class Buffer
 	{
 	public:
@@ -31,11 +34,31 @@ namespace Laby {
 		template<typename T>
 		T* as() const { return (T*)mData; }
 
+		template<typename T>
+		void set(usize offset, const T& data)
+		{
+			constexpr usize DataSize = sizeof(T);
+			if (offset + DataSize > mSize)
+				resize(offset + DataSize);
+
+			memcpy((Byte*)mData + offset, &data, DataSize);
+		}
+
+		T pop()
+		{
+			constexpr usize DataSize = sizeof(T);
+			T&& data = std::move(read<T>(mSize - DataSize));
+			resize(mSize - DataSize);
+			
+			return data;
+		}
+
 		Byte* data() { return (Byte*)mData; }
 		const Byte* data() const { return (Byte*)mData; }
 
 		Buffer copyBytes(usize size, usize offset = 0);
 
+		void resize(usize newSize);
 		usize size() const { return mSize; }
 
 	public:

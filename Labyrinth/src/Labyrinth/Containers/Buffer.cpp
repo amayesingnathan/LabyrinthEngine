@@ -72,4 +72,17 @@ namespace Laby {
 		LAB_CORE_ASSERT(offset + size <= mSize, "Buffer overflow!");
 		return Buffer::Copy((Byte*)mData + offset, size);
 	}
+
+	void Buffer::resize(usize newSize)
+	{
+		if (mSize == newSize)
+			return;
+
+		Byte* newData = new Byte[newSize];
+		memcpy(newData, mData, (newSize > mSize) ? mSize : newSize);
+		delete[] mData;
+
+		mData = newData;
+		mSize = newSize;
+	}
 }
