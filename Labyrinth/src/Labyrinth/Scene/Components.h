@@ -10,6 +10,7 @@
 #include <Labyrinth/Scripting/ScriptObject.h>
 #include <Labyrinth/Tilemap/TileBehaviourLayer.h>
 
+class b2World;
 struct b2Vec2;
 
 namespace Laby {
@@ -199,6 +200,17 @@ namespace Laby {
 
 	// Physics
 
+	class ContactListener;
+
+	struct Box2DWorldComponent
+	{
+		b2World* world = nullptr;
+		ContactListener* contactListener = nullptr;
+
+		Box2DWorldComponent() = default;
+		Box2DWorldComponent(const Box2DWorldComponent&) = default;
+	};
+
 	struct RigidBodyComponent
 	{
 		enum class BodyType { None = -1, Static = 0, Dynamic, Kinematic };
@@ -220,6 +232,8 @@ namespace Laby {
 		glm::vec2 halfExtents = { 0.5f, 0.5f };
 		glm::vec2 offset = { 0.0f, 0.0f };
 
+		bool sensor = false;
+
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
@@ -235,6 +249,8 @@ namespace Laby {
 	{
 		f32 radius = 0.5f;
 		glm::vec2 offset = { 0.0f, 0.0f };
+
+		bool sensor = false;
 
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
@@ -252,10 +268,14 @@ namespace Laby {
 		glm::vec2* vertices = nullptr;
 		i32 vertexCount = 0;
 
+		bool sensor = false;
+
 		f32 friction = 0.25f;
 		f32 density = 0.5f;
 		f32 restitution = 0.0f;
 		f32 restitutionThreshold = 0.5f;
+
+		void* runtimeFixture = nullptr;
 
 		ChainColliderComponent() = default;
 		ChainColliderComponent(const ChainColliderComponent&) = default;
@@ -294,4 +314,35 @@ namespace Laby {
 
 	template<typename T>
 	concept IsComponent = AllComponents::Contains<T>;
+
+	template<IsComponent... Component>
+	static void CopyComponent(TypeList<Component...>, const Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
+	{
+		([&]()
+			{
+				src.view<Component, IDComponent>().each([&dest, &entMap](auto entity, const auto& component, const auto& id)
+					{
+						LAB_CORE_ASSERT(entMap.count(id) != 0);
+		dest.emplace_or_replace<Component>(entMap.at(id), component);
+					});
+			}(), ...);
+	}
+	static void CopyAllComponents(Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
+	{
+		CopyComponent(AllComponents{}, src, dest, entMap);
+	}
+
+	template<IsComponent... Component>
+	static void CopyComponent(TypeList<Component...>, Entity src, Entity dest)
+	{
+		([&]()
+			{
+				if (src.hasComponent<Component>())
+				dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+			}(), ...);
+	}
+	static void CopyAllComponents(Entity src, Entity dest)
+	{
+		CopyComponent(AllComponents{}, src, dest);
+	}
 }

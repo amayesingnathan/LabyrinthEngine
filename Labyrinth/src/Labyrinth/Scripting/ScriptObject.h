@@ -17,6 +17,8 @@ namespace Laby {
 		{
 			mOnStartMethod = mClass->getMethod("OnCreate", 0);
 			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
 		}
 
 		ScriptObject(const Ref<ScriptClass>& type)
@@ -26,6 +28,8 @@ namespace Laby {
 
 			mOnStartMethod = mClass->getMethod("OnCreate", 0);
 			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
 		}
 		template<typename... Args>
 		ScriptObject(const Ref<ScriptClass>& type, Args&&... args)
@@ -35,10 +39,14 @@ namespace Laby {
 
 			mOnStartMethod = mClass->getMethod("OnCreate", 0);
 			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
 		}
 
-		void onStart() { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }
-		void onUpdate(float ts) { ScriptUtils::CallMethod(mInstance, mOnUpdateMethod, ts); }
+		void onStart() const { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }
+		void onUpdate(float ts) const { ScriptUtils::CallMethod(mInstance, mOnUpdateMethod, ts); }
+		void onCollisionBegin(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionBeginMethod, entity.getUUID()); }
+		void onCollisionEnd(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionEndMethod, entity.getUUID()); }
 
 		bool valid() const { return mInstance; }
 		MonoObject* obj() { return mInstance; }
@@ -46,12 +54,13 @@ namespace Laby {
 		Ref<ScriptClass> getScriptClass() const { return mClass; }
 
 		template<typename... Args>
-		ScriptObject invokeMethod(const std::string& name, Args&&... args)
+		ScriptObject invokeMethod(const std::string& name, Args&&... args) const
 		{
 			MonoObject* result = mClass->invokeMethod(mInstance, name, std::forward<Args>(args)...);
 
 			// If no return value return nullptr literal so std::nullptr_t constructor is called for ScriptObject
-			if (!result) return nullptr;
+			if (!result)
+				return nullptr;
 			return result;
 		}
 
@@ -105,5 +114,7 @@ namespace Laby {
 
 		MonoMethod* mOnStartMethod = nullptr;
 		MonoMethod* mOnUpdateMethod = nullptr;
+		MonoMethod* mOnCollisionBeginMethod = nullptr; 
+		MonoMethod* mOnCollisionEndMethod = nullptr;
 	};
 }

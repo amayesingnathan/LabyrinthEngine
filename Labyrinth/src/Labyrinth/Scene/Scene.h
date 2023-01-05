@@ -5,10 +5,9 @@
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/RenderStack.h"
+#include <Labyrinth/Tilemap/Tilemap.h>
 
 #include "ECS.h"
-
-class b2World;
 
 namespace Laby {
 
@@ -70,15 +69,12 @@ namespace Laby {
 
 		void transformChildren();
 
-		//void reloadMaps();
-
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
 
-		void OnPhysicsStart();
-		void OnPhysicsStop();
-
 		void CreateTilemapEntities();
+		void CreateTilemapShapes(Entity mapEntity, Ref<Tilemap> tilemap);
+		void CreateTilemapScripts(Entity mapEntity, Ref<Tilemap> tilemap);
 		void CleanupTilemapEntities();
 
 		void BuildScene();
@@ -86,19 +82,27 @@ namespace Laby {
 		void DrawScene(Camera& camera, const glm::mat4& transform);
 
 		void StepPhysics2D(Timestep ts);
+		void UpdateScripts(Timestep ts);
+
+	private:
+		void OnRigidBodyComponentConstruct(entt::registry& registry, entt::entity e);
+		void OnRigidBodyComponentDestroy(entt::registry& registry, entt::entity e);
+		void OnBoxColliderComponentConstruct(entt::registry& registry, entt::entity e);
+		void OnBoxColliderComponentDestroy(entt::registry& registry, entt::entity e);
+		void OnCircleColliderComponentConstruct(entt::registry& registry, entt::entity e);
+		void OnCircleColliderComponentDestroy(entt::registry& registry, entt::entity e);
+		void OnChainColliderComponentConstruct(entt::registry& registry, entt::entity e);
+		void OnChainColliderComponentDestroy(entt::registry& registry, entt::entity e);
 
 	private:
 		std::string mName;
+		u32 mViewportWidth = 0, mViewportHeight = 0;
 
 		Registry mRegistry;
-
 		Single<RenderStack> mRenderStack = nullptr;
 
-		b2World* mPhysicsWorld = nullptr;
-
+		EntityID mSceneEntity;
 		std::unordered_map<UUID, EntityID> mEntityMap;
-
-		u32 mViewportWidth = 0, mViewportHeight = 0;
 
 		friend Entity;
 	};

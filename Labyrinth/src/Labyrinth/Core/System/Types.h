@@ -25,19 +25,12 @@ namespace Laby {
 
 	using Byte = u8;
 
+	template<typename T>
 	struct Limits
 	{
-		static constexpr i32 i8Min = -127;
-		static constexpr i32 i8Max = -127;
-		static constexpr i32 i16Min = -32768;
-		static constexpr i32 i16Max = 32767;
-		static constexpr i32 u8Max = 255;
-		static constexpr i32 u16Max = 65535;
-
-		static constexpr usize usizeMax = (usize)SIZE_MAX;
-
-		static constexpr f32 f32Min = FLT_EPSILON;
-		static constexpr f32 f32Max = FLT_MAX;
+		static constexpr T Eps = std::numeric_limits<T>::epsilon();
+		static constexpr T Min = std::numeric_limits<T>::min();
+		static constexpr T Max = std::numeric_limits<T>::max();
 	};
 
 	struct Math

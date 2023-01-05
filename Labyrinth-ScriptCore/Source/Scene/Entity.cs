@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 namespace Labyrinth
 {
     public class Entity
-	{
-		public readonly ulong ID;
+    {
+        public event Action<Entity> CollisionBeginEvent;
+        public event Action<Entity> CollisionEndEvent;
+
+        public readonly ulong ID;
 		private Entity mParent;
 		private Dictionary<Type, Component> mComponentCache = new Dictionary<Type, Component>();
 
@@ -102,6 +105,11 @@ namespace Labyrinth
 		}
 		public void Destroy() => Scene.DestroyEntity(this);
 		public void Destroy(Entity other) => Scene.DestroyEntity(other);
-	}
+
+		public void AddCollisionBeginCallback(Action<Entity> callback) => CollisionBeginEvent += callback;
+		public void AddCollisionEndCallback(Action<Entity> callback) => CollisionEndEvent += callback;
+        private void OnCollisionBegin(ulong id) => CollisionBeginEvent?.Invoke(new Entity(id));
+        private void OnCollisionEnd(ulong id) => CollisionEndEvent?.Invoke(new Entity(id));
+    }
 
 }

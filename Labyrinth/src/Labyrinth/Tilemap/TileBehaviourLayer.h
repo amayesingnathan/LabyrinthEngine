@@ -12,8 +12,17 @@ namespace Laby {
 	};
 
 	using TileBehaviourGrid = Grid<TileBehaviourData>;
-	using GridPos = TileBehaviourGrid::GridPos;
-	using Shape = std::vector<GridPos>;
+	using TilePos = TileBehaviourGrid::Position;
+	using Shape = std::vector<TilePos>;
+
+	struct TileScriptData
+	{
+		TilePos pos;
+		const std::string& script;
+
+		TileScriptData(usize x, usize y, const std::string& behaviour)
+			: pos(x, y), script(behaviour) {}
+	};
 
 	struct ChainShape
 	{
@@ -32,6 +41,7 @@ namespace Laby {
 			: TileBehaviourGrid(width, height) {}
 
 		std::vector<ChainShape> getShapes() const;
+		std::vector<TileScriptData> getScripts() const;
 
 	private:
 		std::vector<Shape> GetContiguousShapes() const;
