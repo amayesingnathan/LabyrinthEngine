@@ -14,6 +14,7 @@ namespace Laby {
 	class TileRenderLayer : public Grid<TileRenderData>
 	{
 	public:
+		TileRenderLayer() = default;
 		TileRenderLayer(usize layer, usize width, usize height)
 			: Grid<TileRenderData>(width, height), mIndex(layer) {}
 
@@ -27,18 +28,14 @@ namespace Laby {
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderData& data)
 	{
-		mOut << YAML::Key << "TileData";
 		mOut << YAML::BeginMap; // TileData
-
 		LAB_SERIALISE_PROPERTY(TextureID, data.textureID, mOut);
 		LAB_SERIALISE_PROPERTY(Rotation, data.rotation, mOut);
-
 		mOut << YAML::EndMap; // TileData
 	}
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderLayer& layer)
 	{
-		mOut << YAML::Key << "TileRenderLayer";
 		mOut << YAML::BeginMap; // TileRenderLayer
 
 		LAB_SERIALISE_PROPERTY(Layer, layer.getLayer(), mOut);
@@ -58,6 +55,8 @@ namespace Laby {
 		mOut << YAML::EndSeq;
 
 		mOut << YAML::EndMap; // TileRenderLayer
+
+		return mOut;
 	}
 }
 
@@ -68,12 +67,10 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileRenderData& rhs)
 		{
-			auto tileData = node["TileData"];
-			if (!tileData)
-				return false;
+			LAB_DESERIALISE_PROPERTY(TextureID, rhs.textureID, node);
+			LAB_DESERIALISE_PROPERTY(Rotation, rhs.rotation, node);
 
-			LAB_DESERIALISE_PROPERTY(TextureID, rhs.textureID, tileData);
-			LAB_DESERIALISE_PROPERTY(Rotation, rhs.rotation, tileData);
+			return true;
 		}
 	};
 
@@ -82,16 +79,12 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileRenderLayer& rhs)
 		{
-			auto TileRenderLayer = node["TileRenderLayer"];
-			if (!TileRenderLayer)
-				return false;
-
 			Laby::usize layer, width, height;
-			LAB_DESERIALISE_PROPERTY(Layer, layer, TileRenderLayer);
-			LAB_DESERIALISE_PROPERTY(Width, width, TileRenderLayer);
-			LAB_DESERIALISE_PROPERTY(Height, height, TileRenderLayer);
+			LAB_DESERIALISE_PROPERTY(Layer, layer, node);
+			LAB_DESERIALISE_PROPERTY(Width, width, node);
+			LAB_DESERIALISE_PROPERTY(Height, height, node);
 
-			auto tiles = TileRenderLayer["Tiles"];
+			auto tiles = node["Tiles"];
 			if (!tiles)
 				return false;
 

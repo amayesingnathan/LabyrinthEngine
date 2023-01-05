@@ -12,15 +12,17 @@ namespace Laby {
 		TilePalette() = default;
 		TilePalette(usize nextIndex);
 
-		Ref<SubTexture2D>& operator[](usize textureID) { return mTileset[textureID]; }
-		const Ref<SubTexture2D>& operator[](usize textureID) const;
+		usize getNextIndex() const { return mNextIndex; }
+		const std::unordered_set<AssetHandle>& getSheets() const { return mSpriteSheets; }
+		const std::unordered_map<usize, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
 
 		void add(AssetHandle spriteSheet);
 
-		usize getNextIndex() const { return mNextIndex; }
-		const std::unordered_map<usize, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
+		Ref<SubTexture2D>& operator[](usize textureID) { return mTileset[textureID]; }
+		const Ref<SubTexture2D>& operator[](usize textureID) const;
 
 	private:
+		std::unordered_set<AssetHandle> mSpriteSheets;
 		std::unordered_map<usize, Ref<SubTexture2D>> mTileset;
 		usize mNextIndex = 0;
 	};

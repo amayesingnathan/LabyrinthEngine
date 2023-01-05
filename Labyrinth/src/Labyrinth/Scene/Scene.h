@@ -37,17 +37,9 @@ namespace Laby {
 		Entity getChildByTag(const std::string& tag, Entity parent);
 
 		template<typename... Components>
-		auto getEntitiesWith()
-		{
-			return mRegistry.view<Components...>();
-		}
+		auto getEntitiesWith() { return mRegistry.view<Components...>(); }
 		template<typename... Components>
-		const auto getEntitiesWith() const
-		{
-			return mRegistry.view<Components...>();
-		}
-
-		//void getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets);
+		const auto getEntitiesWith() const { return mRegistry.view<Components...>(); }
 
 		void onRuntimeStart();
 		void onRuntimeStop();

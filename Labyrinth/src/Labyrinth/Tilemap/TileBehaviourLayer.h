@@ -37,6 +37,7 @@ namespace Laby {
 	class TileBehaviourLayer : public TileBehaviourGrid
 	{
 	public:
+		TileBehaviourLayer() = default;
 		TileBehaviourLayer(usize width, usize height)
 			: TileBehaviourGrid(width, height) {}
 
@@ -50,7 +51,6 @@ namespace Laby {
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)
 	{
-		mOut << YAML::Key << "TileData";
 		mOut << YAML::BeginMap; // TileData
 
 		LAB_SERIALISE_PROPERTY(Solid, data.solid, mOut);
@@ -61,7 +61,6 @@ namespace Laby {
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourLayer& layer)
 	{
-		mOut << YAML::Key << "TileBehaviourLayer";
 		mOut << YAML::BeginMap; // TileBehaviourLayer
 
 		LAB_SERIALISE_PROPERTY(Width, layer.getWidth(), mOut);
@@ -80,6 +79,8 @@ namespace Laby {
 		mOut << YAML::EndSeq;
 
 		mOut << YAML::EndMap; // TileBehaviourLayer
+
+		return mOut;
 	}
 }
 
@@ -90,12 +91,10 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileBehaviourData& rhs)
 		{
-			auto tileData = node["TileData"];
-			if (!tileData)
-				return false;
+			LAB_DESERIALISE_PROPERTY(Solid, rhs.solid, node);
+			LAB_DESERIALISE_PROPERTY(Script, rhs.script, node);
 
-			LAB_DESERIALISE_PROPERTY(Solid, rhs.solid, tileData);
-			LAB_DESERIALISE_PROPERTY(Script, rhs.script, tileData);
+			return true;
 		}
 	};
 
@@ -104,15 +103,11 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileBehaviourLayer& rhs)
 		{
-			auto TileBehaviourLayer = node["TileBehaviourLayer"];
-			if (!TileBehaviourLayer)
-				return false;
-
 			Laby::usize width, height;
-			LAB_DESERIALISE_PROPERTY(Width, width, TileBehaviourLayer);
-			LAB_DESERIALISE_PROPERTY(Height, height, TileBehaviourLayer);
+			LAB_DESERIALISE_PROPERTY(Width, width, node);
+			LAB_DESERIALISE_PROPERTY(Height, height, node);
 
-			auto tiles = TileBehaviourLayer["Tiles"];
+			auto tiles = node["Tiles"];
 			if (!tiles)
 				return false;
 

@@ -30,9 +30,9 @@ namespace Laby {
 		// Sort entities by UUID (for better serializing)
 		std::map<UUID, EntityID> sortedEntityMap;
 		mScene->getEntitiesWith<IDComponent>().each([&](auto entity, auto& idComp)
-			{
-				sortedEntityMap[idComp.id] = entity;
-			});
+		{
+			sortedEntityMap[idComp.id] = entity;
+		});
 
 		// Serialize sorted entities
 		for (auto [id, entity] : sortedEntityMap)
@@ -254,7 +254,6 @@ namespace Laby {
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)
 			{
-				// Entities always have transforms
 				auto& transform = deserializedEntity.getTransform();
 				LAB_DESERIALISE_PROPERTY_DEF(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY_DEF(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
