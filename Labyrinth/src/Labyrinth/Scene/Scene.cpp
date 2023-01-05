@@ -5,9 +5,9 @@
 #include "Components.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
-#include <Labyrinth/Tilemap/Tilemap.h>
 
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
@@ -31,45 +31,38 @@ namespace Laby {
 		return b2_staticBody;
 	}
 
-	template<IsComponent... Component>
-	static void CopyComponent(TypeList<Component...>, const Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
-	{
-		([&]()
-		{
-			src.view<Component, IDComponent>().each([&dest, &entMap](auto entity, const auto& component, const auto& id)
-			{
-				LAB_CORE_ASSERT(entMap.count(id) != 0);
-				dest.emplace_or_replace<Component>(entMap.at(id), component);
-			});
-		}(), ...);
-	}
-	static void CopyAllComponents(Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
-	{
-		CopyComponent(AllComponents{}, src, dest, entMap);
-	}
-
-	template<IsComponent... Component>
-	static void CopyComponent(TypeList<Component...>, Entity src, Entity dest)
-	{
-		([&]()
-		{
-			if (src.hasComponent<Component>())
-				dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
-		}(), ...);
-	}
-	static void CopyAllComponents(Entity src, Entity dest)
-	{
-		CopyComponent(AllComponents{}, src, dest);
-	}
-
 	Scene::Scene(const std::string& name)
 		: mName(name), mRenderStack(MakeSingle<RenderStack>())
 	{
+		Box2DWorldComponent& b2dWorld = mRegistry.emplace<Box2DWorldComponent>(mSceneEntity);
+		b2dWorld.world = new b2World({ 0.0f, -9.81f });
+		b2dWorld.contactListener = new ContactListener;
+		b2dWorld.world->SetContactListener(b2dWorld.contactListener);
+
+		mRegistry.on_construct<RigidBodyComponent>().connect<&Scene::OnRigidBodyComponentConstruct>(this);
+		mRegistry.on_destroy<RigidBodyComponent>().connect<&Scene::OnRigidBodyComponentDestroy>(this);
+		mRegistry.on_construct<BoxColliderComponent>().connect<&Scene::OnBoxColliderComponentConstruct>(this);
+		mRegistry.on_destroy<BoxColliderComponent>().connect<&Scene::OnBoxColliderComponentDestroy>(this);
+		mRegistry.on_construct<CircleColliderComponent>().connect<&Scene::OnCircleColliderComponentConstruct>(this);
+		mRegistry.on_destroy<CircleColliderComponent>().connect<&Scene::OnCircleColliderComponentDestroy>(this);
+		mRegistry.on_construct<ChainColliderComponent>().connect<&Scene::OnChainColliderComponentConstruct>(this);
+		mRegistry.on_destroy<ChainColliderComponent>().connect<&Scene::OnChainColliderComponentDestroy>(this);
 	}
 
 	Scene::~Scene()
 	{
-		delete mPhysicsWorld;
+		mRegistry.on_construct<RigidBodyComponent>().disconnect();
+		mRegistry.on_destroy<RigidBodyComponent>().disconnect();
+		mRegistry.on_construct<BoxColliderComponent>().disconnect();
+		mRegistry.on_destroy<BoxColliderComponent>().disconnect();
+		mRegistry.on_construct<CircleColliderComponent>().disconnect();
+		mRegistry.on_destroy<CircleColliderComponent>().disconnect();
+		mRegistry.on_construct<ChainColliderComponent>().disconnect();
+		mRegistry.on_destroy<ChainColliderComponent>().disconnect();
+
+		Box2DWorldComponent& b2dWorld = mRegistry.get<Box2DWorldComponent>(mSceneEntity);
+		delete b2dWorld.world;
+		delete b2dWorld.contactListener;
 	}
 
 	//Ref<Scene> CloneScene()
@@ -207,6 +200,120 @@ namespace Laby {
 		mRegistry.destroy(entity);
 	}
 
+	Entity Scene::findEntity(UUID findID)
+	{
+		if (mEntityMap.count(findID) == 0) return Entity();
+
+		return { mEntityMap.at(findID), Ref<Scene>(this) };
+	}
+
+	Entity Scene::getEntityByTag(const std::string& tag)
+	{
+		auto entities = mRegistry.view<TagComponent>();
+		for (auto e : entities)
+		{
+			if (entities.get<TagComponent>(e).tag == tag)
+				return Entity(e, Ref<Scene>(this));
+		}
+
+		return Entity{};
+	}
+
+	Entity Scene::getChildByTag(const std::string& tag, Entity parent)
+	{
+		for (auto e : parent.getChildren())
+		{
+			Entity entity = findEntity(e);
+			if (entity.getComponent<TagComponent>().tag == tag)
+				return entity;
+
+			Entity checkChildren = getChildByTag(tag, entity);
+			if (checkChildren)
+				return checkChildren;
+		}
+
+		return Entity{};
+	}
+
+	void Scene::onRuntimeStart()
+	{
+		CreateTilemapEntities();
+
+		ScriptEngine::SetContext(Ref<Scene>(this));
+		ScriptEngine::OnRuntimeStart();
+	}
+
+	void Scene::onRuntimeStop()
+	{
+		CleanupTilemapEntities();
+
+		ScriptEngine::OnRuntimeStop();
+		ScriptEngine::SetContext(nullptr);
+	}
+
+	void Scene::onSimulationStart()
+	{
+		CreateTilemapEntities();
+	}
+
+	void Scene::onSimulationStop()
+	{
+		CleanupTilemapEntities();
+	}
+
+	void Scene::onUpdateRuntime(Timestep ts)
+	{
+		UpdateScripts(ts);
+		StepPhysics2D(ts);
+
+		Entity camera = getPrimaryCameraEntity();
+		if (!camera)
+		{
+			LAB_CORE_WARN("No camera in scene to use!");
+			return;
+		}
+
+		BuildScene();
+		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
+	}
+
+	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
+	{
+		StepPhysics2D(ts);
+
+		BuildScene();
+		DrawScene(camera);
+	}
+
+	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
+	{
+		BuildScene();
+		DrawScene(camera);
+	}
+
+	void Scene::onViewportResize(u32 width, u32 height)
+	{
+		mViewportWidth = width;
+		mViewportHeight = height;
+
+		// Resize our non-FixedAspectRatio cameras
+		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent)
+			{
+				if (!cameraComponent.fixedAspectRatio)
+				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+			});
+	}
+
+	Entity Scene::getPrimaryCameraEntity()
+	{
+		Entity primaryCam;
+		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent) {
+			if (cameraComponent.primary)
+			primaryCam = { entity, Ref<Scene>(this) };
+			});
+		return primaryCam;
+	}
+
 	void Scene::transformChildren()
 	{
 		auto view = mRegistry.view<ChildControllerComponent, NodeComponent>();
@@ -235,148 +342,12 @@ namespace Laby {
 		}
 	}
 
-	//void Scene::reloadMaps()
-	//{
-	//	mRegistry.view<TilemapControllerComponent>().each([this](auto e, auto& tmcComponent)
-	//		{
-	//			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tmcComponent.tilemapHandle);
-
-	//			if (!tilemap)
-	//			{
-	//				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
-	//				return;
-	//			}
-
-	//			Entity entity{ e, Ref<Scene>(this) };
-	//			if (!entity.hasComponent<ScriptComponent>())
-	//				entity.addComponent<ScriptComponent>();
-
-	//			const auto& mapTransform = entity.getTransform();
-	//			i32 width = tilemap->getWidth();
-	//			i32 height = tilemap->getHeight();
-	//			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
-
-	//			Entity tiles = getChildByTag("Tiles", entity);
-	//			if (tiles)
-	//				DestroyEntity(tiles);
-
-	//			tiles = CreateEntity("Tiles", entity);
-	//			tiles.removeComponent<TransformComponent>();
-
-	//			tmcComponent.tileBehaviour.clear();
-	//			for (const auto& [pos, spec] : tilemap->getTileData())
-	//			{
-	//				std::string tileName = fmt::format("({}, {})", pos.x, pos.y);
-	//				Entity tile = CreateEntity(tileName, tiles);
-	//				auto& tileTransform = tile.getTransform();
-	//				tileTransform.translation.x = tileSize.x * (pos.x - 0.5f * (f32)(width - 1));
-	//				tileTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - pos.y);
-	//				tileTransform.scale = tileSize;
-
-	//				tile.addComponent<ScriptComponent>(spec.script);
-	//				tile.addComponent<TileComponent>(pos, entity.getUUID());
-	//				if (spec.solid)
-	//				{
-	//					tile.addComponent<RigidBodyComponent>();
-	//					tile.addComponent<BoxColliderComponent>();
-	//				}
-
-	//				tmcComponent.tileBehaviour[pos] = tile.getUUID();
-	//			}
-	//		});
-	//}
-
-	void Scene::OnPhysicsStart()
-	{
-		mPhysicsWorld = new b2World({ 0.0f, -9.81f });
-
-		mRegistry.view<TransformComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& rbComponent)
-		{
-			Entity entity(e, Ref<Scene>(this));
-			UUID entityID = entity.getComponent<IDComponent>().id;
-
-			b2BodyDef bodyDef;
-			bodyDef.type = BodyTypeToBox2D(rbComponent.type);
-			bodyDef.position.Set(trComponent.translation.x, trComponent.translation.y);
-			bodyDef.angle = trComponent.rotation.z;
-			bodyDef.fixedRotation = rbComponent.fixedRotation;
-
-			b2Body* body = mPhysicsWorld->CreateBody(&bodyDef);
-			b2MassData massData = body->GetMassData();;
-			massData.mass = rbComponent.mass;
-			body->SetMassData(&massData);
-			body->SetGravityScale(rbComponent.gravityScale);
-			body->SetLinearDamping(rbComponent.linearDrag);
-			body->SetAngularDamping(rbComponent.angularDrag);
-			body->GetUserData().pointer = (uintptr_t)entityID;
-
-			rbComponent.runtimeBody = body;
-		});
-
-		mRegistry.view<TransformComponent, BoxColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& bcComponent, const auto& rbComponent)
-		{
-			Entity entity = { e, this };
-
-			LAB_CORE_ASSERT(rbComponent.runtimeBody);
-			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
-
-			b2PolygonShape polygonShape;
-			polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
-
-			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &polygonShape;
-			fixtureDef.density = bcComponent.density;
-			fixtureDef.friction = bcComponent.friction;
-			body->CreateFixture(&fixtureDef);
-		});
-
-		mRegistry.view<TransformComponent, CircleColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
-		{
-			Entity entity = { e, this };
-
-			LAB_CORE_ASSERT(rbComponent.runtimeBody);
-			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
-
-			b2CircleShape circleShape;
-			circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
-
-			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &circleShape;
-			fixtureDef.density = ccComponent.density;
-			fixtureDef.friction = ccComponent.friction;
-			body->CreateFixture(&fixtureDef);
-		});
-
-		mRegistry.view<TransformComponent, ChainColliderComponent, RigidBodyComponent>().each([this](auto e, const auto& trComponent, auto& ccComponent, const auto& rbComponent)
-		{
-			Entity entity = { e, this };
-
-			LAB_CORE_ASSERT(rbComponent.runtimeBody);
-			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
-
-			LAB_CORE_ASSERT(ccComponent.vertexCount);
-			b2ChainShape chainShape;
-			chainShape.CreateLoop(ccComponent.getVertices(), ccComponent.vertexCount);
-
-			b2FixtureDef fixtureDef;
-			fixtureDef.shape = &chainShape;
-			fixtureDef.density = ccComponent.density;
-			fixtureDef.friction = ccComponent.friction;
-			body->CreateFixture(&fixtureDef);
-		});
-	}
-
-	void Scene::OnPhysicsStop()
-	{
-		delete mPhysicsWorld;
-		mPhysicsWorld = nullptr;
-	}
-
 	void Scene::CreateTilemapEntities()
 	{
 		mRegistry.view<TilemapComponent>().each([this](auto e, const auto& tilemapComponent)
 		{
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tilemapComponent.tilemapHandle);
+			Entity mapEntity = { e, this };
 		
 			if (!tilemap)
 			{
@@ -384,34 +355,68 @@ namespace Laby {
 				return;
 			}
 
-			const std::string& mapName = tilemap->getName();
-			usize width = tilemap->getWidth();
-			usize height = tilemap->getHeight();
-
-			Entity mapEntity = { e, this };
-			const auto& mapTransform = mapEntity.getTransform();
-			glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
-
-			Entity shapesEntity = CreateEntity("Shapes", mapEntity);
-			shapesEntity.removeComponent<TransformComponent>();
-				
-			usize i = 1;
-			for (const ChainShape& shape : tilemap->getPhysicsShapes())
-			{
-				Entity shapeEntity = CreateEntity(fmt::format("{}-Shape{}", mapName, i), shapesEntity);
-				auto& shapeTransform = shapeEntity.getTransform();
-
-				const glm::vec2& centroid = shape.centroid();
-				const glm::vec2& extents = shape.extents;
-
-				shapeTransform.translation.x = tileSize.x * (centroid.x - 0.5f * (f32)(width - 1));
-				shapeTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - centroid.y);
-				shapeTransform.scale = { tileSize.x * extents.x, tileSize.y * extents.y, tileSize.z };
-
-				shapeEntity.addComponent<RigidBodyComponent>();
-				shapeEntity.addComponent<ChainColliderComponent>(shape);
-			}
+			CreateTilemapShapes(mapEntity, tilemap);
+			CreateTilemapScripts(mapEntity, tilemap);
 		});
+	}
+
+	void Scene::CreateTilemapShapes(Entity mapEntity, Ref<Tilemap> tilemap)
+	{
+		const std::string& mapName = tilemap->getName();
+		usize width = tilemap->getWidth();
+		usize height = tilemap->getHeight();
+
+		const auto& mapTransform = mapEntity.getTransform();
+		glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
+		Entity shapesEntity = CreateEntity("Shapes", mapEntity);
+		shapesEntity.removeComponent<TransformComponent>();
+
+		usize i = 1;
+		for (const ChainShape& shape : tilemap->getPhysicsShapes())
+		{
+			Entity shapeEntity = CreateEntity(fmt::format("{}-Shape{}", mapName, i), shapesEntity);
+			auto& shapeTransform = shapeEntity.getTransform();
+
+			const glm::vec2& centroid = shape.centroid();
+			const glm::vec2& extents = shape.extents;
+
+			shapeTransform.translation.x = tileSize.x * (centroid.x - 0.5f * (f32)(width - 1));
+			shapeTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - centroid.y);
+			shapeTransform.scale = { tileSize.x * extents.x, tileSize.y * extents.y, tileSize.z };
+
+			shapeEntity.addComponent<RigidBodyComponent>();
+			shapeEntity.addComponent<ChainColliderComponent>(shape);
+		}
+	}
+
+	void Scene::CreateTilemapScripts(Entity mapEntity, Ref<Tilemap> tilemap)
+	{
+		const std::string& mapName = tilemap->getName();
+		usize width = tilemap->getWidth();
+		usize height = tilemap->getHeight();
+
+		const auto& mapTransform = mapEntity.getTransform();
+		glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
+
+		Entity scriptsEntity = CreateEntity("Scripts", mapEntity);
+		scriptsEntity.removeComponent<TransformComponent>();
+
+		usize i = 1;
+		for (const TileScriptData& tileData : tilemap->getTileScripts())
+		{
+			Entity scriptEntity = CreateEntity(fmt::format("{}-Script{}", mapName, i), scriptsEntity);
+			auto& scriptTransform = scriptEntity.getTransform();
+
+			scriptTransform.translation.x = tileSize.x * (tileData.pos.x - 0.5f * (f32)(width - 1));
+			scriptTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - tileData.pos.y);
+			scriptTransform.scale = tileSize;
+
+			scriptEntity.addComponent<ScriptComponent>(tileData.script);
+			scriptEntity.addComponent<RigidBodyComponent>();
+			auto& collider = scriptEntity.addComponent<BoxColliderComponent>();
+			collider.sensor = true;
+		}
 	}
 
 	void Scene::CleanupTilemapEntities()
@@ -419,9 +424,14 @@ namespace Laby {
 		mRegistry.view<TilemapComponent>().each([this](auto e, const auto& tilemapComponent)
 		{
 			Entity mapEntity = { e, this };
+
 			Entity shapesEntity = getChildByTag("Shapes", mapEntity);
 			if (shapesEntity)
 				DestroyEntity(shapesEntity);
+
+			Entity scriptsEntity = getChildByTag("Scripts", mapEntity);
+			if (scriptsEntity)
+				DestroyEntity(scriptsEntity);
 		});
 	}
 
@@ -458,11 +468,14 @@ namespace Laby {
 	void Scene::StepPhysics2D(Timestep ts)
 	{
 		// Physics
-		if (!mPhysicsWorld) return;
+		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
+		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		if (!world)
+			return;
 
 		const int32_t velIters = 6;
 		const int32_t poslIters = 2;
-		mPhysicsWorld->Step(ts, velIters, poslIters);
+		world->Step(ts, velIters, poslIters);
 
 		mRegistry.view<RigidBodyComponent, TransformComponent>().each([this](auto entity, auto& rbComponent, auto& trComponent)
 		{
@@ -474,168 +487,132 @@ namespace Laby {
 		});
 	}
 
-	//void Scene::UpdateScripts(Timestep ts)
-	//{
-	//	// Update scripts
-	//	mRegistry.view<NativeScriptComponent>().each([=](auto entity, auto& nsc)
-	//		{
-	//			if (!nsc.complete && !nsc.instance)
-	//			{
-	//				nsc.instance = nsc.instantiateScript();
-	//				nsc.instance->mScriptEntity = { entity, Ref<Scene>(this) };
-	//				nsc.instance->onStart();
-	//			}
-
-	//			nsc.instance->onUpdate(ts);
-
-	//			if (nsc.instance->isComplete())
-	//			{
-	//				nsc.complete = true;
-	//				nsc.instance->onStop();
-	//				nsc.destroyScript();
-	//			}
-	//		});
-
-	//	mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
-	//		{
-	//			if (sc.instance)
-	//				sc.instance->onUpdate(ts);
-	//		});
-	//}
-
-	Entity Scene::findEntity(UUID findID)
+	void Scene::UpdateScripts(Timestep ts)
 	{
-		if (mEntityMap.count(findID) == 0) return Entity();
-
-		return { mEntityMap.at(findID), Ref<Scene>(this) };
-	}
-
-	Entity Scene::getEntityByTag(const std::string& tag)
-	{
-		auto entities = mRegistry.view<TagComponent>();
-		for (auto e : entities)
+		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
-			if (entities.get<TagComponent>(e).tag == tag)
-				return Entity(e, Ref<Scene>(this));
-		}
-
-		return Entity{};
-	}
-
-	Entity Scene::getChildByTag(const std::string& tag, Entity parent)
-	{
-		for (auto e : parent.getChildren())
-		{
-			Entity entity = findEntity(e);
-			if (entity.getComponent<TagComponent>().tag == tag)
-				return entity;
-
-			Entity checkChildren = getChildByTag(tag, entity);
-			if (checkChildren)
-				return checkChildren;
-		}
-
-		return Entity{};
-	}
-
-	//void Scene::getSheetsInUse(std::vector<Ref<Texture2DSheet>>& sheets)
-	//{
-	//	sheets.clear();
-	//	mRegistry.view<SpriteRendererComponent>().each([&sheets](auto entity, auto& srComponent)
-	//		{
-	//			if (srComponent.type == SpriteRendererComponent::TexType::SubTexture)
-	//			{
-	//				Ref<Texture2DSheet> texSheet = AssetManager::GetAsset<SubTexture2D>(srComponent.handle)->getSheet();
-	//				if (std::find_if(sheets.begin(), sheets.end(),
-	//					[&texSheet](const Ref<Texture2DSheet>& match) {
-	//						return texSheet == match;
-	//					})
-	//					== sheets.end())
-	//					sheets.emplace_back(texSheet);
-	//			}
-	//		});
-	//}
-
-	void Scene::onRuntimeStart()
-	{
-		CreateTilemapEntities();
-
-		OnPhysicsStart();
-
-		ScriptEngine::SetContext(Ref<Scene>(this));
-		ScriptEngine::OnRuntimeStart();
-	}
-
-	void Scene::onRuntimeStop()
-	{
-		CleanupTilemapEntities();
-
-		OnPhysicsStop();
-
-		ScriptEngine::OnRuntimeStop();
-		ScriptEngine::SetContext(nullptr);
-	}
-
-	void Scene::onSimulationStart()
-	{
-		CreateTilemapEntities();
-
-		OnPhysicsStart();
-	}
-
-	void Scene::onSimulationStop()
-	{
-		CleanupTilemapEntities();
-
-		OnPhysicsStop();
-	}
-
-	void Scene::onUpdateRuntime(Timestep ts)
-	{
-		//UpdateScripts(ts);
-		StepPhysics2D(ts);
-
-		Entity camera = getPrimaryCameraEntity();
-		if (!camera) return;
-
-		BuildScene();
-		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
-	}
-
-	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
-	{
-		StepPhysics2D(ts);
-
-		BuildScene();
-		DrawScene(camera);
-	}
-
-	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
-	{
-		BuildScene();
-		DrawScene(camera);
-	}
-
-	void Scene::onViewportResize(u32 width, u32 height)
-	{
-		mViewportWidth = width;
-		mViewportHeight = height;
-
-		// Resize our non-FixedAspectRatio cameras
-		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent) 
-		{
-			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+			if (sc.instance) 
+				sc.instance->onUpdate(ts);
 		});
 	}
 
-	Entity Scene::getPrimaryCameraEntity()
+	void Scene::OnRigidBodyComponentConstruct(entt::registry& registry, entt::entity e)
 	{
-		Entity primaryCam;
-		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent) {
-			if (cameraComponent.primary)
-				primaryCam = { entity, Ref<Scene>(this) };
-			});
-		return primaryCam;
+		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
+		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+
+		Entity entity(e, Ref<Scene>(this));
+		UUID entityID = entity.getComponent<IDComponent>().id;
+		TransformComponent& transform = entity.getComponent<TransformComponent>();
+		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+
+		b2BodyDef bodyDef;
+		bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+		bodyDef.position.Set(transform.translation.x, transform.translation.y);
+		bodyDef.angle = transform.rotation.z;
+		bodyDef.fixedRotation = rbComponent.fixedRotation;
+
+		b2Body* body = world->CreateBody(&bodyDef);
+		b2MassData massData = body->GetMassData();;
+		massData.mass = rbComponent.mass;
+		body->SetMassData(&massData);
+		body->SetGravityScale(rbComponent.gravityScale);
+		body->SetLinearDamping(rbComponent.linearDrag);
+		body->SetAngularDamping(rbComponent.angularDrag);
+		body->GetUserData().pointer = (uintptr_t)entityID;
+
+		rbComponent.runtimeBody = body;
+	}
+
+	void Scene::OnRigidBodyComponentDestroy(entt::registry& registry, entt::entity e)
+	{
+	}
+
+	void Scene::OnBoxColliderComponentConstruct(entt::registry& registry, entt::entity e)
+	{
+		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
+		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+
+		Entity entity(e, Ref<Scene>(this));
+		UUID entityID = entity.getComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
+		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+		auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+
+		LAB_CORE_ASSERT(rbComponent.runtimeBody);
+		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
+
+		b2PolygonShape polygonShape;
+		polygonShape.SetAsBox(trComponent.scale.x * bcComponent.halfExtents.x, trComponent.scale.y * bcComponent.halfExtents.y);
+
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &polygonShape;
+		fixtureDef.density = bcComponent.density;
+		fixtureDef.friction = bcComponent.friction;
+		fixtureDef.isSensor = bcComponent.sensor;
+		bcComponent.runtimeFixture = body->CreateFixture(&fixtureDef);
+	}
+
+	void Scene::OnBoxColliderComponentDestroy(entt::registry& registry, entt::entity e)
+	{
+	}
+
+	void Scene::OnCircleColliderComponentConstruct(entt::registry& registry, entt::entity e)
+	{
+		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
+		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+
+		Entity entity(e, Ref<Scene>(this));
+		UUID entityID = entity.getComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
+		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+		auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+
+		LAB_CORE_ASSERT(rbComponent.runtimeBody);
+		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
+
+		b2CircleShape circleShape;
+		circleShape.m_radius = trComponent.scale.x * ccComponent.radius;
+
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &circleShape;
+		fixtureDef.density = ccComponent.density;
+		fixtureDef.friction = ccComponent.friction;
+		fixtureDef.isSensor = ccComponent.sensor;
+		ccComponent.runtimeFixture = body->CreateFixture(&fixtureDef);
+	}
+
+	void Scene::OnCircleColliderComponentDestroy(entt::registry& registry, entt::entity e)
+	{
+	}
+
+	void Scene::OnChainColliderComponentConstruct(entt::registry& registry, entt::entity e)
+	{
+		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
+		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+
+		Entity entity(e, Ref<Scene>(this));
+		UUID entityID = entity.getComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
+		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+		auto& ccComponent = entity.getComponent<ChainColliderComponent>();
+
+		LAB_CORE_ASSERT(rbComponent.runtimeBody);
+		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
+
+		LAB_CORE_ASSERT(ccComponent.vertexCount);
+		b2ChainShape chainShape;
+		chainShape.CreateLoop(ccComponent.getVertices(), ccComponent.vertexCount);
+
+		b2FixtureDef fixtureDef;
+		fixtureDef.shape = &chainShape;
+		fixtureDef.density = ccComponent.density;
+		fixtureDef.friction = ccComponent.friction;
+		fixtureDef.isSensor = ccComponent.sensor;
+		ccComponent.runtimeFixture = body->CreateFixture(&fixtureDef);
+	}
+
+	void Scene::OnChainColliderComponentDestroy(entt::registry& registry, entt::entity e)
+	{
 	}
 }

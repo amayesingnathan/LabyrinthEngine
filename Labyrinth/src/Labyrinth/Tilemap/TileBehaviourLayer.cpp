@@ -3,11 +3,12 @@
 
 namespace Laby {
 
-    static constexpr GridPos sDirections[4] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
+    using Direction = GridPos<i32>;
+    static constexpr Direction sDirections[4] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
-    static GridPos AddDirection(const GridPos& pos, usize index) { return { pos.x + sDirections[index].x, pos.y + sDirections[index].y }; }
-    static GridPos GetLowestNeighbour(const std::map<GridPos, usize>& vertexCount, const GridPos& currentPos, usize& currentDirectionIndex);
-    static void TraverseR(const std::map<GridPos, usize>& vertexCount, Shape& vertices, GridPos& currentPos, usize& dIndex);
+    static TilePos AddDirection(const TilePos& pos, usize index) { return { pos.x + sDirections[index].x, pos.y + sDirections[index].y }; }
+    static TilePos GetLowestNeighbour(const std::map<TilePos, usize>& vertexCount, const TilePos& currentPos, usize& currentDirectionIndex);
+    static void TraverseR(const std::map<TilePos, usize>& vertexCount, Shape& vertices, TilePos& currentPos, usize& dIndex);
     static ChainShape TraverseShape(const Shape& shape);
     static glm::vec2 GetExtents(const Shape& shape);
 
@@ -44,6 +45,23 @@ namespace Laby {
         return std::vector<ChainShape>(mapShapes.rbegin(), mapShapes.rend());
     }
 
+    std::vector<TileScriptData> TileBehaviourLayer::getScripts() const
+    {
+        std::vector<TileScriptData> mapScripts;
+
+        for (usize y = 0; y < mHeight; y++)
+        {
+            for (usize x = 0; x < mWidth; x++)
+            {
+                const TileBehaviourData& data = At(x, y);
+                if (!data.script.empty())
+                    mapScripts.emplace_back(x, y, data.script);
+            }
+        }
+
+        return mapScripts;
+    }
+
     std::vector<Shape> TileBehaviourLayer::GetContiguousShapes() const
     {
         Grid<GridBool> checkedGrid(mWidth, mHeight);
@@ -67,7 +85,7 @@ namespace Laby {
     Shape TileBehaviourLayer::FloodFill(usize x, usize y, Grid<GridBool>& checkedGrid) const
     {
         Shape shape;
-        if (x == Limits::usizeMax || x >= mWidth || y == Limits::usizeMax || y >= mHeight)
+        if (x == Limits<usize>::Max || x >= mWidth || y == Limits<usize>::Max || y >= mHeight)
             return shape;
 
         if (checkedGrid(x, y))
@@ -101,9 +119,9 @@ namespace Laby {
         Static Function Definitions    
     */
 
-    GridPos GetLowestNeighbour(const std::map<GridPos, usize>& vertexCount, const GridPos& currentPos, usize& currentDirectionIndex)
+    TilePos GetLowestNeighbour(const std::map<TilePos, usize>& vertexCount, const TilePos& currentPos, usize& currentDirectionIndex)
     {
-        GridPos neighbours[3] = {
+        TilePos neighbours[3] = {
             AddDirection(currentPos, ++currentDirectionIndex),
             AddDirection(currentPos, ++currentDirectionIndex),
             AddDirection(currentPos, ++currentDirectionIndex)
@@ -127,7 +145,7 @@ namespace Laby {
         return AddDirection(currentPos, currentDirectionIndex);
     }
 
-    void TraverseR(const std::map<GridPos, usize>& vertexCount, Shape& vertices, GridPos& currentPos, usize& dIndex)
+    void TraverseR(const std::map<TilePos, usize>& vertexCount, Shape& vertices, TilePos& currentPos, usize& dIndex)
     {
         // Completed the loop
         if (!vertices.empty() && currentPos == vertices[0])
@@ -160,8 +178,8 @@ namespace Laby {
     ChainShape TraverseShape(const Shape& shape)
     {
         // Add all vertices of all squares 
-        std::map<GridPos, usize> vertexCount;
-        for (const GridPos& pos : shape)
+        std::map<TilePos, usize> vertexCount;
+        for (const TilePos& pos : shape)
         {
             vertexCount[pos]++;
             vertexCount[{ pos.x + 1, pos.y }]++;
@@ -171,10 +189,10 @@ namespace Laby {
 
         // Should be top left vertex
         const auto& [pos, count] = *vertexCount.begin();
-        GridPos nextPos = { pos.x + 1, pos.y };
+        TilePos nextPos = { pos.x + 1, pos.y };
         LAB_CORE_ASSERT(vertexCount.contains(nextPos) && vertexCount.at(nextPos) == 2, "Not at correct vertex!");
 
-        GridPos currentPos = pos;
+        TilePos currentPos = pos;
         usize dIndex = 3;
         Shape vertices;
         TraverseR(vertexCount, vertices, currentPos, dIndex);
@@ -185,8 +203,8 @@ namespace Laby {
 
     glm::vec2 GetExtents(const Shape& shape)
     {
-        glm::vec2 min = glm::vec2{ Limits::f32Max }, max = glm::vec2{ -1 };
-        for (const GridPos& coord : shape)
+        glm::vec2 min = glm::vec2{ Limits<f32>::Max }, max = glm::vec2{ -1 };
+        for (const TilePos& coord : shape)
         {
             min.x = std::min(min.x, (f32)coord.x);
             min.y = std::min(min.y, (f32)coord.y);
