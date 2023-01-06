@@ -84,7 +84,7 @@ namespace Laby {
     };
 
 
-    template<typename Derived, typename Base>
+    template<typename Base, typename Derived>
     concept DerivedFrom = std::is_base_of_v<Base, Derived>;
 
     template<typename T>

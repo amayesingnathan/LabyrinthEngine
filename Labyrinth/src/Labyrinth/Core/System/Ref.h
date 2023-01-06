@@ -9,7 +9,7 @@ namespace Laby {
 	class RefCounted;
 
 	template<typename T>
-	concept RefCountable = DerivedFrom<T, RefCounted>;
+	concept RefCountable = DerivedFrom<RefCounted, T>;
 
 	class RefCounted
 	{
