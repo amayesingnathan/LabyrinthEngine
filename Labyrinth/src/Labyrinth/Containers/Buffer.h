@@ -44,6 +44,7 @@ namespace Laby {
 			memcpy((Byte*)mData + offset, &data, DataSize);
 		}
 
+		template<typename T>
 		T pop()
 		{
 			constexpr usize DataSize = sizeof(T);
