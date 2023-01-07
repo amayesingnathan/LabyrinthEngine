@@ -15,6 +15,7 @@ namespace Laby {
 		void onUpdate(Timestep ts);
 		void onEvent(Event& e);
 
+		const glm::mat4& getViewMatrix() const { return mView; }
 		glm::mat4 getViewProjection() const override { return mProjection * mView; }
 
 		inline f32 getDistance() const { return mDistance; }

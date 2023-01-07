@@ -1,5 +1,5 @@
 #include "Lpch.h"
-#include "Utils.h"
+#include "Timing.h"
 
 #include <GLFW/glfw3.h>
 

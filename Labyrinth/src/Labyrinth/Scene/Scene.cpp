@@ -1,14 +1,6 @@
 #include "Lpch.h"
 #include "Scene.h"
 
-#include "Entity.h"
-#include "Components.h"
-
-#include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/Physics/ContactListener.h>
-#include <Labyrinth/Renderer/Renderer2D.h>
-#include <Labyrinth/Scripting/ScriptEngine.h>
-
 #include <box2d/b2_world.h>
 #include <box2d/b2_body.h>
 #include <box2d/b2_fixture.h>
@@ -16,24 +8,49 @@
 #include <box2d/b2_circle_shape.h>
 #include <box2d/b2_chain_shape.h>
 
+#include "Entity.h"
+#include "Components.h"
+
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Physics/ContactListener.h>
+#include <Labyrinth/Physics/Utils.h>
+#include <Labyrinth/Renderer/Renderer2D.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
+
 namespace Laby {
 
-	static b2BodyType BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType)
+	Ref<Scene> SceneUtils::Clone(Ref<Scene> toCopy)
 	{
-		switch (bodyType)
-		{
-		case RigidBodyComponent::BodyType::Static: return b2_staticBody;
-		case RigidBodyComponent::BodyType::Dynamic: return b2_dynamicBody;
-		case RigidBodyComponent::BodyType::Kinematic: return b2_kinematicBody;
-		}
+		Ref<Scene> newScene = Ref<Scene>::Create(toCopy->mName);
+		newScene->mViewportWidth = toCopy->mViewportWidth;
+		newScene->mViewportHeight = toCopy->mViewportHeight;
 
-		LAB_CORE_ASSERT(false, "Unknown body type");
-		return b2_staticBody;
+		std::unordered_map<UUID, EntityID> entMap;
+
+		toCopy->mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
+		{
+			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
+		});
+
+		CopyAllComponents(toCopy->mRegistry, newScene->mRegistry, entMap);
+
+		newScene->mRegistry.view<IDComponent, NodeComponent>().each([&](auto e, const auto& idComp, const auto& nodeComp)
+		{
+			if (nodeComp.parent)
+			{
+				Entity entity{ e, newScene };
+				entity.removeComponent<RootComponent>();
+			}
+		});
+
+		return newScene;
 	}
 
 	Scene::Scene(const std::string& name)
 		: mName(name), mRenderStack(MakeSingle<RenderStack>())
 	{
+		mSceneEntity = mRegistry.create();
+
 		Box2DWorldComponent& b2dWorld = mRegistry.emplace<Box2DWorldComponent>(mSceneEntity);
 		b2dWorld.world = new b2World({ 0.0f, -9.81f });
 		b2dWorld.contactListener = new ContactListener;
@@ -64,33 +81,6 @@ namespace Laby {
 		delete b2dWorld.world;
 		delete b2dWorld.contactListener;
 	}
-
-	//Ref<Scene> CloneScene()
-	//{
-	//	Ref<Scene> newScene = Ref<Scene>::Create(mName);
-	//	newScene->mViewportWidth = mViewportWidth;
-	//	newScene->mViewportHeight = mViewportHeight;
-
-	//	std::unordered_map<UUID, EntityID> entMap;
-
-	//	mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
-	//	{
-	//		entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
-	//	});
-
-	//	CopyAllComponents(mRegistry, newScene->mRegistry, entMap);
-
-	//	newScene->mRegistry.view<IDComponent, NodeComponent>().each([&](auto e, const auto& idComp, const auto& nodeComp)
-	//	{
-	//		if (nodeComp.parent)
-	//		{
-	//			Entity entity{ e, newScene };
-	//			entity.removeComponent<RootComponent>();
-	//		}
-	//	});
-
-	//	return newScene;
-	//}
 
 	Entity Scene::CreateEntity(const std::string& name)
 	{
@@ -507,7 +497,7 @@ namespace Laby {
 		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
 
 		b2BodyDef bodyDef;
-		bodyDef.type = BodyTypeToBox2D(rbComponent.type);
+		bodyDef.type = PhysicsUtils::BodyTypeToBox2D(rbComponent.type);
 		bodyDef.position.Set(transform.translation.x, transform.translation.y);
 		bodyDef.angle = transform.rotation.z;
 		bodyDef.fixedRotation = rbComponent.fixedRotation;

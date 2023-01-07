@@ -7,6 +7,7 @@ namespace Laby {
 	class ProjectSerialiser
 	{
 	public:
+		ProjectSerialiser();
 		ProjectSerialiser(Ref<Project> project);
 
 		void serialise(const fs::path& filepath);

@@ -35,16 +35,25 @@ namespace Laby {
 		static void Save(const fs::path& path);
 
 		static const std::string& GetProjectName();
-		static std::filesystem::path GetProjectDirectory();
-		static std::filesystem::path GetAssetDirectory();
-		static std::filesystem::path GetAssetRegistryPath();
-		static std::filesystem::path GetScriptModulePath();
-		static std::filesystem::path GetScriptModuleFilePath();
+		static const fs::path& GetProjectDirectory();
+		static fs::path GetProjectPath();
+		static fs::path GetAssetDirectory();
+		static fs::path GetAssetRegistryPath();
+		static fs::path GetScriptModulePath();
+		static fs::path GetScriptModuleFilePath();
+		static fs::path GetStartScenePath();
 
 	private:
 		ProjectSettings mSettings;
 
 		friend class ProjectSerialiser;
 		friend class ProjectSettingsModal;
+	};
+
+	class ActiveProject
+	{
+	public:
+		static void Set(Ref<Project> newPrj);
+		static Ref<Project> Get();
 	};
 }

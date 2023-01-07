@@ -87,6 +87,8 @@ namespace Laby {
 		ImGuiLayer* mImGuiLayer;
 		LayerStack mLayerStack;
 
+		friend class SettingsModal;
+
 	private:
 		inline static Application* sInstance = nullptr;
 		friend int ::main(int argc, char** argv);

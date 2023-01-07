@@ -6,6 +6,12 @@
 
 namespace Laby {
 
+	ProjectSerialiser::ProjectSerialiser()
+		: mProject(ActiveProject::Get())
+	{
+
+	}
+
 	ProjectSerialiser::ProjectSerialiser(Ref<Project> project)
 		: mProject(project)
 	{

@@ -3,15 +3,34 @@
 
 namespace Laby {
 
+	PanelManager::PanelEntry* PanelManager::Find(std::string_view key)
+	{
+		if (!Contains(key))
+			return nullptr;
+
+		return &sEditorPanels[sPanelIDs.at(key)];
+	}
+
 	void PanelManager::Delete(std::string_view key)
 	{
-		auto panel = Find(key);
-		if (panel == sEditorPanels.end())
+		if (!Contains(key))
 		{
 			LAB_ERROR("EditorPanel was not registered with manager");
 			return;
 		}
-		sEditorPanels.erase(panel);
+
+		if (sPanelIDs.at(key) == sEditorPanels.size() - 1)
+		{
+			sEditorPanels.pop_back();
+			sPanelIDs.erase(key);
+			return;
+		}
+
+		sEditorPanels.erase(sEditorPanels.begin() + sPanelIDs.at(key));
+
+		sPanelIDs.clear();
+		for (usize i = 0; i < sEditorPanels.size(); i++)
+			sPanelIDs[sEditorPanels[i].key] = i;
 	}
 
 	void PanelManager::Update(Timestep ts)

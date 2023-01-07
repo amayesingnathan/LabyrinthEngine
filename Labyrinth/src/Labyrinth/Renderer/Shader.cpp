@@ -2,7 +2,7 @@
 #include "Shader.h"
 
 #include "Labyrinth/IO/Filesystem.h"
-#include "Labyrinth/Tools/Timer.h"
+#include "Labyrinth/Tools/Timing.h"
 
 #include <glad/glad.h>
 

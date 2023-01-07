@@ -97,6 +97,13 @@ namespace Laby {
 		std::unordered_map<UUID, EntityID> mEntityMap;
 
 		friend Entity;
+		friend class SceneUtils;
+	};
+
+	class SceneUtils
+	{
+	public:
+		static Ref<Scene> Clone(Ref<Scene> toCopy);
 	};
 }
 

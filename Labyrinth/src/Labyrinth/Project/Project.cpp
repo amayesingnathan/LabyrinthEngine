@@ -9,6 +9,9 @@ namespace Laby {
 
 	static Ref<Project> sActiveProject = nullptr;
 
+	void ActiveProject::Set(Ref<Project> newProj) { sActiveProject = newProj; }
+	Ref<Project> ActiveProject::Get() { return sActiveProject; }
+
 	bool Project::IsActive()
 	{
 		return sActiveProject;
@@ -39,33 +42,45 @@ namespace Laby {
 		return sActiveProject->mSettings.name;
 	}
 
-	std::filesystem::path Project::GetProjectDirectory()
+	const fs::path& Project::GetProjectDirectory()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
 		return sActiveProject->mSettings.projectDir;
 	}
 
-	std::filesystem::path Project::GetAssetDirectory()
+	fs::path Project::GetProjectPath()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
-		return std::filesystem::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.assetDir;
+		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.projectName;
 	}
 
-	std::filesystem::path Project::GetAssetRegistryPath()
+	fs::path Project::GetAssetDirectory()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
-		return std::filesystem::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.assetRegPath;
+		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.assetDir;
 	}
 
-	std::filesystem::path Project::GetScriptModulePath()
+	fs::path Project::GetAssetRegistryPath()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
-		return std::filesystem::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.scriptModulePath;
+		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.assetRegPath;
 	}
 
-	std::filesystem::path Project::GetScriptModuleFilePath()
+	fs::path Project::GetScriptModulePath()
+	{
+		LAB_CORE_ASSERT(sActiveProject);
+		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.scriptModulePath;
+	}
+
+	fs::path Project::GetScriptModuleFilePath()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
 		return GetScriptModulePath() / fmt::format("{0}.dll", GetProjectName());
+	}
+
+	fs::path Project::GetStartScenePath()
+	{
+		LAB_CORE_ASSERT(sActiveProject);
+		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.startScenePath;
 	}
 }
