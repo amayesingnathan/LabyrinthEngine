@@ -27,11 +27,11 @@ namespace Laby {
 		static void ProjectChanged(Ref<Project> project);
 		static void SelectionChange();
 
-		static bool Contains(std::string_view key) { return Find(key) != sEditorPanels.end(); }
-		static std::vector<PanelEntry>::iterator Find(std::string_view key) { return std::find_if(sEditorPanels.begin(), sEditorPanels.end(), [&key](const PanelEntry& panel) { return key == panel.key; }); }
+		static bool Contains(std::string_view key) { return sPanelIDs.contains(key);; }
+		static PanelEntry* Find(std::string_view key);
 
 		static void Delete(std::string_view key);
-		static void Clear() { sEditorPanels.clear(); }
+		static void Clear() { sEditorPanels.clear(); sPanelIDs.clear(); }
 
 		template<IsEditorPanel T>
 		static Ref<T> Register(std::string_view key, bool display = true)
@@ -39,6 +39,7 @@ namespace Laby {
 			LAB_ASSERT(!Contains(key), "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			Ref<T> newPanel = Ref<T>::Create();
+			sPanelIDs[key] = sEditorPanels.size();
 			sEditorPanels.emplace_back(key, newPanel, display);
 
 			return newPanel;
@@ -50,6 +51,7 @@ namespace Laby {
 			LAB_ASSERT(!Contains(key), "Can't register panel that is already being managed! (Check name is not already in use)");
 
 			Ref<T> newPanel = Ref<T>::Create(std::forward<Args>(args)...);
+			sPanelIDs[key] = sEditorPanels.size();
 			sEditorPanels.emplace_back(key, newPanel, display);
 
 			return newPanel;
@@ -57,6 +59,7 @@ namespace Laby {
 
 	private:
 		inline static std::vector<PanelEntry> sEditorPanels;
+		inline static std::unordered_map<std::string_view, usize> sPanelIDs;
 
 		friend class EditorLayer;
 		friend class SelectionManager;

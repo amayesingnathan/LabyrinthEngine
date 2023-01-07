@@ -55,7 +55,8 @@ namespace Laby {
 
 	void ModalManager::RenderButtons(ModalEntry& modalData)
 	{
-        if (modalData.type == ModalButtons::None) return;
+        if (modalData.type == ModalButtons::None) 
+            return;
 
         ImGui::NewLine();
         ImGui::Separator();

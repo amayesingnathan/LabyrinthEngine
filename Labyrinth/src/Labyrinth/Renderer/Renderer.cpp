@@ -68,11 +68,25 @@ namespace Laby {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     }
 
+	void Renderer::SetLineWidth(f32 width)
+	{
+		glLineWidth(width);
+	}
+
 	void Renderer::DrawIndexed(const Ref<VertexArray>& vertexArray, u32 indexCount)
 	{
 		u32 count = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
 		vertexArray->bind();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
+#if LAB_DEBUG
+		vertexArray->unbind();
+#endif
+	}
+
+	void Renderer::DrawLines(const Ref<VertexArray>& vertexArray, u32 vertexCount)
+	{
+		vertexArray->bind();
+		glDrawArrays(GL_LINES, 0, vertexCount);
 #if LAB_DEBUG
 		vertexArray->unbind();
 #endif

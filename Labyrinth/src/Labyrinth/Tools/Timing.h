@@ -6,6 +6,12 @@
 
 namespace Laby {
 
+	class Stopwatch
+	{
+	public:
+		static f32 GetTime();
+	};
+
 	class Timer
 	{
 	public:

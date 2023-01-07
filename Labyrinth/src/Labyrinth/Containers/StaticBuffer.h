@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Types.h>
+#include <Labyrinth/Core/System/Base.h>
 
 namespace Laby {
 

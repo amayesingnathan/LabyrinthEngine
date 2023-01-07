@@ -36,7 +36,7 @@ namespace Laby {
 
 	AssetType AssetManager::GetAssetTypeFromExtension(const std::string& extension)
 	{
-		std::string ext = Utils::String::ToLowerCopy(extension);
+		std::string ext = StringUtils::ToLowerCopy(extension);
 		if (sAssetExtensionMap.count(ext) == 0)
 			return AssetType::None;
 
@@ -55,7 +55,7 @@ namespace Laby {
 
 	bool AssetManager::IsExtensionValid(const std::string& extension, AssetType type)
 	{
-		std::string ext = Utils::String::ToLowerCopy(extension);
+		std::string ext = StringUtils::ToLowerCopy(extension);
 		if (sAssetExtensionMap.count(ext) == 0)
 			return false;
 		return sAssetExtensionMap[ext] == type;

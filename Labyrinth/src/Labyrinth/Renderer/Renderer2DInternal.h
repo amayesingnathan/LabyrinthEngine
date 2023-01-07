@@ -36,6 +36,15 @@ namespace Laby {
 		i32 entityID;
 	};
 
+	struct LineVertex
+	{
+		glm::vec3 position;
+		glm::vec4 colour;
+
+		// Editor-only
+		i32 entityID;
+	};
+
 	struct RenderStatistics
 	{
 		u32 drawCalls = 0;
@@ -59,6 +68,7 @@ namespace Laby {
 			{ -0.5f,  0.5f, 0.0f, 1.0f } 
 		};
 
+
 		Ref<VertexArray> quadVertexArray;
 		Ref<VertexBuffer> quadVertexBuffer;
 		Ref<Shader> quadShader;
@@ -66,6 +76,7 @@ namespace Laby {
 		u32 quadIndexCount = 0;
 		QuadVertex* quadVertexBufferBase = nullptr;
 		QuadVertex* quadVertexBufferPtr = nullptr;
+
 
 		Ref<VertexArray> circleVertexArray;
 		Ref<VertexBuffer> circleVertexBuffer;
@@ -75,9 +86,22 @@ namespace Laby {
 		CircleVertex* circleVertexBufferBase = nullptr;
 		CircleVertex* circleVertexBufferPtr = nullptr;
 
+
+		Ref<VertexArray> lineVertexArray;
+		Ref<VertexBuffer> lineVertexBuffer;
+		Ref<Shader> lineShader;
+
+		u32 lineVertexCount = 0;
+		LineVertex* lineVertexBufferBase = nullptr;
+		LineVertex* lineVertexBufferPtr = nullptr;
+
+		f32 lineWidth = 2.0f;
+
+
 		Ref<Texture2D> whiteTexture;
 		std::array<Ref<IRenderable>, MaxTextureSlots> textureSlots;
 		u32 textureSlotIndex;
+
 
 		RenderStatistics stats;
 

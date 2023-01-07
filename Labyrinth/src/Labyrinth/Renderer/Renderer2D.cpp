@@ -237,6 +237,41 @@ namespace Laby {
 		DrawCircle(transform, crc.colour, crc.thickness, entityID);
 	}
 
+	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, i32 entityID)
+	{
+		sRenderData.lineVertexBufferPtr->position = p0;
+		sRenderData.lineVertexBufferPtr->colour = colour;
+		sRenderData.lineVertexBufferPtr->entityID = entityID;
+		sRenderData.lineVertexBufferPtr++;
+
+		sRenderData.lineVertexBufferPtr->position = p1;
+		sRenderData.lineVertexBufferPtr->colour = colour;
+		sRenderData.lineVertexBufferPtr->entityID = entityID;
+		sRenderData.lineVertexBufferPtr++;
+
+		sRenderData.lineVertexCount += 2;
+	}
+
+	void Renderer2D::DrawRect(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID)
+	{
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), { position, 0.0f })
+			* glm::scale(glm::mat4(1.0f), { size.x, size.y, 1.0f });
+
+		DrawRect(transform, colour, entityID);
+	}
+
+	void Renderer2D::DrawRect(const glm::mat4& transform, const glm::vec4& colour, i32 entityID)
+	{
+		glm::vec3 lineVertices[4];
+		for (usize i = 0; i < 4; i++)
+			lineVertices[i] = transform * Renderer2DData::QuadVertexPositions[i];
+
+		DrawLine(lineVertices[0], lineVertices[1], colour, entityID);
+		DrawLine(lineVertices[1], lineVertices[2], colour, entityID);
+		DrawLine(lineVertices[2], lineVertices[3], colour, entityID);
+		DrawLine(lineVertices[3], lineVertices[0], colour, entityID);
+	}
+
 	void Renderer2D::DrawCircle(const glm::mat4& transform, const glm::vec4& colour, f32 thickness, i32 entityID)
 	{
 		if (sRenderData.circleIndexCount >= Renderer2DData::MaxIndices)
@@ -289,6 +324,18 @@ namespace Laby {
 
 			sRenderData.circleShader->bind();
 			Renderer::DrawIndexed(sRenderData.circleVertexArray, sRenderData.circleIndexCount);
+			sRenderData.stats.drawCalls++;
+		}
+
+		// Lines
+		if (sRenderData.lineVertexCount)
+		{
+			u32 lineDataSize = (u32)((u8*)sRenderData.lineVertexBufferPtr - (u8*)sRenderData.lineVertexBufferBase);
+			sRenderData.lineVertexBuffer->setData(sRenderData.lineVertexBufferBase, lineDataSize);
+
+			sRenderData.lineShader->bind();
+			Renderer::SetLineWidth(sRenderData.lineWidth);
+			Renderer::DrawLines(sRenderData.lineVertexArray, sRenderData.lineVertexCount);
 			sRenderData.stats.drawCalls++;
 		}
 	}

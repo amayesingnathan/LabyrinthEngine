@@ -4,7 +4,7 @@
 #include <Labyrinth/IO/JSON.h>
 #include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Renderer/Renderer.h>
-#include <Labyrinth/Tools/Utils.h>
+#include <Labyrinth/Tools/Timing.h>
 
 namespace Laby {
 

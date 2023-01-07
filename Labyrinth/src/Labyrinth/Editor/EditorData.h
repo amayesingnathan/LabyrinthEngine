@@ -14,10 +14,16 @@ namespace Laby {
 		glm::vec4 selectionColour = { 1, 0.4f, 0, 1 };
 		bool linkOnDestroy = false;
 
+		bool viewportFocused = false, viewportHovered = false;
+		glm::vec2 viewportSize = { 0.0f, 0.0f };
+		std::array<glm::vec2, 2> viewportBounds = {};
+
+		std::string newProjectName;
+		fs::path newProjectFilepath;
+
 		EditorCamera camera;
 		Entity hoveredEntity;
 
-		std::string projectName;
-		fs::path projectFilepath;
+		i32 gizmoType = -1;
 	};
 }
