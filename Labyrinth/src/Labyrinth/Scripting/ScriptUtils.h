@@ -23,16 +23,16 @@ namespace Laby {
 
 				size_t i = 0;
 				([&]()
-					{
-						const void* tmp = nullptr;
-				if constexpr (TypeTraits<Args>::IsPointer)
-					tmp = args;
-				else
-					tmp = &args;
-				argv[i] = tmp;
+				{
+					const void* tmp = nullptr;
+					if constexpr (TypeTraits<Args>::IsPointer)
+						tmp = args;
+					else
+						tmp = &args;
+					argv[i] = tmp;
 
-				i++;
-					}(), ...);
+					i++;
+				}(), ...);
 
 				return function((void**)argv, StaticCast<int>(argc));
 			}

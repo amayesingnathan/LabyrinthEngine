@@ -1,9 +1,7 @@
 #include "Lpch.h"
 #include "NewProjectModal.h"
 
-#include <imgui.h>
-
-#include <Labyrinth/Containers/StaticString.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Project/Project.h>
 
 #include "../EditorData.h"
@@ -23,24 +21,19 @@ namespace Laby {
 	void NewProjectModal::onImGuiRender()
 	{
 		fs::path fullProjectPath = mProjectPath / mProjectName;
-		ImGui::Text("Full Project Path: %s", fullProjectPath.string().c_str());
+		Widgets::Label("Full Project Path: %s", fullProjectPath.string().c_str());
 
-		StaticString<256> nameBuffer(mProjectName);
-		if (ImGui::InputText("Name", nameBuffer, nameBuffer.length()))
-			mProjectName = nameBuffer.toString();
+		Widgets::StringEdit("Name", mProjectName);
+		Widgets::PathEdit("Path", mProjectPath);
 
-		StaticString<256> pathBuffer(mProjectPath.string());
-		if (ImGui::InputText("Path", pathBuffer, pathBuffer.length()))
-			mProjectPath = pathBuffer.toString();
+		Widgets::SameLine();
 
-		ImGui::SameLine();
-
-		if (ImGui::Button("..."))
+		Widgets::Button("...", [&, this]()
 		{
 			fs::path result = FileUtils::OpenDir();
 			if (!result.empty())
 				mProjectPath = result;
-		}
+		});
 	}
 
 	void NewProjectModal::onComplete()

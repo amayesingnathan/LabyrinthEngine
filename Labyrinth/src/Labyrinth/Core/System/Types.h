@@ -25,6 +25,15 @@ namespace Laby {
 
 	using Byte = u8;
 
+	template<typename TResult, typename... TArgs>
+	using Func = std::function<TResult(TArgs&&...)>;
+
+	template<typename... TArgs>
+	using Action = Func<void, TArgs...>;
+
+	template<typename T>
+	using Predicate = Func<bool, T>;
+
 	template<typename T>
 	struct Limits
 	{

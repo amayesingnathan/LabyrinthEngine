@@ -9,16 +9,18 @@
 #include <Labyrinth/Core/Application.h>
 
 #include <Labyrinth/Editor/EditorResources.h>
-#include "Labyrinth/Editor/ModalManager.h"
-#include "Labyrinth/Editor/PanelManager.h"
-#include "Labyrinth/Editor/SelectionManager.h"
+#include <Labyrinth/Editor/ModalManager.h>
+#include <Labyrinth/Editor/PanelManager.h>
+#include <Labyrinth/Editor/SelectionManager.h>
 
-#include "Labyrinth/Editor/Modals/NewMapModal.h"
-#include "Labyrinth/Editor/Modals/NewProjectModal.h"
-#include "Labyrinth/Editor/Modals/ProjectSettingsModal.h"
-#include "Labyrinth/Editor/Modals/SettingsModal.h"
+#include <Labyrinth/Editor/Modals/NewMapModal.h>
+#include <Labyrinth/Editor/Modals/NewProjectModal.h>
+#include <Labyrinth/Editor/Modals/ProjectSettingsModal.h>
+#include <Labyrinth/Editor/Modals/SettingsModal.h>
 
-#include "Labyrinth/IO/Input.h"
+#include <Labyrinth/IO/Input.h>
+
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 #include <Labyrinth/Project/ProjectSerialiser.h>
 
@@ -425,7 +427,9 @@ namespace Laby {
 			ImGui::EndDragDropTarget();
 		}
 
-		if (mSceneState == SceneEdit) UI_Gizmos();
+		if (mSceneState == SceneEdit) 
+			UI_Gizmos();
+
 		ImGui::PopStyleVar();
 
 		ImGui::End();
@@ -493,65 +497,81 @@ namespace Laby {
 
 	void EditorLayer::UI_MenuBar()
 	{
-		if (ImGui::BeginMenuBar())
-		{
-			if (ImGui::BeginMenu("File"))
+		UI::MenuBar* menu = Widgets::BeginMenuBar();
+
+		Widgets::AddMenuHeading(menu, "File");
+		{	// File Menu
+			Widgets::AddMenuItem(menu, "Create Project", [this]()
 			{
-				if (ImGui::MenuItem("Create Project"))
+				ModalManager::Open<NewProjectModal>("New Project...", ModalButtons::OKCancel, mEditorData);
+				ModalManager::AddCallback([this]()
 				{
-					ModalManager::Open<NewProjectModal>("New Project...", ModalButtons::OKCancel, mEditorData);
-					ModalManager::AddCallback([this]()
-					{
-						if (!mEditorData.newProjectFilepath.empty())
-							CreateProject(mEditorData.newProjectFilepath / mEditorData.newProjectName);
-					});
-				}
-				if (ImGui::MenuItem("Open Project", "Ctrl+O"))
-					OpenProject();
-				if (ImGui::MenuItem("Save Project"))
-					SaveProject();
-				if (Project::IsActive() && ImGui::MenuItem("Project Settings"))
+					if (!mEditorData.newProjectFilepath.empty())
+						CreateProject(mEditorData.newProjectFilepath / mEditorData.newProjectName);
+				});
+			});
+			Widgets::AddMenuItem(menu, "Open Project", "Ctrl+O", [this]() 
+			{
+				OpenProject();
+			});
+			Widgets::AddMenuItem(menu, "Save Project", [this]() 
+			{
+				SaveProject();
+			});
+			if (Project::IsActive())
+			{
+				Widgets::AddMenuItem(menu, "Save Project", [this]() 
+				{
 					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalButtons::OK, ActiveProject::Get());
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("New Scene", "Ctrl+N"))
-					NewScene();
-				if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
-					SaveScene();
-				if (ImGui::MenuItem("Save Scene As...", "Ctrl+Shift+S"))
-					SaveSceneAs();
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Preferences", "Ctrl+P"))
-					ModalManager::Open<SettingsModal>("Settings", ModalButtons::OKCancel);
-
-				ImGui::Separator();
-
-				if (ImGui::MenuItem("Exit")) Application::Close();
-
-				ImGui::EndMenu();
+				});
 			}
 
-			if (ImGui::BeginMenu("View"))
+			Widgets::AddMenuSeparator(menu);
+
+			Widgets::AddMenuItem(menu, "New Scene", "Ctrl+N", [this]()
 			{
-				for (auto& [key, _panel, display] : PanelManager::GetPanels())
-					ImGui::MenuItem(key.data(), nullptr, &display);
-
-				ImGui::EndMenu();
-			}
-
-			if (ImGui::BeginMenu("Create"))
+				NewScene();
+			});
+			Widgets::AddMenuItem(menu, "Save Scene", "Ctrl+S", [this]()
 			{
-				if (ImGui::MenuItem("Tilemap"))
-					ModalManager::Open<NewMapModal>("New Tilemap...", ModalButtons::Custom);
+				SaveScene();
+			});
+			Widgets::AddMenuItem(menu, "Save Scene As...", "Ctrl+Shift+S", [this]()
+			{
+				SaveSceneAs();
+			});
 
-				ImGui::EndMenu();
-			}
+			Widgets::AddMenuSeparator(menu);
 
-			ImGui::EndMenuBar();
+			Widgets::AddMenuItem(menu, "Preferences", "Ctrl+P", [this]()
+			{
+				ModalManager::Open<SettingsModal>("Settings", ModalButtons::OKCancel);
+			});
+
+			Widgets::AddMenuSeparator(menu);
+
+			Widgets::AddMenuItem(menu, "Save Scene As...", "Ctrl+Shift+S", [this]()
+			{
+				Application::Close();
+			});
 		}
+		
+		Widgets::AddMenuHeading(menu, "View");
+		{	// View 
+			for (auto& [key, _panel, display] : PanelManager::GetPanels())
+				Widgets::AddMenuItem(menu, key, display);
+		}
+
+		Widgets::AddMenuHeading(menu, "Create");
+		{	// Create 
+
+			Widgets::AddMenuItem(menu, "Tilemap", [this]()
+			{
+				ModalManager::Open<NewMapModal>("New Tilemap...", ModalButtons::Custom);
+			});
+		}
+
+		Widgets::EndMenuBar(menu);
 	}
 
 	void EditorLayer::UI_Toolbar()
@@ -570,25 +590,25 @@ namespace Laby {
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		{
 			Ref<Texture2D> icon = (mSceneState == SceneEdit || mSceneState == SceneSimulate) ? EditorResources::PlayIcon : EditorResources::StopIcon;
-			ImGui::SetCursorPosX((ImGui::GetWindowContentRegionMax().x * 0.5f) - (size * 0.5f));
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getTextureID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+			Widgets::SetXPosition((Widgets::GetAvailableRegion().x * 0.5f) - (size * 0.5f));
+			Widgets::ImageButton(icon, { size, size }, [this]()
 			{
 				if (mSceneState == SceneEdit)
 					OnScenePlay();
 				else if (mSceneState == ScenePlay)
 					OnSceneStop();
-			}
+			});
 		}
 		ImGui::SameLine();
 		{
 			Ref<Texture2D> icon = (mSceneState == SceneEdit || mSceneState == ScenePlay) ? EditorResources::SimulateIcon : EditorResources::StopIcon;
-			if (ImGui::ImageButton((ImTextureID)(intptr_t)icon->getTextureID(), ImVec2(size, size), ImVec2(0, 0), ImVec2(1, 1), 0))
+			Widgets::ImageButton(icon, { size, size }, [this]()
 			{
 				if (mSceneState == SceneEdit)
-					OnSceneSimulate();
-				else if (mSceneState == SceneSimulate)
+				OnSceneSimulate();
+				else if (mSceneState == ScenePlay)
 					OnSceneStop();
-			}
+			});
 		}
 
 		ImGui::PopStyleVar(2);

@@ -1,23 +1,17 @@
 #include "Lpch.h"
 #include "SettingsModal.h"
 
-#include <Labyrinth/Containers/StaticString.h>
-
-#include <imgui.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 namespace Laby {
 
-    struct ResolutionEntry
-    {
-        std::string label;
-        Resolution resolution;
-    };
+    using ResolutionEntry = ComboEntry<Resolution>;
 
-    static const std::vector<ResolutionEntry> sResolutionTable
+    static const ResolutionEntry sResolutionTable[]
     {
-        {"1280x720", {1280, 720}},
-        {"1600x900", {1600, 900}},
-        {"1920x1080", {1920, 1080}}
+        { "1280x720", Resolution{1280, 720} },
+        { "1600x900", Resolution{1600, 900} },
+        { "1920x1080", Resolution{1920, 1080} }
     };
 
     SettingsModal::SettingsModal() 
@@ -27,47 +21,21 @@ namespace Laby {
 
     void SettingsModal::onImGuiRender()
     {
-        ImGui::Text("Settings");
+        Widgets::Label("Settings");
 
-        ImGui::Checkbox("Fullscreen", &mSettings.fullscreen);
+        Widgets::Checkbox("Fullscreen", mSettings.fullscreen);
+        Widgets::PathEdit("Working Directory", mSettings.workingDir);
+        Widgets::PathEdit("Core Assembly Path", mSettings.scriptConfig.coreAssemblyPath);
+        Widgets::Combobox("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable);
 
-        StaticString<256> workingDirBuffer(mSettings.workingDir.string());
-        if (ImGui::InputText("Working Directory", workingDirBuffer, workingDirBuffer.length()))
-            mSettings.workingDir = workingDirBuffer.toString();
-
-        StaticString<256> coreAssemblyBuffer(mSettings.scriptConfig.coreAssemblyPath.string());
-        if (ImGui::InputText("Core Assembly Path", coreAssemblyBuffer, workingDirBuffer.length()))
-            mSettings.scriptConfig.coreAssemblyPath = coreAssemblyBuffer.toString();
-
-        std::string resolutionStr = mSettings.resolution.toString();
-        if (ImGui::BeginCombo("Resolution", resolutionStr.c_str()))
-        {
-            for (const auto& resolutionEntry : sResolutionTable)
-            {
-                bool isSelected = resolutionStr == resolutionEntry.label;
-
-                if (ImGui::Selectable(resolutionEntry.label.c_str(), isSelected))
-                    mSettings.resolution = resolutionEntry.resolution;
-
-                if (isSelected)
-                    ImGui::SetItemDefaultFocus();
-            }
-
-            ImGui::EndCombo();
-        }
-
-        StaticString<256> projectBuffer(mSettings.startupProject.string());
-        if (ImGui::InputText("Startup Project", projectBuffer, projectBuffer.length()))
-            mSettings.startupProject = projectBuffer.toString();
-
-        ImGui::SameLine();
-
-        if (ImGui::Button("..."))
+        Widgets::PathEdit("Startup Project", mSettings.startupProject);
+        Widgets::SameLine();
+        Widgets::Button("...", [&, this]
         {
             fs::path result = FileUtils::OpenFile({ "Labyrinth Project (*.lpj)", "*.lpj" });
             if (!result.empty())
                 mSettings.startupProject = fs::relative(result);
-        }
+        });
     }
 
     void SettingsModal::onComplete()
