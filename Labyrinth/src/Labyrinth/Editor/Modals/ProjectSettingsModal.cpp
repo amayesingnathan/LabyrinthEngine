@@ -2,10 +2,8 @@
 #include "ProjectSettingsModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/Containers/StaticString.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/IO/Filesystem.h>
-
-#include <imgui.h>
 
 namespace Laby{
 
@@ -16,68 +14,52 @@ namespace Laby{
 
     void ProjectSettingsModal::onImGuiRender()
     {
-        ImGui::Text("Project Settings");
+        Widgets::Label("Project Settings");
 
-        {   // Project Name
-            StaticString<256> buffer(mProject->mSettings.name);
-            if (ImGui::InputText("Name", buffer, buffer.length()))
-                mProject->mSettings.name = buffer.toString();
-        }
-        {   // Asset Directory
-            if (ImGui::Button("Asset Directory"))
-            {
-                fs::path result = FileUtils::OpenDir();
-                if (!result.empty())
-                    mProject->mSettings.assetDir = fs::relative(result);
-            }
-            std::string label = !mProject->mSettings.assetDir.empty() ? mProject->mSettings.assetDir.string() : "...";
-            ImGui::Text(label.c_str());
-        }
-        {   // Asset Registry Path
-            if (ImGui::Button("Asset Registry Path"))
-            {
-                fs::path result = FileUtils::OpenFile({ "Asset Registry (*.lreg)", "*.lreg" });
-                if (!result.empty())
-                    mProject->mSettings.assetRegPath = fs::relative(result);
-            }
-            std::string label = !mProject->mSettings.assetRegPath.empty() ? mProject->mSettings.assetRegPath.string() : "...";
-            ImGui::Text(label.c_str());
-        }
+        Widgets::StringEdit("Name", mProject->mSettings.name);
 
-        ImGui::Separator();
+        Widgets::Button("Asset Directory", [&, this]()
+        {
+            fs::path result = FileUtils::OpenDir();
+            if (!result.empty())
+                mProject->mSettings.assetDir = fs::relative(result);
+        });
+        Widgets::Label(mProject->mSettings.assetDir.string());
 
-        {   // Script Module Path
-            if (ImGui::Button("Script Assembly Directory"))
-            {
-                fs::path result = FileUtils::OpenDir();
-                if (!result.empty())
-                    mProject->mSettings.scriptModulePath = fs::relative(result, mProject->mSettings.projectDir);
-            }
-            std::string label = !mProject->mSettings.scriptModulePath.empty() ? mProject->mSettings.scriptModulePath.string() : "...";
-            ImGui::Text(label.c_str());
-        }
+        Widgets::Button("Asset Registry Path", [&, this]()
+        {
+            fs::path result = FileUtils::OpenFile({ "Asset Registry (*.lreg)", "*.lreg" });
+            if (!result.empty())
+                mProject->mSettings.assetRegPath = fs::relative(result);
+        });
+        Widgets::Label(mProject->mSettings.assetRegPath.string());
 
-        ImGui::Separator();
+        Widgets::Separator();
 
-        {   // Project Directory
-            if (ImGui::Button("Project Directory"))
-            {
-                fs::path result = FileUtils::OpenDir();
-                if (!result.empty())
-                    mProject->mSettings.projectDir = fs::relative(result);
-            }
-            std::string label = !mProject->mSettings.projectDir.empty() ? mProject->mSettings.projectDir.string() : "...";
-            ImGui::Text(label.c_str());
-        }
-        {   // Default Scene
-            if (ImGui::Button("Default Scene"))
-            {
-                fs::path result = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene" });
-                if (!result.empty())
-                    mProject->mSettings.startScenePath = fs::relative(result, mProject->mSettings.projectDir);
-            }
-            std::string label = !mProject->mSettings.startScenePath.empty() ? mProject->mSettings.startScenePath.string() : "...";
-            ImGui::Text(label.c_str());
-        }
+        Widgets::Button("Script Assembly Directory", [&, this]()
+        {
+            fs::path result = FileUtils::OpenDir();
+            if (!result.empty())
+                mProject->mSettings.scriptModulePath = fs::relative(result, mProject->mSettings.projectDir);
+        });
+        Widgets::Label(mProject->mSettings.scriptModulePath.string());
+
+        Widgets::Separator();
+
+        Widgets::Button("Project Directory", [&, this]()
+        {
+            fs::path result = FileUtils::OpenDir();
+            if (!result.empty())
+                mProject->mSettings.projectDir = fs::relative(result);
+        });
+        Widgets::Label(mProject->mSettings.projectDir.string());
+
+        Widgets::Button("Default Scene", [&, this]()
+        {
+            fs::path result = FileUtils::OpenFile({ "Labyrinth Scene (.lscene)", "*.lscene" });
+            if (!result.empty())
+                mProject->mSettings.startScenePath = fs::relative(result, mProject->mSettings.projectDir);
+        });
+        Widgets::Label(mProject->mSettings.startScenePath.string());
     }
 }

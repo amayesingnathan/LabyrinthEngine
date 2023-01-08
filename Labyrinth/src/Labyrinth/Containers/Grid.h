@@ -26,6 +26,8 @@ namespace Laby {
 		}
 	};
 
+	using GridPosition = GridPos<>;
+
 	template<typename T>
 	class Grid
 	{

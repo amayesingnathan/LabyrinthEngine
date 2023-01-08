@@ -1,50 +1,38 @@
 #include "Lpch.h"
 #include "NewMapModal.h"
 
-#include <imgui.h>
-
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/Containers/StaticString.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Tilemap/Tilemap.h>
 
 namespace Laby {
 
     void NewMapModal::onImGuiRender()
     {
-        ImGui::Text("Please enter the specifications for the tilemap:");
-        ImGui::NewLine();
+        Widgets::Label("Please enter the specifications for the tilemap:");
+        Widgets::NewLine();
 
-        StaticString<256> nameBuf(mMapName);
-        if (ImGui::InputText("Name", nameBuf, sizeof(nameBuf)))
-            mMapName = nameBuf.toString();
-
-        i32 width = (i32)mMapWidth;
-        ImGui::InputInt("Width", &width);
-        if (width < 0)
-            width = 0;
-        mMapWidth = (usize)width;
-
-        i32 height = (i32)mMapHeight;
-        ImGui::InputInt("Height", &height);
-        if (height < 0)
-            height = 0;
-        mMapHeight = (usize)height;
+        Widgets::StringEdit("Name", mMapName);
+        Widgets::UIntEdit("Width", mMapWidth);
+        Widgets::UIntEdit("Height", mMapHeight);
     }
 
     void NewMapModal::onCustomButtonRender(bool& open)
     {
-        if (ImGui::Button("Create"))
+        Widgets::Button("Create", [&, this]()
         {
             onComplete();
             open = false;
-        }
+        });
 
-        ImGui::SameLine();
-
-        if (ImGui::Button("Cancel"))
+        Widgets::SameLine();
+        
+        Widgets::Button("Cancel", [&, this]()
+        {
             open = false;
+        });
     }
 
     void NewMapModal::onComplete()
