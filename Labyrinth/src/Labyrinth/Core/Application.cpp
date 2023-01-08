@@ -93,10 +93,10 @@ namespace Laby {
 			}
 
 			sInstance->mImGuiLayer->begin();
-			{
-				for (Layer* layer : sInstance->mLayerStack)
-					layer->onImGuiRender();
-			}
+
+			for (Layer* layer : sInstance->mLayerStack)
+				layer->onImGuiRender();
+
 			sInstance->mImGuiLayer->end();
 
 			sInstance->mWindow->onUpdate();

@@ -405,7 +405,7 @@ namespace Laby {
 
 		mEditorData.viewportFocused = ImGui::IsWindowFocused();
 		mEditorData.viewportHovered = ImGui::IsWindowHovered();
-		//Application::Get().getImGuiLayer()->blockEvents(!mEditorData.viewportFocused && !mEditorData.viewportHovered);
+		Application::Get().getImGuiLayer()->blockEvents(!mEditorData.viewportFocused && !mEditorData.viewportHovered);
 
 		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 		mEditorData.viewportSize = { viewportPanelSize.x, viewportPanelSize.y };

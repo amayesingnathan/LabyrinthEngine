@@ -28,6 +28,16 @@ namespace Laby {
 		EVENT_DATA_TYPE(WindowLostFocus)
 	};
 
+	struct WindowMovedEvent
+	{
+		u32 xpos, ypos;
+
+		WindowMovedEvent(u32 x, u32 y) : xpos(x), ypos(y) {}
+
+		EVENT_DATA_TYPE(WindowMoved)
+	};
+
+
 	struct AppTickEvent
 	{
 		EVENT_DATA_TYPE(AppTick)

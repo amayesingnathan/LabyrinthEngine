@@ -31,19 +31,29 @@ namespace Laby {
 
 	void Window::onUpdate()
 	{
+		glfwPollEvents();
+		mContext->swapBuffers();
 	}
 
 	void Window::setTitle(const std::string& title)
 	{
+		mData.title = title;
+		glfwSetWindowTitle(mWindow, title.c_str());
 	}
 
 	void Window::setVSync(bool enabled)
 	{
+		if (enabled)
+			glfwSwapInterval(1);
+		else
+			glfwSwapInterval(0);
+
+		mData.vSync = enabled;
 	}
 
 	bool Window::isVSync() const
 	{
-		return false;
+		return mData.vSync;
 	}
 
 	void Window::Init(const WindowProps& props)
@@ -100,6 +110,13 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
 			EventManager::Post<WindowCloseEvent>();
+		});
+
+		glfwSetWindowPosCallback(mWindow, [](GLFWwindow* window, int xpos, int ypos)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+			EventManager::Post<WindowMovedEvent>(xpos, ypos);
 		});
 
 		glfwSetKeyCallback(mWindow, [](GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -164,6 +181,16 @@ namespace Laby {
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 		
 			EventManager::Post<MouseMovedEvent>((f32)xPos, (f32)yPos);
+		});
+
+		glfwSetWindowFocusCallback(mWindow, [](GLFWwindow* window, int focused)
+		{
+			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		
+			if (focused == GLFW_TRUE)
+				EventManager::Post<WindowFocusEvent>();
+			else
+				EventManager::Post<WindowFocusLostEvent>();
 		});
 	}
 

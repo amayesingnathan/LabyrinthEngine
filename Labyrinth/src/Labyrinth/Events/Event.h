@@ -9,7 +9,7 @@
 namespace Laby {
 
 	using AllEvents = TypeList<
-		WindowCloseEvent, WindowResizeEvent, WindowFocusEvent, WindowFocusLostEvent,
+		WindowCloseEvent, WindowResizeEvent, WindowFocusEvent, WindowFocusLostEvent, WindowMovedEvent,
 		AppTickEvent, AppUpdateEvent, AppRenderEvent,
 		KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
 		MouseButtonPressedEvent, MouseButtonReleasedEvent,
