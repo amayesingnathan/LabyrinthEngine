@@ -4,8 +4,6 @@
 
 namespace Laby {
 
-	struct MapSpec;
-
 	class NewMapModal : public IEditorModal
 	{
 	public:

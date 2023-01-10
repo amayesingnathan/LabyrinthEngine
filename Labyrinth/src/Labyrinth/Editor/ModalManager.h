@@ -4,7 +4,6 @@
 
 namespace Laby {
 
-
     class ModalManager
     {
 	private:
