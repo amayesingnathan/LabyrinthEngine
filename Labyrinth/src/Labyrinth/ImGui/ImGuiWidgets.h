@@ -4,33 +4,12 @@
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Renderer/IRenderable.h>
 
+#include "Widgets/Combobox.h"
 #include "Widgets/MenuBar.h"
 
 struct ImVec2;
 
 namespace Laby {
-
-	struct IComboEntry
-	{
-		std::string_view key;
-
-		IComboEntry(std::string_view label) : key(label) {}
-		virtual const void* getVal() const = 0;
-	};
-
-	template<typename T>
-	struct ComboEntry : public IComboEntry
-	{
-		T value;
-
-		ComboEntry(std::string_view label, const T& val)
-			: IComboEntry(label), value(val) {}
-
-		virtual const void* getVal() const { return &value; }
-	};
-
-	template<typename T>
-	concept IsComboEntry = DerivedFrom<IComboEntry, T>;
 
 	class Widgets
 	{
@@ -44,7 +23,7 @@ namespace Laby {
 
 		static ImVec2 GetAvailableRegion();
 
-		using GridFunction = std::function<void(const GridPosition&, const ImVec2&)>;
+		using GridFunction = std::function<void(const GridPosition&, const glm::vec2&)>;
 		static void GridControl(const glm::vec2& pos, const glm::vec2& size, usize width, usize height, GridFunction func);
 		static void GridControl(const glm::vec2& size, usize width, usize height, GridFunction func);
 

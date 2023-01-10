@@ -8,7 +8,7 @@ namespace Laby {
 		if (!Contains(key))
 			return nullptr;
 
-		return &sEditorPanels[sPanelIDs.at(key)];
+		return &sEditorPanels[sPanelIndices.at(key)];
 	}
 
 	void PanelManager::Delete(std::string_view key)
@@ -19,18 +19,18 @@ namespace Laby {
 			return;
 		}
 
-		if (sPanelIDs.at(key) == sEditorPanels.size() - 1)
+		if (sPanelIndices.at(key) == sEditorPanels.size() - 1)
 		{
 			sEditorPanels.pop_back();
-			sPanelIDs.erase(key);
+			sPanelIndices.erase(key);
 			return;
 		}
 
-		sEditorPanels.erase(sEditorPanels.begin() + sPanelIDs.at(key));
+		sEditorPanels.erase(sEditorPanels.begin() + sPanelIndices.at(key));
 
-		sPanelIDs.clear();
+		sPanelIndices.clear();
 		for (usize i = 0; i < sEditorPanels.size(); i++)
-			sPanelIDs[sEditorPanels[i].key] = i;
+			sPanelIndices[sEditorPanels[i].key] = i;
 	}
 
 	void PanelManager::Update(Timestep ts)

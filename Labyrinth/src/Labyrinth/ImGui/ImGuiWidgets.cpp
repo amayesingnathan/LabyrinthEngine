@@ -49,7 +49,7 @@ namespace Laby {
 	void Widgets::GridControl(const glm::vec2& size, usize width, usize height, GridFunction func)
 	{
 		ImVec2 pos = ImGui::GetCursorPos();
-		ImVec2 tileSize = { size.x / width, size.y / height };
+		glm::vec2 tileSize = { size.x / width, size.y / height };
 
 		for (usize y = 0; y < width; y++)
 		{

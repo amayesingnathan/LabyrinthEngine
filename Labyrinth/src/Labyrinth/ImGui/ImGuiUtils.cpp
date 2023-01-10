@@ -5,6 +5,21 @@
 
 namespace Laby {
 
+	const glm::vec2& ImGuiUtils::ToGLM(const ImVec2& vec)
+	{
+		return *(glm::vec2*)&vec;
+	}
+
+	const glm::vec3& ImGuiUtils::ToGLM(const ImVec3& vec)
+	{
+		return *(glm::vec3*)&vec;
+	}
+
+	const glm::vec4& ImGuiUtils::ToGLM(const ImVec4& vec)
+	{
+		return *(glm::vec4*)&vec;
+	}
+
 	const ImVec2& ImGuiUtils::FromGLM(const glm::vec2& vec)
 	{
 		return *(ImVec2*)&vec;
