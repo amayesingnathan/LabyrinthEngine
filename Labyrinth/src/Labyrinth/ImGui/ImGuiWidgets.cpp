@@ -15,9 +15,9 @@ namespace Laby {
 		ImGui::NewLine();
 	}
 
-	void Widgets::SameLine()
+	void Widgets::SameLine(f32 xOffset)
 	{
-		ImGui::SameLine();
+		ImGui::SameLine(xOffset);
 	}
 
 	void Widgets::Separator()
@@ -63,6 +63,17 @@ namespace Laby {
 		}
 	}
 
+	void Widgets::TreeNode(const UUID& id, std::string_view text, bool selected, Action<> whileOpen)
+	{
+		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		flags |= selected ? ImGuiTreeNodeFlags_Selected : 0;
+		if (ImGui::TreeNodeEx((void*)&id, flags, text.data()))
+		{
+			whileOpen();
+			ImGui::TreePop();
+		}
+	}
+
 	UI::MenuBar* Widgets::BeginMenuBar()
 	{
 		UI::MenuBar* newMenu = new UI::MenuBar;
@@ -99,6 +110,43 @@ namespace Laby {
 		delete bar;
 	}
 
+	void Widgets::OpenPopup(std::string_view popupName)
+	{
+		ImGui::OpenPopup(popupName.data());
+	}
+
+	UI::PopUp* Widgets::BeginPopup(std::string_view popupName)
+	{
+		UI::PopUp* newMenu = new UI::PopUp(popupName);
+		return newMenu;
+	}
+
+	void Widgets::AddMenuItem(UI::PopUp* context, std::string_view heading, Action<> action)
+	{
+		context->addPopUpItem(heading, action);
+	}
+
+	void Widgets::EndPopup(UI::PopUp* popup)
+	{
+		delete popup;
+	}
+
+	UI::PopUpContext* Widgets::BeginContextPopup()
+	{
+		UI::PopUpContext* newMenu = new UI::PopUpContext();
+		return newMenu;
+	}
+
+	void Widgets::AddMenuItem(UI::PopUpContext* context, std::string_view heading, Action<> action)
+	{
+		context->addPopUpItem(heading, action);
+	}
+
+	void Widgets::EndContextPopup(UI::PopUpContext* popup)
+	{
+		delete popup;
+	}
+
 	void Widgets::Label(std::string_view text, ...)
 	{
 		if (text.empty())
@@ -125,6 +173,34 @@ namespace Laby {
 		StaticString<256> stringEditBuffer(field.string());
 		if (ImGui::InputText(label.data(), stringEditBuffer, stringEditBuffer.length()))
 			field = stringEditBuffer.toString();
+	}
+
+	void Widgets::DragDropSourceInternal(std::string_view strID, void* data, usize size)
+	{
+		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+		{
+			ImGui::SetDragDropPayload(strID.data(), data, size);
+			ImGui::EndDragDropSource();
+		}
+	}
+
+	void* Widgets::DragDropTargetInternal(std::string_view strID)
+	{
+		if (!ImGui::BeginDragDropTarget())
+			return nullptr;
+
+		const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(strID.data());
+		ImGui::EndDragDropTarget();
+
+		if (!payload)
+			return nullptr;
+		return payload->Data;
+	}
+
+	void Widgets::OnWidgetSelected(Action<> action)
+	{
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+			action();
 	}
 
 	void Widgets::Checkbox(std::string_view label, bool& value, Action<> action)

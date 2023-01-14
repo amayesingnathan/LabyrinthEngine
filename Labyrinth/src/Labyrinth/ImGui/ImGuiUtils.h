@@ -18,5 +18,11 @@ namespace Laby {
 		static const ImVec2& FromGLM(const glm::vec2& vec);
 		static const ImVec3& FromGLM(const glm::vec3& vec);
 		static const ImVec4& FromGLM(const glm::vec4& vec);
+
+		static f32 WindowWidth();
+		static f32 WindowHeight();
+
+		static void PushItemWidth(f32 width);
+		static void PopItemWidth();
 	};
 }
