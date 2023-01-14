@@ -36,7 +36,7 @@ namespace Laby {
 			return ScriptUtils::CallMethod(instance, getMethod(name), std::forward<Args>(args)...);
 		}
 
-		operator MonoClass* () { return mMonoClass; }
+		MonoClass* getClass() { return mMonoClass; }
 
 		const ScriptField* getField(std::string_view name) const;
 		const std::vector<ScriptField>& getFields() const { return mFields; }

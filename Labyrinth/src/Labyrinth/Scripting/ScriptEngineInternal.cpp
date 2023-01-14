@@ -4,6 +4,8 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
+#include <Labyrinth/Core/Application.h>
+
 #include "ScriptGlue.h"
 
 namespace Laby {
@@ -76,7 +78,7 @@ namespace Laby {
 		return sInternalData->loadedAssemblies[LAB_APP_ASSEMBLY_INDEX];
 	}
 
-	MonoAssembly* ScriptEngineInternal::LoadMonoAssembly(const std::filesystem::path& assemblyPath)
+	MonoAssembly* ScriptEngineInternal::LoadMonoAssembly(const fs::path& assemblyPath)
 	{
 		Buffer fileData = FileUtils::Read(assemblyPath);
 
@@ -95,7 +97,7 @@ namespace Laby {
 		return assembly;
 	}
 
-	bool ScriptEngineInternal::ReloadAssembly(const std::filesystem::path& assemblyPath)
+	bool ScriptEngineInternal::ReloadAssembly(const fs::path& assemblyPath)
 	{
 		if (!LoadCoreAssembly())
 			return false;
@@ -136,7 +138,7 @@ namespace Laby {
 		LAB_CORE_INFO("[ScriptEngine] Successfully loaded core assembly from: {0}", sInternalData->config.coreAssemblyPath);
 
 		sInternalData->entityClass = Ref<ScriptClass>::Create(mono_class_from_name(coreAssemblyInfo->assemblyImage, "Labyrinth", "Entity"));
-		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(*sInternalData->entityClass, "ID"));
+		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(sInternalData->entityClass->getClass(), "ID"));
 		LAB_CORE_ASSERT(sInternalData->entityClass->valid())
 
 #ifdef LAB_DEBUG
@@ -146,9 +148,9 @@ namespace Laby {
 		return true;
 	}
 
-	bool ScriptEngineInternal::LoadAppAssembly(const std::filesystem::path& assemblyPath)
+	bool ScriptEngineInternal::LoadAppAssembly(const fs::path& assemblyPath)
 	{
-		if (!std::filesystem::exists(assemblyPath))
+		if (!fs::exists(assemblyPath))
 			return false;
 
 		auto appAssemblyInfo = sInternalData->loadedAssemblies[LAB_APP_ASSEMBLY_INDEX];
@@ -172,6 +174,8 @@ namespace Laby {
 		appAssemblyInfo->assemblyImage = mono_assembly_get_image(appAssemblyInfo->assembly);
 		appAssemblyInfo->classes.clear();
 		appAssemblyInfo->isCoreAssembly = false;
+		appAssemblyInfo->assemblyFileWatcher = FileUtils::Watch(assemblyPath, OnAssemblyFSEvent);
+		appAssemblyInfo->assemblyReloadPending = false;
 
 		ScriptGlue::Register();
 
@@ -227,7 +231,7 @@ namespace Laby {
 			if (!monoClass)
 				continue;
 
-			bool isEntity = mono_class_is_subclass_of(monoClass, *sInternalData->entityClass, false);
+			bool isEntity = mono_class_is_subclass_of(monoClass, sInternalData->entityClass->getClass(), false);
 
 			if (!isEntity)
 				continue;
@@ -259,6 +263,21 @@ namespace Laby {
 	Ref<ScriptClass> ScriptEngineInternal::GetCoreEntityClass()
 	{
 		return sInternalData->entityClass;
+	}
+
+	void ScriptEngineInternal::OnAssemblyFSEvent(const fs::path& path, FSEvent changeType)
+	{
+		auto appAssemblyInfo = sInternalData->loadedAssemblies[LAB_APP_ASSEMBLY_INDEX];
+		if (!appAssemblyInfo->assemblyReloadPending && changeType == FSEvent::Modified)
+		{
+			appAssemblyInfo->assemblyReloadPending = true;
+
+			Application::SubmitActionToMainThread([&]()
+			{
+				appAssemblyInfo->assemblyFileWatcher.reset();
+				ScriptEngine::ReloadAssembly();
+			});
+		}
 	}
 
 }

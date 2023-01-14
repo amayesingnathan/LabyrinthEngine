@@ -21,7 +21,7 @@ namespace Laby {
 		static Ref<Scene> GetContext() { return sContext; }
 
 		static void LoadAppAssembly();
-		static void ReloadAssembly(const std::filesystem::path& assemblyPath);
+		static void ReloadAssembly();
 		static void UnloadAppAssembly();
 
 		static Ref<ScriptClass> GetEntityClass() { return ScriptEngineInternal::GetCoreEntityClass(); }
