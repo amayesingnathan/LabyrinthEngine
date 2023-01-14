@@ -34,4 +34,24 @@ namespace Laby {
 	{
 		return *(ImVec4*)&vec;
 	}
+
+	f32 ImGuiUtils::WindowWidth()
+	{
+		return ImGui::GetWindowWidth();
+	}
+
+	f32 ImGuiUtils::WindowHeight()
+	{
+		return ImGui::GetWindowHeight();
+	}
+
+	void ImGuiUtils::PushItemWidth(f32 width)
+	{
+		ImGui::PushItemWidth(width);
+	}
+
+	void ImGuiUtils::PopItemWidth()
+	{
+		ImGui::PopItemWidth();
+	}
 }

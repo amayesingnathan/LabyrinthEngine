@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Events/Event.h"
-#include "Labyrinth/Project/Project.h"
+#include <Labyrinth/Core/Timestep.h>
+#include <Labyrinth/Events/Event.h>
+#include <Labyrinth/Project/Project.h>
 
-namespace Laby{
+namespace Laby {
 
 	class IEditorPanel : public RefCounted
 	{
@@ -16,8 +16,6 @@ namespace Laby{
 		virtual void onEvent(Event& e) {}
 		virtual void onProjectChange(const Ref<Project>& project) {}
 		virtual void onSelectionChange() {}
-
-		friend class PanelManager;
 	};
 
 	template<typename T>

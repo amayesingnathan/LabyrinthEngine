@@ -4,8 +4,11 @@
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Renderer/IRenderable.h>
 
+#include "ImGuiUtils.h"
+
 #include "Widgets/Combobox.h"
 #include "Widgets/MenuBar.h"
+#include "Widgets/PopUp.h"
 
 struct ImVec2;
 
@@ -15,7 +18,7 @@ namespace Laby {
 	{
 	public:
 		static void NewLine();
-		static void SameLine();
+		static void SameLine(f32 xOffset = 0.0f);
 		static void Separator();
 
 		static void SetXPosition(f32 pos);
@@ -27,6 +30,8 @@ namespace Laby {
 		static void GridControl(const glm::vec2& pos, const glm::vec2& size, usize width, usize height, GridFunction func);
 		static void GridControl(const glm::vec2& size, usize width, usize height, GridFunction func);
 
+		static void TreeNode(const UUID& id, std::string_view text, bool selected, Action<> whileOpen);
+
 		static UI::MenuBar* BeginMenuBar();
 		static void AddMenuHeading(UI::MenuBar* context, std::string_view heading);
 		static void AddMenuItem(UI::MenuBar* context, std::string_view heading, Action<> action);
@@ -34,6 +39,15 @@ namespace Laby {
 		static void AddMenuItem(UI::MenuBar* context, std::string_view heading, bool& displayed);
 		static void AddMenuSeparator(UI::MenuBar* context);
 		static void EndMenuBar(UI::MenuBar* bar);
+
+		static void OpenPopup(std::string_view popupName);
+		static UI::PopUp* BeginPopup(std::string_view popupName);
+		static void AddMenuItem(UI::PopUp* context, std::string_view heading, Action<> action);
+		static void EndPopup(UI::PopUp* popup);
+
+		static UI::PopUpContext* BeginContextPopup();
+		static void AddMenuItem(UI::PopUpContext* context, std::string_view heading, Action<> action);
+		static void EndContextPopup(UI::PopUpContext* popup);
 
 		static void Label(std::string_view text, ...);
 
@@ -54,6 +68,18 @@ namespace Laby {
 		static void Image(Ref<IRenderable> image, const glm::vec2& size);
 		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {}, int padding = -1);
 
+		template<typename T>
+		static void AddDragDropSource(std::string_view strID, const T& data) { DragDropSourceInternal(strID, &data, sizeof(T)); }
+		template<typename T>
+		static void AddDragDropTarget(std::string_view strID, Action<const T&> response)
+		{
+			void* payloadData = DragDropTargetInternal(strID);
+			if (payloadData)
+				response(*(T*)payloadData);
+		}
+
+		static void OnWidgetSelected(Action<> action);
+
 		static void Checkbox(std::string_view label, bool& value, Action<> action = {});
 		static void Button(std::string_view label, Action<> action);
 
@@ -73,6 +99,9 @@ namespace Laby {
 	private:
 		static i64 ScalarEdit(std::string_view label, i64 field);
 		static u64 UScalarEdit(std::string_view label, u64 field);
+
+		static void DragDropSourceInternal(std::string_view strID, void* data, usize size);
+		static void* DragDropTargetInternal(std::string_view strID);
 
 		static const void* ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount);
 	};

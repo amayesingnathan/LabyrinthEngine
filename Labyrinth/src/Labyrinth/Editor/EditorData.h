@@ -12,7 +12,6 @@ namespace Laby {
 		bool displayColliders = false;
 		glm::vec4 colliderColour = { 0, 1, 0, 1 };
 		glm::vec4 selectionColour = { 1, 0.4f, 0, 1 };
-		bool linkOnDestroy = false;
 
 		bool viewportFocused = false, viewportHovered = false;
 		glm::vec2 viewportSize = { 0.0f, 0.0f };

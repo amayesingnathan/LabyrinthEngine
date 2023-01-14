@@ -1,6 +1,10 @@
 #include "Lpch.h"
 #include "PanelManager.h"
 
+#include <imgui.h>
+
+#include "Panels/ScenePanel.h"
+
 namespace Laby {
 
 	PanelManager::PanelEntry* PanelManager::Find(std::string_view key)
@@ -44,37 +48,39 @@ namespace Laby {
 
 	void PanelManager::Render()
 	{
-		for (PanelEntry& PanelEntry : sEditorPanels)
+		for (PanelEntry& panelEntry : sEditorPanels)
 		{
-			if (PanelEntry.panel && PanelEntry.displayed) 
-				PanelEntry.panel->onImGuiRender();
+			ImGui::Begin(panelEntry.key.data());
+			if (panelEntry.panel && panelEntry.displayed)
+				panelEntry.panel->onImGuiRender();
+			ImGui::End();
 		}
 	}
 
 	void PanelManager::DispatchEvents(Event& e)
 	{
-		for (PanelEntry& PanelEntry : sEditorPanels)
+		for (PanelEntry& panelEntry : sEditorPanels)
 		{
-			if (PanelEntry.panel) 
-				PanelEntry.panel->onEvent(e);
+			if (panelEntry.panel)
+				panelEntry.panel->onEvent(e);
 		}
 	}
 
 	void PanelManager::ProjectChanged(Ref<Project> project)
 	{
-		for (PanelEntry& PanelEntry : sEditorPanels)
+		for (PanelEntry& panelEntry : sEditorPanels)
 		{
-			if (PanelEntry.panel) 
-				PanelEntry.panel->onProjectChange(project);
+			if (panelEntry.panel)
+				panelEntry.panel->onProjectChange(project);
 		}
 	}
 
 	void PanelManager::SelectionChange()
 	{
-		for (PanelEntry& PanelEntry : sEditorPanels)
+		for (PanelEntry& panelEntry : sEditorPanels)
 		{
-			if (PanelEntry.panel) 
-				PanelEntry.panel->onSelectionChange();
+			if (panelEntry.panel)
+				panelEntry.panel->onSelectionChange();
 		}
 	}
 }
