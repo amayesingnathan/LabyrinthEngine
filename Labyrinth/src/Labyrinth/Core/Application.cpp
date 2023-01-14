@@ -74,6 +74,16 @@ namespace Laby {
 		return false;
 	}
 
+	void Application::ExecuteMainThread()
+	{
+		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
+
+		for (auto& func : sInstance->mState.mainThreadQueue)
+			func();
+
+		sInstance->mState.mainThreadQueue.clear();
+	}
+
 	void Application::Run(int argc, char** argv)
 	{
 		CreateApplication(argc, argv);
@@ -83,6 +93,8 @@ namespace Laby {
 			f32 time = Stopwatch::GetTime();
 			Timestep timestep = time - sInstance->mState.lastFrameTime;
 			sInstance->mState.lastFrameTime = time;
+
+			sInstance->ExecuteMainThread();
 
 			EventManager::Dispatch();
 
@@ -101,6 +113,13 @@ namespace Laby {
 
 			sInstance->mWindow->onUpdate();
 		}
+	}
+
+	void Application::SubmitActionToMainThread(const Action<>& function)
+	{
+		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
+
+		sInstance->mState.mainThreadQueue.emplace_back(function);
 	}
 
 	void Application::ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)

@@ -157,4 +157,9 @@ namespace Laby {
 		return pfd::save_file("Save file as", ".", filter).result();
 	}
 
+	Single<FileWatcher> FileUtils::Watch(const fs::path& pathToWatch, FSEventCallback action)
+	{
+		return MakeSingle<FileWatcher>(pathToWatch, action);
+	}
+
 }

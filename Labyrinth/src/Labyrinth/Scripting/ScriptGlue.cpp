@@ -230,7 +230,7 @@ namespace Laby {
 
 		auto entities = scene->getEntitiesWith<IDComponent>();
 		auto entityClass = ScriptEngineInternal::GetCoreEntityClass();
-		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), *entityClass, entities.size());
+		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->getClass(), entities.size());
 		u32 i = 0;
 		entities.each([&i, result, &entityClass](auto entity, const auto& idComp)
 			{
@@ -284,7 +284,7 @@ namespace Laby {
 
 		const auto& children = entity.getChildren();
 		auto entityClass = ScriptEngineInternal::GetCoreEntityClass();
-		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), *entityClass, children.size());
+		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->getClass(), children.size());
 		for (uint32_t i = 0; i < children.size(); i++)
 		{
 			MonoObject* boxed = entityClass->instantiate(children[i]);

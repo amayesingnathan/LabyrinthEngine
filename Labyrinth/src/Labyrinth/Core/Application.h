@@ -41,7 +41,8 @@ namespace Laby {
 		bool minimised = false;
 		bool blockExit = false;
 		f32 lastFrameTime = 0.0f;
-
+		std::vector<Action<>> mainThreadQueue;
+		std::mutex mainThreadQueueMutex;
 	};
 
 	class Application : public IEventListener
@@ -64,6 +65,8 @@ namespace Laby {
 		bool OnWindowResize(WindowResizeEvent& e);
 		bool OnKeyPressed(KeyPressedEvent& e);
 
+		void ExecuteMainThread();
+
 	protected:
 		void PushLayer(Layer* layer) { mLayerStack.pushLayer(layer); }
 		void PushOverlay(Layer* overlay) { mLayerStack.pushOverlay(overlay); }
@@ -74,6 +77,8 @@ namespace Laby {
 		static void Close() { if (!sInstance->mState.blockExit) sInstance->mState.running = false; }
 
 		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }
+
+		static void SubmitActionToMainThread(const Action<>& function);
 
 		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
 		static void WriteSettings(const std::filesystem::path& settingsPath);

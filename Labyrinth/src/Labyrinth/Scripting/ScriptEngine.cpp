@@ -61,9 +61,10 @@ namespace Laby {
 		ScriptEngineInternal::LoadAppAssembly(Project::GetScriptModuleFilePath());
 	}
 
-	void ScriptEngine::ReloadAssembly(const std::filesystem::path& assemblyPath)
+	void ScriptEngine::ReloadAssembly()
 	{
-		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", assemblyPath);
+		auto appAssembly = ScriptEngineInternal::GetAppAssemblyInfo();
+		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", appAssembly->filepath);
 
 		if (sContext)
 		{
@@ -74,7 +75,7 @@ namespace Laby {
 			});
 		}
 
-		ScriptEngineInternal::LoadAppAssembly(assemblyPath);
+		ScriptEngineInternal::LoadAppAssembly(appAssembly->filepath);
 
 		if (sContext)
 		{

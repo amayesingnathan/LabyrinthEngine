@@ -19,11 +19,14 @@ namespace Laby {
 
 	struct AssemblyInfo : public RefCounted
 	{
-		std::filesystem::path filepath = "";
+		fs::path filepath = "";
 		MonoAssembly* assembly = nullptr;
 		MonoImage* assemblyImage = nullptr;
 		std::unordered_map<std::string, Ref<ScriptClass>> classes;
 		bool isCoreAssembly = false;
+
+		Single<FileWatcher> assemblyFileWatcher = nullptr;
+		bool assemblyReloadPending = false;
 	};
 
 	using AssembliesCache = std::array<Ref<AssemblyInfo>, LAB_MAX_ASSEMBLIES>;
@@ -56,10 +59,10 @@ namespace Laby {
 		static Ref<AssemblyInfo> GetCoreAssemblyInfo();
 		static Ref<AssemblyInfo> GetAppAssemblyInfo();
 
-		static MonoAssembly* LoadMonoAssembly(const std::filesystem::path& assemblyPath);
-		static bool ReloadAssembly(const std::filesystem::path& assemblyPath);
+		static MonoAssembly* LoadMonoAssembly(const fs::path& assemblyPath);
+		static bool ReloadAssembly(const fs::path& assemblyPath);
 		static bool LoadCoreAssembly();
-		static bool LoadAppAssembly(const std::filesystem::path& assemblyPath);
+		static bool LoadAppAssembly(const fs::path& assemblyPath);
 		static void UnloadAssembly(Ref<AssemblyInfo> assemblyInfo);
 
 		static const ScriptEngineConfig& GetConfig();
@@ -68,6 +71,8 @@ namespace Laby {
 		static AssembliesCache& GetLoadedAssemblies();
 
 		static Ref<ScriptClass> GetCoreEntityClass();
+
+		static void OnAssemblyFSEvent(const fs::path& path, FSEvent changeType);
 
 		inline static ScriptEngineData* sInternalData = nullptr;
 

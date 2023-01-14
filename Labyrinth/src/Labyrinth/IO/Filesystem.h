@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Tools/FileWatcher.h>
 
 namespace Laby {
 
@@ -27,6 +28,8 @@ namespace Laby {
 		static fs::path OpenFile(const std::vector<std::string>& filter);
 		static fs::path OpenDir();
 		static fs::path SaveFile(const std::vector<std::string>& filter);
+
+		static Single<FileWatcher> Watch(const fs::path& pathToWatch, FSEventCallback action);
 	};
 
 }
