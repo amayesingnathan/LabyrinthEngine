@@ -100,7 +100,7 @@ namespace Laby {
 		static i64 ScalarEdit(std::string_view label, i64 field);
 		static u64 UScalarEdit(std::string_view label, u64 field);
 
-		static void DragDropSourceInternal(std::string_view strID, void* data, usize size);
+		static void DragDropSourceInternal(std::string_view strID, const void* data, usize size);
 		static void* DragDropTargetInternal(std::string_view strID);
 
 		static const void* ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount);

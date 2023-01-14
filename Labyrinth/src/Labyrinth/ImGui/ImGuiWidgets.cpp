@@ -175,7 +175,7 @@ namespace Laby {
 			field = stringEditBuffer.toString();
 	}
 
-	void Widgets::DragDropSourceInternal(std::string_view strID, void* data, usize size)
+	void Widgets::DragDropSourceInternal(std::string_view strID, const void* data, usize size)
 	{
 		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
 		{
