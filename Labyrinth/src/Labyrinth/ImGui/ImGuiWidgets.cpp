@@ -35,11 +35,6 @@ namespace Laby {
 		ImGui::SetCursorPosY(pos);
 	}
 
-	ImVec2 Widgets::GetAvailableRegion()
-	{
-		return ImGui::GetWindowContentRegionMax();
-	}
-
 	void Widgets::GridControl(const glm::vec2& pos, const glm::vec2& size, usize width, usize height, GridFunction func)
 	{
 		ImGui::SetCursorPos(ImGuiUtils::FromGLM(pos));
@@ -63,9 +58,13 @@ namespace Laby {
 		}
 	}
 
-	void Widgets::TreeNode(const UUID& id, std::string_view text, bool selected, Action<> whileOpen)
+	void Widgets::TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen)
 	{
-		ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth;
+		TreeNodeInternal(id, text, selected, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth, whileOpen);
+	}
+
+	void Widgets::TreeNodeInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen)
+	{
 		flags |= selected ? ImGuiTreeNodeFlags_Selected : 0;
 		if (ImGui::TreeNodeEx((void*)&id, flags, text.data()))
 		{
@@ -215,6 +214,17 @@ namespace Laby {
 			action();
 	}
 
+	void Widgets::FloatEdit(std::string_view label, f32& field)
+	{
+		ImGui::DragFloat(label.data(), &field);
+	}
+
+	void Widgets::FloatEdit(std::string_view label, f32 field, Action<f32> onEdit)
+	{
+		if (ImGui::DragFloat(label.data(), &field))
+			onEdit(field);
+	}
+
 	void Widgets::Vector3Edit(std::string_view label, glm::vec3& values, f32 resetVal, f32 colWidth)
 	{
 		ImGuiIO& io = ImGui::GetIO();
@@ -281,6 +291,11 @@ namespace Laby {
 		ImGui::PopID();
 	}
 
+	void Widgets::ColourEdit(std::string_view label, glm::vec4& colour)
+	{
+		ImGui::ColorEdit4(label.data(), &colour.x);
+	}
+
 	void Widgets::Image(Ref<IRenderable> image, const glm::vec2& size)
 	{
 		const glm::vec2* coords = image->getTextureCoords();
@@ -307,6 +322,13 @@ namespace Laby {
 		return (i64)width;
 	}
 
+	void Widgets::ScalarEdit(std::string_view label, i64 field, Action<i64> onEdit)
+	{
+		i32 val = (i32)field;
+		ImGui::InputInt(label.data(), &val);
+		onEdit((i64)val);
+	}
+
 	u64 Widgets::UScalarEdit(std::string_view label, u64 field)
 	{
 		i32 val = (i32)field;
@@ -314,6 +336,15 @@ namespace Laby {
 		if (val < 0)
 			val = 0;
 		return (u64)val;
+	}
+
+	void Widgets::UScalarEdit(std::string_view label, u64 field, Action<u64> onEdit)
+	{
+		i32 val = (i32)field;
+		ImGui::InputInt(label.data(), &val);
+		if (val < 0)
+			val = 0;
+		onEdit((u64)val);
 	}
 
 	const void* Widgets::ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount)

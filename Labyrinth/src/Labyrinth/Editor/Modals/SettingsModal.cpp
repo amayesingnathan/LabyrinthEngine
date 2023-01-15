@@ -7,7 +7,7 @@ namespace Laby {
 
     using ResolutionEntry = ComboEntry<Resolution>;
 
-    static const ResolutionEntry sResolutionTable[]
+    static constexpr ResolutionEntry sResolutionTable[3]
     {
         { "1280x720", Resolution{1280, 720} },
         { "1600x900", Resolution{1600, 900} },

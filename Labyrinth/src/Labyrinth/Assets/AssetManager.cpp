@@ -223,7 +223,7 @@ namespace Laby {
 			out << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(Handle, handle, out);
 			LAB_SERIALISE_PROPERTY(Filepath, entry.filepath, out);
-			LAB_SERIALISE_PROPERTY(Type, Enum::ToString(entry.type), out);
+			LAB_SERIALISE_PROPERTY(Type, Enum::ToString(entry.type).data(), out);
 			out << YAML::EndMap;
 		}
 		out << YAML::EndSeq;

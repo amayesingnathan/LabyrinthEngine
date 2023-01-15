@@ -34,7 +34,7 @@ namespace Laby {
 		f32 getOrthographicFarClip() const { return mOrthographicFar; }
 		void setOrthographicFarClip(f32 farClip) { mOrthographicFar = farClip; RecalculateProjection(); }
 
-		ProjectionType getProjectionType() const { return mProjectionType; }
+		const ProjectionType& getProjectionType() const { return mProjectionType; }
 		void setProjectionType(ProjectionType type) { mProjectionType = type; RecalculateProjection(); }
 
 	private:

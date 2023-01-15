@@ -5,17 +5,25 @@
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Renderer/Renderer.h>
+#include <Labyrinth/Tools/EnumUtils.h>
 
 namespace Laby {
 
 	using ParentEntityEntry = ComboEntry<Entity>;
 
 	using TexTypeEntry = ComboEntry<SpriteRendererComponent::TexType>;
-	static const TexTypeEntry sTextureTypes[] =
+	static constexpr TexTypeEntry sTextureTypes[3] =
 	{
-		{ "Colour", SpriteRendererComponent::TexType::None },
-		{ "Texture2D", SpriteRendererComponent::TexType::Texture },
-		{ "SubTexture2D", SpriteRendererComponent::TexType::SubTexture }
+		{ "Colour",			SpriteRendererComponent::TexType::None },
+		{ "Texture2D",		SpriteRendererComponent::TexType::Texture },
+		{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture }
+	};
+
+	using CameraProjectionEntry = ComboEntry<SceneCamera::ProjectionType>;
+	static constexpr CameraProjectionEntry sCameraProjections[2] =
+	{
+		{ "Perspective",  SceneCamera::ProjectionType::Perspective },
+		{ "Orthographic", SceneCamera::ProjectionType::Orthographic }
 	};
 
 	EntityPanel::EntityPanel()
@@ -89,7 +97,7 @@ namespace Laby {
 			mPreviousEntity = mSelectedEntity;
 
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		mSelectedEntity = mContext->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
+		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
 	}
 
 	void EntityPanel::DrawComponents()
@@ -159,8 +167,81 @@ namespace Laby {
 			Entity parent = mSelectedEntity.getParent();
 			std::string currentParentString = parent ? fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID()) : "None";
 
-			Widgets::Combobox("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries.data());
+			Widgets::Combobox("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries.data(), comboEntries.size());
 		}
+
+		Widgets::Component<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
+		{
+			Widgets::Vector3Edit("Translation", component.translation);
+			glm::vec3 rotation = glm::degrees(component.rotation);
+			Widgets::Vector3Edit("Rotation", rotation);
+			component.rotation = glm::radians(rotation);
+			Widgets::Vector3Edit("Scale", component.scale, 1.0f);
+		});
+
+		Widgets::Component<CameraComponent>("Camera", mSelectedEntity, [&](auto& component)
+		{
+			auto& camera = component.camera;
+			Widgets::Checkbox("Primary", component.primary, [&]()
+			{
+				//Ensure only one camera can be primary at once
+				if (!component.primary)
+					return;
+
+				mContext->mRegistry.view<CameraComponent>().each([&](auto entity, auto& component)
+				{
+					if (mSelectedEntity == entity)
+						return;
+
+					component.primary = false;
+				});
+			});
+
+			const SceneCamera::ProjectionType& projectionType = camera.getProjectionType();
+			Widgets::Combobox("Projection", Enum::ToString(projectionType), projectionType, sCameraProjections, 2,
+				[&](SceneCamera::ProjectionType projType) { camera.setProjectionType(projType); });
+
+			switch (projectionType)
+			{
+			case SceneCamera::ProjectionType::Perspective:
+			{
+				Widgets::FloatEdit("Vertical FOV", glm::degrees(camera.getPerspectiveVerticalFOV()), 
+					[&](f32 var) { camera.setPerspectiveVerticalFOV(glm::radians(var)); });
+
+				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
+					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+
+				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
+					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+				break;
+			}
+			case SceneCamera::ProjectionType::Orthographic:
+			{
+				Widgets::FloatEdit("Size", camera.getOrthographicSize(),
+					[&](f32 var) { camera.setOrthographicSize(var); });
+
+				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
+					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+
+				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
+					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+
+				Widgets::Checkbox("Fixed Aspect Ratio", component.fixedAspectRatio);
+				break;
+			}
+			}
+		});
+
+		Widgets::Component<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
+		{
+			Widgets::UIntEdit("Layer", component.layer);
+			Widgets::ColourEdit("Colour", component.colour);
+			Widgets::Combobox("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes, 3);
+
+			Ref<IRenderable> tex = mTexture ? mTexture.to<IRenderable>() : EditorResources::NoTexture.to<IRenderable>();
+			Widgets::Label("Texture");
+			Widgets::Image(tex, glm::vec2{ ImGuiUtils::AvailableRegion().x - 15.0f, 100.0f });
+		});
 	}
 
 	void EntityPanel::DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags)

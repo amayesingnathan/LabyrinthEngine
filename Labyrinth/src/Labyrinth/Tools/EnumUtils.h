@@ -5,16 +5,16 @@
 namespace Laby::Enum {
 
 	template<typename T>
-	inline std::string ToString(T _enum)
+	constexpr std::string_view ToString(T _enum)
 	{
 		LAB_STATIC_ASSERT(MAGIC_ENUM_SUPPORTED, "Compiler does not support magic enums! Define your own conversions!");
 		LAB_STATIC_ASSERT(std::is_enum<T>::value, "Argument must be an enum!");
 
-		return std::string(magic_enum::enum_name(_enum));
+		return magic_enum::enum_name(_enum);
 	}
 
 	template<typename T>
-	inline T FromString(const std::string& _enumStr)
+	constexpr T FromString(std::string_view _enumStr)
 	{
 		LAB_STATIC_ASSERT(MAGIC_ENUM_SUPPORTED, "Compiler does not support magic enums! Define your own conversions!");
 

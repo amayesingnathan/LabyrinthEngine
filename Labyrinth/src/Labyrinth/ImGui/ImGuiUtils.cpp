@@ -2,6 +2,7 @@
 #include "ImGuiUtils.h"
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
 namespace Laby {
 
@@ -35,6 +36,21 @@ namespace Laby {
 		return *(ImVec4*)&vec;
 	}
 
+	glm::vec2 ImGuiUtils::AvailableRegion()
+	{
+		return ToGLM(ImGui::GetWindowContentRegionMax());
+	}
+
+	f32 ImGuiUtils::FontSize()
+	{
+		return GImGui->Font->FontSize;
+	}
+
+	glm::vec2 ImGuiUtils::FramePadding()
+	{
+		return ToGLM(GImGui->Style.FramePadding);
+	}
+
 	f32 ImGuiUtils::WindowWidth()
 	{
 		return ImGui::GetWindowWidth();
@@ -53,5 +69,20 @@ namespace Laby {
 	void ImGuiUtils::PopItemWidth()
 	{
 		ImGui::PopItemWidth();
+	}
+
+	void ImGuiUtils::PushStyle(ImGuiStyleVar flags, f32 var)
+	{
+		ImGui::PushStyleVar(flags, var);
+	}
+
+	void ImGuiUtils::PushStyle(ImGuiStyleVar flags, const glm::vec2& var)
+	{
+		ImGui::PushStyleVar(flags, FromGLM(var));
+	}
+
+	void ImGuiUtils::PopStyle(i32 count)
+	{
+		ImGui::PopStyleVar(count);
 	}
 }

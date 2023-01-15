@@ -6,7 +6,7 @@
 namespace Laby {
 
 	using BodyTypeEntry = ComboEntry<RigidBodyComponent::BodyType>;
-	static const BodyTypeEntry sBodyTypes[] =
+	static constexpr BodyTypeEntry sBodyTypes[] =
 	{
 		{ "Static",				 RigidBodyComponent::BodyType::Static },
 		{ "KinematicTexture2D",  RigidBodyComponent::BodyType::Kinematic },
@@ -14,7 +14,7 @@ namespace Laby {
 	};
 
 	using ShapeTypeEntry = ComboEntry<NewBodyModal::ShapeType>;
-	static const ShapeTypeEntry sShapeTypes[] =
+	static constexpr ShapeTypeEntry sShapeTypes[] =
 	{
 		{"Box",		NewBodyModal::ShapeType::Box},
 		{"Circle",	NewBodyModal::ShapeType::Circle},
