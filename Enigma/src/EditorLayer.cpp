@@ -590,7 +590,7 @@ namespace Laby {
 		float size = ImGui::GetWindowHeight() - 4.0f;
 		{
 			Ref<Texture2D> icon = (mSceneState == SceneEdit || mSceneState == SceneSimulate) ? EditorResources::PlayIcon : EditorResources::StopIcon;
-			Widgets::SetXPosition((Widgets::GetAvailableRegion().x * 0.5f) - (size * 0.5f));
+			Widgets::SetXPosition((ImGuiUtils::AvailableRegion().x * 0.5f) - (size * 0.5f));
 			Widgets::ImageButton(icon, { size, size }, [this]()
 			{
 				if (mSceneState == SceneEdit)

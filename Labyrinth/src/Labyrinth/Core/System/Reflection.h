@@ -88,6 +88,12 @@ namespace Laby {
     concept DerivedFrom = std::is_base_of_v<Base, Derived>;
 
     template<typename T>
+    concept SignedIntegral = std::is_integral_v<T> && std::is_signed_v<T>;
+
+    template<typename T>
+    concept UnsignedIntegral = std::is_integral_v<T> && !std::is_signed_v<T>;
+
+    template<typename T>
     struct FunctionTraits;
 
     template<typename R, typename... Args>

@@ -55,7 +55,7 @@ namespace Laby {
 			mPreviousEntity = mSelectedEntity;
 
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		mSelectedEntity = mContext->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
+		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
 	}
 
 	void ScenePanel::DrawEntityNode(Entity entity)
@@ -63,7 +63,7 @@ namespace Laby {
 		std::string& tag = entity.getComponent<TagComponent>();
 		auto& node = entity.getComponent<NodeComponent>();
 
-		Widgets::TreeNode(entity.getUUID(), tag, mSelectedEntity == entity, [&]()
+		Widgets::TreeNode((void*)&entity.getUUID(), tag, mSelectedEntity == entity, [&]()
 		{
 			// Range for loop iterators may become invalidated if a new entity is added
 			// to this node's children during looping, so ignore new additions for now

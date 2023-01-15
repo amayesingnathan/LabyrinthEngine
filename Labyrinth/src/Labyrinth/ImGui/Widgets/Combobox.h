@@ -8,7 +8,7 @@ namespace Laby {
 	{
 		std::string_view key;
 
-		IComboEntry(std::string_view label) : key(label) {}
+		constexpr IComboEntry(std::string_view label) : key(label) {}
 		virtual const void* getVal() const = 0;
 	};
 
@@ -17,7 +17,7 @@ namespace Laby {
 	{
 		T value;
 
-		ComboEntry(std::string_view label, const T& val)
+		constexpr ComboEntry(std::string_view label, const T& val)
 			: IComboEntry(label), value(val) {}
 
 		virtual const void* getVal() const { return &value; }

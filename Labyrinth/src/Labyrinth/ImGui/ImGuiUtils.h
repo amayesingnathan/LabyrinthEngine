@@ -6,6 +6,9 @@ struct ImVec2;
 struct ImVec3;
 struct ImVec4;
 
+typedef int ImGuiStyleVar;
+typedef int ImGuiTreeNodeFlags;
+
 namespace Laby {
 
 	class ImGuiUtils
@@ -19,10 +22,19 @@ namespace Laby {
 		static const ImVec3& FromGLM(const glm::vec3& vec);
 		static const ImVec4& FromGLM(const glm::vec4& vec);
 
+		static glm::vec2 AvailableRegion();
+
+		static f32 FontSize();
+		static glm::vec2 FramePadding();
+
 		static f32 WindowWidth();
 		static f32 WindowHeight();
 
 		static void PushItemWidth(f32 width);
 		static void PopItemWidth();
+
+		static void PushStyle(ImGuiStyleVar flags, f32 var);
+		static void PushStyle(ImGuiStyleVar flags, const glm::vec2& var);
+		static void PopStyle(i32 count = 1);
 	};
 }
