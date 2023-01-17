@@ -188,13 +188,13 @@ namespace Laby {
 
 	struct ScriptComponent
 	{
-		std::string className;
+		std::string_view className;
 		Ref<ScriptObject> instance;
 		bool initialised = false;
 
 		ScriptComponent() = default;
 		ScriptComponent(const ScriptComponent&) = default;
-		ScriptComponent(const std::string& name) : className(name) {}
+		ScriptComponent(std::string_view name) : className(name) {}
 	};
 
 

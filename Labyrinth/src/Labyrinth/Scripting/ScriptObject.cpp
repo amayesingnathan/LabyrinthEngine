@@ -37,7 +37,7 @@ namespace Laby{
 		}
 	}
 
-	void ScriptObject::getEntityFieldValue(const std::string& fieldName, UUID& id) const
+	void ScriptObject::getEntityFieldValue(std::string_view fieldName, UUID& id) const
 	{
 		const ScriptField* scriptField = mClass->getField(fieldName);
 		if (!scriptField)
@@ -61,8 +61,8 @@ namespace Laby{
 		mono_field_get_value(mInstance, scriptField->field, result);
 	}
 
-	void ScriptObject::SetFieldValueInternal(const ScriptField* scriptField, void* fieldVal)
+	void ScriptObject::SetFieldValueInternal(const ScriptField* scriptField, const void* fieldVal)
 	{
-		mono_field_set_value(mInstance, scriptField->field, fieldVal);
+		mono_field_set_value(mInstance, scriptField->field, (void*)fieldVal);
 	}
 }

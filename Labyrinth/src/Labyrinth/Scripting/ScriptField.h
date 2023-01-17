@@ -103,10 +103,9 @@ namespace Laby {
 		}
 
 		template<typename T>
-		const T& get() const
-		{
-			return read<T>();
-		}
+		T& get() { return read<T>(); }
+		template<typename T>
+		const T& get() const { return read<T>(); }
 
 		void clear() { release(); }
 	};

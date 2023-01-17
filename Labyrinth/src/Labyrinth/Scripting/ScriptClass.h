@@ -44,6 +44,8 @@ namespace Laby {
 		bool valid() { return mMonoClass; }
 
 	private:
+		void LoadFields();
+
 		MonoObject* InstantiateInternal(void** argv, int argc);
 
 	private:

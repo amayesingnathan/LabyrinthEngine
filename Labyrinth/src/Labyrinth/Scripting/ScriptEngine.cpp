@@ -35,15 +35,16 @@ namespace Laby {
 
 		sContext->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 		{
+			std::string className(sc.className.data());
+			if (!scriptClasses.contains(className))
+				return;
+
 			Entity entity = { e, sContext };
-			if (scriptClasses.count(sc.className) != 0)
-			{
-				UUID id = entity.getUUID();
-				sc.instance = Ref<ScriptObject>::Create(scriptClasses[sc.className], id);
-				sc.initialised = true;
-				sc.instance->onStart();
-				sc.instance->setFieldValues(ScriptCache::GetFields(id));
-			}
+			UUID id = entity.getUUID();
+			sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
+			sc.initialised = true;
+			sc.instance->onStart();
+			sc.instance->setFieldValues(ScriptCache::GetFields(id));
 		});
 	}
 
@@ -82,15 +83,16 @@ namespace Laby {
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
 			sContext->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 			{
+				std::string className(sc.className.data());
+				if (!scriptClasses.contains(className))
+					return;
+
 				Entity entity = { e, sContext };
-				if (scriptClasses.count(sc.className) != 0)
-				{
-					UUID id = entity.getUUID();
-					sc.instance = Ref<ScriptObject>::Create(scriptClasses[sc.className], id);
-					sc.initialised = true;
-					sc.instance->onStart();
-					sc.instance->setFieldValues(ScriptCache::GetFields(id));
-				}
+				UUID id = entity.getUUID();
+				sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
+				sc.initialised = true;
+				sc.instance->onStart();
+				sc.instance->setFieldValues(ScriptCache::GetFields(id));
 			});
 		}
 	}
@@ -112,7 +114,7 @@ namespace Laby {
 	Ref<ScriptClass> ScriptEngine::GetAppClass(const std::string& name)
 	{
 		const auto& classes = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
-		if (classes.count(name) == 0)
+		if (!classes.contains(name))
 			return nullptr;
 
 		return classes.at(name);
