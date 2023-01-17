@@ -52,9 +52,9 @@ namespace Laby {
 		static void PathEdit(std::string_view label, fs::path& field);
 
 		template<SignedIntegral T>
-		static void IntEdit(std::string_view, T& field)
+		static void IntEdit(std::string_view label, T& field)
 		{
-			i32 result = ScalarEdit(label, field);
+			i64 result = ScalarEdit(label, field);
 			if (result < Limits<T>::Min)
 				result = Limits<T>::Min;
 			else if (result > Limits<T>::Max)
@@ -63,9 +63,9 @@ namespace Laby {
 			field = (T)result;
 		}
 		template<SignedIntegral T>
-		static void IntEdit(std::string_view, T field, Action<T> onEdit)
+		static void IntEdit(std::string_view label, T field, Action<T> onEdit)
 		{
-			i32 result = ScalarEdit(label, field);
+			i64 result = ScalarEdit(label, field);
 			if (result < Limits<T>::Min)
 				result = Limits<T>::Min;
 			else if (result > Limits<T>::Max)
@@ -76,9 +76,9 @@ namespace Laby {
 		}
 
 		template<UnsignedIntegral T>
-		static void UIntEdit(std::string_view, T& field)
+		static void UIntEdit(std::string_view label, T& field)
 		{
-			u32 result = UScalarEdit(label, field);
+			u64 result = UScalarEdit(label, field);
 			if (result < Limits<T>::Min)
 				result = Limits<T>::Min;
 			else if (result > Limits<T>::Max)
@@ -87,9 +87,9 @@ namespace Laby {
 			field = (T)result;
 		}
 		template<UnsignedIntegral T>
-		static void UIntEdit(std::string_view, T field, Action<T> onEdit)
+		static void UIntEdit(std::string_view label, T field, Action<T> onEdit)
 		{
-			i32 result = UScalarEdit(label, field);
+			u64 result = UScalarEdit(label, field);
 			if (result < Limits<T>::Min)
 				result = Limits<T>::Min;
 			else if (result > Limits<T>::Max)
@@ -99,10 +99,17 @@ namespace Laby {
 			onEdit(field);
 		}
 
-		static void FloatEdit(std::string_view label, f32& field);
-		static void FloatEdit(std::string_view label, f32 field, Action<f32> onEdit);
+		static void FloatEdit(std::string_view label, f32& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
+		static void FloatEdit(std::string_view label, f64& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
+		static void FloatEdit(std::string_view label, f32 field, Action<f32> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
+		static void FloatEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
 
+		static void Vector2Edit(std::string_view label, glm::vec2& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
 		static void Vector3Edit(std::string_view label, glm::vec3& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
+		static void Vector4Edit(std::string_view label, glm::vec4& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
+		static void Vector2Edit(std::string_view label, glm::vec2 values, Action<const glm::vec2&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
+		static void Vector3Edit(std::string_view label, glm::vec3 values, Action<const glm::vec3&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
+		static void Vector4Edit(std::string_view label, glm::vec4 values, Action<const glm::vec4&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
 
 		static void ColourEdit(std::string_view label, glm::vec4& colour);
 
@@ -110,19 +117,26 @@ namespace Laby {
 		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {}, int padding = -1);
 
 		template<typename T>
-		static void AddDragDropSource(std::string_view strID, const T& data) { DragDropSourceInternal(strID, &data, sizeof(T)); }
+		static void AddDragDropSource(std::string_view strID, const T& data) 
+		{ 
+			sCurrentPayload.set(data);
+			DragDropSourceInternal(strID, sCurrentPayload.data(), sCurrentPayload.size());
+		}
 		template<typename T>
 		static void AddDragDropTarget(std::string_view strID, Action<const T&> response)
 		{
-			void* payloadData = DragDropTargetInternal(strID);
-			if (payloadData)
-				response(*(T*)payloadData);
+			void* imguiPayload = DragDropTargetInternal(strID);
+			if (imguiPayload)
+			{
+				const T& payload = *(T*)imguiPayload;
+				response(payload);
+			}
 		}
 
 		static void OnWidgetSelected(Action<> action);
 
 		static void Checkbox(std::string_view label, bool& value, Action<> action = {});
-		static void Button(std::string_view label, Action<> action);
+		static void Button(std::string_view label, Action<> action = {});
 
 		template<typename T>
 		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T> table[], usize tableLength)
@@ -145,11 +159,12 @@ namespace Laby {
 			for (usize i = 0; i < tableLength; i++)
 				ptrTable[i] = &table[i];
 
-			const void* comboValue = ComboboxInternal(label, preview, ptrTable, tableLength);
+			const IComboEntry* comboEntry = ComboboxInternal(label, preview, ptrTable, tableLength);
 			delete[] ptrTable;
 
+			const void* comboValue = comboEntry->getVal();
 			LAB_CORE_ASSERT(comboValue, "Combobox had no value!");
-			onEdit(*(T*)comboValue);
+			onEdit(comboEntry->key, *(const T*)comboValue);
 		}
 
 		template<typename T>
@@ -196,6 +211,9 @@ namespace Laby {
 		static void DragDropSourceInternal(std::string_view strID, const void* data, usize size);
 		static void* DragDropTargetInternal(std::string_view strID);
 
-		static const void* ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount);
+		static const IComboEntry* ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount);
+
+	private:
+		inline static Buffer sCurrentPayload;
 	};
 }

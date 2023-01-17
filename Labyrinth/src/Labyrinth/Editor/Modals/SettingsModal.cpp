@@ -26,7 +26,7 @@ namespace Laby {
         Widgets::Checkbox("Fullscreen", mSettings.fullscreen);
         Widgets::PathEdit("Working Directory", mSettings.workingDir);
         Widgets::PathEdit("Core Assembly Path", mSettings.scriptConfig.coreAssemblyPath);
-        Widgets::Combobox("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable);
+        Widgets::Combobox("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable, 3);
 
         Widgets::PathEdit("Startup Project", mSettings.startupProject);
         Widgets::SameLine();

@@ -17,7 +17,7 @@ namespace Laby {
 		{
 			MenuItemType type = MenuItemType::Action;
 			std::string_view label;
-			std::string_view shortcut = nullptr;
+			std::string_view shortcut = "";
 			Action<> action;
 			bool* display = nullptr;
 
