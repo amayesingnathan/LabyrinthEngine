@@ -26,16 +26,16 @@ namespace Laby {
 		static Buffer Copy(const void* data, usize size);
 
 	public:
-		template<typename T>
+		template<IsStandard T>
 		T& read(usize offset = 0) { return *(T*)((Byte*)mData + offset); }
-		template<typename T>
+		template<IsStandard T>
 		const T& read(usize offset = 0) const { return *(T*)((Byte*)mData + offset); }
 
 		template<typename T>
 		T* as() const { return (T*)mData; }
 
-		template<typename T>
-		void set(usize offset, const T& data)
+		template<IsStandard T>
+		void set(const T& data, usize offset = 0)
 		{
 			constexpr usize DataSize = sizeof(T);
 			if (offset + DataSize > mSize)
@@ -44,7 +44,7 @@ namespace Laby {
 			memcpy((Byte*)mData + offset, &data, DataSize);
 		}
 
-		template<typename T>
+		template<IsStandard T>
 		T pop()
 		{
 			constexpr usize DataSize = sizeof(T);
@@ -57,10 +57,11 @@ namespace Laby {
 		Byte* data() { return (Byte*)mData; }
 		const Byte* data() const { return (Byte*)mData; }
 
+		usize size() const { return mSize; }
+		void resize(usize newSize);
+
 		Buffer copyBytes(usize size, usize offset = 0);
 
-		void resize(usize newSize);
-		usize size() const { return mSize; }
 
 	public:
 		operator bool() const { return mData != nullptr; }

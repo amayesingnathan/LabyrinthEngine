@@ -54,7 +54,7 @@ namespace Laby {
 		Ref<ScriptClass> getScriptClass() const { return mClass; }
 
 		template<typename... Args>
-		ScriptObject invokeMethod(const std::string& name, Args&&... args) const
+		ScriptObject invokeMethod(std::string_view name, Args&&... args) const
 		{
 			MonoObject* result = mClass->invokeMethod(mInstance, name, std::forward<Args>(args)...);
 
@@ -65,7 +65,7 @@ namespace Laby {
 		}
 
 		template<typename T>
-		void getFieldValue(const std::string& fieldName, T& result) const
+		void getFieldValue(std::string_view fieldName, T& result) const
 		{
 			const ScriptField* scriptField = mClass->getField(fieldName);
 			if (!scriptField)
@@ -75,7 +75,7 @@ namespace Laby {
 			GetFieldValueInternal(scriptField, &result);
 		}
 		template<typename T>
-		T getFieldValue(const std::string& fieldName) const
+		T getFieldValue(std::string_view fieldName) const
 		{
 			const ScriptField* scriptField = mClass->getField(fieldName);
 			if (!scriptField)
@@ -88,10 +88,10 @@ namespace Laby {
 
 			return result;
 		}
-		void getEntityFieldValue(const std::string& fieldName, UUID& result) const;
+		void getEntityFieldValue(std::string_view fieldName, UUID& result) const;
 
 		template<typename T>
-		void setFieldValue(const std::string& fieldName, T& fieldVal)
+		void setFieldValue(std::string_view fieldName, const T& fieldVal)
 		{
 			const ScriptField* scriptField = mClass->getField(fieldName);
 			if (!scriptField)
@@ -106,7 +106,7 @@ namespace Laby {
 
 	private:
 		void GetFieldValueInternal(const ScriptField* scriptField, void* result) const;
-		void SetFieldValueInternal(const ScriptField* scriptField, void* fieldVal);
+		void SetFieldValueInternal(const ScriptField* scriptField, const void* fieldVal);
 
 	private:
 		Ref<ScriptClass> mClass = nullptr;

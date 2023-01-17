@@ -217,8 +217,8 @@ namespace Laby {
 			uint32_t cols[MONO_TYPEDEF_SIZE];
 			mono_metadata_decode_row(typeDefinitionsTable, i, cols, MONO_TYPEDEF_SIZE);
 
-			std::string nameSpace = mono_metadata_string_heap(assembly->assemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
-			std::string name = mono_metadata_string_heap(assembly->assemblyImage, cols[MONO_TYPEDEF_NAME]);
+			std::string_view nameSpace = mono_metadata_string_heap(assembly->assemblyImage, cols[MONO_TYPEDEF_NAMESPACE]);
+			std::string_view name = mono_metadata_string_heap(assembly->assemblyImage, cols[MONO_TYPEDEF_NAME]);
 			std::string fullname;
 
 			if (nameSpace.empty())
@@ -226,7 +226,7 @@ namespace Laby {
 			else
 				fullname = fmt::format("{}.{}", nameSpace, name);
 
-			MonoClass* monoClass = mono_class_from_name(assembly->assemblyImage, nameSpace.c_str(), name.c_str());
+			MonoClass* monoClass = mono_class_from_name(assembly->assemblyImage, nameSpace.data(), name.data());
 
 			if (!monoClass)
 				continue;
@@ -236,19 +236,7 @@ namespace Laby {
 			if (!isEntity)
 				continue;
 
-			Ref<ScriptClass> scriptClass = Ref<ScriptClass>::Create(monoClass)
-				;
-			void* iterator = nullptr;
-			while (MonoClassField* field = mono_class_get_fields(monoClass, &iterator))
-			{
-				if (!(ScriptUtils::GetFieldAccessibility(field) & Accessibility::Public))
-					continue;
-
-				const char* fieldTypeName = mono_type_get_name(mono_field_get_type(field));
-				const char* fieldName = mono_field_get_name(field);
-				scriptClass->mFields.emplace_back(ScriptFields::GetType(fieldTypeName), fieldName, field);
-			}
-
+			Ref<ScriptClass> scriptClass = Ref<ScriptClass>::Create(monoClass);
 			assembly->classes[fullname] = scriptClass;
 		}
 	}

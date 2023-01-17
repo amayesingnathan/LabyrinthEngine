@@ -565,7 +565,7 @@ namespace Laby {
 
 		auto& component = entity.getComponent<ScriptComponent>();
 
-		if (!ScriptEngineInternal::GetAppAssemblyInfo()->classes.count(component.className) != 0)
+		if (!ScriptEngineInternal::GetAppAssemblyInfo()->classes.count(component.className.data()) != 0)
 		{
 			LAB_CORE_ERROR("ScriptComponent.Instance - Entity is referencing an invalid C# class!");
 			return nullptr;
