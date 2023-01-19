@@ -121,10 +121,13 @@ namespace Laby {
 		T* data() { return mData; }
 		const T* data() const { return mData; }
 
-		void reset(T* instance = nullptr)
+		bool operator==(const Ref<T>& other) const { return mData == other.mData; }
+		bool operator==(std::nullptr_t) const { return mData == nullptr; }
+
+		void reset()
 		{
 			DecRef();
-			mData = instance;
+			mData = nullptr;
 		}
 
 		template<typename Other>

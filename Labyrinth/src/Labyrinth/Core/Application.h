@@ -12,6 +12,9 @@
 
 #include <Labyrinth/IO/Filesystem.h>
 
+#include <Labyrinth/Networking/ServerLayer.h>
+#include <Labyrinth/Networking/ClientLayer.h>
+
 #include <Labyrinth/Scripting/ScriptEngine.h>
 
 int main(int argc, char* argv[]);
@@ -41,6 +44,7 @@ namespace Laby {
 		bool minimised = false;
 		bool blockExit = false;
 		f32 lastFrameTime = 0.0f;
+
 		std::vector<Action<>> mainThreadQueue;
 		std::mutex mainThreadQueueMutex;
 	};
@@ -71,6 +75,9 @@ namespace Laby {
 		void PushLayer(Layer* layer) { mLayerStack.pushLayer(layer); }
 		void PushOverlay(Layer* overlay) { mLayerStack.pushOverlay(overlay); }
 
+		void SetClient(ClientLayer* client = nullptr);
+		void SetServer(ServerLayer* server);
+
 	public:
 		static void Run(int argc, char** argv);
 		static Application& Get() { return *sInstance; }
@@ -79,6 +86,7 @@ namespace Laby {
 		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }
 
 		static void SubmitActionToMainThread(const Action<>& function);
+		static void SendNetMessage(const Message& msg);
 
 		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
 		static void WriteSettings(const std::filesystem::path& settingsPath);
@@ -90,6 +98,7 @@ namespace Laby {
 		ApplicationState mState;
 		Single<Window> mWindow;
 		ImGuiLayer* mImGuiLayer;
+		NetworkLayer* mNetworkLayer = nullptr;
 		LayerStack mLayerStack;
 
 		friend class SettingsModal;

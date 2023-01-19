@@ -28,7 +28,6 @@ project "Labyrinth"
     {
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
-        "%{IncludeDir.RenderAPI}",
         "%{IncludeDir.asio}",
         "%{IncludeDir.box2d}",
 		"%{IncludeDir.entt}",

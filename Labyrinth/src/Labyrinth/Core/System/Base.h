@@ -5,6 +5,8 @@
 #include "Platform.h"
 #include "Types.h"
 
+#define LABYRINTH_VER 0xABBA011
+
 #ifdef LAB_DEBUG
 	#if defined(LAB_PLATFORM_WINDOWS)
 		#define LAB_DEBUGBREAK() __debugbreak()

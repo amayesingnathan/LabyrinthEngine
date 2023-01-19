@@ -3,7 +3,6 @@ VULKAN_SDK = os.getenv("VULKAN_SDK")
 IncludeDir = {}
 IncludeDir["Labyrinth"] 	= "%{wks.location}/Labyrinth/src"
 IncludeDir["LabCore"] 		= "%{wks.location}/Labyrinth/src/Labyrinth/Core"
-IncludeDir["RenderAPI"] 	= "%{wks.location}/Labyrinth/src/Labyrinth/Renderer/APIs"
 IncludeDir["asio"] 			= "%{wks.location}/Labyrinth/dependencies/asio/include"
 IncludeDir["box2d"] 		= "%{wks.location}/Labyrinth/dependencies/box2d/include"
 IncludeDir["entt"] 			= "%{wks.location}/Labyrinth/dependencies/entt/include"
