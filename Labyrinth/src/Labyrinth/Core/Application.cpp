@@ -2,6 +2,8 @@
 #include "Application.h"
 
 #include <Labyrinth/IO/JSON.h>
+#include <Labyrinth/Networking/ServerLayer.h>
+#include <Labyrinth/Networking/ClientLayer.h>
 #include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Renderer/Renderer.h>
 #include <Labyrinth/Tools/Timing.h>
@@ -84,6 +86,22 @@ namespace Laby {
 		sInstance->mState.mainThreadQueue.clear();
 	}
 
+	void Application::SetClient(ClientLayer* client)
+	{
+		mNetworkLayer = client;
+
+		if (!mNetworkLayer)
+			mNetworkLayer = new ClientLayer;
+
+		PushLayer(mNetworkLayer);
+	}
+
+	void Application::SetServer(ServerLayer* server)
+	{
+		mNetworkLayer = server;
+		PushLayer(mNetworkLayer);
+	}
+
 	void Application::Run(int argc, char** argv)
 	{
 		CreateApplication(argc, argv);
@@ -120,6 +138,17 @@ namespace Laby {
 		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
 
 		sInstance->mState.mainThreadQueue.emplace_back(function);
+	}
+
+	void Application::SendNetMessage(const Message& msg)
+	{
+		if (!sInstance->mNetworkLayer)
+		{
+			LAB_CORE_ERROR("Application does not have network capabilities. Add a network layer!");
+			return;
+		}
+
+		sInstance->mNetworkLayer->send(msg);
 	}
 
 	void Application::ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)

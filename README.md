@@ -87,9 +87,11 @@ animation, as well as a runtime in order to export projects as full standalone g
   
   ### Networking ###
   
-  Labyrinth comes with a fairly simple but easily extensible networking API that uses asio, which allows users to create server and client applications and easily customise communication. To add networking to an application, define a network layer that overrides ClientLayer or ServerLayer and add it to your application. Only one network layer can be added to an application at one time.
+  Labyrinth comes with a fairly simple but easily extensible networking API that uses asio, which allows users to create server and client applications and customise communication. To add networking to an application, use `SetClient(ClientLayer*)` or`SetServer(ServerLayer*)` in the constructor of a Labyrinth application. 
   
-  To define new message types, create an anonymous enum in a new namespace (e.g. NetMessages) with the underlying `MessageType` type. Write data to the `Message` object by using the `<<` operator, however the input data must satisfy `std::is_standard_layout<DataType>::value` where `DataType` is your input type. Then use `Application::SendNetMessage(const Message& msg)` to send messages to a connected client/server.
+  SetClient does not necessarily need a parameter, because ClientLayer fully implements all pure virtual inherited functions, however clients will only connect locally unless `void onAttach()` is overriden. Users must subclass ServerLayer and implement `void send(const Message&)` to define communication logic. ClientLayer will by default send all messages directly to the server, however users can implement their own overrides using a number of helper functions.
+  
+  To define new message types, create an anonymous enum in a new namespace (e.g. NetMessages) with the underlying `MessageType` type. Write data to the `Message` object by using the `<<` operator, however the input data must satisfy `std::is_standard_layout<DataType>::value` where `DataType` is your input type. Then use `Application::SendNetMessage(const Message&)` to send messages to a connected client/server.
   
   ### Tilemaps ###
   

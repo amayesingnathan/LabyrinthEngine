@@ -62,12 +62,12 @@ namespace Laby {
 		void clear()
 		{
 			std::scoped_lock lock(mQueueMutex);
-			return mQueue.clear();
+			mQueue = {};
 		}
 
 	protected:
 		std::queue<T> mQueue;
-		std::mutex mQueueMutex;
+		mutable std::mutex mQueueMutex;
 	};
 
 }

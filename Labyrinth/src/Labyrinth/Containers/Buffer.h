@@ -45,13 +45,11 @@ namespace Laby {
 		}
 
 		template<IsStandard T>
-		T pop()
+		void pop(T& data)
 		{
 			constexpr usize DataSize = sizeof(T);
-			T&& data = std::move(read<T>(mSize - DataSize));
+			data = std::move(read<T>(mSize - DataSize));
 			resize(mSize - DataSize);
-			
-			return data;
 		}
 
 		Byte* data() { return (Byte*)mData; }

@@ -5,6 +5,7 @@
 #include "ApplicationEvent.h"
 #include "KeyEvent.h"
 #include "MouseEvent.h"
+#include "NetworkEvent.h"
 
 namespace Laby {
 
@@ -13,7 +14,8 @@ namespace Laby {
 		AppTickEvent, AppUpdateEvent, AppRenderEvent,
 		KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
 		MouseButtonPressedEvent, MouseButtonReleasedEvent,
-		MouseMovedEvent, MouseScrolledEvent
+		MouseMovedEvent, MouseScrolledEvent,
+		NetMessageEvent
 	>;
 
 	template<typename T>

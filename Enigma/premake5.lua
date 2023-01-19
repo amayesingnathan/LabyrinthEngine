@@ -18,6 +18,7 @@ project "Enigma"
         "%{IncludeDir.Labyrinth}",
         "%{IncludeDir.LabCore}",
 		"%{wks.location}/Labyrinth/dependencies",
+        "%{IncludeDir.asio}",
 		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
 		"%{IncludeDir.ImGui}",
