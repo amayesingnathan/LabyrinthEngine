@@ -24,6 +24,8 @@ namespace Laby {
 		static void ReloadAssembly();
 		static void UnloadAppAssembly();
 
+		static void RegenScriptProject();
+
 		static Ref<ScriptClass> GetEntityClass() { return ScriptEngineInternal::GetCoreEntityClass(); }
 		static Ref<ScriptClass> GetAppClass(const std::string& name);
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetAppClasses();
