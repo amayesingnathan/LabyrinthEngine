@@ -57,15 +57,6 @@ namespace Laby {
 		}
 	}
 
-	void PanelManager::DispatchEvents(Event& e)
-	{
-		for (PanelEntry& panelEntry : sEditorPanels)
-		{
-			if (panelEntry.panel)
-				panelEntry.panel->onEvent(e);
-		}
-	}
-
 	void PanelManager::ProjectChanged(Ref<Project> project)
 	{
 		for (PanelEntry& panelEntry : sEditorPanels)

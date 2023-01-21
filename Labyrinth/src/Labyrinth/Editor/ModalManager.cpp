@@ -107,15 +107,4 @@ namespace Laby {
             break;
         }
 	}
-
-	void ModalManager::DispatchEvents(Event& e)
-	{
-        for (auto& modalEntry : sEditorModals)
-        {
-            if (modalEntry.modal)
-                modalEntry.modal->onEvent(e);
-        }
-	}
-
-
 }

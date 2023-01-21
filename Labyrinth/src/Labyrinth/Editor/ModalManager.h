@@ -39,7 +39,6 @@ namespace Laby {
         static void Update(Timestep ts);
         static void Render();
         static void RenderButtons(ModalEntry& modalData);
-        static void DispatchEvents(Event& e);
 
         static bool Contains(std::string_view key) { return Find(key) != sEditorModals.end(); }
         static std::vector<ModalEntry>::iterator Find(std::string_view key) { return std::find_if(sEditorModals.begin(), sEditorModals.end(), [&key](const ModalEntry& panel) { return key == panel.heading; }); }
