@@ -137,30 +137,34 @@ namespace Laby {
 
 		static void Checkbox(std::string_view label, bool& value, Action<> action = {});
 		static void Button(std::string_view label, Action<> action = {});
+		static void Button(std::string_view label, const glm::vec2& size, Action<> action = {});
 
 		template<typename T>
-		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T> table[], usize tableLength)
+		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T>* table, usize tableLength)
 		{
-			const IComboEntry** ptrTable = new const IComboEntry*[tableLength];
+			std::vector<const IComboEntry*> internalTable(tableLength);
 			for (usize i = 0; i < tableLength; i++)
-				ptrTable[i] = &table[i];
+				internalTable[i] = &table[i];
 
-			const void* comboValue = ComboboxInternal(label, preview, ptrTable, tableLength);
-			delete[] ptrTable;
+			const IComboEntry* comboEntry = ComboboxInternal(label, preview, internalTable);
+			if (!comboEntry)
+				return;
 
+			const void* comboValue = comboEntry->getVal();
 			LAB_CORE_ASSERT(comboValue, "Combobox had no value!");
 			memcpy(&value, comboValue, sizeof(T));
 		}
 
 		template<typename T, typename Func>
-		static void Combobox(std::string_view label, std::string_view preview, T value, const ComboEntry<T> table[], usize tableLength, Func onEdit)
+		static void Combobox(std::string_view label, std::string_view preview, T value, const ComboEntry<T>* table, usize tableLength, Func onEdit)
 		{
-			const IComboEntry** ptrTable = new const IComboEntry*[tableLength];
+			std::vector<const IComboEntry*> internalTable(tableLength);
 			for (usize i = 0; i < tableLength; i++)
-				ptrTable[i] = &table[i];
+				internalTable[i] = &table[i];
 
-			const IComboEntry* comboEntry = ComboboxInternal(label, preview, ptrTable, tableLength);
-			delete[] ptrTable;
+			const IComboEntry* comboEntry = ComboboxInternal(label, preview, internalTable);
+			if (!comboEntry)
+				return;
 
 			const void* comboValue = comboEntry->getVal();
 			LAB_CORE_ASSERT(comboValue, "Combobox had no value!");
@@ -170,7 +174,8 @@ namespace Laby {
 		template<typename T>
 		static void Component(std::string_view name, Entity entity, Action<T&> uiFunction)
 		{
-			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110; // ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
+			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110; 
+			// ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 			if (entity.hasComponent<T>())
 			{
 				auto& component = entity.getComponent<T>();
@@ -180,23 +185,11 @@ namespace Laby {
 				f32 lineHeight = ImGuiUtils::FontSize() + ImGuiUtils::FramePadding().y * 2.0f;
 				Separator();
 
-				TreeNodeInternal((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
+				bool removeComponent = ComponentInternal((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
+				if (removeComponent)
+					entity.removeComponent<T>();
 
 				ImGuiUtils::PopStyle();
-
-				SameLine(contentRegionAvailable.x - lineHeight * 0.5f);
-
-				Button("+", []()
-				{
-					OpenPopup("ComponentSettings");
-				});
-
-				UI::PopUp* popup = BeginPopup("ComponentSettings");
-				AddMenuItem(popup, "Remove component", [&]()
-				{
-					entity.removeComponent<T>();
-				});
-				EndPopup(popup);
 			}
 		}
 
@@ -206,12 +199,13 @@ namespace Laby {
 		static u64 UScalarEdit(std::string_view label, u64 field);
 		static void UScalarEdit(std::string_view label, u64 field, Action<u64> onEdit);
 
+		static bool ComponentInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
 		static void TreeNodeInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
 
 		static void DragDropSourceInternal(std::string_view strID, const void* data, usize size);
 		static void* DragDropTargetInternal(std::string_view strID);
 
-		static const IComboEntry* ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount);
+		static const IComboEntry* ComboboxInternal(std::string_view label, std::string_view preview, const std::vector<const IComboEntry*>& table);
 
 	private:
 		inline static Buffer sCurrentPayload;

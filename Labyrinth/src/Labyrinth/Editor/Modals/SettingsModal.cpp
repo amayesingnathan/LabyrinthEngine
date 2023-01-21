@@ -34,12 +34,13 @@ namespace Laby {
         {
             fs::path result = FileUtils::OpenFile({ "Labyrinth Project (*.lpj)", "*.lpj" });
             if (!result.empty())
-                mSettings.startupProject = fs::relative(result);
+                mSettings.startupProject = fs::absolute(result);
         });
     }
 
     void SettingsModal::onComplete()
     {
         Application::Get().mSpecification = mSettings;
+        Application::WriteSettings("enigma.json");
     }
 }

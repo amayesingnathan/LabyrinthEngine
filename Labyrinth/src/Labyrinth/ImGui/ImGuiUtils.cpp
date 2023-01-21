@@ -51,6 +51,11 @@ namespace Laby {
 		return ToGLM(GImGui->Style.FramePadding);
 	}
 
+	f32 ImGuiUtils::LineHeight()
+	{
+		return GImGui->Font->FontSize + GImGui->Style.FramePadding.y * 2.0f;
+	}
+
 	f32 ImGuiUtils::WindowWidth()
 	{
 		return ImGui::GetWindowWidth();

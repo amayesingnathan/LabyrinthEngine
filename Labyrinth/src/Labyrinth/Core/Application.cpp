@@ -11,6 +11,7 @@
 namespace Laby {
 
 	Application::Application(const ApplicationSpec& spec)
+		: mSpecification(spec)
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;
@@ -45,7 +46,6 @@ namespace Laby {
 		LocalEventDispatcher dispatcher(e);
 		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(OnWindowClose));
 		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OnWindowResize));
-		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressed));
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)
@@ -65,14 +65,6 @@ namespace Laby {
 
 		mState.minimised = false;
 		//Renderer::OnWindowResize(e.getWidth(), e.getHeight());
-		return false;
-	}
-
-	bool Application::OnKeyPressed(KeyPressedEvent& e)
-	{
-		if (e.keyCode == Key::Escape)
-			Application::Close();
-
 		return false;
 	}
 
@@ -131,6 +123,14 @@ namespace Laby {
 
 			sInstance->mWindow->onUpdate();
 		}
+
+		delete sInstance;
+	}
+
+	void Application::Close()
+	{
+		if (!sInstance->mState.blockExit) 
+			sInstance->mState.running = false;
 	}
 
 	void Application::SubmitActionToMainThread(const Action<>& function)
@@ -160,14 +160,20 @@ namespace Laby {
 		if (settings.contains("Startup"))
 		{
 			auto startup = settings["Startup"];
-			if (startup.contains("Fullscreen"))		outSpec.fullscreen = startup["Fullscreen"].get<bool>();
-			if (startup.contains("WindowWidth"))	outSpec.resolution.width = startup["WindowWidth"].get<u32>();
-			if (startup.contains("WindowHeight"))	outSpec.resolution.height = startup["WindowHeight"].get<u32>();
-			if (startup.contains("WorkingDir"))		outSpec.workingDir = startup["WorkingDir"].get<fs::path>();
-			if (startup.contains("Project"))		outSpec.startupProject = startup["Project"].get<fs::path>();
+			if (startup.contains("Fullscreen"))		
+				outSpec.fullscreen = startup["Fullscreen"].get<bool>();
+			if (startup.contains("WindowWidth"))	
+				outSpec.resolution.width = startup["WindowWidth"].get<u32>();
+			if (startup.contains("WindowHeight"))	
+				outSpec.resolution.height = startup["WindowHeight"].get<u32>();
+			if (startup.contains("WorkingDir"))		
+				outSpec.workingDir = startup["WorkingDir"].get<fs::path>();
+			if (startup.contains("Project"))		
+				outSpec.startupProject = startup["Project"].get<fs::path>();
 
 			auto scripting = startup["Scripting"];
-			if (scripting.contains("CoreAssemblyPath")) outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<fs::path>();
+			if (scripting.contains("CoreAssemblyPath")) 
+				outSpec.scriptConfig.coreAssemblyPath = scripting["CoreAssemblyPath"].get<fs::path>();
 		}
 	}
 
@@ -190,5 +196,10 @@ namespace Laby {
 		scriptSettings["CoreAssemblyPath"] = spec.scriptConfig.coreAssemblyPath;
 
 		JSON::Write(settingsPath, settingsJSON);
+	}
+
+	void Application::BlockEsc(bool block)
+	{
+		sInstance->mState.blockExit = block;
 	}
 }

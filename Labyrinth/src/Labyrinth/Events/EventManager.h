@@ -12,6 +12,7 @@ namespace Laby {
 	{
 	public:
 		static void RegisterListener(IEventListener* listener) { sListeners.emplace_back(listener); }
+		static void DeregisterListener(IEventListener* listener) { std::erase(sListeners, listener); }
 
 		template<IsEvent TEvent, typename... TArgs>
 		static void Post(TArgs&&... args)

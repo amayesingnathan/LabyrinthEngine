@@ -27,6 +27,8 @@ namespace Laby {
 		static f32 FontSize();
 		static glm::vec2 FramePadding();
 
+		static f32 LineHeight();
+
 		static f32 WindowWidth();
 		static f32 WindowHeight();
 

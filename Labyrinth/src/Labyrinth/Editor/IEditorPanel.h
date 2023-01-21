@@ -13,7 +13,7 @@ namespace Laby {
 
 		virtual void onUpdate(Timestep ts) {};
 		virtual void onImGuiRender() = 0;
-		virtual void onProjectChange(const Ref<Project>& project) {}
+		virtual void onProjectChange() {}
 		virtual void onSelectionChange() {}
 
 		virtual void onEvent(Event& e) override {}

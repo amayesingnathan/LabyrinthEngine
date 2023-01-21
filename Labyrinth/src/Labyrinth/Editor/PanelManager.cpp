@@ -57,12 +57,12 @@ namespace Laby {
 		}
 	}
 
-	void PanelManager::ProjectChanged(Ref<Project> project)
+	void PanelManager::ProjectChanged()
 	{
 		for (PanelEntry& panelEntry : sEditorPanels)
 		{
 			if (panelEntry.panel)
-				panelEntry.panel->onProjectChange(project);
+				panelEntry.panel->onProjectChange();
 		}
 	}
 

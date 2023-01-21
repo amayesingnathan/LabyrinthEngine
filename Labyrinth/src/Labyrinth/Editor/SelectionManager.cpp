@@ -47,7 +47,7 @@ namespace Laby {
     }
     void SelectionManager::DeselectAll(SelectionDomain domain)
     {
-        if (sSelectionMap.contains(domain))
+        if (!sSelectionMap.contains(domain))
             return;
 
         sSelectionMap[domain].clear();
@@ -66,7 +66,7 @@ namespace Laby {
     }
     bool SelectionManager::IsSelected(SelectionDomain domain, UUID selection)
     {
-        if (sSelectionMap.contains(domain))
+        if (!sSelectionMap.contains(domain))
             return false;
 
         const auto& selections = sSelectionMap[domain];
@@ -75,7 +75,7 @@ namespace Laby {
 
     UUID SelectionManager::GetSelection(SelectionDomain domain, usize index)
     {
-        if (sSelectionMap.contains(domain))
+        if (!sSelectionMap.contains(domain))
             return 0;
 
         const auto& selections = sSelectionMap[domain];
@@ -85,7 +85,7 @@ namespace Laby {
     }
     usize SelectionManager::GetSelectionCount(SelectionDomain domain)
     {
-        if (sSelectionMap.contains(domain))
+        if (!sSelectionMap.contains(domain))
             return 0;
 
         return sSelectionMap[domain].size();
@@ -98,7 +98,7 @@ namespace Laby {
 
     void SelectionManager::ForEach(SelectionDomain domain, std::function<void(UUID)> func)
     {
-        if (sSelectionMap.contains(domain))
+        if (!sSelectionMap.contains(domain))
             return;
 
         for (UUID id : sSelectionMap[domain])

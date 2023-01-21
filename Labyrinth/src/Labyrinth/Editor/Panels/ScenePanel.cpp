@@ -51,11 +51,11 @@ namespace Laby {
 
 	void ScenePanel::onSelectionChange()
 	{
-		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
-			mPreviousEntity = mSelectedEntity;
-
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
+
+		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+			mPreviousEntity = mSelectedEntity;
 	}
 
 	void ScenePanel::DrawEntityNode(Entity entity)

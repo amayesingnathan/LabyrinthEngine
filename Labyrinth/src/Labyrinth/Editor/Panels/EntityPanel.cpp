@@ -39,7 +39,8 @@ namespace Laby {
 		{ "Dynamic",	RigidBodyComponent::BodyType::Dynamic }
 	};
 
-	EntityPanel::EntityPanel()
+	EntityPanel::EntityPanel(const Ref<Scene>& scene)
+		: mContext(scene)
 	{
 		FramebufferSpec fbSpec;
 		fbSpec.width = 200;
@@ -106,11 +107,11 @@ namespace Laby {
 
 	void EntityPanel::onSelectionChange()
 	{
-		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
-			mPreviousEntity = mSelectedEntity;
-
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
+
+		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+			mPreviousEntity = mSelectedEntity;
 	}
 
 	void EntityPanel::DrawComponents()
@@ -142,7 +143,6 @@ namespace Laby {
 			Widgets::StringEdit("##Tag", mSelectedEntity.getTag());
 
 		Widgets::SameLine();
-		ImGuiUtils::PushItemWidth(-1);
 
 		Widgets::Button("Add Component", []()
 		{
@@ -161,21 +161,22 @@ namespace Laby {
 		DrawAddComponentEntry<TilemapComponent>(addComponentPopup, "Tilemap Controller");
 		Widgets::EndPopup(addComponentPopup);
 
-		ImGuiUtils::PopItemWidth();
-
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
 			std::vector<ParentEntityEntry> comboEntries;
+
+			auto view = mContext->mRegistry.view<TagComponent, IDComponent>();
+			comboEntries.reserve(view.size_hint() + 1);
 			comboEntries.emplace_back("None", Entity{});
 
 			// Create map of possible parents
-			mContext->mRegistry.view<TagComponent, IDComponent>().each([&](auto entityID, auto& tc, auto& idc)
+			view.each([&](auto entityID, auto& tc, auto& idc)
 			{
 				if (mSelectedEntity != entityID)
 					comboEntries.emplace_back(fmt::format("{}\rID = ({})", tc.tag, idc.id.to_string()), Entity{entityID, mContext});
 			});
 
-			std::sort(comboEntries.begin(), comboEntries.end(), [](const ParentEntityEntry& u, const ParentEntityEntry& v) { return u.value.getUUID() < v.value.getUUID(); });
+			std::sort(comboEntries.begin() + 1, comboEntries.end(), [](const ParentEntityEntry& u, const ParentEntityEntry& v) { return u.value.getUUID() < v.value.getUUID(); });
 
 			Entity parent = mSelectedEntity.getParent();
 			std::string currentParentString = parent ? fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID()) : "None";

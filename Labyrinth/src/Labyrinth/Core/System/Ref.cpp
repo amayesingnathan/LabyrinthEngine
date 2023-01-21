@@ -13,6 +13,8 @@ namespace Laby {
 
 	void RefTracker::AddToTrackedRefs(void* data)
 	{
+		LAB_CORE_ASSERT(data);
+		sRefSet.insert(data);
 	}
 
 	void RefTracker::RemoveFromTrackedRefs(void* data)

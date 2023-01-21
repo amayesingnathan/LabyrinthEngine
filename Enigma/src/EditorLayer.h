@@ -1,11 +1,10 @@
 #pragma once
 
 #include "Labyrinth/Core/Layer.h"
-
 #include "Labyrinth/Editor/EditorData.h"
-
+#include <Labyrinth/Editor/Panels/ScenePanel.h>
+#include <Labyrinth/Editor/Panels/EntityPanel.h>
 #include "Labyrinth/Renderer/Framebuffer.h"
-
 #include "Labyrinth/Scene/Scene.h"
 
 namespace Laby {
@@ -70,6 +69,9 @@ namespace Laby {
 		Ref<Scene> mCurrentScene, mEditorScene;
 
 		EditorData mEditorData;
+
+		Ref<ScenePanel> mScenePanel;
+		Ref<EntityPanel> mEntityPanel;
 
 		enum SceneState { SceneEdit = 0, ScenePlay, SceneSimulate };
 		SceneState mSceneState = SceneEdit;
