@@ -37,6 +37,7 @@ namespace Laby {
 
 	EditorLayer::EditorLayer()
 	{
+		mEditorData.camera.setCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
 	}
 
 	void EditorLayer::onAttach()
@@ -185,12 +186,6 @@ namespace Laby {
 
 	void EditorLayer::onEvent(Event& e)
 	{
-		if (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate))
-			mEditorData.camera.onEvent(e);
-
-		PanelManager::DispatchEvents(e);
-		ModalManager::DispatchEvents(e);
-
 		LocalEventDispatcher dispatcher(e);
 		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressed));
 		dispatcher.dispatch<MouseButtonPressedEvent>(LAB_BIND_EVENT_FUNC(OnMouseButtonPressed));

@@ -2,18 +2,20 @@
 
 #include "Camera.h"
 #include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Events/Event.h"
+#include "Labyrinth/Events/IEventListener.h"
 
 namespace Laby {
 
-	class EditorCamera : public Camera
+	class EditorCamera : public Camera, public IEventListener
 	{
 	public:
 		EditorCamera() = default;
 		EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip, f32 farClip);
 
 		void onUpdate(Timestep ts);
-		void onEvent(Event& e);
+
+		void onEvent(Event& e) override;
+		LISTENING_EVENTS(MouseScrolled)
 
 		const glm::mat4& getViewMatrix() const { return mView; }
 		glm::mat4 getViewProjection() const override { return mProjection * mView; }

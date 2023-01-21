@@ -12,11 +12,27 @@ namespace Laby {
 		enum Flag : u32
 		{	// New events must be added to AllEvents struct in same order
 			None = 0,
-			WindowClose = LAB_BIT(0), WindowResize = LAB_BIT(1), WindowFocus = LAB_BIT(2), WindowLostFocus = LAB_BIT(3), WindowMoved = LAB_BIT(4),
-			AppTick = LAB_BIT(5), AppUpdate = LAB_BIT(6), AppRender = LAB_BIT(7),
-			KeyPressed = LAB_BIT(8), KeyReleased = LAB_BIT(9), KeyTyped = LAB_BIT(10),
-			MouseButtonPressed = LAB_BIT(11), MouseButtonReleased = LAB_BIT(12), MouseMoved = LAB_BIT(13), MouseScrolled = LAB_BIT(14),
-			NetMessage = LAB_BIT(15)
+
+			WindowClose			= LAB_BIT(0), 
+			WindowResize		= LAB_BIT(1), 
+			WindowFocus			= LAB_BIT(2), 
+			WindowLostFocus		= LAB_BIT(3), 
+			WindowMoved			= LAB_BIT(4),
+
+			AppTick				= LAB_BIT(5), 
+			AppUpdate			= LAB_BIT(6), 
+			AppRender			= LAB_BIT(7),
+
+			KeyPressed			= LAB_BIT(8), 
+			KeyReleased			= LAB_BIT(9), 
+			KeyTyped			= LAB_BIT(10),
+
+			MouseButtonPressed	= LAB_BIT(11), 
+			MouseButtonReleased	= LAB_BIT(12), 
+			MouseMoved			= LAB_BIT(13), 
+			MouseScrolled		= LAB_BIT(14),
+
+			NetMessage			= LAB_BIT(15)
 		};
 
 		static constexpr EventTypeFlag EVENT_CATEGORY_APP	= EventType::WindowClose | EventType::WindowResize | EventType::WindowFocus

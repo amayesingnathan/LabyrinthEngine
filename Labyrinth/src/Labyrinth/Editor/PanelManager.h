@@ -23,7 +23,6 @@ namespace Laby {
 
 		static void Update(Timestep ts);
 		static void Render();
-		static void DispatchEvents(Event& e);
 		static void ProjectChanged(Ref<Project> project);
 		static void SelectionChange();
 

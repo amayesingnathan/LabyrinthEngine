@@ -1,21 +1,23 @@
 #pragma once
 
 #include <Labyrinth/Core/Timestep.h>
-#include <Labyrinth/Events/Event.h>
+#include <Labyrinth/Events/IEventListener.h>
 #include <Labyrinth/Project/Project.h>
 
 namespace Laby {
 
-	class IEditorPanel : public RefCounted
+	class IEditorPanel : public RefCounted, public IEventListener
 	{
 	public:
 		virtual ~IEditorPanel() {}
 
 		virtual void onUpdate(Timestep ts) {};
 		virtual void onImGuiRender() = 0;
-		virtual void onEvent(Event& e) {}
 		virtual void onProjectChange(const Ref<Project>& project) {}
 		virtual void onSelectionChange() {}
+
+		virtual void onEvent(Event& e) override {}
+		LISTENING_EVENTS(None)
 	};
 
 	template<typename T>

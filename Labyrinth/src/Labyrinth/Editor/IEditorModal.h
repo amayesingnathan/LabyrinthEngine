@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Events/Event.h"
+#include "Labyrinth/Events/IEventListener.h"
 #include "Labyrinth/Project/Project.h"
 
 namespace Laby {
@@ -11,7 +11,7 @@ namespace Laby {
         None, OK, OKCancel, YesNo, Custom
     };
 
-    class IEditorModal : public RefCounted
+    class IEditorModal : public RefCounted, public IEventListener
     {
     public:
         IEditorModal();
@@ -22,11 +22,12 @@ namespace Laby {
         virtual void onImGuiRender() = 0;
         virtual void onComplete() {}
         virtual void onCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
-        virtual void onEvent(Event& e) {}
+        
+        virtual void onEvent(Event& e) override {}
+        LISTENING_EVENTS(None)
 
     private:
         friend class ModalManager;
-        friend class InlineModal;
     };
 
     template<typename T>
