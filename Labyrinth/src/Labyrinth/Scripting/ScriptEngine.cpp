@@ -4,16 +4,17 @@
 #include <mono/jit/jit.h>
 #include <mono/metadata/assembly.h>
 
-#include "ScriptUtils.h"
-#include "ScriptGlue.h"
-#include "ScriptCache.h"
-#include "MarshalUtils.h"
-
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Project/Project.h>
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
 #include <Labyrinth/Scene/Components.h>
+
+#include "ScriptUtils.h"
+#include "ScriptGlue.h"
+#include "ScriptCache.h"
+#include "MarshalUtils.h"
 
 namespace Laby {
 
@@ -113,34 +114,12 @@ namespace Laby {
 
 	void ScriptEngine::RegenScriptProject()
 	{
-		static std::string sEnvVarString;
+		fs::path rootDirectory = FileUtils::LabRoot();
+		std::string envVarString = fmt::format("LAB_ROOT_DIR={}", rootDirectory.string());
+		System::SetEnv(envVarString);
 
-		fs::path rootDirectory = std::filesystem::absolute("./resources").parent_path();
-		while (rootDirectory.stem().string() != "LabyrinthEngine")
-			rootDirectory = rootDirectory.parent_path();
-		sEnvVarString = "LAB_ROOT_DIR=" + rootDirectory.string();
-
-		fs::path batchFilePath = Project::GetProjectDirectory();
-		batchFilePath /= "create-script-projects";
-
-		std::string batchPathString = batchFilePath.string();
-
-#ifdef LAB_PLATFORM_WINDOWS
-		int error = _putenv(sEnvVarString.c_str());
-		batchPathString += ".bat";
-		std::replace(batchPathString.begin(), batchPathString.end(), '/', '\\'); // Only windows
-#elif defined(LAB_PLATFORM_LINUX)
-		batchPathString += ".sh";
-		int error = putenv(sEnvVarString.c_str());
-#else
-		int error = -1;
-#endif
-		if (error)
-		{
-			LAB_CORE_ERROR("Could not set the Labyrinth root directory!");
-			return;
-		}
-		system(batchPathString.c_str());
+		fs::path batchFilePath = Project::GetProjectDirectory() / "create-script-projects";
+		System::Call(batchFilePath.string());
 	}
 
 	Ref<ScriptClass> ScriptEngine::GetAppClass(const std::string& name)

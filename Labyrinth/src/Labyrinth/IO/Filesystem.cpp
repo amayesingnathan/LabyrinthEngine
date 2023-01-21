@@ -5,6 +5,26 @@
 
 namespace Laby {
 
+	fs::path FileUtils::LabRoot()
+	{
+		i32 depthCount = 0;
+		fs::path rootDirectory = fs::current_path();
+
+		while (rootDirectory.stem() != "LabyrinthEngine")
+		{
+			if (depthCount > 8)
+			{
+				LAB_CORE_ERROR("Could not locate labyrinth root directory!");
+				return fs::path();
+			}
+
+			rootDirectory = rootDirectory.parent_path();
+			depthCount++;
+		}
+
+		return rootDirectory;
+	}
+
 	Buffer FileUtils::Read(const fs::path& filepath)
 	{
 		std::ifstream stream(filepath, std::ios::binary | std::ios::ate);

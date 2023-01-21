@@ -3,6 +3,7 @@
 #include <memory>
 
 #include "Platform.h"
+#include "System.h"
 #include "Types.h"
 
 #define LABYRINTH_VER 0xABBA011
