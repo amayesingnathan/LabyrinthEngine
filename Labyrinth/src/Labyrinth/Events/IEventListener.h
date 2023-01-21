@@ -7,16 +7,18 @@ namespace Laby {
 	class IEventListener
 	{
 	public:
-		IEventListener()
-		{
-			EventManager::RegisterListener(this);
-		}
+		IEventListener() { EventManager::RegisterListener(this); }
+		virtual ~IEventListener() { EventManager::DeregisterListener(this); }
 
 		virtual constexpr EventTypeFlag getListeningEvents() const = 0;
 		virtual void onEvent(Event& e) = 0;
-		virtual void setCondition(Predicate<> condition) { mAcceptCondition = condition; }
+		virtual void setEventCondition(Predicate<> condition) { mAcceptCondition = condition; }
 
-		bool accept(EventTypeFlag type) const { return (getListeningEvents() & type) && mAcceptCondition(); }
+		bool accept(EventTypeFlag type) const
+		{ 
+			bool acceptType = (getListeningEvents() & type);
+			return acceptType && mAcceptCondition();
+		}
 
 	private:
 		Predicate<> mAcceptCondition = [](){ return true; };

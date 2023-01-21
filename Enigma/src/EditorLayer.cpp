@@ -13,6 +13,8 @@
 #include <Labyrinth/Editor/PanelManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 
+#include <Labyrinth/Editor/Panels/OptionsPanel.h>
+
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
 #include <Labyrinth/Editor/Modals/NewProjectModal.h>
 #include <Labyrinth/Editor/Modals/ProjectSettingsModal.h>
@@ -37,13 +39,10 @@ namespace Laby {
 
 	EditorLayer::EditorLayer()
 	{
-		mEditorData.camera.setCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
 	}
 
 	void EditorLayer::onAttach()
 	{
-		EditorResources::Init();
-
 		const ApplicationSpec& appSpec = Application::GetSpec();
 
 		FramebufferSpec fbSpec;
@@ -54,8 +53,15 @@ namespace Laby {
 
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
 
+		EditorResources::Init();
+
 		mEditorData.viewportSize = { fbSpec.width, fbSpec.height };
 		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+		mEditorData.camera.setEventCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
+
+		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", mCurrentScene);
+		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mCurrentScene);
+		PanelManager::Register<OptionsPanel>("Options", mEditorData);
 
 		LoadSettings();
 
@@ -67,8 +73,10 @@ namespace Laby {
 
 	void EditorLayer::onDetach()
 	{
-		PanelManager::Clear();
+		CloseProject(true);
+		WriteSettings();
 
+		PanelManager::Clear();
 		EditorResources::Shutdown();
 	}
 
@@ -180,6 +188,9 @@ namespace Laby {
 		UI_Viewport();
 		UI_MenuBar();
 		UI_Toolbar();
+
+		PanelManager::Render();
+		ModalManager::Render();
 
 		ImGui::End();
 	}
@@ -515,7 +526,7 @@ namespace Laby {
 			});
 			if (Project::IsActive())
 			{
-				Widgets::AddMenuItem(menu, "Save Project", [this]() 
+				Widgets::AddMenuItem(menu, "Project Settings", [this]() 
 				{
 					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalButtons::OK, ActiveProject::Get());
 				});
@@ -545,7 +556,7 @@ namespace Laby {
 
 			Widgets::AddMenuSeparator(menu);
 
-			Widgets::AddMenuItem(menu, "Save Scene As...", "Ctrl+Shift+S", [this]()
+			Widgets::AddMenuItem(menu, "Close", [this]()
 			{
 				Application::Close();
 			});
@@ -613,7 +624,7 @@ namespace Laby {
 
 	void EditorLayer::LoadSettings()
 	{
-		JsonObj settings = JSON::Open("enigma.ini");
+		JsonObj settings = JSON::Open("enigma.json");
 		if (settings.empty())
 			return;
 
@@ -630,9 +641,7 @@ namespace Laby {
 
 	void EditorLayer::WriteSettings()
 	{
-		Application::WriteSettings("enigma.ini");
-
-		JsonObj settings = JSON::Open("enigma.ini");
+		JsonObj settings = JSON::Open("enigma.json");
 
 		settings["Panels"] = {};
 
@@ -646,7 +655,7 @@ namespace Laby {
 			settings["Panels"].push_back(panel);
 		}
 
-		JSON::Write("enigma.ini", settings);
+		JSON::Write("enigma.json", settings);
 	}
 
 	void EditorLayer::CreateProject(const fs::path& filepath)
@@ -709,10 +718,7 @@ namespace Laby {
 		if (Project::IsActive())
 			CloseProject();
 
-		Ref<Project> project = Ref<Project>::Create();
-		ProjectSerialiser serialiser(project);
-		serialiser.deserialise(filepath);
-		ActiveProject::Set(project);
+		Project::Load(filepath);
 
 		auto appAssemblyPath = Project::GetScriptModuleFilePath();
 		if (!appAssemblyPath.empty() && fs::exists(appAssemblyPath))
@@ -720,7 +726,7 @@ namespace Laby {
 		else
 			LAB_WARN("No C# assembly has been provided in the Project Settings, or it wasn't found.");
 
-		PanelManager::ProjectChanged(project);
+		PanelManager::ProjectChanged();
 
 		const fs::path& startScenePath = Project::GetStartScenePath();
 		if (!startScenePath.empty())
@@ -836,7 +842,8 @@ namespace Laby {
 		mCurrentScene->onRuntimeStart();
 
 		mSceneState = ScenePlay;
-		//mScenePanel->setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
+		mEntityPanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneSimulate()
@@ -845,7 +852,8 @@ namespace Laby {
 		mCurrentScene->onSimulationStart();
 
 		mSceneState = SceneSimulate;
-		//mScenePanel->setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
+		mEntityPanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
@@ -860,7 +868,8 @@ namespace Laby {
 		mCurrentScene = mEditorScene;
 
 		mSceneState = SceneEdit;
-		//mScenePanel->setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
+		mEntityPanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::SetCurrentScene(const Ref<Scene>& currentScene)
@@ -870,7 +879,8 @@ namespace Laby {
 		mCurrentScene = currentScene;
 		mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 
-		//mScenePanel->setContext(mCurrentScene);
+		mScenePanel->setContext(mCurrentScene);
+		mEntityPanel->setContext(mCurrentScene);
 
 		SelectionManager::DeselectAll(SelectionDomain::Scene);
 

@@ -6,28 +6,16 @@
         },
         {
             "Displayed": true,
-            "Key": "Content Browser"
-        },
-        {
-            "Displayed": true,
-            "Key": "Sprite Sheets"
+            "Key": "Properties"
         },
         {
             "Displayed": true,
             "Key": "Options"
-        },
-        {
-            "Displayed": true,
-            "Key": "Statistics"
-        },
-        {
-            "Displayed": true,
-            "Key": "Tilemaps"
         }
     ],
     "Startup": {
         "Fullscreen": false,
-        "Project": "SandboxProject\\SandboxProject.lpj",
+        "Project": "C:\\Users\\natha\\Desktop\\Coding\\Projects\\WIP\\C++\\LabyrinthEngine\\Enigma\\SandboxProject\\SandboxProject.lpj",
         "Scripting": {
             "CoreAssemblyPath": "resources/Scripts/Labyrinth-ScriptCore.dll"
         },

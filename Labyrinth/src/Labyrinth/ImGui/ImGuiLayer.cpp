@@ -1,8 +1,6 @@
 #include "Lpch.h"
 #include "ImGuiLayer.h"
 
-#include "Labyrinth/Core/Application.h"
-
 #include "imgui.h"
 #include "ImGuizmo.h"
 
@@ -11,6 +9,10 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+
+#include <Labyrinth/Core/Application.h>
+
+#include "ImGuiWidgets.h"
 
 namespace Laby {
 

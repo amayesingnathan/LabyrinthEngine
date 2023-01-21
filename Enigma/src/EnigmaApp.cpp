@@ -25,7 +25,7 @@ namespace Laby {
 		ApplicationSpec spec;
 		spec.name = "Enigma";
 
-		Application::ReadSettings("enigma.ini", spec);
+		Application::ReadSettings("enigma.json", spec);
 
 		return new EnigmaEditor(spec);
 	}

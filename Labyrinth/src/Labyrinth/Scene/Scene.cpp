@@ -192,7 +192,8 @@ namespace Laby {
 
 	Entity Scene::findEntity(UUID findID)
 	{
-		if (mEntityMap.count(findID) == 0) return Entity();
+		if (!mEntityMap.contains(findID))
+			return Entity();
 
 		return { mEntityMap.at(findID), Ref<Scene>(this) };
 	}

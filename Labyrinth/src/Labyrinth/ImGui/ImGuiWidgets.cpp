@@ -63,6 +63,28 @@ namespace Laby {
 		TreeNodeInternal(id, text, selected, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth, whileOpen);
 	}
 
+	bool Widgets::ComponentInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen)
+	{
+		flags |= selected ? ImGuiTreeNodeFlags_Selected : 0;
+		bool open = ImGui::TreeNodeEx((void*)&id, flags, text.data());
+		bool removeComponent = false;
+
+		SameLine(ImGuiUtils::WindowWidth() - 0.5f * ImGuiUtils::LineHeight());
+		Button("+", []() { OpenPopup("ComponentSettings"); });
+
+		UI::PopUp* popup = BeginPopup("ComponentSettings");
+		AddMenuItem(popup, "Remove component", [&]() { removeComponent = true;});
+		EndPopup(popup);
+		
+		if (open)
+		{
+			whileOpen();
+			ImGui::TreePop();
+		}
+
+		return removeComponent;
+	}
+
 	void Widgets::TreeNodeInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen)
 	{
 		flags |= selected ? ImGuiTreeNodeFlags_Selected : 0;
@@ -204,13 +226,19 @@ namespace Laby {
 
 	void Widgets::Checkbox(std::string_view label, bool& value, Action<> action)
 	{
-		if (ImGui::Checkbox(label.data(), &value))
+		if (ImGui::Checkbox(label.data(), &value) && action)
 			action();
 	}
 
 	void Widgets::Button(std::string_view label, Action<> action)
 	{
-		if (ImGui::Button(label.data()))
+		if (ImGui::Button(label.data()) && action)
+			action();
+	}
+
+	void Widgets::Button(std::string_view label, const glm::vec2& size, Action<> action)
+	{
+		if (ImGui::Button(label.data(), ImGuiUtils::FromGLM(size)) && action)
 			action();
 	}
 
@@ -709,14 +737,13 @@ namespace Laby {
 		onEdit((u64)val);
 	}
 
-	const IComboEntry* Widgets::ComboboxInternal(std::string_view label, std::string_view preview, const IComboEntry** table, usize tableCount)
+	const IComboEntry* Widgets::ComboboxInternal(std::string_view label, std::string_view preview, const std::vector<const IComboEntry*>& table)
 	{
 		const IComboEntry* result = nullptr;
 		if (ImGui::BeginCombo(label.data(), preview.data()))
 		{
-			for (usize i = 0; i < tableCount; i++)
+			for (const IComboEntry* entry : table)
 			{
-				const IComboEntry* entry = table[i];
 				bool isSelected = entry->key == preview;
 
 				if (ImGui::Selectable(entry->key.data(), isSelected))

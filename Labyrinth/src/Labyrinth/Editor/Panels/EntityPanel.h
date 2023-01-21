@@ -14,7 +14,7 @@ namespace Laby {
 	class EntityPanel : public IEditorPanel
 	{
 	public:
-		EntityPanel();
+		EntityPanel(const Ref<Scene>& scene);
 
 		void setContext(const Ref<Scene>& scene) { mContext = scene; }
 

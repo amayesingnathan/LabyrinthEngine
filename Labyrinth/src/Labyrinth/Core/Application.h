@@ -52,7 +52,7 @@ namespace Laby {
 	class Application : public IEventListener
 	{
 	public:
-		LISTENING_EVENTS(WindowClose, WindowResize, KeyPressed)
+		LISTENING_EVENTS(WindowClose, WindowResize)
 
 	public:
 		Application(const ApplicationSpec& spec);
@@ -81,7 +81,7 @@ namespace Laby {
 	public:
 		static void Run(int argc, char** argv);
 		static Application& Get() { return *sInstance; }
-		static void Close() { if (!sInstance->mState.blockExit) sInstance->mState.running = false; }
+		static void Close();
 
 		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }
 
@@ -91,7 +91,7 @@ namespace Laby {
 		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);
 		static void WriteSettings(const std::filesystem::path& settingsPath);
 
-		static void BlockEsc(bool block = true) { sInstance->mState.blockExit = block; }
+		static void BlockEsc(bool block = true);
 
 	private:
 		ApplicationSpec mSpecification;

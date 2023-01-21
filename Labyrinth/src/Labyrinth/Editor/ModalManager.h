@@ -10,12 +10,18 @@ namespace Laby {
         struct ModalEntry
         {
             std::string_view heading;
-            Ref<IEditorModal> modal = nullptr;
+            Single<IEditorModal> modal = nullptr;
             ModalButtons type = ModalButtons::OKCancel;
 
             bool open = true;
 
-            ModalEntry(std::string_view h, ModalButtons t, Ref<IEditorModal> m) : heading(h), modal(m), type(t) {}
+            ModalEntry(std::string_view h, ModalButtons t) : heading(h), type(t) {}
+
+            template<typename T, typename... Args>
+            void init(Args&&... args)
+            {
+                modal = MakeSingle<T>(std::forward<Args>(args)...);
+            }
         };
     public:
         template<IsEditorModal T, typename... Args>
@@ -27,7 +33,10 @@ namespace Laby {
                 return;
             }
 
-            sLastAdded = sEditorModals.emplace_back(title, type, Ref<T>::Create(std::forward<Args>(args)...)).heading;
+            ModalEntry& entry = sEditorModals.emplace_back(title, type);
+            entry.init<T>(std::forward<Args>(args)...);
+            sLastAdded = entry.heading;
+
         }
 
         static void OpenInline(std::string_view title, ModalButtons type, std::function<void()> onImGuiRender, std::function<void()> onComplete = std::function<void()>()) { Open<InlineModal>(title, type, onImGuiRender, onComplete); }

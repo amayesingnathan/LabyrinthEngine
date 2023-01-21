@@ -30,6 +30,7 @@ Makefile.in
 
 #Profiling files
 **.json
+!Enigma/enigma.json
 
 #Assets
 assets/

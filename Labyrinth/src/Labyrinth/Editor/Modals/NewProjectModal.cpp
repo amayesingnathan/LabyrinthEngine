@@ -21,7 +21,7 @@ namespace Laby {
 	void NewProjectModal::onImGuiRender()
 	{
 		fs::path fullProjectPath = mProjectPath / mProjectName;
-		Widgets::Label("Full Project Path: %s", fullProjectPath.string().c_str());
+		Widgets::Label("Full Project Path: %s", fullProjectPath.string());
 
 		Widgets::StringEdit("Name", mProjectName);
 		Widgets::PathEdit("Path", mProjectPath);
