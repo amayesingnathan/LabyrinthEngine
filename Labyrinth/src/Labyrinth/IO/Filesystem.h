@@ -10,6 +10,8 @@ namespace Laby {
 	class FileUtils
 	{
 	public:
+		static fs::path LabRoot();
+
 		static Buffer Read(const fs::path& filepath);
 		static void Read(const fs::path& filepath, std::string& string);
 
