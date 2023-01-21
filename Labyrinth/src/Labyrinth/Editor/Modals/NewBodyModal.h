@@ -39,7 +39,7 @@ namespace Laby {
 		void ConvertShapeOptions();
 
 	private:
-		Ref<Scene>& mContext;
+		Ref<Scene> mContext;
 		Entity mNewEntity;
 		BodyDef mNewBodyDef;
 	};
