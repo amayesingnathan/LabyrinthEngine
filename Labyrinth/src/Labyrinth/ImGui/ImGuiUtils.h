@@ -8,6 +8,7 @@ struct ImVec4;
 
 typedef int ImGuiStyleVar;
 typedef int ImGuiTreeNodeFlags;
+typedef int ImGuiCol;
 
 namespace Laby {
 
@@ -35,8 +36,14 @@ namespace Laby {
 		static void PushItemWidth(f32 width);
 		static void PopItemWidth();
 
+		static void PushID(std::string_view strID);
+		static void PopID();
+
 		static void PushStyle(ImGuiStyleVar flags, f32 var);
 		static void PushStyle(ImGuiStyleVar flags, const glm::vec2& var);
 		static void PopStyle(i32 count = 1);
+
+		static void PushStyleColour(ImGuiCol flags, const glm::vec4& var);
+		static void PopStyleColour();
 	};
 }

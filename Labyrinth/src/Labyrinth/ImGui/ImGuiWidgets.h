@@ -9,6 +9,7 @@
 
 #include "Widgets/Combobox.h"
 #include "Widgets/MenuBar.h"
+#include "Widgets/Payload.h"
 #include "Widgets/PopUp.h"
 
 namespace Laby {
@@ -26,6 +27,10 @@ namespace Laby {
 		using GridFunction = std::function<void(const GridPosition&, const glm::vec2&)>;
 		static void GridControl(const glm::vec2& pos, const glm::vec2& size, usize width, usize height, GridFunction func);
 		static void GridControl(const glm::vec2& size, usize width, usize height, GridFunction func);
+
+		static void BeginColumns(i32 count, bool border = false);
+		static void NextColumn();
+		static void EndColumns();
 
 		static void TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen);
 
@@ -47,6 +52,7 @@ namespace Laby {
 		static void EndContextPopup(UI::PopUpContext* popup);
 
 		static void Label(std::string_view text, ...);
+		static void LabelWrapped(std::string_view text, ...);
 
 		static void StringEdit(std::string_view label, std::string& field);
 		static void PathEdit(std::string_view label, fs::path& field);
@@ -119,18 +125,17 @@ namespace Laby {
 		template<typename T>
 		static void AddDragDropSource(std::string_view strID, const T& data) 
 		{ 
-			sCurrentPayload.set(data);
-			DragDropSourceInternal(strID, sCurrentPayload.data(), sCurrentPayload.size());
+			DragDropSourceInternal(strID, [&](){ sCurrentPayload = MakeSingle<Payload<T>>(data); });
 		}
 		template<typename T>
 		static void AddDragDropTarget(std::string_view strID, Action<const T&> response)
 		{
 			void* imguiPayload = DragDropTargetInternal(strID);
-			if (imguiPayload)
-			{
-				const T& payload = *(T*)imguiPayload;
-				response(payload);
-			}
+			if (!imguiPayload)
+				return;
+
+			const T& payload = *(T*)imguiPayload;
+			response(payload);
 		}
 
 		static void OnWidgetSelected(Action<> action);
@@ -202,12 +207,12 @@ namespace Laby {
 		static bool ComponentInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
 		static void TreeNodeInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
 
-		static void DragDropSourceInternal(std::string_view strID, const void* data, usize size);
+		static void DragDropSourceInternal(std::string_view strID, Action<> createPayload);
 		static void* DragDropTargetInternal(std::string_view strID);
 
 		static const IComboEntry* ComboboxInternal(std::string_view label, std::string_view preview, const std::vector<const IComboEntry*>& table);
 
 	private:
-		inline static Buffer sCurrentPayload;
+		inline static Single<IPayload> sCurrentPayload = nullptr;
 	};
 }

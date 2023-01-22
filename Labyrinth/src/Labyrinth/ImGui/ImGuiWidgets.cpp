@@ -58,6 +58,21 @@ namespace Laby {
 		}
 	}
 
+	void Widgets::BeginColumns(i32 count, bool border)
+	{
+		ImGui::Columns(count, 0, border);
+	}
+
+	void Widgets::NextColumn()
+	{
+		ImGui::NextColumn();
+	}
+
+	void Widgets::EndColumns()
+	{
+		ImGui::Columns(1);
+	}
+
 	void Widgets::TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen)
 	{
 		TreeNodeInternal(id, text, selected, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth, whileOpen);
@@ -182,6 +197,20 @@ namespace Laby {
 		va_end(args);
 	}
 
+	void Widgets::LabelWrapped(std::string_view text, ...)
+	{
+		if (text.empty())
+		{
+			ImGui::TextWrapped("...");
+			return;
+		}
+
+		va_list args;
+		va_start(args, text);
+		ImGui::TextWrapped(text.data(), args);
+		va_end(args);
+	}
+
 	void Widgets::StringEdit(std::string_view label, std::string& field)
 	{
 		StaticString<256> stringEditBuffer(field);
@@ -196,13 +225,14 @@ namespace Laby {
 			field = stringEditBuffer.toString();
 	}
 
-	void Widgets::DragDropSourceInternal(std::string_view strID, const void* data, usize size)
+	void Widgets::DragDropSourceInternal(std::string_view strID, Action<> createPayload)
 	{
-		if (ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
-		{
-			ImGui::SetDragDropPayload(strID.data(), data, size);
-			ImGui::EndDragDropSource();
-		}
+		if (!ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID))
+			return;
+
+		createPayload();
+		ImGui::SetDragDropPayload(strID.data(), sCurrentPayload->data(), sCurrentPayload->size());
+		ImGui::EndDragDropSource();
 	}
 
 	void* Widgets::DragDropTargetInternal(std::string_view strID)
@@ -701,7 +731,7 @@ namespace Laby {
 		ImVec2 uv0 = coords ? ImGuiUtils::FromGLM(coords[3]) : ImVec2{ 0, 1 };
 		ImVec2 uv1 = coords ? ImGuiUtils::FromGLM(coords[1]) : ImVec2{ 1, 0 };
 
-		if (ImGui::ImageButton((ImTextureID)(uintptr_t)image->getTextureID(), ImGuiUtils::FromGLM(size), uv0, uv1, padding))
+		if (ImGui::ImageButton((ImTextureID)(uintptr_t)image->getTextureID(), ImGuiUtils::FromGLM(size), uv0, uv1, padding) && action)
 			action();
 	}
 
