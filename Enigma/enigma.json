@@ -15,6 +15,10 @@
         {
             "Displayed": true,
             "Key": "Options"
+        },
+        {
+            "Displayed": true,
+            "Key": "Statistics"
         }
     ],
     "Startup": {

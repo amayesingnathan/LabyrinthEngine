@@ -183,7 +183,7 @@ namespace Laby {
 		delete popup;
 	}
 
-	void Widgets::Label(std::string_view text, ...)
+	void Widgets::Label(std::string_view text)
 	{
 		if (text.empty())
 		{
@@ -191,24 +191,17 @@ namespace Laby {
 			return;
 		}
 
-		va_list args;
-		va_start(args, text);
-		ImGui::Text(text.data(), args);
-		va_end(args);
+		ImGui::Text(text.data());
 	}
 
-	void Widgets::LabelWrapped(std::string_view text, ...)
+	void Widgets::LabelWrapped(std::string_view text)
 	{
 		if (text.empty())
 		{
 			ImGui::TextWrapped("...");
 			return;
 		}
-
-		va_list args;
-		va_start(args, text);
-		ImGui::TextWrapped(text.data(), args);
-		va_end(args);
+		ImGui::TextWrapped(text.data());
 	}
 
 	void Widgets::StringEdit(std::string_view label, std::string& field)
@@ -283,7 +276,7 @@ namespace Laby {
 			onEdit(field);
 	}
 
-	void Widgets::FloatEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed, f32 mix, f32 max)
+	void Widgets::DoubleEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed, f32 mix, f32 max)
 	{
 		f32 tmp = (f32)field;
 		if (ImGui::DragFloat(label.data(), &tmp))
@@ -293,7 +286,7 @@ namespace Laby {
 		}
 	}
 
-	void Widgets::FloatEdit(std::string_view label, f64& field, f32 speed, f32 mix, f32 max)
+	void Widgets::DoubleEdit(std::string_view label, f64& field, f32 speed, f32 mix, f32 max)
 	{
 		f32 tmp = (f32)field;
 		ImGui::DragFloat(label.data(), &tmp);

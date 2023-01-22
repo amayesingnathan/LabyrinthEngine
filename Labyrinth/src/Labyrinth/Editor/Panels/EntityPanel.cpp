@@ -81,14 +81,14 @@ namespace Laby {
 		case SpriteRendererComponent::TexType::Texture:
 		{
 			Ref<Texture2D> tex = component.handle ? AssetManager::GetAsset<Texture2D>(component.handle) : EditorResources::NoTexture;
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex ? tex : EditorResources::NoTexture);
 			break;
 		}
 
 		case SpriteRendererComponent::TexType::SubTexture:
 		{
 			Ref<SubTexture2D> subtex = component.handle ? AssetManager::GetAsset<SubTexture2D>(component.handle) : EditorResources::NoSubTexture;
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex);
+			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex ? subtex : EditorResources::NoSubTexture);
 			break;
 		}
 		}
@@ -380,7 +380,7 @@ namespace Laby {
 				Widgets::FloatEdit(name.data(), ScriptCache::GetFieldValue<f32>(entID, name));
 				break;
 			case ScriptFieldType::Double:
-				Widgets::FloatEdit(name.data(), ScriptCache::GetFieldValue<f64>(entID, name));
+				Widgets::DoubleEdit(name.data(), ScriptCache::GetFieldValue<f64>(entID, name));
 				break;
 			case ScriptFieldType::Vector2:
 				Widgets::Vector2Edit(name.data(), ScriptCache::GetFieldValue<glm::vec2>(entID, name));
@@ -491,7 +491,7 @@ namespace Laby {
 			{
 				f64 data;
 				script.instance->getFieldValue(name, data);
-				Widgets::FloatEdit(name, data, [&](f64 val) { script.instance->setFieldValue(name, val); });
+				Widgets::DoubleEdit(name, data, [&](f64 val) { script.instance->setFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Vector2:
