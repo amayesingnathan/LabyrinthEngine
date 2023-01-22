@@ -28,7 +28,9 @@ namespace Laby {
 		std::vector<TileScriptData> getTileScripts() const { return mBehaviour.getScripts(); }
 
 	private:
+		void addLayer(const TileRenderLayer& layer) { mTexture.addLayer(layer); }
 		void addLayer(TileRenderLayer&& layer) { mTexture.addLayer(std::move(layer)); }
+		void setBehaviour(const TileBehaviourLayer& layer) { mBehaviour = layer; }
 		void setBehaviour(TileBehaviourLayer&& layer) { mBehaviour = std::move(layer); }
 
 		const std::vector<TileRenderLayer>& getLayers() const { return mTexture.getLayers(); }
@@ -41,5 +43,12 @@ namespace Laby {
 		TileBehaviourLayer mBehaviour;
 
 		friend class TilemapSerialiser;
+		friend class TilemapUtils;
+	};
+
+	class TilemapUtils
+	{
+	public:
+		static Ref<Tilemap> Clone(Ref<Tilemap> other);
 	};
 }

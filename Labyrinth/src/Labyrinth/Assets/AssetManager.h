@@ -47,11 +47,9 @@ namespace Laby {
         static AssetMetadata& GetMetadataInternal(AssetHandle handle);
 
     public:
-        template<typename AssetType, typename... Args>
-        static Ref<AssetType> CreateNewAsset(const std::string& filename, const std::string& directoryPath, Args&&... args)
+        template<IsAsset T, typename... Args>
+        static Ref<T> CreateNewAsset(const std::string& filename, const std::string& directoryPath, Args&&... args)
         {
-            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
-
             if (!fs::exists(sAssetDirPath / directoryPath))
                 FileUtils::CreateDir(sAssetDirPath / directoryPath);
 
@@ -62,7 +60,7 @@ namespace Laby {
             else
                 metadata.filepath = AssetManager::GetRelativePath(directoryPath + "/" + filename);
             metadata.dataLoaded = true;
-            metadata.type = AssetType::GetStaticType();
+            metadata.type = T::GetStaticType();
 
             if (AssetManager::FileExists(metadata))
             {
@@ -92,7 +90,7 @@ namespace Laby {
 
             sAssetRegistry[metadata.handle] = metadata;
 
-            Ref<AssetType> asset = Ref<AssetType>::Create(std::forward<Args>(args)...);
+            Ref<T> asset = Ref<T>::Create(std::forward<Args>(args)...);
             asset->handle = metadata.handle;
             sLoadedAssets[asset->handle] = asset;
             AssetImporter::Serialise(metadata, asset);
@@ -100,11 +98,11 @@ namespace Laby {
             return asset;
         }
 
-        template<typename AssetType>
-        static Ref<AssetType> GetAsset(AssetHandle assetHandle)
+        template<IsAsset T>
+        static Ref<T> GetAsset(AssetHandle assetHandle)
         {
             if (IsMemoryAsset(assetHandle))
-                return sMemoryAssets[assetHandle].to<AssetType>();
+                return sMemoryAssets[assetHandle].to<T>();
 
             auto& metadata = GetMetadataInternal(assetHandle);
             if (!metadata.valid())
@@ -121,10 +119,10 @@ namespace Laby {
             }
             else asset = sLoadedAssets[assetHandle];
 
-            return asset.to<AssetType>();
+            return asset.to<T>();
         }
 
-        template<typename T>
+        template<IsAsset T>
         static Ref<T> GetAsset(const fs::path& filepath)
         {
             return GetAsset<T>(GetAssetHandleFromPath(filepath));
@@ -143,13 +141,12 @@ namespace Laby {
         static const AssetCache& GetLoadedAssets() { return sLoadedAssets; }
         static const AssetRegistry& GetAssetRegistry() { return sAssetRegistry; }
         static const AssetCache& GetMemoryOnlyAssets() { return sMemoryAssets; }
+        static std::vector<AssetHandle> GetAssetsWithType(AssetType type);
 
-        template<typename AssetType, typename... Args>
+        template<IsAsset T, typename... Args>
         static AssetHandle CreateMemoryOnlyAsset(Args&&... args)
         {
-            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>(), "CreateMemoryOnlyAsset only works for types derived from Asset");
-
-            Ref<AssetType> asset = Ref<AssetType>::Create(std::forward<Args>(args)...);
+            Ref<T> asset = Ref<T>::Create(std::forward<Args>(args)...);
             asset->handle = AssetHandle();
 
             sMemoryAssets[asset->handle] = asset;
@@ -157,16 +154,14 @@ namespace Laby {
         }
 
     private:
-        template<typename AssetType, typename... Args>
-        static Ref<AssetType> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
+        template<IsAsset T, typename... Args>
+        static Ref<T> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
         {
-            LAB_STATIC_ASSERT(IsDerivedFrom<Asset, AssetType>());
-
             AssetMetadata metadata;
             metadata.filepath = directory + filename;
             metadata.handle = handle;
 
-            Ref<AssetType> newAsset = AssetType::Create(std::forward<Args>(args)...);
+            Ref<T> newAsset = Ref<T>::Create(std::forward<Args>(args)...);
             newAsset->handle = metadata.handle;
 
             sLoadedAssets[metadata.handle] = newAsset;

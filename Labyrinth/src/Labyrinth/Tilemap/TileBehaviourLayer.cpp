@@ -6,9 +6,9 @@ namespace Laby {
     using Direction = GridPos<i32>;
     static constexpr Direction sDirections[4] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
-    static TilePos AddDirection(const TilePos& pos, usize index) { return { pos.x + sDirections[index].x, pos.y + sDirections[index].y }; }
-    static TilePos GetLowestNeighbour(const std::map<TilePos, usize>& vertexCount, const TilePos& currentPos, usize& currentDirectionIndex);
-    static void TraverseR(const std::map<TilePos, usize>& vertexCount, Shape& vertices, TilePos& currentPos, usize& dIndex);
+    static BehaviourPos AddDirection(const BehaviourPos& pos, usize index) { return { pos.x + sDirections[index].x, pos.y + sDirections[index].y }; }
+    static BehaviourPos GetLowestNeighbour(const std::map<BehaviourPos, usize>& vertexCount, const BehaviourPos& currentPos, usize& currentDirectionIndex);
+    static void TraverseR(const std::map<BehaviourPos, usize>& vertexCount, Shape& vertices, BehaviourPos& currentPos, usize& dIndex);
     static ChainShape TraverseShape(const Shape& shape);
     static glm::vec2 GetExtents(const Shape& shape);
 
@@ -119,9 +119,9 @@ namespace Laby {
         Static Function Definitions    
     */
 
-    TilePos GetLowestNeighbour(const std::map<TilePos, usize>& vertexCount, const TilePos& currentPos, usize& currentDirectionIndex)
+    BehaviourPos GetLowestNeighbour(const std::map<BehaviourPos, usize>& vertexCount, const BehaviourPos& currentPos, usize& currentDirectionIndex)
     {
-        TilePos neighbours[3] = {
+        BehaviourPos neighbours[3] = {
             AddDirection(currentPos, ++currentDirectionIndex),
             AddDirection(currentPos, ++currentDirectionIndex),
             AddDirection(currentPos, ++currentDirectionIndex)
@@ -145,7 +145,7 @@ namespace Laby {
         return AddDirection(currentPos, currentDirectionIndex);
     }
 
-    void TraverseR(const std::map<TilePos, usize>& vertexCount, Shape& vertices, TilePos& currentPos, usize& dIndex)
+    void TraverseR(const std::map<BehaviourPos, usize>& vertexCount, Shape& vertices, BehaviourPos& currentPos, usize& dIndex)
     {
         // Completed the loop
         if (!vertices.empty() && currentPos == vertices[0])
@@ -178,8 +178,8 @@ namespace Laby {
     ChainShape TraverseShape(const Shape& shape)
     {
         // Add all vertices of all squares 
-        std::map<TilePos, usize> vertexCount;
-        for (const TilePos& pos : shape)
+        std::map<BehaviourPos, usize> vertexCount;
+        for (const BehaviourPos& pos : shape)
         {
             vertexCount[pos]++;
             vertexCount[{ pos.x + 1, pos.y }]++;
@@ -189,10 +189,10 @@ namespace Laby {
 
         // Should be top left vertex
         const auto& [pos, count] = *vertexCount.begin();
-        TilePos nextPos = { pos.x + 1, pos.y };
+        BehaviourPos nextPos = { pos.x + 1, pos.y };
         LAB_CORE_ASSERT(vertexCount.contains(nextPos) && vertexCount.at(nextPos) == 2, "Not at correct vertex!");
 
-        TilePos currentPos = pos;
+        BehaviourPos currentPos = pos;
         usize dIndex = 3;
         Shape vertices;
         TraverseR(vertexCount, vertices, currentPos, dIndex);
@@ -204,7 +204,7 @@ namespace Laby {
     glm::vec2 GetExtents(const Shape& shape)
     {
         glm::vec2 min = glm::vec2{ Limits<f32>::Max }, max = glm::vec2{ -1 };
-        for (const TilePos& coord : shape)
+        for (const BehaviourPos& coord : shape)
         {
             min.x = std::min(min.x, (f32)coord.x);
             min.y = std::min(min.y, (f32)coord.y);

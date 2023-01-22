@@ -45,4 +45,7 @@ namespace Laby {
 			return !(*this == other);
 		}
 	};
+
+	template<typename T>
+	concept IsAsset = DerivedFrom<Asset, T>;
 }

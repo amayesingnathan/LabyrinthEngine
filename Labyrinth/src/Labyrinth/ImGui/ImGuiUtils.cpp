@@ -36,6 +36,11 @@ namespace Laby {
 		return *(ImVec4*)&vec;
 	}
 
+	bool ImGuiUtils::IsMouseDown(MouseCode button)
+	{
+		return ImGui::IsMouseDown(button);
+	}
+
 	glm::vec2 ImGuiUtils::AvailableRegion()
 	{
 		return ToGLM(ImGui::GetWindowContentRegionMax());

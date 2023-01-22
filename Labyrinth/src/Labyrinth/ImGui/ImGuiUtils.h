@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/IO/MouseCodes.h>
 
 struct ImVec2;
 struct ImVec3;
@@ -22,6 +22,8 @@ namespace Laby {
 		static const ImVec2& FromGLM(const glm::vec2& vec);
 		static const ImVec3& FromGLM(const glm::vec3& vec);
 		static const ImVec4& FromGLM(const glm::vec4& vec);
+
+		static bool IsMouseDown(MouseCode button);
 
 		static glm::vec2 AvailableRegion();
 
