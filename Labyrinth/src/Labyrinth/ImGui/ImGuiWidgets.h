@@ -4,6 +4,7 @@
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Renderer/IRenderable.h>
 #include <Labyrinth/Scene/Entity.h>
+#include <Labyrinth/Tools/StringUtils.h>
 
 #include "ImGuiUtils.h"
 
@@ -51,8 +52,8 @@ namespace Laby {
 		static void AddMenuItem(UI::PopUpContext* context, std::string_view heading, Action<> action);
 		static void EndContextPopup(UI::PopUpContext* popup);
 
-		static void Label(std::string_view text, ...);
-		static void LabelWrapped(std::string_view text, ...);
+		static void Label(std::string_view fmt);
+		static void LabelWrapped(std::string_view fmt);
 
 		static void StringEdit(std::string_view label, std::string& field);
 		static void PathEdit(std::string_view label, fs::path& field);
@@ -106,9 +107,9 @@ namespace Laby {
 		}
 
 		static void FloatEdit(std::string_view label, f32& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-		static void FloatEdit(std::string_view label, f64& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
+		static void DoubleEdit(std::string_view label, f64& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
 		static void FloatEdit(std::string_view label, f32 field, Action<f32> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-		static void FloatEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
+		static void DoubleEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
 
 		static void Vector2Edit(std::string_view label, glm::vec2& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
 		static void Vector3Edit(std::string_view label, glm::vec3& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);

@@ -15,6 +15,7 @@
 
 #include <Labyrinth/Editor/Panels/ContentBrowserPanel.h>
 #include <Labyrinth/Editor/Panels/OptionsPanel.h>
+#include <Labyrinth/Editor/Panels/StatisticsPanel.h>
 
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
 #include <Labyrinth/Editor/Modals/NewProjectModal.h>
@@ -64,6 +65,7 @@ namespace Laby {
 		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mCurrentScene);
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<OptionsPanel>("Options", mEditorData);
+		PanelManager::Register<StatisticsPanel>("Statistics", mEditorData.hoveredEntity);
 
 		LoadSettings();
 
@@ -93,6 +95,11 @@ namespace Laby {
 			mEditorData.camera.setViewportSize(mEditorData.viewportSize.x, mEditorData.viewportSize.y);
 			mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 		}
+
+		Renderer2D::ResetStats();
+
+		PanelManager::Update(ts);
+		ModalManager::Update(ts);
 
 		mFramebuffer->bind();
 		Renderer::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
