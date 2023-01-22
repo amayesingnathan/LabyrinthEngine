@@ -12,12 +12,12 @@ namespace Laby {
 	};
 
 	using TileBehaviourGrid = Grid<TileBehaviourData>;
-	using TilePos = TileBehaviourGrid::Position;
-	using Shape = std::vector<TilePos>;
+	using BehaviourPos = TileBehaviourGrid::Position;
+	using Shape = std::vector<BehaviourPos>;
 
 	struct TileScriptData
 	{
-		TilePos pos;
+		BehaviourPos pos;
 		const std::string& script;
 
 		TileScriptData(usize x, usize y, const std::string& behaviour)

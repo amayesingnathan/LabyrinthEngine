@@ -16,6 +16,7 @@
 #include <Labyrinth/Editor/Panels/ContentBrowserPanel.h>
 #include <Labyrinth/Editor/Panels/OptionsPanel.h>
 #include <Labyrinth/Editor/Panels/StatisticsPanel.h>
+#include <Labyrinth/Editor/Panels/TilemapPanel.h>
 
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
 #include <Labyrinth/Editor/Modals/NewProjectModal.h>
@@ -66,6 +67,7 @@ namespace Laby {
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<OptionsPanel>("Options", mEditorData);
 		PanelManager::Register<StatisticsPanel>("Statistics", mEditorData.hoveredEntity);
+		PanelManager::Register<TilemapPanel>("Tilemaps");
 
 		LoadSettings();
 

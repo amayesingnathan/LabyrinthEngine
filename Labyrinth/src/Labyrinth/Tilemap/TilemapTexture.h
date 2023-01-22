@@ -21,6 +21,7 @@ namespace Laby {
 		const std::unordered_set<AssetHandle>& getSheets() const { return mTilePalette.getSheets(); }
 
 	private:
+		void addLayer(const TileRenderLayer& layer) { mLayers.emplace_back(layer); RenderTexture();}
 		void addLayer(TileRenderLayer&& layer) { mLayers.emplace_back(std::move(layer)); RenderTexture();}
 
 	private:
@@ -35,6 +36,7 @@ namespace Laby {
 		OrthographicCamera mCamera;
 
 		friend class Tilemap;
+		friend class TilemapUtils;
 
 	private:
 		static constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
