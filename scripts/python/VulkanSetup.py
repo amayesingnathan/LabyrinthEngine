@@ -17,6 +17,15 @@ class VulkanConfiguration:
     installVulkanVersion = "1.3.216.0"
     vulkanDirectory = "./Labyrinth/dependencies/VulkanSDK"
 
+    if platform.system() == "Windows":
+        vulkanPlatform = "windows"
+        vulkanFilename = "vulkan_sdk.exe"
+        vulkanExecPath = f"{vulkanDirectory}/VulkanSDK-{installVulkanVersion}-Installer.exe"
+    elif platform.system() == "Linux":
+        vulkanPlatform = "linux"
+        vulkanFilename = "vulkan_sdk.tar.gz"
+        vulkanExecPath = f"{vulkanDirectory}/{installVulkanVersion}/vulkan_sdk"
+
     @classmethod
     def Validate(cls):
         if (not cls.CheckVulkanSDK()):
@@ -54,12 +63,15 @@ class VulkanConfiguration:
                 return
             permissionGranted = (reply == 'y')
 
-        vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{cls.installVulkanVersion}/windows/VulkanSDK-{cls.installVulkanVersion}-Installer.exe"
-        vulkanPath = f"{cls.vulkanDirectory}/VulkanSDK-{cls.installVulkanVersion}-Installer.exe"
-        print("Downloading {0:s} to {1:s}".format(vulkanInstallURL, vulkanPath))
-        Utils.DownloadFile(vulkanInstallURL, vulkanPath)
-        print("Running Vulkan SDK installer...")
-        os.startfile(os.path.abspath(vulkanPath))
+        vulkanInstallURL = f"https://sdk.lunarg.com/sdk/download/{cls.installVulkanVersion}/{cls.vulkanPlatform}/{cls.vulkanFilename}"
+        vulkanInstallPath = f"{cls.vulkanDirectory}/{cls.vulkanFilename}"
+        print("Downloading {0:s} to {1:s}".format(vulkanInstallURL, vulkanInstallPath))
+        Utils.DownloadFile(vulkanInstallURL, vulkanInstallPath)
+        print("Running Vulkan SDK installer...")        
+        if platform.system() == "linux":
+            print("Extracting", vulkanInstallPath)
+            Utils.UnpackFile(vulkanInstallPath, [], True)
+        os.startfile(os.path.abspath(vulkanExecPath))
         print("Re-run this script after installation!")
         quit()
 

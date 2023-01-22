@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Change working directory to the root of the engine.
-pushd "$(dirname ${BASH_SOURCE[0]})/.."
+pushd "$(dirname ${BASH_SOURCE[0]})/../.."
 
 echo "Generating make files..."
 dependencies/premake/bin/premake5 gmake
@@ -36,4 +36,4 @@ do
   esac
 done
 
-popd #$(dirname ${BASH_SOURCE[0]})/..
+popd #$(dirname ${BASH_SOURCE[0]})/../..

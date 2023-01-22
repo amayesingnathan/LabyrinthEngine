@@ -35,7 +35,7 @@ animation, as well as a runtime in order to export projects as full standalone g
 
 
   1. Run the setup script file found in the `scripts` folder for your target platform. This will download the required prerequisites for the project if they are not present yet.
-  2. One prerequisite is the Vulkan SDK. If it is not installed, the script will execute the `VulkanSDK.exe` file, and will prompt the user to install the SDK.
+  2. One prerequisite is the Vulkan SDK. If it is not installed, the script will download and install the Vulkan SDK install file, and will prompt the user to install the SDK.
   3. After installation, run the setup script again. If the Vulkan SDK is installed properly, it will then download the Vulkan SDK Debug libraries. (This may take a longer amount of time)
   4. After downloading and unzipping the files, a project generation script will get executed automatically, which will then generate Visual Studio or Make files depending on your platform.
 

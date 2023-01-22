@@ -26,8 +26,10 @@ class PremakeConfiguration:
 
     if platform.system() == "Windows":
         premakeSuffix = "windows.zip"
+        premakeFilter = [".exe"]
     elif platform.system() == "Linux":
         premakeSuffix = "linux.tar.gz"
+        premakeFilter = []
     else:
         premakeSuffix = ""
         
@@ -66,7 +68,7 @@ class PremakeConfiguration:
         print("Downloading {0:s} to {1:s}".format(cls.premakeZipUrls, premakePath))
         Utils.DownloadFile(cls.premakeZipUrls, premakePath)
         print("Extracting", premakePath)
-        Utils.UnpackFile(premakePath, [".exe"], deleteZipFile=True)
+        Utils.UnpackFile(premakePath, premakeFilter, True)
         print(f"Premake {cls.premakeVersion} has been downloaded to '{cls.premakeDirectory}'")
 
         premakeLicensePath = f"{cls.premakeDirectory}/LICENSE.txt"
