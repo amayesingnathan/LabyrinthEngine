@@ -42,10 +42,7 @@ namespace Laby {
 			: mEvent(event) {}
 
 		template<typename T>
-		using EventFunc = std::function<bool(T&)>;
-
-		template<typename T>
-		void dispatch(EventFunc<T> func)
+		void dispatch(Predicate<T&> func)
 		{
 			if (mEvent.type != T::GetStaticType())
 				return;

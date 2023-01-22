@@ -112,7 +112,7 @@ namespace Laby {
     namespace TypeUtils {
 
         template<size_t I, typename T, typename TupleType>
-        static constexpr size_t IndexFunction()
+        static consteval size_t IndexFunction()
         {
             LAB_STATIC_ASSERT(I < std::tuple_size_v<TupleType>, "The element is not in the tuple");
 
