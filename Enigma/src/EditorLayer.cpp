@@ -13,6 +13,7 @@
 #include <Labyrinth/Editor/PanelManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 
+#include <Labyrinth/Editor/Panels/ContentBrowserPanel.h>
 #include <Labyrinth/Editor/Panels/OptionsPanel.h>
 
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
@@ -61,6 +62,7 @@ namespace Laby {
 
 		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", mCurrentScene);
 		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mCurrentScene);
+		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<OptionsPanel>("Options", mEditorData);
 
 		LoadSettings();

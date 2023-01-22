@@ -10,6 +10,10 @@
         },
         {
             "Displayed": true,
+            "Key": "Content Browser"
+        },
+        {
+            "Displayed": true,
             "Key": "Options"
         }
     ],

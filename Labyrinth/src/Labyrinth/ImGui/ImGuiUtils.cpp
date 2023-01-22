@@ -76,6 +76,16 @@ namespace Laby {
 		ImGui::PopItemWidth();
 	}
 
+	void ImGuiUtils::PushID(std::string_view strID)
+	{
+		ImGui::PushID(strID.data());
+	}
+
+	void ImGuiUtils::PopID()
+	{
+		ImGui::PopID();
+	}
+
 	void ImGuiUtils::PushStyle(ImGuiStyleVar flags, f32 var)
 	{
 		ImGui::PushStyleVar(flags, var);
@@ -89,5 +99,15 @@ namespace Laby {
 	void ImGuiUtils::PopStyle(i32 count)
 	{
 		ImGui::PopStyleVar(count);
+	}
+
+	void ImGuiUtils::PushStyleColour(ImGuiCol flags, const glm::vec4& var)
+	{
+		ImGui::PushStyleColor(flags, FromGLM(var));
+	}
+
+	void ImGuiUtils::PopStyleColour()
+	{
+		ImGui::PopStyleColor();
 	}
 }
