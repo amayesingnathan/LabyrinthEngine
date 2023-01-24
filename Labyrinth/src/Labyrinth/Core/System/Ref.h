@@ -86,7 +86,7 @@ namespace Laby {
 			other.IncRef();
 			DecRef();
 
-			mData = other.mData;
+			mData = (T*)other.mData;
 			return *this;
 		}
 
@@ -96,7 +96,7 @@ namespace Laby {
 			other.IncRef();
 			DecRef();
 
-			mData = other.mData;
+			mData = (T*)other.mData;
 			return *this;
 		}
 

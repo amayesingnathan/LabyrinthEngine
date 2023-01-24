@@ -3,9 +3,9 @@
 
 namespace Laby {
 
-	TilePalette::TilePalette(TileID nextIndex)
-		: mNextIndex(nextIndex)
+	static bool Contains(AssetHandle handle, const std::vector<SheetData>& sheets)
 	{
+		return std::find_if(sheets.begin(), sheets.end(), [&](const SheetData& data) { return data.sheet->handle == handle; }) != sheets.end();
 	}
 
 	Ref<SubTexture2D> TilePalette::operator[](TileID textureID) const
@@ -16,34 +16,60 @@ namespace Laby {
 		return mTileset.at(textureID);
 	}
 
-	void TilePalette::add(AssetHandle spriteSheet)
+	void TilePalette::add(AssetHandle sheetHandle)
 	{
-		LAB_CORE_ASSERT(mSpriteSheets.find(spriteSheet) == mSpriteSheets.end(), "Palette already has this spritesheet!");
+		if (Contains(sheetHandle, mSpriteSheets))
+			return;
 
-		const SheetData& last = mSpriteSheets.back();
-		Ref<Texture2DSheet>
+		bool hasSheet = mSpriteSheets.empty();
+		const SheetData& last = hasSheet ? mSpriteSheets.back() : SheetData();
+		usize sheetTexCount = hasSheet ? last.sheet->subTexCount() : 0;
 
-		mSpriteSheets.emplace_back(spriteSheet);
-		Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(spriteSheet);
-		for (AssetHandle sprite : sheet->getSubTextures())
-			mTileset.emplace(mNextIndex++, AssetManager::GetAsset<SubTexture2D>(sprite));
+		Ref<Texture2DSheet> spriteSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
+		TileID nextIndex = last.startIndex + sheetTexCount;
+		mSpriteSheets.emplace_back(spriteSheet, nextIndex);
+
+		for (AssetHandle subtex : spriteSheet->getSubTextures())
+			mTileset[nextIndex++] = AssetManager::GetAsset<SubTexture2D>(subtex);
 	}
 
-	void TilePalette::remove(AssetHandle spriteSheet, std::unordered_map<TileID, TileID> mapping)
+	void TilePalette::add(AssetHandle sheetHandle, TileID nextIndex)
 	{
-		LAB_CORE_ASSERT(mSpriteSheets.find(spriteSheet) != mSpriteSheets.end(), "Palette does not contain this spritesheet!");
+		if (Contains(sheetHandle, mSpriteSheets))
+			return;
+
+		Ref<Texture2DSheet> spriteSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
+		mSpriteSheets.emplace_back(spriteSheet, nextIndex);
+
+		for (AssetHandle subtex : spriteSheet->getSubTextures())
+			mTileset[nextIndex++] = AssetManager::GetAsset<SubTexture2D>(subtex);
+	}
+
+	void TilePalette::remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping)
+	{
+		if (!Contains(sheetHandle, mSpriteSheets))
+			return;
 
 		auto tileset(std::move(mTileset));
+		std::erase_if(mSpriteSheets, [&](const SheetData& data) { return data.sheet->handle == sheetHandle; });
 
-		std::erase(mSpriteSheets, spriteSheet);
-		mTileset.clear();
-		mNextIndex = 0;
+		TileID lastIndex = 0;
+		usize lastSize = 0;
 
-		for (AssetHandle handle : mSpriteSheets)
+		for (SheetData& data : mSpriteSheets)
 		{
-			Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(handle);
-			for (AssetHandle sprite : sheet->getSubTextures())
-				mTileset.emplace(mNextIndex++, AssetManager::GetAsset<SubTexture2D>(sprite));
+			data.startIndex = lastIndex + lastSize;
+
+			lastIndex = data.startIndex;
+			lastSize = data.sheet->subTexCount();
+		}
+
+		mTileset.clear();
+		usize nextIndex = 0;
+		for (const SheetData& data : mSpriteSheets)
+		{
+			for (AssetHandle subtex : data.sheet->getSubTextures())
+				mTileset.emplace(nextIndex++, AssetManager::GetAsset<SubTexture2D>(subtex));
 		}
 
 		MapIDs(mapping, tileset);

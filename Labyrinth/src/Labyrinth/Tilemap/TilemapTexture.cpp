@@ -27,11 +27,6 @@ namespace Laby {
 		RenderTexture();
 	}
 
-	TileID TilemapTexture::getTile(usize layer, const GridPosition& pos)
-	{
-		return mLayers[layer](pos).textureID;
-	}
-
 	void TilemapTexture::setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation)
 	{
 		TileRenderData& tileData = mLayers[layer](pos);
@@ -74,7 +69,7 @@ namespace Laby {
 		mFramebuffer->unbind();
 	}
 
-	void TilemapTexture::UpdateLayers(const std::unordered_map<TileID, TileID> mapping)
+	void TilemapTexture::UpdateLayers(const std::unordered_map<TileID, TileID>& mapping)
 	{
 		for (TileRenderLayer& layer : mLayers)
 		{

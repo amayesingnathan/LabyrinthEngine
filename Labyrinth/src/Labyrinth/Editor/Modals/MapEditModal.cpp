@@ -10,9 +10,14 @@ namespace Laby {
 
     using SheetEntry = ComboEntry<AssetHandle>;
 
-    static bool HasSheet(AssetHandle sheet, const std::vector<SheetEntry>& entries)
+    static bool HasSheetEntry(AssetHandle sheet, const std::vector<SheetEntry>& entries)
     {
         return std::find_if(entries.begin(), entries.end(), [sheet](const SheetEntry& entry) { return entry.value == sheet; }) != entries.end();
+    }
+
+    static TileID GetStartIndex(Ref<Texture2DSheet> sheet, const std::vector<SheetData>& sheets)
+    {
+        return std::find_if(sheets.begin(), sheets.end(), [&](const SheetData& data) { return data.sheet == sheet; })->startIndex;
     }
 
     MapEditModal::MapEditModal(const Ref<Tilemap>& map)
@@ -25,8 +30,8 @@ namespace Laby {
         if (mEditMode == EditMode::Paint && ImGuiUtils::IsMouseDown(Mouse::ButtonLeft))
         {
             mCurrentlyPainting = true;
-            if (mHoveredTile.valid() && mHoveredTex != mCurrentTex.textureID)
-                mTilemap->setTile(mCurrentLayer, mHoveredTile, mCurrentTex.textureID);
+            if (mHoveredTile.valid() && mHoveredTex != mCurrentTex)
+                mTilemap->setTile(mCurrentLayer, mHoveredTile, mCurrentTex.textureID, mCurrentTex.rotation);
         }
         if (mCurrentlyPainting && ImGuiUtils::IsMouseReleased(Mouse::ButtonLeft))
             mCurrentlyPainting = false;
@@ -42,6 +47,8 @@ namespace Laby {
 
     void MapEditModal::onComplete()
     {
+        AssetImporter::Serialise(mTilemap);
+        AssetManager::ReloadData(mTilemap->handle);
     }
 
     void MapEditModal::onEvent(Event& e)
@@ -80,10 +87,6 @@ namespace Laby {
         {
             std::string name = fmt::format("##MapTiles({}, {})", pos.x, pos.y);
             Widgets::Button(name.c_str(), elementSize);
-            Widgets::AddDragDropTarget<TileRenderData>("MAP_EDIT_TEXTURE_ITEM", [&](const TileRenderData& data)
-            {
-                mTilemap->setTile(mCurrentLayer, pos, data.textureID, data.rotation);
-            });
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
@@ -101,11 +104,8 @@ namespace Laby {
 
         {   // Sheets on Tilemap
             std::vector<SheetEntry> tilemapSheets;
-            for (AssetHandle sheetHandle : mTilemap->getSheets())
-            {
-                Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
-                tilemapSheets.emplace_back(sheet->getName(), sheetHandle);
-            }
+            for (const SheetData& sheetData : mTilemap->getSheets())
+                tilemapSheets.emplace_back(sheetData.sheet->getName(), sheetData.sheet->handle);
 
             Ref<Texture2DSheet> tilemapSheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
             Widgets::Combobox("Tilemap Sheets", tilemapSheet ? tilemapSheet->getName() : "None", mCurrentSheet, tilemapSheets.data(), tilemapSheets.size());
@@ -114,7 +114,7 @@ namespace Laby {
             std::vector<SheetEntry> allSheets;
             for (AssetHandle sheetHandle : AssetManager::GetAssetsWithType(AssetType::TextureSheet))
             {
-                if (HasSheet(sheetHandle, tilemapSheets))
+                if (HasSheetEntry(sheetHandle, tilemapSheets))
                     continue;
 
                 Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
@@ -122,7 +122,6 @@ namespace Laby {
             }
 
             Ref<Texture2DSheet> sheetToAdd = AssetManager::GetAsset<Texture2DSheet>(mSheetToAdd);
-            Widgets::Combobox("Tilemap Sheets", tilemapSheet->getName(), mCurrentSheet, tilemapSheets.data(), tilemapSheets.size());
             Widgets::Combobox("Add", sheetToAdd ? sheetToAdd->getName() : "None", mSheetToAdd, allSheets.data(), allSheets.size());
             Widgets::SameLine();
             Widgets::Button("+", [this]() { mTilemap->addSheet(mSheetToAdd); });
@@ -130,7 +129,6 @@ namespace Laby {
 
         DrawSheet();
         Widgets::EndGroup();
-
     }
 
     void MapEditModal::DrawSheet()
@@ -178,13 +176,13 @@ namespace Laby {
         ImGuiUtils::SetButtonTransparent();
 
         Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, [&](const GridPosition& pos, const glm::vec2& elementSize)
+        {
+            std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
+            Widgets::Button(name, elementSize, [&]()
             {
-                std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
-                Widgets::Button(name, elementSize, [&]()
-                    {
-                        mCurrentTex = TileRenderData();
-                    });
+                mCurrentTex = TileRenderData(GetStartIndex(sheet, mTilemap->getSheets()) + sheet->getPositionIndex(pos));
             });
+        });
 
         ImGuiUtils::ResetButtonTransparency();
     }

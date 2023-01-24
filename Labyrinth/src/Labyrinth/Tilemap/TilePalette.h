@@ -10,22 +10,24 @@ namespace Laby {
 
 	struct SheetData
 	{
-		Ref<Texture2DSheet> sheet;
-		TileID startIndex;
+		Ref<Texture2DSheet> sheet = nullptr;
+		TileID startIndex = 0;
+
+		SheetData() = default;
+		SheetData(Ref<Texture2DSheet> spriteSheet, TileID index) : sheet(spriteSheet), startIndex(index) {}
 	};
 
 	class TilePalette
 	{
 	public:
 		TilePalette() = default;
-		TilePalette(TileID nextIndex);
 
-		usize getNextIndex() const { return mNextIndex; }
 		const std::vector<SheetData>& getSheets() const { return mSpriteSheets; }
 		const std::unordered_map<TileID, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
 
-		void add(AssetHandle spriteSheet);
-		void remove(AssetHandle spriteSheet, std::unordered_map<TileID, TileID> mapping);
+		void add(AssetHandle sheetHandle);
+		void add(AssetHandle sheetHandle, TileID nextIndex);
+		void remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping);
 
 		Ref<SubTexture2D> operator[](TileID textureID) const;
 
@@ -35,7 +37,6 @@ namespace Laby {
 	private:
 		std::vector<SheetData> mSpriteSheets;
 		std::unordered_map<TileID, Ref<SubTexture2D>> mTileset;
-		TileID mNextIndex = 0;
 	};
 
 
@@ -43,8 +44,6 @@ namespace Laby {
 	{
 		mOut << YAML::Key << "TilePalette";
 		mOut << YAML::BeginMap; // TilePalette
-
-		LAB_SERIALISE_PROPERTY(NextIndex, palette.getNextIndex(), mOut);
 
 		mOut << YAML::Key << "SpriteSheets";
 		mOut << YAML::Value << YAML::BeginSeq;
@@ -85,14 +84,9 @@ namespace YAML {
 			if (!tilePalette)
 				return false;
 
-			Laby::usize nextIndex;
-			LAB_DESERIALISE_PROPERTY(NextIndex, nextIndex, tilePalette);
-
 			auto sprites = tilePalette["Sprites"];
 			if (!sprites)
 				return false;
-
-			rhs = Laby::TilePalette(nextIndex);
 
 			for (auto sprite : sprites)
 			{
