@@ -24,11 +24,21 @@ namespace Laby {
 		static const ImVec4& FromGLM(const glm::vec4& vec);
 
 		static bool IsMouseDown(MouseCode button);
+		static bool IsMouseReleased(MouseCode button);
+
+		static glm::vec2 CursorPos();
+		static void SetCursorPos(const glm::vec2& pos);
+		static void SetCursorPosX(f32 pos);
+		static void SetCursorPosY(f32 pos);
+
+		static void SetButtonTransparent();
+		static void ResetButtonTransparency();
 
 		static glm::vec2 AvailableRegion();
 
 		static f32 FontSize();
 		static glm::vec2 FramePadding();
+		static f32 FrameHeightWithSpacing();
 
 		static f32 LineHeight();
 

@@ -19,6 +19,28 @@ namespace Laby {
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
 	}
 
+	void TilemapTexture::removeSheet(AssetHandle handle)
+	{
+		std::unordered_map<TileID, TileID> tileMapping;
+		mTilePalette.remove(handle, tileMapping);
+		UpdateLayers(tileMapping);
+		RenderTexture();
+	}
+
+	TileID TilemapTexture::getTile(usize layer, const GridPosition& pos)
+	{
+		return mLayers[layer](pos).textureID;
+	}
+
+	void TilemapTexture::setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation)
+	{
+		TileRenderData& tileData = mLayers[layer](pos);
+		tileData.textureID = tile;
+		tileData.rotation = rotation;
+
+		RenderTexture();
+	}
+
 	void TilemapTexture::RenderTexture()
 	{
 		mFramebuffer->bind();
@@ -35,11 +57,14 @@ namespace Laby {
 			{
 				for (usize x = 0; x < mWidth; x++)
 				{
+					const auto& tileData = layer(x, y);
+					Ref<SubTexture2D> tex = mTilePalette[tileData.textureID];
+					if (!tex)
+						continue;
+
 					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
 					pos += 0.5f * TileSizeF;
-
-					const auto& tileData = layer(x, y);
-					Renderer2D::DrawRotatedQuad(pos, TileSizeF, tileData.rotation, mTilePalette[tileData.textureID]);
+					Renderer2D::DrawRotatedQuad(pos, TileSizeF, tileData.rotation, tex);
 				}
 			}
 		}
@@ -47,5 +72,14 @@ namespace Laby {
 		Renderer2D::EndState();
 		Renderer::EnableDepth();
 		mFramebuffer->unbind();
+	}
+
+	void TilemapTexture::UpdateLayers(const std::unordered_map<TileID, TileID> mapping)
+	{
+		for (TileRenderLayer& layer : mLayers)
+		{
+			for (TileRenderData& tileData : layer)
+				tileData.textureID = mapping.at(tileData.textureID);
+		}
 	}
 }

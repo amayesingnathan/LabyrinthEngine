@@ -24,51 +24,34 @@ namespace Laby {
 		mTileCountY = (u32)(round(mTexture->getHeight() / tileSize.y));
 	}
 
-	bool Texture2DSheet::hasSubTex(AssetHandle id) const
-	{
-		return mSubTextures.contains(id);
-	}
-
-	AssetHandle Texture2DSheet::getSubTex(AssetHandle id)
-	{
-		if (!hasSubTex(id))
-		{
-			LAB_CORE_WARN("Subtexture with the name {0} does not exist!", id);
-			return 0;
-		}
-
-		return *mSubTextures.find(id);
-	}
-
-	void Texture2DSheet::destroyTileset()
-	{
-		for (AssetHandle handle : mSubTextures)
-			AssetManager::DestroyAsset(handle);
-		FileUtils::RemoveDir(AssetManager::GetMetadata(handle).filepath.parent_path() / "subtextures");
-		mSubTextures.clear();
-	}
-
-	AssetHandle Texture2DSheet::CreateSubTex(usize index, const glm::vec2& coords, const glm::vec2& spriteSize)
-	{
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}.lstex", index), fmt::format("spritesheets/{}/subtextures", mName), Ref<Texture2DSheet>(this), coords, spriteSize);
-		return subTex->handle;
-	}
-
-	AssetHandle Texture2DSheet::CreateSubTex(usize index, const glm::vec2 coords[4])
-	{
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}.lstex", index), fmt::format("spritesheets/{}/subtextures", mName), Ref<Texture2DSheet>(this), coords);
-		return subTex->handle;
-	}
-
-	void Texture2DSheet::GenerateTileset()
+	void Texture2DSheet::generateTileset()
 	{
 		usize count = 0;
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
+			{
 				CreateSubTex(count++, { StaticCast<f32>(x), StaticCast<f32>(y) });
+			}
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
+	}
+
+	void Texture2DSheet::destroyTileset()
+	{
+		for (const auto& [pos, handle] : mSubTextures)
+			AssetManager::DestroyAsset(handle);
+		FileUtils::RemoveDir(AssetManager::GetMetadata(handle).filepath.parent_path() / "subtextures");
+		mSubTextures.clear();
+	}
+
+	void Texture2DSheet::CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
+	{
+		glm::vec2 coordsF = { (f32)coords.x, (f32)coords.y };
+		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}.lstex", index), 
+																			  fmt::format("spritesheets/{}/subtextures", mName), 
+																			  Ref<Texture2DSheet>(this), coordsF, spriteSize);
+		mSubTextures[coords] = subTex->handle;
 	}
 
 	/*
@@ -90,8 +73,6 @@ namespace Laby {
 		mTexCoords[1] = { max.x , max.y };
 		mTexCoords[2] = { max.x , min.y };
 		mTexCoords[3] = { min.x , min.y };
-
-		mSheet->mSubTextures.emplace(handle);
 	}
 
 	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4])
@@ -99,25 +80,16 @@ namespace Laby {
 	{
 		for (usize i = 0; i < 4; i++)
 			mTexCoords[i] = coords[i];
-
-		mSheet->mSubTextures.emplace(handle);
-	}
-
-	SubTexture2D::SubTexture2D(const Ref<Texture2D>& tex)
-	{
-		//Y coordinates are flipped compared to usual so that sub texture coordinates are given from top left of sheet.
-		mTexCoords[0] = { 0.f, 0.f };
-		mTexCoords[1] = { 1.f, 0.f };
-		mTexCoords[2] = { 1.f, 1.f };
-		mTexCoords[3] = { 0.f, 1.f };
-
-		mSheet = Ref<Texture2DSheet>::Create("NoSheetName", tex, glm::vec2{1.f, 1.f});
-
-		mSheet->mSubTextures.emplace(handle);
 	}
 
 	SubTexture2D::~SubTexture2D()
 	{
-		mSheet->mSubTextures.erase(handle);
+		mSheet->mSubTextures.erase(getPosition());
+	}
+
+	GridPosition SubTexture2D::getPosition() const
+	{
+		glm::vec2 pos = mTexCoords[3] / mSheet->mTileSize;
+		return { (usize)std::round(pos.x), (usize)std::round(pos.y) };
 	}
 }

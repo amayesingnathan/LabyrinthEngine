@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/IO/YAML.h>
 
 namespace Laby {
 
@@ -16,6 +17,19 @@ namespace Laby {
 
 	private:
 		u64 mID;
+	};
+}
+
+namespace YAML {
+
+	template<>
+	struct convert<Laby::UUID>
+	{
+		inline static bool decode(const Node& node, Laby::UUID& rhs)
+		{
+			rhs = node.as<Laby::u64>();
+			return true;
+		}
 	};
 }
 

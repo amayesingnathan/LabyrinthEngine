@@ -3,6 +3,7 @@
 #include "Texture.h"
 
 #include <Labyrinth/Assets/Asset.h>
+#include <Labyrinth/Containers/Grid.h>
 
 #include <map>
 
@@ -20,9 +21,8 @@ namespace Laby {
 		Texture2DSheet(const std::string& name, const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
 		Texture2DSheet(const std::string& name, const std::string& filepath, const glm::vec2& tileSize);
 
-		operator Ref<Texture2D>() const { return mTexture; }
-
 		const std::string& getName() const { return mName; }
+		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
 		usize getWidth() const { return mTexture->getWidth(); }
 		usize getHeight() const { return mTexture->getHeight(); }
@@ -30,35 +30,25 @@ namespace Laby {
 		u32 getTileCountX() const { return mTileCountX; }
 		u32 getTileCountY() const { return mTileCountY; }
 
-		glm::vec2 getTileSize() const { return mTileSize; }
-		u32 getTileWidth() const { return StaticCast<u32>(mTileSize.x); }
-		u32 getTileHeight() const { return StaticCast<u32>(mTileSize.y); }
+		const glm::vec2& getTileSize() const { return mTileSize; }
 
-		glm::vec2 getTileSizeN() const { return { mTileSize.x / mTexture->getWidth(), mTileSize.y / mTexture->getHeight() }; }
-
-		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
-
-		bool hasSubTex(AssetHandle id) const;
-		AssetHandle getSubTex(AssetHandle id);
-
+		void generateTileset();
 		void destroyTileset();
 
-		const std::unordered_set<AssetHandle>& getSubTextures() const { return mSubTextures; }
+		const std::unordered_map<GridPosition, AssetHandle>& getSubTextures() const { return mSubTextures; }
 
 	private:
-		void GenerateTileset();
-
-		AssetHandle CreateSubTex(usize index, const glm::vec2& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
-		AssetHandle CreateSubTex(usize index, const glm::vec2 coords[4]);
+		void CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
 
 	private:
 		std::string mName;
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
 		u32 mTileCountX, mTileCountY;
-		std::unordered_set<AssetHandle> mSubTextures;
+		std::unordered_map<GridPosition, AssetHandle> mSubTextures;
 
 		friend class SubTexture2D;
+		friend class TextureSheetSerialiser;
 	};
 
 	class SubTexture2D : public IRenderable, public Asset
@@ -69,12 +59,12 @@ namespace Laby {
 	public:
 		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& coords, const glm::vec2& spriteSize);
 		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4]);
-		SubTexture2D(const Ref<Texture2D>& sheet);
 		~SubTexture2D();
 
 		u32 getTextureID() const override { return mSheet->mTexture->getTextureID(); }
 		void bindTexture(u32 slot = 0) const override { return mSheet->mTexture->bindTexture(); }
 		const glm::vec2* getTextureCoords() const override { return mTexCoords; }
+		GridPosition getPosition() const;
 
 		Ref<Texture2DSheet> getSheet() const { return mSheet; }
 		Ref<Texture2D> getBaseTex() const { return mSheet->mTexture; }

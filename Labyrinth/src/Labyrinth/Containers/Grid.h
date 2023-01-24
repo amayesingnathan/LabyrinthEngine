@@ -3,36 +3,40 @@
 #include <vector>
 
 #include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/IO/YAML.h>
 
 namespace Laby {
 
 	template<typename T>
 	concept IsIntegral = std::is_integral_v<T>;
 
-	template<IsIntegral T = usize>
-	struct GridPos
+	template<IsIntegral T>
+	struct Coordinate
 	{
-		usize x = Limits<T>::Max, y = Limits<T>::Max;
+		static constexpr T NullCoord = Limits<T>::Max;
+		T x = NullCoord, y = NullCoord;
 
-		GridPos() = default;
-		constexpr GridPos(T _x, T _y) : x(_x), y(_y) {}
+		Coordinate() = default;
+		constexpr Coordinate(T _x, T _y) : x(_x), y(_y) {}
 
-		bool operator==(const GridPos& other) const { return (x == other.x && y == other.y); }
-		bool operator<(const GridPos& other) const
+		bool operator==(const Coordinate& other) const { return (x == other.x && y == other.y); }
+		bool operator<(const Coordinate& other) const
 		{
 			if (y == other.y)
 				return x < other.x;
 			return y < other.y;
 		}
+
+		bool valid() const { return x != NullCoord && y != NullCoord;}
 	};
 
-	using GridPosition = GridPos<>;
+	using GridPosition = Coordinate<u32>;
 
-	template<typename T>
+	template<typename T, IsIntegral TPos = u32>
 	class Grid
 	{
 	public:
-		using Position = GridPos<>;
+		using Position = Coordinate<TPos>;
 
 		using GridBool = u8;
 		static constexpr int GridTrue = 1;
@@ -75,5 +79,43 @@ namespace Laby {
 	private:
 		std::vector<T> mData;
 	};
+	
+	template<typename T>
+	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const Coordinate<T>& data)
+	{
+		mOut << YAML::Flow;
+		mOut << YAML::BeginSeq << data.x << data.y << YAML::EndSeq;
+		return mOut;
+	}
+}
 
+namespace YAML {
+
+	template<typename T>
+	struct convert<Laby::Coordinate<T>>
+	{
+		inline static bool decode(const Node& node, Laby::Coordinate<T>& rhs)
+		{
+			if (!node.IsSequence() || node.size() != 2)
+				return false;
+
+			rhs.x = node[0].as<T>();
+			rhs.y = node[1].as<T>();
+			return true;
+		}
+	};
+}
+
+namespace std {
+	template<typename T> struct hash;
+
+	template<typename T>
+	struct hash<Laby::Coordinate<T>>
+	{
+		std::size_t operator()(const Laby::Coordinate<T>& pos) const
+		{
+			Laby::u64 combo = (Laby::u64)pos.x | (Laby::u64)pos.y << 32;
+			return std::hash()(combo);
+		}
+	};
 }

@@ -11,7 +11,7 @@ namespace Laby {
 		std::string script;
 	};
 
-	using TileBehaviourGrid = Grid<TileBehaviourData>;
+	using TileBehaviourGrid = Grid<TileBehaviourData, usize>;
 	using BehaviourPos = TileBehaviourGrid::Position;
 	using Shape = std::vector<BehaviourPos>;
 

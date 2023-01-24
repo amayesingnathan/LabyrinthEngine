@@ -55,14 +55,14 @@ namespace Laby {
 		template<typename Other>
 		Ref(const Ref<Other>& other)
 		{
-			mData = StaticCast<T>(other.mData);
+			mData = (T*)other.mData;
 			IncRef();
 		}
 
 		template<typename Other>
 		Ref(Ref<Other>&& other)
 		{
-			mData = StaticCast<T>(other.mData);
+			mData = (T*)other.mData;
 			other.mData = nullptr;
 		}
 
@@ -207,4 +207,18 @@ namespace Laby {
 	private:
 		T* mData = nullptr;
 	};
+}
+
+namespace std {
+	template<typename T> struct hash;
+
+	template<typename T>
+	struct hash<Laby::Ref<T>>
+	{
+		std::size_t operator()(const Laby::Ref<T>& ref) const
+		{
+			return std::hash<const void*>()((const void*)ref.data());
+		}
+	};
+
 }

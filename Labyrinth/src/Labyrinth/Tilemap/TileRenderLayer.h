@@ -3,13 +3,9 @@
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/YAML.h>
 
-namespace Laby {
+#include "TileRenderData.h"
 
-	struct TileRenderData
-	{
-		usize textureID;
-		f32 rotation;
-	};
+namespace Laby {
 
 	class TileRenderLayer : public Grid<TileRenderData>
 	{

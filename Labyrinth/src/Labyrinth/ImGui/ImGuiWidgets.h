@@ -33,6 +33,12 @@ namespace Laby {
 		static void NextColumn();
 		static void EndColumns();
 
+		static void BeginChild(std::string_view strID, const glm::vec2& size, bool border = false);
+		static void EndChild();
+
+		static void BeginGroup();
+		static void EndGroup();
+
 		static void TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen);
 
 		static UI::MenuBar* BeginMenuBar();
@@ -120,7 +126,7 @@ namespace Laby {
 
 		static void ColourEdit(std::string_view label, glm::vec4& colour);
 
-		static void Image(Ref<IRenderable> image, const glm::vec2& size);
+		static void Image(Ref<IRenderable> image, const glm::vec2& size, f32 rotation = 0.0f);
 		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {}, int padding = -1);
 
 		template<typename T>
@@ -140,12 +146,13 @@ namespace Laby {
 		}
 
 		static void OnWidgetSelected(Action<> action);
+		static void OnWidgetHovered(Action<> action);
 
 		static void Checkbox(std::string_view label, bool& value, Action<> action = {});
 		static void Button(std::string_view label, Action<> action = {});
 		static void Button(std::string_view label, const glm::vec2& size, Action<> action = {});
 
-		template<typename T>
+		template<IsStandard T>
 		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T>* table, usize tableLength)
 		{
 			std::vector<const IComboEntry*> internalTable(tableLength);
@@ -161,7 +168,7 @@ namespace Laby {
 			memcpy(&value, comboValue, sizeof(T));
 		}
 
-		template<typename T, typename Func>
+		template<IsStandard T, typename Func>
 		static void Combobox(std::string_view label, std::string_view preview, T value, const ComboEntry<T>* table, usize tableLength, Func onEdit)
 		{
 			std::vector<const IComboEntry*> internalTable(tableLength);
