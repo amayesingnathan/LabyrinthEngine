@@ -14,11 +14,12 @@ namespace Laby {
 		TilemapTexture(usize width, usize height);
 
 		void addSheet(AssetHandle handle) { mTilePalette.add(handle); }
+		void addSheet(AssetHandle handle, TileID startIndex) { mTilePalette.add(handle, startIndex); }
 		void removeSheet(AssetHandle handle);
 
 		Ref<SubTexture2D> getTileTex(TileID id) const { return mTilePalette[id]; }
 
-		TileID getTile(usize layer, const GridPosition& pos);
+		const TileRenderData& getTile(usize layer, const GridPosition& pos) const { return mLayers[layer](pos); }
 		void setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation);
 
 		void addLayer() { mLayers.emplace_back(mLayers.size(), mWidth, mHeight); }
@@ -32,7 +33,7 @@ namespace Laby {
 
 	private:
 		void RenderTexture();
-		void UpdateLayers(const std::unordered_map<TileID, TileID> mapping);
+		void UpdateLayers(const std::unordered_map<TileID, TileID>& mapping);
 
 	private:
 		const usize mWidth = 0, mHeight = 0;

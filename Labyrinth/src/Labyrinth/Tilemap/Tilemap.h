@@ -19,11 +19,12 @@ namespace Laby {
 		usize getHeight() const { return mTexture.mHeight; }
 
 		void addSheet(AssetHandle handle) { mTexture.addSheet(handle); }
+		void addSheet(AssetHandle handle, TileID startIndex) { mTexture.addSheet(handle, startIndex); }
 		void removeSheet(AssetHandle handle) { mTexture.removeSheet(handle); }
 
 		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
 
-		TileID getTile(usize layer, const GridPosition& pos) { return mTexture.getTile(layer, pos); }
+		const TileRenderData& getTile(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
 		void setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
 
 		void addLayer() { mTexture.addLayer(); }

@@ -35,7 +35,9 @@ namespace Laby {
 		void generateTileset();
 		void destroyTileset();
 
-		const std::unordered_map<GridPosition, AssetHandle>& getSubTextures() const { return mSubTextures; }
+		u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
+		usize subTexCount() const { return mSubTextures.size(); }
+		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
 
 	private:
 		void CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
@@ -45,7 +47,7 @@ namespace Laby {
 		Ref<Texture2D> mTexture;
 		glm::vec2 mTileSize;
 		u32 mTileCountX, mTileCountY;
-		std::unordered_map<GridPosition, AssetHandle> mSubTextures;
+		std::vector<AssetHandle> mSubTextures;
 
 		friend class SubTexture2D;
 		friend class TextureSheetSerialiser;
@@ -59,7 +61,7 @@ namespace Laby {
 	public:
 		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& coords, const glm::vec2& spriteSize);
 		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4]);
-		~SubTexture2D();
+		~SubTexture2D() = default;
 
 		u32 getTextureID() const override { return mSheet->mTexture->getTextureID(); }
 		void bindTexture(u32 slot = 0) const override { return mSheet->mTexture->bindTexture(); }

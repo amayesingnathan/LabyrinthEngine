@@ -30,16 +30,14 @@ namespace Laby {
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
-			{
-				CreateSubTex(count++, { StaticCast<f32>(x), StaticCast<f32>(y) });
-			}
+				CreateSubTex(count++, { x, y });
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 	}
 
 	void Texture2DSheet::destroyTileset()
 	{
-		for (const auto& [pos, handle] : mSubTextures)
+		for (AssetHandle handle : mSubTextures)
 			AssetManager::DestroyAsset(handle);
 		FileUtils::RemoveDir(AssetManager::GetMetadata(handle).filepath.parent_path() / "subtextures");
 		mSubTextures.clear();
@@ -51,7 +49,7 @@ namespace Laby {
 		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}.lstex", index), 
 																			  fmt::format("spritesheets/{}/subtextures", mName), 
 																			  Ref<Texture2DSheet>(this), coordsF, spriteSize);
-		mSubTextures[coords] = subTex->handle;
+		mSubTextures.emplace_back(subTex->handle);
 	}
 
 	/*
@@ -80,11 +78,6 @@ namespace Laby {
 	{
 		for (usize i = 0; i < 4; i++)
 			mTexCoords[i] = coords[i];
-	}
-
-	SubTexture2D::~SubTexture2D()
-	{
-		mSheet->mSubTextures.erase(getPosition());
 	}
 
 	GridPosition SubTexture2D::getPosition() const

@@ -100,13 +100,8 @@ namespace Laby {
 
 		out << YAML::Key << "SubTextures";
 		out << YAML::Value << YAML::BeginSeq;
-		for (const auto [pos, handle] : sheet->getSubTextures())
-		{
-			out << YAML::BeginMap;
-			LAB_SERIALISE_PROPERTY(Position, pos, out);
-			LAB_SERIALISE_PROPERTY(Handle, handle, out);
-			out << YAML::EndMap;
-		}
+		for (AssetHandle handle : sheet->getSubTextures())
+			out << handle;
 		out << YAML::EndSeq;
 		out << YAML::EndMap; // SubTextures
 
@@ -140,13 +135,7 @@ namespace Laby {
 
 		auto subTextures = texNode["SubTextures"];
 		for (auto subTexNode: subTextures)
-		{
-			GridPosition pos;
-			AssetHandle handle;
-			LAB_DESERIALISE_PROPERTY(Position, pos, subTexNode);
-			LAB_DESERIALISE_PROPERTY(Handle, handle, subTexNode);
-			sheet->mSubTextures.emplace(pos, handle);
-		}
+			sheet->mSubTextures.emplace_back(subTexNode.as<AssetHandle>());
 
 		if (sheet->mSubTextures.empty())
 			sheet->generateTileset();
@@ -198,11 +187,11 @@ namespace Laby {
 
 			out << YAML::Key << "SpriteSheets";
 			out << YAML::Value << YAML::BeginSeq;
-			for (const SheetData& sheet : tilemap->getSheets())
+			for (const SheetData& data : tilemap->getSheets())
 			{
 				out << YAML::BeginMap;
-				LAB_SERIALISE_PROPERTY(SheetHandle, sheet.handle, out);
-				LAB_SERIALISE_PROPERTY(StartIndex, sheet.startIndex, out);
+				LAB_SERIALISE_PROPERTY(SheetHandle, data.sheet->handle, out);
+				LAB_SERIALISE_PROPERTY(StartIndex, data.startIndex, out);
 				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
@@ -249,7 +238,7 @@ namespace Laby {
 			LAB_DESERIALISE_PROPERTY_DEF(SheetHandle, handle, sheet, 0);
 			LAB_DESERIALISE_PROPERTY(StartIndex, startIndex, sheet);
 
-			tilemap->addSheet(handle);
+			tilemap->addSheet(handle, startIndex);
 		}
 
 		auto mapLayers = mapNode["Texture"];

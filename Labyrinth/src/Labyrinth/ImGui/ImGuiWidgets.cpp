@@ -46,12 +46,12 @@ namespace Laby {
 		ImVec2 pos = ImGui::GetCursorPos();
 		glm::vec2 tileSize = { size.x / width, size.y / height };
 
-		for (usize y = 0; y < width; y++)
+		for (u32 y = 0; y < width; y++)
 		{
-			for (usize x = 0; x < height; x++)
+			for (u32 x = 0; x < height; x++)
 			{
-				ImGui::SetCursorPosX(pos.x + (x * tileSize.x));
-				ImGui::SetCursorPosY(pos.y + (y * tileSize.y));
+				ImGui::SetCursorPosX(pos.x + ((f32)x * tileSize.x));
+				ImGui::SetCursorPosY(pos.y + ((f32)y * tileSize.y));
 
 				func({ x, y }, tileSize);
 			}

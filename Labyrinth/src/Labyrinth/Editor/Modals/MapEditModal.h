@@ -47,7 +47,7 @@ namespace Laby {
 		TileRenderData mCurrentTex;
 
 		GridPosition mHoveredTile;
-		TileID mHoveredTex;
+		TileRenderData mHoveredTex;
 	};
 
 }

@@ -14,8 +14,8 @@ namespace Laby {
 
 		for (const auto& layer : other->mTexture.mLayers)
 			copy->addLayer(layer);
-		for (const auto& sheet : other->mTexture.getSheets())
-			copy->addSheet(sheet);
+		for (const auto& sheetData : other->mTexture.getSheets())
+			copy->addSheet(sheetData.sheet->handle, sheetData.startIndex);
 
 		copy->setBehaviour(other->mBehaviour);
 		copy->handle = other->handle;

@@ -115,7 +115,7 @@ namespace std {
 		std::size_t operator()(const Laby::Coordinate<T>& pos) const
 		{
 			Laby::u64 combo = (Laby::u64)pos.x | (Laby::u64)pos.y << 32;
-			return std::hash()(combo);
+			return std::hash<Laby::u64>()(combo);
 		}
 	};
 }
