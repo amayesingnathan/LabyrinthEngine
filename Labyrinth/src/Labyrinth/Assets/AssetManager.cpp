@@ -243,7 +243,6 @@ namespace Laby {
 	std::vector<AssetHandle> AssetManager::GetAssetsWithType(AssetType type)
 	{
 		std::vector<AssetHandle> assets;
-
 		for (const auto& [handle, data] : sAssetRegistry)
 		{
 			if (data.type == type)

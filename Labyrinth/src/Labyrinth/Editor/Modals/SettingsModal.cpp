@@ -34,7 +34,7 @@ namespace Laby {
         {
             fs::path result = FileUtils::OpenFile({ "Labyrinth Project (*.lpj)", "*.lpj" });
             if (!result.empty())
-                mSettings.startupProject = fs::absolute(result);
+                mSettings.startupProject = fs::relative(result);
         });
     }
 

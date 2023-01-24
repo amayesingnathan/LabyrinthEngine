@@ -61,8 +61,6 @@ namespace Laby {
 
 		void CloneEntity();
 
-		static void RegenScriptProject(const fs::path& filepath);
-
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
