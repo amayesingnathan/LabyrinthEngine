@@ -4,27 +4,38 @@
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
+#include "TileRenderData.h"
+
 namespace Laby {
+
+	struct SheetData
+	{
+		Ref<Texture2DSheet> sheet;
+		TileID startIndex;
+	};
 
 	class TilePalette
 	{
 	public:
 		TilePalette() = default;
-		TilePalette(usize nextIndex);
+		TilePalette(TileID nextIndex);
 
 		usize getNextIndex() const { return mNextIndex; }
-		const std::unordered_set<AssetHandle>& getSheets() const { return mSpriteSheets; }
-		const std::unordered_map<usize, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
+		const std::vector<SheetData>& getSheets() const { return mSpriteSheets; }
+		const std::unordered_map<TileID, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
 
 		void add(AssetHandle spriteSheet);
+		void remove(AssetHandle spriteSheet, std::unordered_map<TileID, TileID> mapping);
 
-		Ref<SubTexture2D>& operator[](usize textureID) { return mTileset[textureID]; }
-		const Ref<SubTexture2D>& operator[](usize textureID) const;
+		Ref<SubTexture2D> operator[](TileID textureID) const;
 
 	private:
-		std::unordered_set<AssetHandle> mSpriteSheets;
-		std::unordered_map<usize, Ref<SubTexture2D>> mTileset;
-		usize mNextIndex = 0;
+		void MapIDs(std::unordered_map<TileID, TileID>& map, const std::unordered_map<TileID, Ref<SubTexture2D>>& oldTileset);
+
+	private:
+		std::vector<SheetData> mSpriteSheets;
+		std::unordered_map<TileID, Ref<SubTexture2D>> mTileset;
+		TileID mNextIndex = 0;
 	};
 
 
@@ -35,6 +46,18 @@ namespace Laby {
 
 		LAB_SERIALISE_PROPERTY(NextIndex, palette.getNextIndex(), mOut);
 
+		mOut << YAML::Key << "SpriteSheets";
+		mOut << YAML::Value << YAML::BeginSeq;
+
+		for (const auto& [handle, startIndex] : palette.getSheets())
+		{
+			mOut << YAML::BeginMap;
+			LAB_SERIALISE_PROPERTY(Handle, handle, mOut);
+			LAB_SERIALISE_PROPERTY(StartIndex, startIndex, mOut);
+			mOut << YAML::EndMap;
+		}
+		mOut << YAML::EndSeq; // SpriteSheets
+
 		mOut << YAML::Key << "Sprites";
 		mOut << YAML::Value << YAML::BeginSeq;
 
@@ -42,10 +65,10 @@ namespace Laby {
 		{
 			mOut << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(Index, index, mOut);
-			LAB_SERIALISE_PROPERTY(Sprite, sprite->handle, mOut);
+			LAB_SERIALISE_PROPERTY_ASSET(Sprite, sprite, mOut);
 			mOut << YAML::EndMap;
 		}
-		mOut << YAML::EndSeq;
+		mOut << YAML::EndSeq; // Sprites
 
 		mOut << YAML::EndMap; // TilePalette
 	}

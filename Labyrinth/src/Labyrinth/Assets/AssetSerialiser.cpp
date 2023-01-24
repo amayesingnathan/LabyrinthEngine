@@ -29,7 +29,7 @@ namespace Laby {
 		Ref<SubTexture2D> subtex = asset.to<SubTexture2D>();
 
 		YAML::Emitter out;
-		out << YAML::BeginMap; // Subtexture
+		out << YAML::BeginMap; // SubTexture
 		out << YAML::Key << "SubTexture" << YAML::Value;
 		{
 			out << YAML::BeginMap;
@@ -46,7 +46,7 @@ namespace Laby {
 			out << YAML::EndMap;
 		}
 
-		out << YAML::EndMap; // Subtexture
+		out << YAML::EndMap; // SubTexture
 
 		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
@@ -83,24 +83,32 @@ namespace Laby {
 	{
 		Ref<Texture2DSheet> sheet = asset.to<Texture2DSheet>();
 
-		std::filesystem::path sheetPath = "assets" / metadata.filepath.parent_path();
-		if (!std::filesystem::exists(sheetPath))
-			std::filesystem::create_directories(sheetPath);
+		fs::path sheetPath = "assets" / metadata.filepath.parent_path();
+		if (!fs::exists(sheetPath))
+			fs::create_directories(sheetPath);
 
-		std::filesystem::create_directories(sheetPath / "subtextures");
+		fs::create_directories(sheetPath / "subtextures");
 
 		YAML::Emitter out;
-		out << YAML::BeginMap; // Subtexture
+		out << YAML::BeginMap; // TextureSheet
 		out << YAML::Key << "TextureSheet" << YAML::Value;
+		out << YAML::BeginMap;
+
+		LAB_SERIALISE_PROPERTY_ASSET(Texture, sheet->getBaseTex(), out);
+		LAB_SERIALISE_PROPERTY(Name, sheet->getName(), out);
+		LAB_SERIALISE_PROPERTY(TileSize, sheet->getTileSize(), out);
+
+		out << YAML::Key << "SubTextures";
+		out << YAML::Value << YAML::BeginSeq;
+		for (const auto [pos, handle] : sheet->getSubTextures())
 		{
 			out << YAML::BeginMap;
-
-			LAB_SERIALISE_PROPERTY_ASSET(Texture, sheet->getBaseTex(), out);
-			LAB_SERIALISE_PROPERTY(Name, sheet->getName(), out);
-			LAB_SERIALISE_PROPERTY(TileSize, sheet->getTileSize(), out);
-
+			LAB_SERIALISE_PROPERTY(Position, pos, out);
+			LAB_SERIALISE_PROPERTY(Handle, handle, out);
 			out << YAML::EndMap;
 		}
+		out << YAML::EndSeq;
+		out << YAML::EndMap; // SubTextures
 
 		out << YAML::EndMap; // TextureSheet
 
@@ -129,6 +137,19 @@ namespace Laby {
 		LAB_DESERIALISE_PROPERTY(TileSize, tileSize, texNode);
 
 		Ref<Texture2DSheet> sheet = Ref<Texture2DSheet>::Create(texName, tex, tileSize);
+
+		auto subTextures = texNode["SubTextures"];
+		for (auto subTexNode: subTextures)
+		{
+			GridPosition pos;
+			AssetHandle handle;
+			LAB_DESERIALISE_PROPERTY(Position, pos, subTexNode);
+			LAB_DESERIALISE_PROPERTY(Handle, handle, subTexNode);
+			sheet->mSubTextures.emplace(pos, handle);
+		}
+
+		if (sheet->mSubTextures.empty())
+			sheet->generateTileset();
 
 		asset = sheet;
 		asset->handle = metadata.handle;
@@ -161,9 +182,9 @@ namespace Laby {
 	{
 		Ref<Tilemap> tilemap = asset.to<Tilemap>();
 
-		std::filesystem::path sheetPath = "assets" / metadata.filepath.parent_path();
-		if (!std::filesystem::exists(sheetPath))
-			std::filesystem::create_directories(sheetPath);
+		fs::path sheetPath = "assets" / metadata.filepath.parent_path();
+		if (!fs::exists(sheetPath))
+			fs::create_directories(sheetPath);
 
 		YAML::Emitter out;
 		out << YAML::BeginMap; // Tilemap
@@ -177,10 +198,11 @@ namespace Laby {
 
 			out << YAML::Key << "SpriteSheets";
 			out << YAML::Value << YAML::BeginSeq;
-			for (AssetHandle sheet : tilemap->getSheets())
+			for (const SheetData& sheet : tilemap->getSheets())
 			{
 				out << YAML::BeginMap;
-				LAB_SERIALISE_PROPERTY(SheetHandle, sheet, out);
+				LAB_SERIALISE_PROPERTY(SheetHandle, sheet.handle, out);
+				LAB_SERIALISE_PROPERTY(StartIndex, sheet.startIndex, out);
 				out << YAML::EndMap;
 			}
 			out << YAML::EndSeq;
@@ -222,8 +244,10 @@ namespace Laby {
 		auto mapSheets = mapNode["SpriteSheets"];
 		for (auto sheet : mapSheets)
 		{
-			u64 handle;
-			LAB_DESERIALISE_PROPERTY(SheetHandle, handle, sheet);
+			UUID handle;
+			TileID startIndex;
+			LAB_DESERIALISE_PROPERTY_DEF(SheetHandle, handle, sheet, 0);
+			LAB_DESERIALISE_PROPERTY(StartIndex, startIndex, sheet);
 
 			tilemap->addSheet(handle);
 		}

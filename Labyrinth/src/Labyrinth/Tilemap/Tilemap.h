@@ -19,6 +19,13 @@ namespace Laby {
 		usize getHeight() const { return mTexture.mHeight; }
 
 		void addSheet(AssetHandle handle) { mTexture.addSheet(handle); }
+		void removeSheet(AssetHandle handle) { mTexture.removeSheet(handle); }
+
+		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
+
+		TileID getTile(usize layer, const GridPosition& pos) { return mTexture.getTile(layer, pos); }
+		void setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
+
 		void addLayer() { mTexture.addLayer(); }
 
 		u32 getTextureID() const override { return mTexture.mFramebuffer->getTextureID(); }
@@ -27,14 +34,13 @@ namespace Laby {
 		std::vector<ChainShape> getPhysicsShapes() const { return mBehaviour.getShapes(); }
 		std::vector<TileScriptData> getTileScripts() const { return mBehaviour.getScripts(); }
 
-	private:
 		void addLayer(const TileRenderLayer& layer) { mTexture.addLayer(layer); }
 		void addLayer(TileRenderLayer&& layer) { mTexture.addLayer(std::move(layer)); }
 		void setBehaviour(const TileBehaviourLayer& layer) { mBehaviour = layer; }
 		void setBehaviour(TileBehaviourLayer&& layer) { mBehaviour = std::move(layer); }
 
 		const std::vector<TileRenderLayer>& getLayers() const { return mTexture.getLayers(); }
-		const std::unordered_set<AssetHandle>& getSheets() const { return mTexture.getSheets(); }
+		const std::vector<SheetData>& getSheets() const { return mTexture.getSheets(); }
 		const TileBehaviourLayer& getBehaviour() const { return mBehaviour; }
 
 	private:

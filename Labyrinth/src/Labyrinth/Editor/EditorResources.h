@@ -2,8 +2,6 @@
 
 #include <Labyrinth/Renderer/SubTexture.h>
 
-#include "imgui.h"
-
 namespace Laby {
 
 	class EditorResources
@@ -24,9 +22,9 @@ namespace Laby {
 		inline static Ref<SubTexture2D> NoSubTexture = nullptr;
 
 		// ImGui Colours
-		inline static ImVec4 HoveredColour = { 0.25f, 1.0f, 1.0f, 0.5f };
-		inline static ImVec4 HighlightedColour = { 1.0f, 0.5f, 0.0f, 0.6f };
-		inline static ImVec4 ClearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
+		static constexpr glm::vec4 HoveredColour = { 0.25f, 1.0f, 1.0f, 0.5f };
+		static constexpr glm::vec4 HighlightedColour = { 1.0f, 0.5f, 0.0f, 0.6f };
+		static constexpr glm::vec4 ClearColour = { 0.0f, 0.0f, 0.0f, 0.0f };
 
 		static void Init()
 		{
@@ -39,7 +37,10 @@ namespace Laby {
 			GroupIcon = LoadTexture("content-browser/groupIcon.png");
 
 			NoTexture = LoadTexture("checkerboard.png");
-			NoSubTexture = Ref<SubTexture2D>::Create(NoTexture);
+
+			static constexpr glm::vec2 COORDS[4] = { { 0.f, 0.f }, { 1.f, 0.f }, { 1.f, 1.f }, { 0.f, 1.f } };
+			Ref<Texture2DSheet> sheet = Ref<Texture2DSheet>::Create("NoSheetName", NoTexture, glm::vec2{ 1.f });
+			NoSubTexture = Ref<SubTexture2D>::Create(NoTexture, COORDS);
 		}
 
 		static void Shutdown()

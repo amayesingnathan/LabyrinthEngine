@@ -402,41 +402,4 @@ namespace Laby {
 		mUniformLocCache[name] = location;
 		return location;
 	}
-
-
-	/*
-		Shader Library
-	*/
-
-	void ShaderLibrary::add(const std::string& name, const Ref<Shader>& shader)
-	{
-		LAB_CORE_ASSERT(!exists(name), "Shader already exists!");
-		mShaders[name] = shader;
-	}
-
-	void ShaderLibrary::add(const Ref<Shader>& shader)
-	{
-		auto& name = shader->getName();
-		add(name, shader);
-	}
-
-	Ref<Shader> ShaderLibrary::load(const std::string& name, const std::string& filepath)
-	{
-		Ref<Shader> shader = Ref<Shader>::Create(filepath);
-		add(name, shader);
-		return shader;
-	}
-
-	Ref<Shader> ShaderLibrary::load(const std::string& filepath)
-	{
-		Ref<Shader> shader = Ref<Shader>::Create(filepath);
-		add(shader);
-		return shader;
-	}
-
-	Ref<Shader> ShaderLibrary::select(const std::string& name)
-	{
-		LAB_CORE_ASSERT(exists(name), "Shader does not exist!");
-		return mShaders[name];
-	}
 }

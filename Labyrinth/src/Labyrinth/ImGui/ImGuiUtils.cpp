@@ -4,6 +4,8 @@
 #include <imgui.h>
 #include <imgui_internal.h>
 
+#include <Labyrinth/Editor/EditorResources.h>
+
 namespace Laby {
 
 	const glm::vec2& ImGuiUtils::ToGLM(const ImVec2& vec)
@@ -41,6 +43,47 @@ namespace Laby {
 		return ImGui::IsMouseDown(button);
 	}
 
+	bool ImGuiUtils::IsMouseReleased(MouseCode button)
+	{
+		return ImGui::IsMouseReleased(button);
+	}
+
+	glm::vec2 ImGuiUtils::CursorPos()
+	{
+		return ToGLM(ImGui::GetCursorPos());
+	}
+
+	void ImGuiUtils::SetCursorPos(const glm::vec2& pos)
+	{
+		ImGui::SetCursorPos(FromGLM(pos));
+	}
+
+	void ImGuiUtils::SetCursorPosX(f32 pos)
+	{
+		ImGui::SetCursorPosX(pos);
+	}
+
+	void ImGuiUtils::SetCursorPosY(f32 pos)
+	{
+		ImGui::SetCursorPosY(pos);
+	}
+
+	void ImGuiUtils::SetButtonTransparent()
+	{
+		auto& colours = ImGui::GetStyle().Colors;
+		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
+		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
+
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+		ImGui::PushStyleColor(ImGuiCol_Button, FromGLM(EditorResources::ClearColour));
+	}
+
+	void ImGuiUtils::ResetButtonTransparency()
+	{
+		ImGui::PopStyleColor(3);
+	}
+
 	glm::vec2 ImGuiUtils::AvailableRegion()
 	{
 		return ToGLM(ImGui::GetWindowContentRegionMax());
@@ -54,6 +97,11 @@ namespace Laby {
 	glm::vec2 ImGuiUtils::FramePadding()
 	{
 		return ToGLM(GImGui->Style.FramePadding);
+	}
+
+	f32 ImGuiUtils::FrameHeightWithSpacing()
+	{
+		return ImGui::GetFrameHeightWithSpacing();
 	}
 
 	f32 ImGuiUtils::LineHeight()

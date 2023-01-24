@@ -22,7 +22,10 @@ namespace Laby {
 		LISTENING_EVENTS(KeyPressed)
 
 	private:
-		void DrawMap();
+		void LeftPane();
+		void CentrePane();
+		void RightPane();
+
 		void DrawSheet();
 
 		bool OnKeyPressed(KeyPressedEvent& e);
@@ -31,17 +34,20 @@ namespace Laby {
 		Ref<Tilemap> mTilemap;
 		usize mMapWidth, mMapHeight;
 
+		f32 mFrameHeightWithSpacing = 0.0f;
+
 		EditMode mEditMode = EditMode::Paint;
-		bool mPainting = false;
 		bool mDisplayColliders = true;
+		bool mCurrentlyPainting = false;
 
 		usize mCurrentLayer = 0;
-		Ref<Texture2DSheet> mCurrentSheet;
-		Ref<SubTexture2D> mCurrentSubTex = nullptr;
+		AssetHandle mCurrentSheet;
+		AssetHandle mSheetToAdd;
 
-		TileRenderData mCurrentTexTile;
+		TileRenderData mCurrentTex;
 
-		TileRenderData mHoveredTexTile;
+		GridPosition mHoveredTile;
+		TileID mHoveredTex;
 	};
 
 }

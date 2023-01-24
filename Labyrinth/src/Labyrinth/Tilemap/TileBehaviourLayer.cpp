@@ -3,7 +3,7 @@
 
 namespace Laby {
 
-    using Direction = GridPos<i32>;
+    using Direction = Coordinate<i32>;
     static constexpr Direction sDirections[4] = { { 1, 0 }, { 0, 1 }, { -1, 0 }, { 0, -1 } };
 
     static BehaviourPos AddDirection(const BehaviourPos& pos, usize index) { return { pos.x + sDirections[index].x, pos.y + sDirections[index].y }; }
