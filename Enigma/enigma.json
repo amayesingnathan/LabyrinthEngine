@@ -27,7 +27,7 @@
     ],
     "Startup": {
         "Fullscreen": false,
-        "Project": "C:\\Users\\natha\\Desktop\\Coding\\Projects\\WIP\\C++\\LabyrinthEngine\\Enigma\\SandboxProject\\SandboxProject.lpj",
+        "Project": "SandboxProject\\SandboxProject.lpj",
         "Scripting": {
             "CoreAssemblyPath": "resources/Scripts/Labyrinth-ScriptCore.dll"
         },

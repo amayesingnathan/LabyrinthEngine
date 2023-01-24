@@ -9,8 +9,17 @@ namespace Laby {
 
 	static Ref<Project> sActiveProject = nullptr;
 
-	void ActiveProject::Set(Ref<Project> newProj) { sActiveProject = newProj; }
 	Ref<Project> ActiveProject::Get() { return sActiveProject; }
+	void ActiveProject::Set(Ref<Project> newProj) 
+	{
+		if (sActiveProject)
+			AssetManager::Shutdown();
+
+		sActiveProject = newProj;
+
+		if (sActiveProject)
+			AssetManager::Init();
+	}
 
 	bool Project::IsActive()
 	{
@@ -81,6 +90,6 @@ namespace Laby {
 	fs::path Project::GetStartScenePath()
 	{
 		LAB_CORE_ASSERT(sActiveProject);
-		return fs::path(sActiveProject->mSettings.projectDir) / sActiveProject->mSettings.startScenePath;
+		return sActiveProject->mSettings.startScenePath;
 	}
 }

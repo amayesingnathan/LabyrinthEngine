@@ -702,9 +702,8 @@ namespace Laby {
 		FileUtils::CreateDir(filepath / "assets" / "spritesheets");
 		FileUtils::CreateDir(filepath / "assets" / "tilemaps");
 
-		EditorLayer::RegenScriptProject(filepath);
-
 		OpenProject(filepath.string() + "/" + mEditorData.newProjectName + ".lpj");
+		ScriptEngine::RegenScriptProject();
 	}
 
 	void EditorLayer::OpenProject()
@@ -914,35 +913,5 @@ namespace Laby {
 		Entity firstSelection = mCurrentScene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
 		if (firstSelection)
 			mCurrentScene->CloneEntity(firstSelection);
-	}
-
-	void EditorLayer::RegenScriptProject(const fs::path& filepath)
-	{
-		static std::string sEnvVarString;
-
-		fs::path rootDirectory = std::filesystem::absolute("./resources").parent_path();
-		std::string rootDirectoryString = rootDirectory.string();
-
-		if (rootDirectory.stem().string() == "Enigma")
-			rootDirectoryString = rootDirectory.parent_path().string();
-		sEnvVarString = "LAB_ROOT_DIR=" + rootDirectoryString;
-
-		std::string batchFilePath = filepath.string();
-		std::replace(batchFilePath.begin(), batchFilePath.end(), '/', '\\'); // Only windows
-		batchFilePath += "\\Win-CreateScriptProjects.bat";
-
-#ifdef LAB_PLATFORM_WINDOWS
-		int error = _putenv(sEnvVarString.c_str());
-#elif defined(LAB_PLATFORM_LINUX)
-		int error = putenv(sEnvVarString.c_str());
-#else
-		LAB_STATIC_ASSERT("Platform definition required for system environment variable call")
-#endif
-		if (error)
-		{
-			LAB_CORE_ERROR("Could not set the Labyrinth root directory!");
-			return;
-		}
-		system(batchFilePath.c_str());
 	}
 }
