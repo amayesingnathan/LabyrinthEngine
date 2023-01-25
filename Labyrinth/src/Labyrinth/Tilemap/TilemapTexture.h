@@ -8,10 +8,16 @@
 
 namespace Laby {
 
+	enum class LayerMoveDir
+	{
+		Down = -1,
+		Up = 1
+	};
+
 	class TilemapTexture
 	{
 	public:
-		TilemapTexture(usize width, usize height);
+		TilemapTexture(u32 width, u32 height);
 
 		void addSheet(AssetHandle handle) { mTilePalette.add(handle); }
 		void addSheet(AssetHandle handle, TileID startIndex) { mTilePalette.add(handle, startIndex); }
@@ -23,6 +29,8 @@ namespace Laby {
 		void setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation);
 
 		void addLayer() { mLayers.emplace_back(mLayers.size(), mWidth, mHeight); }
+		void removeLayer(usize layer);
+		void moveLayer(usize layer, LayerMoveDir direction);
 
 		const std::vector<TileRenderLayer>& getLayers() const { return mLayers; }
 		const std::vector<SheetData>& getSheets() const { return mTilePalette.getSheets(); }
@@ -36,7 +44,7 @@ namespace Laby {
 		void UpdateLayers(const std::unordered_map<TileID, TileID>& mapping);
 
 	private:
-		const usize mWidth = 0, mHeight = 0;
+		const u32 mWidth = 0, mHeight = 0;
 		std::vector<TileRenderLayer> mLayers;
 		TilePalette mTilePalette;
 

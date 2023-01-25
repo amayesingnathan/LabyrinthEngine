@@ -25,6 +25,16 @@ namespace Laby {
 		ImGui::Separator();
 	}
 
+	void Widgets::Disable(bool disable)
+	{
+		ImGui::BeginDisabled(disable);
+	}
+
+	void Widgets::EndDisable()
+	{
+		ImGui::EndDisabled();
+	}
+
 	void Widgets::SetXPosition(f32 pos)
 	{
 		ImGui::SetCursorPosX(pos);
@@ -96,6 +106,12 @@ namespace Laby {
 	void Widgets::TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen)
 	{
 		TreeNodeInternal(id, text, selected, ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_SpanAvailWidth, whileOpen);
+	}
+
+	void Widgets::Selectable(std::string_view label, bool selected, Action<> action)
+	{
+		if (ImGui::Selectable(label.data(), selected))
+			action();
 	}
 
 	bool Widgets::ComponentInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen)
@@ -737,6 +753,9 @@ namespace Laby {
 
 	void Widgets::Image(Ref<IRenderable> image, const glm::vec2& size, f32 rotation)
 	{
+		if (!image)
+			return;
+
 		static constexpr glm::vec2 defaultCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 		const ImVec2* coords = (ImVec2*)image->getTextureCoords();
 		if (!coords)

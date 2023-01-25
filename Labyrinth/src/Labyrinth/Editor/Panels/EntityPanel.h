@@ -18,7 +18,6 @@ namespace Laby {
 
 		void setContext(const Ref<Scene>& scene) { mContext = scene; }
 
-		void onUpdate(Timestep ts) override;
 		void onImGuiRender() override;
 		void onSelectionChange() override;
 
@@ -46,8 +45,6 @@ namespace Laby {
 
 		Entity mSelectedEntity;
 		Entity mPreviousEntity;
-
-		Ref<Framebuffer> mTexture = nullptr;
 	};
 
 }

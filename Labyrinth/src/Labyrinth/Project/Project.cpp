@@ -36,7 +36,8 @@ namespace Laby {
 		Ref<Project> project = Ref<Project>::Create();
 		ProjectSerialiser serialiser(project);
 		serialiser.deserialise(path);
-		sActiveProject = project;
+
+		ActiveProject::Set(project);
 	}
 
 	void Project::Save(const fs::path& path)

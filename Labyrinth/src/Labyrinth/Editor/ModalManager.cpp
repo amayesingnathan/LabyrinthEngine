@@ -5,15 +5,6 @@
 
 namespace Laby {
 
-	void ModalManager::Update(Timestep ts)
-	{
-		for (ModalEntry& modalData : sEditorModals)
-		{
-			if (modalData.modal && modalData.open)
-				modalData.modal->onUpdate(ts);
-		}
-	}
-
 	void ModalManager::Render()
 	{
         ImGuiIO& io = ImGui::GetIO();

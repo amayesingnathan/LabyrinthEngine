@@ -22,6 +22,9 @@ namespace Laby {
 		static void SameLine(f32 xOffset = 0.0f);
 		static void Separator();
 
+		static void Disable(bool disable = true);
+		static void EndDisable();
+
 		static void SetXPosition(f32 pos);
 		static void SetYPosition(f32 pos);
 
@@ -33,13 +36,15 @@ namespace Laby {
 		static void NextColumn();
 		static void EndColumns();
 
-		static void BeginChild(std::string_view strID, const glm::vec2& size, bool border = false);
+		static void BeginChild(std::string_view strID, const glm::vec2& size = {0.0f, 0.0f}, bool border = true);
 		static void EndChild();
 
 		static void BeginGroup();
 		static void EndGroup();
 
 		static void TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen);
+
+		static void Selectable(std::string_view label, bool selected, Action<> action);
 
 		static UI::MenuBar* BeginMenuBar();
 		static void AddMenuHeading(UI::MenuBar* context, std::string_view heading);
@@ -152,7 +157,7 @@ namespace Laby {
 		static void Button(std::string_view label, Action<> action = {});
 		static void Button(std::string_view label, const glm::vec2& size, Action<> action = {});
 
-		template<IsStandard T>
+		template<typename T>
 		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T>* table, usize tableLength)
 		{
 			std::vector<const IComboEntry*> internalTable(tableLength);
@@ -164,8 +169,10 @@ namespace Laby {
 				return;
 
 			const void* comboValue = comboEntry->getVal();
-			LAB_CORE_ASSERT(comboValue, "Combobox had no value!");
-			memcpy(&value, comboValue, sizeof(T));
+			if (!comboValue)
+				return;
+
+			value = T(*(const T*)comboValue);
 		}
 
 		template<IsStandard T, typename Func>
@@ -180,7 +187,9 @@ namespace Laby {
 				return;
 
 			const void* comboValue = comboEntry->getVal();
-			LAB_CORE_ASSERT(comboValue, "Combobox had no value!");
+			if (!comboValue)
+				return;
+
 			onEdit(comboEntry->key, *(const T*)comboValue);
 		}
 

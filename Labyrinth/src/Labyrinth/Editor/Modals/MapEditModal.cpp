@@ -4,11 +4,13 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/IO/Input.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/SCripting/ScriptEngine.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
 namespace Laby {
 
     using SheetEntry = ComboEntry<AssetHandle>;
+    using ScriptClassEntry = ComboEntry<Ref<ScriptClass>>;
 
     static bool HasSheetEntry(AssetHandle sheet, const std::vector<SheetEntry>& entries)
     {
@@ -31,7 +33,7 @@ namespace Laby {
         {
             mCurrentlyPainting = true;
             if (mHoveredTile.valid() && mHoveredTex != mCurrentTex)
-                mTilemap->setTile(mCurrentLayer, mHoveredTile, mCurrentTex.textureID, mCurrentTex.rotation);
+                mTilemap->setTileData(mCurrentLayer, mHoveredTile, mCurrentTex.textureID, mCurrentTex.rotation);
         }
         if (mCurrentlyPainting && ImGuiUtils::IsMouseReleased(Mouse::ButtonLeft))
             mCurrentlyPainting = false;
@@ -59,6 +61,87 @@ namespace Laby {
 
     void MapEditModal::LeftPane()
     {
+        Widgets::BeginChild("Left Pane", { 300, -3 * mFrameHeightWithSpacing }, false);
+
+        Widgets::BeginGroup();
+
+        Widgets::BeginChild("Layers", { 0, -12 * mFrameHeightWithSpacing });
+        for (const auto& layer : mTilemap->getLayers())
+        {
+            usize layerIndex = layer.getLayer();
+            std::string layerLit = fmt::format("Layer {}", layerIndex);
+            Widgets::Selectable(layerLit.c_str(), mCurrentLayer == layerIndex, [&]() { mCurrentLayer = layerIndex; });
+        }
+        Widgets::EndChild(); // Layers
+
+        Widgets::Button("Add", [this]() { mTilemap->addLayer(); });
+        Widgets::SameLine();
+        Widgets::Button("Remove", [this]() { mTilemap->removeLayer(mCurrentLayer); });
+        Widgets::SameLine();
+        Widgets::Button("Move Up", [this]() { mTilemap->moveLayer(mCurrentLayer, LayerMoveDir::Up); });
+        Widgets::SameLine();
+        Widgets::Button("Move Down", [this]() { mTilemap->moveLayer(mCurrentLayer, LayerMoveDir::Down); });
+
+        Widgets::EndGroup();
+
+
+        Widgets::BeginChild("Selected", { 0, -7 * mFrameHeightWithSpacing });
+        Widgets::Label(fmt::format("Tile: ({}, {})", mCurrentTile.x, mCurrentTile.y));
+
+        bool validCurrentTile = mCurrentTile.valid();
+        TileBehaviourData* currentTileData = validCurrentTile ? &mTilemap->getTileBehaviour(mCurrentTile) : nullptr;
+
+        std::vector<ScriptClassEntry> comboEntries;
+        comboEntries.emplace_back("", nullptr);
+        for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
+            comboEntries.emplace_back(key, klass);
+
+        Widgets::Disable(validCurrentTile);
+
+        Ref<ScriptClass> scriptClass = currentTileData ? ScriptEngine::GetAppClass(currentTileData->script) : nullptr;
+        Widgets::Combobox("Behaviour", currentTileData ? currentTileData->script : "", scriptClass, comboEntries.data(), comboEntries.size(),
+            [&](std::string_view name, Ref<ScriptClass> klass) { currentTileData->script = name; });
+
+        bool defaultSolid = false;
+        Widgets::Checkbox("Solid", currentTileData ? currentTileData->solid : defaultSolid);
+
+        Widgets::EndDisable();
+
+        Widgets::EndChild(); // Selected
+
+
+        Widgets::BeginChild("Hovered");
+
+        Widgets::Disable();
+
+        glm::vec2 imageSize = 0.5f * ImGuiUtils::AvailableRegion();
+        const TileBehaviourData* hoveredTileData = mHoveredTile.valid() ? &mTilemap->getTileBehaviour(mCurrentTile) : nullptr;
+        Widgets::Label(fmt::format("Hovered Tile: ({}, {})", mHoveredTile.x, mHoveredTile.y));
+        Widgets::Label(fmt::format("Script: {}", hoveredTileData ? hoveredTileData->script : ""));
+
+        bool hoveredSolid = hoveredTileData ? hoveredTileData->solid : false;
+        Widgets::Checkbox("Solid", hoveredSolid);
+
+        Widgets::EndDisable();
+
+
+        Ref<IRenderable> image = EditorResources::NoTexture;
+        f32 rotation = 0.0f;
+        if (mHoveredTile.valid())
+        {
+            image = mTilemap->getTileTex(mHoveredTex.textureID);
+            rotation = mHoveredTex.rotation;
+        }
+        if (mCurrentlyPainting)
+            image = mTilemap->getTileTex(mCurrentTex.textureID);
+        rotation = mCurrentTex.rotation;
+
+        ImGuiUtils::SetCursorPos(ImGuiUtils::CursorPos() + 0.25f * imageSize);
+        Widgets::Image(image, imageSize, rotation);
+
+        Widgets::EndChild(); // Hovered
+
+        Widgets::EndChild(); // Left Pane
     }
 
     void MapEditModal::CentrePane()
@@ -86,11 +169,11 @@ namespace Laby {
         Widgets::GridControl(pos, imageSize, mMapWidth, mMapHeight, [this](const GridPosition& pos, const glm::vec2 elementSize)
         {
             std::string name = fmt::format("##MapTiles({}, {})", pos.x, pos.y);
-            Widgets::Button(name.c_str(), elementSize);
+            Widgets::Button(name.c_str(), elementSize, [&]() { mCurrentTile = pos; });
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
-                mHoveredTex = mTilemap->getTile(mCurrentLayer, pos);
+                mHoveredTex = mTilemap->getTileData(mCurrentLayer, pos);
             });
         });
         ImGuiUtils::ResetButtonTransparency();

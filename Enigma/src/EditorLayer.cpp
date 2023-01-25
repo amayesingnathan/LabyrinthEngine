@@ -100,9 +100,6 @@ namespace Laby {
 
 		Renderer2D::ResetStats();
 
-		PanelManager::Update(ts);
-		ModalManager::Update(ts);
-
 		mFramebuffer->bind();
 		Renderer::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
 		Renderer::Clear();

@@ -7,7 +7,7 @@
 
 namespace Laby {
 
-	TilemapTexture::TilemapTexture(usize width, usize height)
+	TilemapTexture::TilemapTexture(u32 width, u32 height)
 		: mWidth(width), mHeight(height), mCamera(0.0f, StaticCast<f32>(mWidth * TileSize.x), 0.0f, StaticCast<f32>(mHeight * TileSize.y))
 	{
 		FramebufferSpec fbSpec;
@@ -36,6 +36,44 @@ namespace Laby {
 		RenderTexture();
 	}
 
+	void TilemapTexture::removeLayer(usize layer)
+	{
+		auto layerIt = std::find_if(mLayers.begin(), mLayers.end(), [&](const TileRenderLayer& each) { return layer == each.getLayer(); });
+		if (layerIt == mLayers.end())
+			return;
+
+		for (auto it = layerIt + 1; it != mLayers.end(); ++it)
+			it->mIndex--;
+
+		mLayers.erase(layerIt);
+	}
+
+	void TilemapTexture::moveLayer(usize layer, LayerMoveDir direction)
+	{
+		switch (direction)
+		{
+		case LayerMoveDir::Down:
+		{
+			if (layer == 0)
+				return;
+			break;
+		}
+		case LayerMoveDir::Up:
+		{
+			if (layer >= mLayers.size() - 1)
+				return;
+			break;
+		}
+		}
+
+		usize newIndex = StaticCast<usize>((i64)layer + (i64)direction);
+
+		std::swap(mLayers[layer], mLayers[newIndex]);
+		usize tempIndex = mLayers[layer].mIndex;
+		mLayers[layer].mIndex = mLayers[newIndex].mIndex;
+		mLayers[newIndex].mIndex = tempIndex;
+	}
+
 	void TilemapTexture::RenderTexture()
 	{
 		mFramebuffer->bind();
@@ -48,9 +86,9 @@ namespace Laby {
 
 		for (const TileRenderLayer& layer : mLayers)
 		{
-			for (usize y = 0; y < mHeight; y++)
+			for (u32 y = 0; y < mHeight; y++)
 			{
-				for (usize x = 0; x < mWidth; x++)
+				for (u32 x = 0; x < mWidth; x++)
 				{
 					const auto& tileData = layer(x, y);
 					Ref<SubTexture2D> tex = mTilePalette[tileData.textureID];

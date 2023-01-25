@@ -11,7 +11,7 @@ namespace Laby {
 	{
 	public:
 		TileRenderLayer() = default;
-		TileRenderLayer(usize layer, usize width, usize height)
+		TileRenderLayer(usize layer, u32 width, u32 height)
 			: Grid<TileRenderData>(width, height), mIndex(layer) {}
 
 		bool operator==(const TileRenderLayer& other) const { return mIndex == other.mIndex; }
@@ -20,6 +20,8 @@ namespace Laby {
 
 	private:
 		usize mIndex = 0;
+
+		friend class TilemapTexture;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderData& data)
@@ -75,7 +77,8 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileRenderLayer& rhs)
 		{
-			Laby::usize layer, width, height;
+			Laby::usize layer;
+			Laby::u32 width, height;
 			LAB_DESERIALISE_PROPERTY(Layer, layer, node);
 			LAB_DESERIALISE_PROPERTY(Width, width, node);
 			LAB_DESERIALISE_PROPERTY(Height, height, node);

@@ -11,12 +11,15 @@ namespace Laby {
 	class Tilemap : public IRenderable, public Asset
 	{
 	public:
-		Tilemap(const std::string& name, usize width, usize height);
+		ASSET_STATIC_TYPE(AssetType::Tilemap)
+
+	public:
+		Tilemap(const std::string& name, u32 width, u32 height);
 
 		const std::string& getName() const { return mName; }
 
-		usize getWidth() const { return mTexture.mWidth; }
-		usize getHeight() const { return mTexture.mHeight; }
+		u32 getWidth() const { return mTexture.mWidth; }
+		u32 getHeight() const { return mTexture.mHeight; }
 
 		void addSheet(AssetHandle handle) { mTexture.addSheet(handle); }
 		void addSheet(AssetHandle handle, TileID startIndex) { mTexture.addSheet(handle, startIndex); }
@@ -24,10 +27,15 @@ namespace Laby {
 
 		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
 
-		const TileRenderData& getTile(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
-		void setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
+		const TileRenderData& getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
+		void setTileData(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
+
+		TileBehaviourData& getTileBehaviour(const GridPosition& pos) { return mBehaviour(pos); }
+		const TileBehaviourData& getTileBehaviour(const GridPosition& pos) const { return mBehaviour(pos); }
 
 		void addLayer() { mTexture.addLayer(); }
+		void removeLayer(usize layer) { mTexture.removeLayer(layer); }
+		void moveLayer(usize layer, LayerMoveDir direction) { mTexture.moveLayer(layer, direction); }
 
 		u32 getTextureID() const override { return mTexture.mFramebuffer->getTextureID(); }
 		void bindTexture(u32 slot = 0) const override { mTexture.mFramebuffer->bindTexture(slot); }
