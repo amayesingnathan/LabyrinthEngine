@@ -15,7 +15,7 @@ namespace Laby {
 
 	private:
 		std::string mMapName;
-		usize mMapWidth = 0, mMapHeight = 0;
+		u32 mMapWidth = 0, mMapHeight = 0;
 	};
 
 }

@@ -42,59 +42,6 @@ namespace Laby {
 	EntityPanel::EntityPanel(const Ref<Scene>& scene)
 		: mContext(scene)
 	{
-		FramebufferSpec fbSpec;
-		fbSpec.width = 200;
-		fbSpec.height = 200;
-		fbSpec.attachments = { FramebufferTextureFormat::RGBA8, FramebufferTextureFormat::RED_INTEGER, FramebufferTextureFormat::Depth };
-		fbSpec.samples = 1;
-
-		mTexture = Ref<Framebuffer>::Create(fbSpec);
-	}
-
-	void EntityPanel::onUpdate(Timestep ts)
-	{
-		if (!mSelectedEntity)
-			return;
-
-		if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
-			return;
-
-		auto& component = mSelectedEntity.getComponent<SpriteRendererComponent>();
-
-		// Draw texture/subtexture to framebuffer
-		mTexture->bind();
-
-		Renderer::SetClearColor({ 0.0f, 0.0f, 0.0f, 0.0f });
-		Renderer::Clear();
-
-		Renderer2D::BeginState();
-
-		std::string texLabel;
-		switch (component.type)
-		{
-		case SpriteRendererComponent::TexType::None:
-		{
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, EditorResources::NoTexture);
-			break;
-		}
-
-		case SpriteRendererComponent::TexType::Texture:
-		{
-			Ref<Texture2D> tex = component.handle ? AssetManager::GetAsset<Texture2D>(component.handle) : EditorResources::NoTexture;
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, tex ? tex : EditorResources::NoTexture);
-			break;
-		}
-
-		case SpriteRendererComponent::TexType::SubTexture:
-		{
-			Ref<SubTexture2D> subtex = component.handle ? AssetManager::GetAsset<SubTexture2D>(component.handle) : EditorResources::NoSubTexture;
-			Renderer2D::DrawQuad({ 0.0f, 0.0f }, { 1.0f, 1.0f }, subtex ? subtex : EditorResources::NoSubTexture);
-			break;
-		}
-		}
-
-		Renderer2D::EndState();
-		mTexture->unbind();
 	}
 
 	void EntityPanel::onImGuiRender()
@@ -252,7 +199,17 @@ namespace Laby {
 			Widgets::ColourEdit("Colour", component.colour);
 			Widgets::Combobox("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes, 3);
 
-			Ref<IRenderable> tex = mTexture ? mTexture.to<IRenderable>() : EditorResources::NoTexture.to<IRenderable>();
+			Ref<IRenderable> tex = EditorResources::NoTexture;
+			switch (component.type)
+			{
+			case SpriteRendererComponent::TexType::Texture:
+				tex = AssetManager::GetAsset<Texture2D>(component.handle);
+				break;
+			case SpriteRendererComponent::TexType::SubTexture:
+				tex = AssetManager::GetAsset<SubTexture2D>(component.handle);
+				break;
+			}
+
 			Widgets::Label("Texture");
 			Widgets::Image(tex, glm::vec2{ ImGuiUtils::AvailableRegion().x - 15.0f, 100.0f });
 			Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [&](const fs::path& var)

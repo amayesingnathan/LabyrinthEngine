@@ -19,7 +19,6 @@ namespace Laby {
 
 		// Textures
 		inline static Ref<Texture2D> NoTexture = nullptr;
-		inline static Ref<SubTexture2D> NoSubTexture = nullptr;
 
 		// ImGui Colours
 		static constexpr glm::vec4 HoveredColour = { 0.25f, 1.0f, 1.0f, 0.5f };
@@ -37,10 +36,6 @@ namespace Laby {
 			GroupIcon = LoadTexture("content-browser/groupIcon.png");
 
 			NoTexture = LoadTexture("checkerboard.png");
-
-			static constexpr glm::vec2 COORDS[4] = { { 0.f, 0.f }, { 1.f, 0.f }, { 1.f, 1.f }, { 0.f, 1.f } };
-			Ref<Texture2DSheet> sheet = Ref<Texture2DSheet>::Create("NoSheetName", NoTexture, glm::vec2{ 1.f });
-			NoSubTexture = Ref<SubTexture2D>::Create(NoTexture, COORDS);
 		}
 
 		static void Shutdown()
@@ -54,7 +49,6 @@ namespace Laby {
 			GroupIcon.reset();
 
 			NoTexture.reset();
-			NoSubTexture.reset();
 		}
 
 	private:

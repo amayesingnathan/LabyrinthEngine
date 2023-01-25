@@ -3,7 +3,7 @@
 
 namespace Laby {
 
-	Tilemap::Tilemap(const std::string& name, usize width, usize height)
+	Tilemap::Tilemap(const std::string& name, u32 width, u32 height)
 		: mName(name), mTexture(width, height), mBehaviour(width, height)
 	{
 	}

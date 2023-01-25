@@ -45,7 +45,6 @@ namespace Laby {
         static void AddCallback(std::function<void()> function) { sModalCallbacks[sLastAdded].emplace_back(function); }
 
     private:
-        static void Update(Timestep ts);
         static void Render();
         static void RenderButtons(ModalEntry& modalData);
 

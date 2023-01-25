@@ -48,8 +48,8 @@ namespace Laby {
 			: mWidth(width), mHeight(height), mData(width * height)
 		{}
 
-		T& operator()(usize x, usize y) { return mData[x + (mWidth * y)]; }
-		const T& operator()(usize x, usize y) const { return mData[x + (mWidth * y)]; }
+		T& operator()(TPos x, TPos y) { return mData[x + (mWidth * y)]; }
+		const T& operator()(TPos x, TPos y) const { return mData[x + (mWidth * y)]; }
 
 		T& operator()(const Position& pos) { return mData[pos.x + (mWidth * pos.y)]; }
 		const T& operator()(const Position& pos) const { return mData[pos.x + (mWidth * pos.y)]; }
@@ -67,8 +67,8 @@ namespace Laby {
 		auto end() const { return mData.cend(); }
 
 	protected:
-		T& At(usize x, usize y) { return mData[x + (mWidth * y)]; }
-		const T& At(usize x, usize y) const { return mData[x + (mWidth * y)]; }
+		T& At(TPos x, TPos y) { return mData[x + (mWidth * y)]; }
+		const T& At(TPos x, TPos y) const { return mData[x + (mWidth * y)]; }
 
 		T& At(const Position& pos) { return mData[pos.x + (mWidth * pos.y)]; }
 		const T& At(const Position& pos) const { return mData[pos.x + (mWidth * pos.y)]; }

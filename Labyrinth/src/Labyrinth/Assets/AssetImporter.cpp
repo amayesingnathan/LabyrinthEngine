@@ -2,6 +2,8 @@
 #include "AssetImporter.h"
 #include "AssetManager.h"
 
+#include <Labyrinth/Tools/EnumUtils.h>
+
 namespace Laby {
 
 	void AssetImporter::Init()
@@ -24,9 +26,9 @@ namespace Laby {
 
 	void AssetImporter::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset)
 	{
-		if (sSerialisers.count(metadata.type) == 0)
+		if (!sSerialisers.contains(metadata.type))
 		{
-			LAB_CORE_WARN("There's currently no importer for assets of type {0}", metadata.filepath.stem().string());
+			LAB_CORE_WARN("There's currently no importer for assets of type {0}", Enum::ToString(metadata.type));
 			return;
 		}
 
@@ -41,9 +43,9 @@ namespace Laby {
 
 	bool AssetImporter::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset)
 	{
-		if (sSerialisers.count(metadata.type) == 0)
+		if (!sSerialisers.contains(metadata.type))
 		{
-			LAB_CORE_WARN("There's currently no importer for assets of type {0}", metadata.filepath.stem().string());
+			LAB_CORE_WARN("There's currently no importer for assets of type {0}", Enum::ToString(metadata.type));
 			return false;
 		}
 

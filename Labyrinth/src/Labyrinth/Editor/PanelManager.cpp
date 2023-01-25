@@ -37,15 +37,6 @@ namespace Laby {
 			sPanelIndices[sEditorPanels[i].key] = i;
 	}
 
-	void PanelManager::Update(Timestep ts)
-	{
-		for (PanelEntry& PanelEntry : sEditorPanels)
-		{
-			if (PanelEntry.panel) 
-				PanelEntry.panel->onUpdate(ts);
-		}
-	}
-
 	void PanelManager::Render()
 	{
 		for (PanelEntry& panelEntry : sEditorPanels)

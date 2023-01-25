@@ -21,7 +21,6 @@ namespace Laby {
 	private:
 		static std::vector<PanelEntry>& GetPanels() { return sEditorPanels; }
 
-		static void Update(Timestep ts);
 		static void Render();
 		static void ProjectChanged();
 		static void SelectionChange();

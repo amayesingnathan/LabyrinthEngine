@@ -14,7 +14,6 @@ namespace Laby {
 
 	class Asset : public virtual RefCounted
 	{
-
 	public:
 		AssetHandle handle;
 		u16 flags = (u16)AssetFlag::None;

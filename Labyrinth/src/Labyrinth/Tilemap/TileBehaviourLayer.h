@@ -11,16 +11,15 @@ namespace Laby {
 		std::string script;
 	};
 
-	using TileBehaviourGrid = Grid<TileBehaviourData, usize>;
-	using BehaviourPos = TileBehaviourGrid::Position;
-	using Shape = std::vector<BehaviourPos>;
+	using TileBehaviourGrid = Grid<TileBehaviourData>;
+	using Shape = std::vector<GridPosition>;
 
 	struct TileScriptData
 	{
-		BehaviourPos pos;
+		GridPosition pos;
 		const std::string& script;
 
-		TileScriptData(usize x, usize y, const std::string& behaviour)
+		TileScriptData(u32 x, u32 y, const std::string& behaviour)
 			: pos(x, y), script(behaviour) {}
 	};
 
@@ -46,7 +45,7 @@ namespace Laby {
 
 	private:
 		std::vector<Shape> GetContiguousShapes() const;
-		Shape FloodFill(usize x, usize y, Grid<GridBool>& checkedGrid) const;
+		Shape FloodFill(u32 x, u32 y, Grid<GridBool>& checkedGrid) const;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)

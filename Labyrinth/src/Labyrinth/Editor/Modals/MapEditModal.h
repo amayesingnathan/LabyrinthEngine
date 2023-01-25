@@ -32,7 +32,7 @@ namespace Laby {
 
 	private:
 		Ref<Tilemap> mTilemap;
-		usize mMapWidth, mMapHeight;
+		u32 mMapWidth, mMapHeight;
 
 		f32 mFrameHeightWithSpacing = 0.0f;
 
@@ -44,6 +44,7 @@ namespace Laby {
 		AssetHandle mCurrentSheet;
 		AssetHandle mSheetToAdd;
 
+		GridPosition mCurrentTile;
 		TileRenderData mCurrentTex;
 
 		GridPosition mHoveredTile;

@@ -222,7 +222,7 @@ namespace Laby {
 		YAML::Node mapNode = root["Tilemap"];
 
 		std::string mapName;
-		i32 mapWidth, mapHeight;
+		u32 mapWidth, mapHeight;
 
 		LAB_DESERIALISE_PROPERTY(Name, mapName, mapNode);
 		LAB_DESERIALISE_PROPERTY(Width, mapWidth, mapNode);

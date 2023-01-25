@@ -11,7 +11,6 @@ namespace Laby {
 	public:
 		virtual ~IEditorPanel() {}
 
-		virtual void onUpdate(Timestep ts) {};
 		virtual void onImGuiRender() = 0;
 		virtual void onProjectChange() {}
 		virtual void onSelectionChange() {}
