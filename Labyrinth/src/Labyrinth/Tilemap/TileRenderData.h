@@ -4,8 +4,8 @@
 
 namespace Laby {
 
-	using TileID = usize;
-	static constexpr TileID NullTileID = Limits<usize>::Max;
+	using TileID = u32;
+	static constexpr TileID NullTileID = Limits<TileID>::Max;
 
 	struct TileRenderData
 	{

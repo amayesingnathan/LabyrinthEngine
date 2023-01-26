@@ -90,7 +90,7 @@ namespace YAML {
 
 			for (auto sprite : sprites)
 			{
-				Laby::usize index;
+				Laby::u32 index;
 				LAB_DESERIALISE_PROPERTY(Index, index, sprite);
 				LAB_DESERIALISE_PROPERTY_ASSET(Sprite, rhs[index], sprite, SubTexture2D);
 			}

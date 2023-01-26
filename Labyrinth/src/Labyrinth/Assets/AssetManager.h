@@ -1,5 +1,6 @@
 #pragma once
 
+#include "AssetExtensions.h"
 #include "AssetRegistry.h"
 #include "AssetImporter.h"
 
@@ -31,7 +32,7 @@ namespace Laby {
         static AssetType GetAssetTypeFromPath(const fs::path& path);
         static AssetType GetAssetTypeFromHandle(AssetHandle handle);
 
-        static bool IsExtensionValid(const std::string& extension, AssetType type);
+        static bool IsExtensionValid(const fs::path& extension, AssetType type);
 
         static AssetHandle ImportAsset(const fs::path& filepath);
         static bool ReloadData(AssetHandle assetHandle);
@@ -53,14 +54,17 @@ namespace Laby {
             if (!fs::exists(sAssetDirPath / directoryPath))
                 FileUtils::CreateDir(sAssetDirPath / directoryPath);
 
+            AssetType type = T::GetStaticType();
+            std::string filenameExt = fmt::format("{}{}", filename, sAssetCreationMap[type]);
+
             AssetMetadata metadata;
             metadata.handle = AssetHandle();
             if (directoryPath.empty() || directoryPath == ".")
-                metadata.filepath = filename;
+                metadata.filepath = filenameExt;
             else
-                metadata.filepath = AssetManager::GetRelativePath(directoryPath + "/" + filename);
+                metadata.filepath = AssetManager::GetRelativePath(directoryPath + "/" + filenameExt);
             metadata.dataLoaded = true;
-            metadata.type = T::GetStaticType();
+            metadata.type = type;
 
             if (AssetManager::FileExists(metadata))
             {
