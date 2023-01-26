@@ -16,6 +16,7 @@
 #include <Labyrinth/Editor/Panels/ContentBrowserPanel.h>
 #include <Labyrinth/Editor/Panels/OptionsPanel.h>
 #include <Labyrinth/Editor/Panels/StatisticsPanel.h>
+#include <Labyrinth/Editor/Panels/SpriteSheetPanel.h>
 #include <Labyrinth/Editor/Panels/TilemapPanel.h>
 
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
@@ -67,6 +68,7 @@ namespace Laby {
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<OptionsPanel>("Options", mEditorData);
 		PanelManager::Register<StatisticsPanel>("Statistics", mEditorData.hoveredEntity);
+		PanelManager::Register<SpriteSheetPanel>("Spritesheets");
 		PanelManager::Register<TilemapPanel>("Tilemaps");
 
 		LoadSettings();
@@ -800,7 +802,7 @@ namespace Laby {
 		if (mSceneState != SceneEdit)
 			OnSceneStop();
 
-		if (!AssetManager::IsExtensionValid(path.extension().string(), AssetType::Scene))
+		if (!AssetManager::IsExtensionValid(path.extension(), AssetType::Scene))
 		{
 			LAB_WARN("Could not load {0} - not a scene file", path.filename().string());
 			return false;

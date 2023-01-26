@@ -4,6 +4,7 @@
 
 #include <Labyrinth/Assets/Asset.h>
 #include <Labyrinth/Containers/Grid.h>
+#include <Labyrinth/IO/Filesystem.h>
 
 #include <map>
 
@@ -19,13 +20,13 @@ namespace Laby {
 
 	public:
 		Texture2DSheet(const std::string& name, const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
-		Texture2DSheet(const std::string& name, const std::string& filepath, const glm::vec2& tileSize);
+		Texture2DSheet(const std::string& name, const fs::path& filepath, const glm::vec2& tileSize);
 
 		const std::string& getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
-		usize getWidth() const { return mTexture->getWidth(); }
-		usize getHeight() const { return mTexture->getHeight(); }
+		i32 getWidth() const { return mTexture->getWidth(); }
+		i32 getHeight() const { return mTexture->getHeight(); }
 
 		u32 getTileCountX() const { return mTileCountX; }
 		u32 getTileCountY() const { return mTileCountY; }
@@ -36,7 +37,7 @@ namespace Laby {
 		void destroyTileset();
 
 		u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
-		usize subTexCount() const { return mSubTextures.size(); }
+		u32 subTexCount() const { return (u32)mSubTextures.size(); }
 		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
 
 	private:
@@ -59,20 +60,23 @@ namespace Laby {
 		ASSET_STATIC_TYPE(AssetType::SubTexture)
 
 	public:
-		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2& coords, const glm::vec2& spriteSize);
-		SubTexture2D(Ref<Texture2DSheet> sheet, const glm::vec2 coords[4]);
+		SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2& spriteSize);
+		SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2 coords[4]);
 		~SubTexture2D() = default;
 
 		u32 getTextureID() const override { return mSheet->mTexture->getTextureID(); }
 		void bindTexture(u32 slot = 0) const override { return mSheet->mTexture->bindTexture(); }
 		const glm::vec2* getTextureCoords() const override { return mTexCoords; }
-		GridPosition getPosition() const;
+		const GridPosition& getPosition() const { return mPosition; }
 
+		std::string_view getName() const { return mName; }
 		Ref<Texture2DSheet> getSheet() const { return mSheet; }
 		Ref<Texture2D> getBaseTex() const { return mSheet->mTexture; }
 
 	private:
+		std::string mName;
 		Ref<Texture2DSheet> mSheet;
+		GridPosition mPosition;
 		glm::vec2 mTexCoords[4];
 	};
 

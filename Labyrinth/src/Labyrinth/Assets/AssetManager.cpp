@@ -1,8 +1,6 @@
 #include "Lpch.h"
 #include "AssetManager.h"
 
-#include "AssetExtensions.h"
-
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Project/Project.h>
@@ -53,9 +51,9 @@ namespace Laby {
 		return GetAssetTypeFromPath(GetMetadata(handle).filepath);
 	}
 
-	bool AssetManager::IsExtensionValid(const std::string& extension, AssetType type)
+	bool AssetManager::IsExtensionValid(const fs::path& extension, AssetType type)
 	{
-		std::string ext = StringUtils::ToLowerCopy(extension);
+		std::string ext = StringUtils::ToLowerCopy(extension.string());
 		if (sAssetExtensionMap.count(ext) == 0)
 			return false;
 		return sAssetExtensionMap[ext] == type;

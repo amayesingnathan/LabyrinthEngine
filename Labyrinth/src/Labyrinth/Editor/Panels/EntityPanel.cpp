@@ -228,10 +228,10 @@ namespace Laby {
 					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
 				}
 			});
-			Widgets::AddDragDropTarget<SpriteSheetData>("SPRITE_SHEET_ITEM", [&](const SpriteSheetData& var)
+			Widgets::AddDragDropTarget<AssetHandle>("SPRITE_SHEET_ITEM", [&](const AssetHandle& var)
 			{
 				component.type = SpriteRendererComponent::TexType::SubTexture;
-				component.handle = var.currentSubTex->handle;
+				component.handle = var;
 			});
 			Widgets::FloatEdit("Tiling Factor", component.tilingFactor, 0.1f, 0.0f, 100.0f);
 		});

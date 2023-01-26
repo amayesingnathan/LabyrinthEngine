@@ -51,7 +51,7 @@ namespace Laby {
 			ImGuiUtils::PushStyleColour(21, glm::vec4{ 0.0f }); // ImGuiCol_Button
 
 			Widgets::ImageButton(icon, { mThumbnailSize, mThumbnailSize });
-			Widgets::AddDragDropSource("CONTENT_BROWSER_ITEM", relativePath);
+			Widgets::AddDragDropSource("CONTENT_BROWSER_ITEM", mAssetDirectory / relativePath);
 
 			ImGuiUtils::PopStyleColour();
 

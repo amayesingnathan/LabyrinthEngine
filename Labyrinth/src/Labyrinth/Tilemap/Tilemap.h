@@ -27,7 +27,7 @@ namespace Laby {
 
 		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
 
-		const TileRenderData& getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
+		TileRenderData getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
 		void setTileData(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
 
 		TileBehaviourData& getTileBehaviour(const GridPosition& pos) { return mBehaviour(pos); }

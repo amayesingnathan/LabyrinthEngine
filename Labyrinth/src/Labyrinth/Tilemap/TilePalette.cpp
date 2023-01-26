@@ -23,7 +23,7 @@ namespace Laby {
 
 		bool hasSheet = mSpriteSheets.empty();
 		const SheetData& last = hasSheet ? mSpriteSheets.back() : SheetData();
-		usize sheetTexCount = hasSheet ? last.sheet->subTexCount() : 0;
+		u32 sheetTexCount = hasSheet ? last.sheet->subTexCount() : 0;
 
 		Ref<Texture2DSheet> spriteSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
 		TileID nextIndex = last.startIndex + sheetTexCount;
@@ -54,7 +54,7 @@ namespace Laby {
 		std::erase_if(mSpriteSheets, [&](const SheetData& data) { return data.sheet->handle == sheetHandle; });
 
 		TileID lastIndex = 0;
-		usize lastSize = 0;
+		u32 lastSize = 0;
 
 		for (SheetData& data : mSpriteSheets)
 		{
@@ -65,7 +65,7 @@ namespace Laby {
 		}
 
 		mTileset.clear();
-		usize nextIndex = 0;
+		TileID nextIndex = 0;
 		for (const SheetData& data : mSpriteSheets)
 		{
 			for (AssetHandle subtex : data.sheet->getSubTextures())

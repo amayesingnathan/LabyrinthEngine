@@ -35,6 +35,7 @@ namespace Laby {
 			out << YAML::BeginMap;
 
 			LAB_SERIALISE_PROPERTY_ASSET(TextureSheet, subtex->getSheet(), out);
+			LAB_SERIALISE_PROPERTY(SheetLocation, subtex->getPosition(), out);
 
 			const glm::vec2* texCoords = subtex->getTextureCoords();
 
@@ -60,11 +61,13 @@ namespace Laby {
 		YAML::Node subtexNode = root["SubTexture"];
 
 		Ref<Texture2DSheet> sheet = nullptr;
+		GridPosition pos;
 		glm::vec2 coords[4];
 
 		glm::vec2 defaultCoord{ 0.f, 0.f };
 
 		LAB_DESERIALISE_PROPERTY_ASSET(TextureSheet, sheet, subtexNode, Texture2DSheet);
+		LAB_DESERIALISE_PROPERTY(SheetLocation, pos, subtexNode);
 		if (!sheet)
 			return false;
 
@@ -73,7 +76,7 @@ namespace Laby {
 		LAB_DESERIALISE_PROPERTY_DEF(2, coords[2], subtexNode, defaultCoord);
 		LAB_DESERIALISE_PROPERTY_DEF(3, coords[3], subtexNode, defaultCoord);
 
-		asset = Ref<SubTexture2D>::Create(sheet, coords);
+		asset = Ref<SubTexture2D>::Create(sheet, pos, coords);
 		asset->handle = metadata.handle;
 
 		return true;
