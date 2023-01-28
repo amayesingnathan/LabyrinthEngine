@@ -5,13 +5,13 @@
 #include "Labyrinth/Core/Timestep.h"
 #include "Labyrinth/Renderer/EditorCamera.h"
 #include "Labyrinth/Renderer/RenderStack.h"
-#include <Labyrinth/Tilemap/Tilemap.h>
 
 #include "ECS.h"
 
 namespace Laby {
 
 	class Entity;
+	struct TilemapComponent;
 
 	class Scene : public Asset
 	{
@@ -65,8 +65,8 @@ namespace Laby {
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);
 
 		void CreateTilemapEntities();
-		void CreateTilemapShapes(Entity mapEntity, Ref<Tilemap> tilemap);
-		void CreateTilemapScripts(Entity mapEntity, Ref<Tilemap> tilemap);
+		void CreateTilemapShapes(Entity mapEntity, const TilemapComponent& comp);
+		void CreateTilemapScripts(Entity mapEntity, const TilemapComponent& comp);
 		void CleanupTilemapEntities();
 
 		void BuildScene();

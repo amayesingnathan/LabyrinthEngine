@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "SpriteSheetPanel.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
@@ -20,7 +21,7 @@ namespace Laby {
 
         Widgets::Image(sheetImage, { panelSize.x - 15.0f, 200.0f });
 
-        Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [&](const fs::path& var)
+        Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [this](const fs::path& var)
         {
             fs::path extension = var.extension();
 
@@ -35,15 +36,16 @@ namespace Laby {
                     Widgets::NewLine();
 
                     Widgets::StringEdit("Name", mNewSheetName);
-                    Widgets::UIntEdit("Width", mNewSheetWidth);
-                    Widgets::UIntEdit("Height", mNewSheetHeight);
-                }, [&]()
+                    Widgets::UIntEdit("Tile Width (px)", mNewSheetWidth);
+                    Widgets::UIntEdit("Tile Height (px)", mNewSheetHeight);
+                }, [this, var]()
                 {
                     if (mNewSheetWidth == 0 || mNewSheetHeight == 0)
                         return;
 
                     mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mNewSheetName, fmt::format("spritesheets/{}", mNewSheetName),
                         mNewSheetName, var, glm::vec2{ (f32)mNewSheetWidth, (f32)mNewSheetHeight });
+                    mCurrentSheet->generateTileset();
 
                     mCurrentSubTex = nullptr;
                 });

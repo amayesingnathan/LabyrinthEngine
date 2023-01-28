@@ -157,11 +157,7 @@ namespace Laby {
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<IRenderable>& textureSlot, f32 tilingFactor, const glm::vec4& tintColour, i32 entityID)
 	{
 		constexpr usize quadVertexCount = 4;
-		constexpr glm::vec2 defaultTextureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
 		const glm::vec2* textureCoords = textureSlot->getTextureCoords();
-
-		if (!textureCoords)
-			textureCoords = defaultTextureCoords;
 
 		if (sRenderData.quadIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();

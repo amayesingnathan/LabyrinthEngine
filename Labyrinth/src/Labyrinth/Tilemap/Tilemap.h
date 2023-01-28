@@ -28,10 +28,10 @@ namespace Laby {
 		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
 
 		TileRenderData getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
-		void setTileData(usize layer, const GridPosition& pos, TileID tile, f32 rotation = 0.0f) { mTexture.setTile(layer, pos, tile, rotation); }
+		void setTileData(usize layer, const GridPosition& pos, const TileRenderData& renderData) { mTexture.setTile(layer, pos, renderData); }
 
-		TileBehaviourData& getTileBehaviour(const GridPosition& pos) { return mBehaviour(pos); }
-		const TileBehaviourData& getTileBehaviour(const GridPosition& pos) const { return mBehaviour(pos); }
+		TileBehaviourData getTileBehaviour(const GridPosition& pos) const;
+		void setTileBehaviour(const GridPosition& pos, const TileBehaviourData& behaviour) { mBehaviour(pos) = behaviour; }
 
 		void addLayer() { mTexture.addLayer(); }
 		void removeLayer(usize layer) { mTexture.removeLayer(layer); }

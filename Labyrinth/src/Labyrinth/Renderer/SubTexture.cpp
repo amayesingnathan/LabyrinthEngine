@@ -26,6 +26,9 @@ namespace Laby {
 
 	void Texture2DSheet::generateTileset()
 	{
+		mSubTextures.clear();
+		mSubTextures.reserve(mTileCountX * mTileCountY);
+
 		usize count = 0;
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
@@ -33,6 +36,7 @@ namespace Laby {
 				CreateSubTex(count++, { x, y });
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
+		AssetManager::ReloadAssets();
 	}
 
 	void Texture2DSheet::destroyTileset()
@@ -62,13 +66,13 @@ namespace Laby {
 		f32 sheetWidth = (f32)sheet->getWidth();
 		f32 sheetHeight = (f32)sheet->getHeight();
 
-		glm::vec2 min = { (coords.x * sheet->mTileSize.x) / sheetWidth, (coords.y * sheet->mTileSize.y) / sheetHeight };
-		glm::vec2 max = { (coords.x + spriteSize.x * sheet->mTileSize.x) / sheetWidth, (coords.y + spriteSize.y * sheet->mTileSize.y) / sheetHeight };
+		glm::vec2 min = { (coords.x * sheet->mTileSize.x) / sheetWidth, (sheetHeight - (coords.y * sheet->mTileSize.y)) / sheetHeight };
+		glm::vec2 max = { ((coords.x + spriteSize.x) * sheet->mTileSize.x) / sheetWidth, (sheetHeight - ((coords.y + spriteSize.y) * sheet->mTileSize.y)) / sheetHeight };
 
-		mTexCoords[0] = { min.x, min.y };
-		mTexCoords[1] = { max.x, min.y };
-		mTexCoords[2] = { max.x, max.y };
-		mTexCoords[3] = { min.x, max.y };
+		mTexCoords[0] = { min.x, max.y };
+		mTexCoords[1] = { max.x, max.y };
+		mTexCoords[2] = { max.x, min.y };
+		mTexCoords[3] = { min.x, min.y };
 	}
 
 	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2 coords[4])

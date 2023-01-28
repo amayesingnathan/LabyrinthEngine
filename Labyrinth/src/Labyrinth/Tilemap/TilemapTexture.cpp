@@ -29,17 +29,15 @@ namespace Laby {
 
 	TileRenderData TilemapTexture::getTile(usize layer, const GridPosition& pos) const
 	{
-		if (layer >= mLayers.size())
-			return TileRenderData();
+		if (layer >= mLayers.size() || !pos.valid())
+			return {};
 
 		return mLayers[layer](pos);
 	}
 
-	void TilemapTexture::setTile(usize layer, const GridPosition& pos, TileID tile, f32 rotation)
+	void TilemapTexture::setTile(usize layer, const GridPosition& pos, const TileRenderData& data)
 	{
-		TileRenderData& tileData = mLayers[layer](pos);
-		tileData.textureID = tile;
-		tileData.rotation = rotation;
+		mLayers[layer](pos) = data;
 
 		RenderTexture();
 	}

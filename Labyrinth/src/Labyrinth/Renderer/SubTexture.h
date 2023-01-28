@@ -6,14 +6,12 @@
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/Filesystem.h>
 
-#include <map>
-
 namespace Laby {
 
 	class SubTexture2D;
 
 	//Texture2DSheet is a thin wrapper around a Texture2D for a sprite sheet which contains meta data about the sheet.
-	class Texture2DSheet : public Asset
+	class Texture2DSheet : public IRenderable, public Asset
 	{
 	public:
 		ASSET_STATIC_TYPE(AssetType::TextureSheet)
@@ -21,6 +19,9 @@ namespace Laby {
 	public:
 		Texture2DSheet(const std::string& name, const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
 		Texture2DSheet(const std::string& name, const fs::path& filepath, const glm::vec2& tileSize);
+
+		u32 getTextureID() const override { return mTexture->getTextureID(); }
+		void bindTexture(u32 slot = 0) const override { return mTexture->bindTexture(); }
 
 		const std::string& getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }

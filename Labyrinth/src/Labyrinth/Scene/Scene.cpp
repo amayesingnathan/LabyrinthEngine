@@ -8,14 +8,15 @@
 #include <box2d/b2_circle_shape.h>
 #include <box2d/b2_chain_shape.h>
 
-#include "Entity.h"
-#include "Components.h"
-
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Physics/Utils.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
+#include <Labyrinth/Tilemap/Tilemap.h>
+
+#include "Entity.h"
+#include "Components.h"
 
 namespace Laby {
 
@@ -337,22 +338,21 @@ namespace Laby {
 	{
 		mRegistry.view<TilemapComponent>().each([this](auto e, const auto& tilemapComponent)
 		{
-			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(tilemapComponent.tilemapHandle);
 			Entity mapEntity = { e, this };
-		
-			if (!tilemap)
-			{
-				LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
-				return;
-			}
-
-			CreateTilemapShapes(mapEntity, tilemap);
-			CreateTilemapScripts(mapEntity, tilemap);
+			CreateTilemapShapes(mapEntity, tilemapComponent);
+			CreateTilemapScripts(mapEntity, tilemapComponent);
 		});
 	}
 
-	void Scene::CreateTilemapShapes(Entity mapEntity, Ref<Tilemap> tilemap)
+	void Scene::CreateTilemapShapes(Entity mapEntity, const TilemapComponent& comp)
 	{
+		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.tilemapHandle);
+		if (!tilemap)
+		{
+			LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+			return;
+		}
+
 		const std::string& mapName = tilemap->getName();
 		usize width = tilemap->getWidth();
 		usize height = tilemap->getHeight();
@@ -381,8 +381,15 @@ namespace Laby {
 		}
 	}
 
-	void Scene::CreateTilemapScripts(Entity mapEntity, Ref<Tilemap> tilemap)
+	void Scene::CreateTilemapScripts(Entity mapEntity, const TilemapComponent& comp)
 	{
+		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.tilemapHandle);
+		if (!tilemap)
+		{
+			LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
+			return;
+		}
+
 		const std::string& mapName = tilemap->getName();
 		usize width = tilemap->getWidth();
 		usize height = tilemap->getHeight();

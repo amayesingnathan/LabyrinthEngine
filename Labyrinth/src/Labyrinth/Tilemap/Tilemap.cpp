@@ -8,6 +8,14 @@ namespace Laby {
 	{
 	}
 
+	TileBehaviourData Tilemap::getTileBehaviour(const GridPosition& pos) const
+	{
+		if (!pos.valid())
+			return {};
+
+		return mBehaviour(pos);
+	}
+
 	Ref<Tilemap> TilemapUtils::Clone(Ref<Tilemap> other)
 	{
 		Ref<Tilemap> copy = Ref<Tilemap>::Create(other->mName, other->getWidth(), other->getHeight());

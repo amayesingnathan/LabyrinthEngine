@@ -41,9 +41,11 @@ namespace Laby {
 	{
 		for (PanelEntry& panelEntry : sEditorPanels)
 		{
+			if (!panelEntry.panel || !panelEntry.displayed)
+				continue;
+
 			ImGui::Begin(panelEntry.key.data());
-			if (panelEntry.panel && panelEntry.displayed)
-				panelEntry.panel->onImGuiRender();
+			panelEntry.panel->onImGuiRender();
 			ImGui::End();
 		}
 	}
