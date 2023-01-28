@@ -2,13 +2,14 @@
 
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/YAML.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
 
 namespace Laby {
 
 	struct TileBehaviourData
 	{
-		bool solid;
-		std::string script;
+		bool solid = false;
+		std::string_view script = "";
 	};
 
 	using TileBehaviourGrid = Grid<TileBehaviourData>;
@@ -17,9 +18,9 @@ namespace Laby {
 	struct TileScriptData
 	{
 		GridPosition pos;
-		const std::string& script;
+		std::string_view script;
 
-		TileScriptData(u32 x, u32 y, const std::string& behaviour)
+		TileScriptData(u32 x, u32 y, std::string_view behaviour)
 			: pos(x, y), script(behaviour) {}
 	};
 
@@ -53,7 +54,7 @@ namespace Laby {
 		mOut << YAML::BeginMap; // TileData
 
 		LAB_SERIALISE_PROPERTY(Solid, data.solid, mOut);
-		LAB_SERIALISE_PROPERTY(Script, data.script, mOut);
+		LAB_SERIALISE_PROPERTY(Script, data.script.data(), mOut);
 
 		mOut << YAML::EndMap; // TileData
 	}
@@ -72,7 +73,7 @@ namespace Laby {
 		{
 			mOut << YAML::BeginMap;
 			LAB_SERIALISE_PROPERTY(Solid, tileData.solid, mOut);
-			LAB_SERIALISE_PROPERTY(Script, tileData.script, mOut);
+			LAB_SERIALISE_PROPERTY(Script, tileData.script.data(), mOut);
 			mOut << YAML::EndMap;
 		}
 		mOut << YAML::EndSeq;
@@ -90,8 +91,14 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileBehaviourData& rhs)
 		{
+			std::string script;
 			LAB_DESERIALISE_PROPERTY(Solid, rhs.solid, node);
-			LAB_DESERIALISE_PROPERTY(Script, rhs.script, node);
+			LAB_DESERIALISE_PROPERTY(Script, script, node);
+
+			const auto& appClasses = Laby::ScriptEngine::GetAppClasses();
+			auto it = appClasses.find(script);
+			if (it != appClasses.end())
+				rhs.script = it->first;
 
 			return true;
 		}

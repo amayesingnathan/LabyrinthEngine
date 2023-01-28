@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "EntityPanel.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>

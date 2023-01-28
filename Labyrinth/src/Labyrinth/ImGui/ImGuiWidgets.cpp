@@ -756,36 +756,43 @@ namespace Laby {
 		if (!image)
 			return;
 
-		static constexpr glm::vec2 defaultCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
-		const ImVec2* coords = (ImVec2*)image->getTextureCoords();
-		if (!coords)
-			coords = (ImVec2*)defaultCoords;
+		const glm::vec2* coords = image->getTextureCoords();
 
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		glm::vec2 centre = ImGuiUtils::CursorPos() + 0.5f * size;
+		const ImVec2& uv0 = ImGuiUtils::FromGLM(coords[3]);
+		const ImVec2& uv1 = ImGuiUtils::FromGLM(coords[1]);
 
-		f32 cos_a = cosf(rotation);
-		f32 sin_a = sinf(rotation);
-		glm::vec2 pos[4] =
-		{
-			centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(-size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a)),
-			centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(+size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a)),
-			centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(+size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a)),
-			centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(-size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a))
-		};
-		ImVec2* imPos = (ImVec2*)pos;
+		ImGui::Image((ImTextureID)(uintptr_t)image->getTextureID(), ImGuiUtils::FromGLM(size), uv0, uv1);
 
-		draw_list->AddImageQuad((ImTextureID)(uintptr_t)image->getTextureID(), 
-			imPos[0], imPos[1], imPos[2], imPos[3], 
-			coords[0], coords[1], coords[2], coords[3], 
-			IM_COL32_WHITE);
+		//static constexpr glm::vec2 defaultCoords[4] = { { 0.0f, 0.0f }, { 1.0f, 0.0f }, { 1.0f, 1.0f }, { 0.0f, 1.0f } };
+		//const ImVec2* coords = (ImVec2*)image->getTextureCoords();
+		//if (!coords)
+		//	coords = (ImVec2*)defaultCoords;
+
+		//ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		//glm::vec2 centre = ImGuiUtils::CursorPos() + 0.5f * size;
+
+		//f32 cos_a = cosf(rotation);
+		//f32 sin_a = sinf(rotation);
+		//glm::vec2 pos[4] =
+		//{
+		//	centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(-size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a)),
+		//	centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(+size.x * 0.5f, -size.y * 0.5f), cos_a, sin_a)),
+		//	centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(+size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a)),
+		//	centre + ImGuiUtils::ToGLM(ImRotate(ImVec2(-size.x * 0.5f, +size.y * 0.5f), cos_a, sin_a))
+		//};
+		//ImVec2* imPos = (ImVec2*)pos;
+
+		//draw_list->AddImageQuad((ImTextureID)(uintptr_t)image->getTextureID(), 
+		//	imPos[0], imPos[1], imPos[2], imPos[3], 
+		//	coords[0], coords[1], coords[2], coords[3], 
+		//	IM_COL32_WHITE);
 	}
 
 	void Widgets::ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action, int padding)
 	{
 		const glm::vec2* coords = image->getTextureCoords();
-		ImVec2 uv0 = coords ? ImGuiUtils::FromGLM(coords[3]) : ImVec2{ 0, 1 };
-		ImVec2 uv1 = coords ? ImGuiUtils::FromGLM(coords[1]) : ImVec2{ 1, 0 };
+		const ImVec2& uv0 = ImGuiUtils::FromGLM(coords[3]);
+		const ImVec2& uv1 = ImGuiUtils::FromGLM(coords[1]);
 
 		if (ImGui::ImageButton((ImTextureID)(uintptr_t)image->getTextureID(), ImGuiUtils::FromGLM(size), uv0, uv1, padding) && action)
 			action();

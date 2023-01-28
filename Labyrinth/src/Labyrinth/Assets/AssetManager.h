@@ -34,6 +34,7 @@ namespace Laby {
 
         static bool IsExtensionValid(const fs::path& extension, AssetType type);
 
+        static void ReloadAssets();
         static AssetHandle ImportAsset(const fs::path& filepath);
         static bool ReloadData(AssetHandle assetHandle);
 
@@ -42,7 +43,6 @@ namespace Laby {
     private:
         static void LoadRegistry();
         static void ProcessDirectory(const fs::path& directoryPath);
-        static void ReloadAssets();
         static void SaveRegistry();
 
         static AssetMetadata& GetMetadataInternal(AssetHandle handle);

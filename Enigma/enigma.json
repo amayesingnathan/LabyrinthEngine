@@ -22,6 +22,10 @@
         },
         {
             "Displayed": true,
+            "Key": "Spritesheets"
+        },
+        {
+            "Displayed": true,
             "Key": "Tilemaps"
         }
     ],

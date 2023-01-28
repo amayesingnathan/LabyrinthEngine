@@ -27,7 +27,7 @@ namespace Laby {
 		static void RegenScriptProject();
 
 		static Ref<ScriptClass> GetEntityClass() { return ScriptEngineInternal::GetCoreEntityClass(); }
-		static Ref<ScriptClass> GetAppClass(const std::string& name);
+		static Ref<ScriptClass> GetAppClass(std::string_view name);
 		static std::unordered_map<std::string, Ref<ScriptClass>>& GetAppClasses();
 		static Ref<ScriptObject> GetScriptInstance(UUID id);
 

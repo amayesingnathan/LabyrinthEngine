@@ -122,13 +122,14 @@ namespace Laby {
 		System::Call(batchFilePath.string());
 	}
 
-	Ref<ScriptClass> ScriptEngine::GetAppClass(const std::string& name)
+	Ref<ScriptClass> ScriptEngine::GetAppClass(std::string_view name)
 	{
 		const auto& classes = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
-		if (!classes.contains(name))
+		std::string className(name.data());
+		if (!classes.contains(className))
 			return nullptr;
 
-		return classes.at(name);
+		return classes.at(className);
 	}
 
 	std::unordered_map<std::string, Ref<ScriptClass>>& ScriptEngine::GetAppClasses() { return ScriptEngineInternal::GetAppAssemblyInfo()->classes; }

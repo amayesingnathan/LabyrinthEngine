@@ -7,7 +7,7 @@ namespace Laby {
 
 	enum class EditMode
 	{
-		Paint, Physics, Scripts
+		Paint, Selection
 	};
 
 	class MapEditModal : public IEditorModal
@@ -44,11 +44,15 @@ namespace Laby {
 		AssetHandle mCurrentSheet;
 		AssetHandle mSheetToAdd;
 
+		TileRenderData mBrushSubtex;
+
 		GridPosition mCurrentTile;
-		TileRenderData mCurrentTex;
+		TileRenderData mCurrentSubtex;
+		TileBehaviourData mCurrentBehaviour;
 
 		GridPosition mHoveredTile;
-		TileRenderData mHoveredTex;
+		TileRenderData mHoveredSubtex;
+		TileBehaviourData mHoveredBehaviour;
 	};
 
 }

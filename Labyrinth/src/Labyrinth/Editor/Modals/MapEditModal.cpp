@@ -4,7 +4,7 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/IO/Input.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
-#include <Labyrinth/SCripting/ScriptEngine.h>
+#include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
 namespace Laby {
@@ -19,7 +19,11 @@ namespace Laby {
 
     static TileID GetStartIndex(Ref<Texture2DSheet> sheet, const std::vector<SheetData>& sheets)
     {
-        return std::find_if(sheets.begin(), sheets.end(), [&](const SheetData& data) { return data.sheet == sheet; })->startIndex;
+        auto it = std::find_if(sheets.begin(), sheets.end(), [&](const SheetData& data) { return data.sheet == sheet; });
+        if (it == sheets.end())
+            return NullTileID;
+
+        return it->startIndex;
     }
 
     MapEditModal::MapEditModal(const Ref<Tilemap>& map)
@@ -32,8 +36,8 @@ namespace Laby {
         if (mEditMode == EditMode::Paint && ImGuiUtils::IsMouseDown(Mouse::ButtonLeft))
         {
             mCurrentlyPainting = true;
-            if (mHoveredTile.valid() && mHoveredTex != mCurrentTex)
-                mTilemap->setTileData(mCurrentLayer, mHoveredTile, mCurrentTex.textureID, mCurrentTex.rotation);
+            if (mHoveredTile.valid() && mHoveredSubtex != mBrushSubtex)
+                mTilemap->setTileData(mCurrentLayer, mHoveredTile, mBrushSubtex);
         }
         if (mCurrentlyPainting && ImGuiUtils::IsMouseReleased(Mouse::ButtonLeft))
             mCurrentlyPainting = false;
@@ -89,7 +93,7 @@ namespace Laby {
         Widgets::Label(fmt::format("Tile: ({}, {})", mCurrentTile.x, mCurrentTile.y));
 
         bool validCurrentTile = mCurrentTile.valid();
-        TileBehaviourData* currentTileData = validCurrentTile ? &mTilemap->getTileBehaviour(mCurrentTile) : nullptr;
+        TileBehaviourData currentTileData = mTilemap->getTileBehaviour(mCurrentTile);
 
         std::vector<ScriptClassEntry> comboEntries;
         comboEntries.emplace_back("", nullptr);
@@ -98,12 +102,13 @@ namespace Laby {
 
         Widgets::Disable(validCurrentTile);
 
-        Ref<ScriptClass> scriptClass = currentTileData ? ScriptEngine::GetAppClass(currentTileData->script) : nullptr;
-        Widgets::Combobox("Behaviour", currentTileData ? currentTileData->script : "", scriptClass, comboEntries.data(), comboEntries.size(),
-            [&](std::string_view name, Ref<ScriptClass> klass) { currentTileData->script = name; });
+        Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(currentTileData.script);
+        Widgets::Combobox("Behaviour", currentTileData.script, scriptClass, comboEntries.data(), comboEntries.size(),
+            [&](std::string_view name, Ref<ScriptClass> klass) { currentTileData.script = name; });
 
-        bool defaultSolid = false;
-        Widgets::Checkbox("Solid", currentTileData ? currentTileData->solid : defaultSolid);
+        Widgets::Checkbox("Solid", currentTileData.solid);
+        if (validCurrentTile)
+            mTilemap->setTileBehaviour(mCurrentTile, currentTileData);
 
         Widgets::EndDisable();
 
@@ -115,26 +120,24 @@ namespace Laby {
         Widgets::Disable();
 
         glm::vec2 imageSize = 0.5f * ImGuiUtils::AvailableRegion();
-        const TileBehaviourData* hoveredTileData = mHoveredTile.valid() ? &mTilemap->getTileBehaviour(mCurrentTile) : nullptr;
         Widgets::Label(fmt::format("Hovered Tile: ({}, {})", mHoveredTile.x, mHoveredTile.y));
-        Widgets::Label(fmt::format("Script: {}", hoveredTileData ? hoveredTileData->script : ""));
-
-        bool hoveredSolid = hoveredTileData ? hoveredTileData->solid : false;
-        Widgets::Checkbox("Solid", hoveredSolid);
+        Widgets::Label(fmt::format("Script: {}", mHoveredBehaviour.script));
+        Widgets::Checkbox("Solid", mHoveredBehaviour.solid);
 
         Widgets::EndDisable();
-
 
         Ref<IRenderable> image = EditorResources::NoTexture;
         f32 rotation = 0.0f;
         if (mHoveredTile.valid())
         {
-            image = mTilemap->getTileTex(mHoveredTex.textureID);
-            rotation = mHoveredTex.rotation;
+            image = mTilemap->getTileTex(mHoveredSubtex.textureID);
+            rotation = mHoveredSubtex.rotation;
         }
         if (mCurrentlyPainting)
-            image = mTilemap->getTileTex(mCurrentTex.textureID);
-        rotation = mCurrentTex.rotation;
+        {
+            image = mTilemap->getTileTex(mBrushSubtex.textureID);
+            rotation = mBrushSubtex.rotation;
+        }
 
         ImGuiUtils::SetCursorPos(ImGuiUtils::CursorPos() + 0.25f * imageSize);
         Widgets::Image(image, imageSize, rotation);
@@ -173,7 +176,14 @@ namespace Laby {
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
-                mHoveredTex = mTilemap->getTileData(mCurrentLayer, pos);
+                mHoveredSubtex = mTilemap->getTileData(mCurrentLayer, pos);
+                mHoveredBehaviour = mTilemap->getTileBehaviour(pos);
+            });
+            Widgets::OnWidgetSelected([&]()
+            {
+                mCurrentTile = mHoveredTile;
+                mCurrentSubtex = mHoveredSubtex;
+                mCurrentBehaviour = mHoveredBehaviour;
             });
         });
         ImGuiUtils::ResetButtonTransparency();
@@ -234,20 +244,20 @@ namespace Laby {
         subtexImageSize.y -= (3 * mFrameHeightWithSpacing + 0.25f * subtexImageSize.y);
 
         Ref<IRenderable> subTexImage = EditorResources::NoTexture;
-        if (mCurrentTex.valid())
-            subTexImage = mTilemap->getTileTex(mCurrentTex.textureID);
+        if (mBrushSubtex.valid())
+            subTexImage = mTilemap->getTileTex(mBrushSubtex.textureID);
 
         glm::vec2 pos = ImGuiUtils::CursorPos();
         pos.x += 0.25f * subtexImageSize.x;
         pos.y += 0.25f * subtexImageSize.y;
         ImGuiUtils::SetCursorPos(pos);
-        Widgets::Image(subTexImage, subtexImageSize, mCurrentTex.rotation);
+        Widgets::Image(subTexImage, subtexImageSize, mBrushSubtex.rotation);
 
         Widgets::SameLine();
         ImGuiUtils::SetCursorPosY(pos.y);
-        Widgets::Button("Clear", [this]() { mCurrentTex = TileRenderData(); });
-        Widgets::Button("Rotate Right", [this]() { mCurrentTex.rotation = std::fmod(mCurrentTex.rotation + Angle::Rad270f, Angle::Rad360f); });
-        Widgets::Button("Rotate Left", [this]() { mCurrentTex.rotation = std::fmod(mCurrentTex.rotation + Angle::Rad90f, Angle::Rad360f); });
+        Widgets::Button("Clear", [this]() { mBrushSubtex = {}; });
+        Widgets::Button("Rotate Right", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad270f, Angle::Rad360f); });
+        Widgets::Button("Rotate Left", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad90f, Angle::Rad360f); });
 
         if (!sheet)
             return;
@@ -263,7 +273,7 @@ namespace Laby {
             std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
             Widgets::Button(name, elementSize, [&]()
             {
-                mCurrentTex = TileRenderData(GetStartIndex(sheet, mTilemap->getSheets()) + sheet->getPositionIndex(pos));
+                mBrushSubtex = TileRenderData(GetStartIndex(sheet, mTilemap->getSheets()) + sheet->getPositionIndex(pos));
             });
         });
 
@@ -276,36 +286,17 @@ namespace Laby {
             return false;
 
         bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
+        if (!control)
+            return false;
 
         switch (e.keyCode)
         {
         case Key::Q:
-        {
-            if (control)
-            {
-                mEditMode = EditMode::Paint;
-                return true;
-            }
-            break;
-        }
+            mEditMode = EditMode::Paint;
+            return true;
         case Key::W:
-        {
-            if (control)
-            {
-                mEditMode = EditMode::Physics;
-                return true;
-            }
-            break;
-        }
-        case Key::E:
-        {
-            if (control)
-            {
-                mEditMode = EditMode::Scripts;
-                return true;
-            }
-            break;
-        }
+            mEditMode = EditMode::Selection;
+            return true;
         }
 
         return false;
