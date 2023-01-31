@@ -7,18 +7,18 @@
 namespace Laby {
 
 	using BodyTypeEntry = ComboEntry<RigidBodyComponent::BodyType>;
-	static constexpr BodyTypeEntry sBodyTypes[3] =
+	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
-		{ "Static",				 RigidBodyComponent::BodyType::Static },
-		{ "KinematicTexture2D",  RigidBodyComponent::BodyType::Kinematic },
-		{ "DynamicSubTexture2D", RigidBodyComponent::BodyType::Dynamic }
+		BodyTypeEntry{ "Static",			  RigidBodyComponent::BodyType::Static },
+		BodyTypeEntry{ "KinematicTexture2D",  RigidBodyComponent::BodyType::Kinematic },
+		BodyTypeEntry{ "DynamicSubTexture2D", RigidBodyComponent::BodyType::Dynamic }
 	};
 
 	using ShapeTypeEntry = ComboEntry<NewBodyModal::ShapeType>;
-	static constexpr ShapeTypeEntry sShapeTypes[2] =
+	static constexpr std::array<ShapeTypeEntry, 2> sShapeTypes =
 	{
-		{"Box",		NewBodyModal::ShapeType::Box},
-		{"Circle",	NewBodyModal::ShapeType::Circle},
+		ShapeTypeEntry{"Box",		NewBodyModal::ShapeType::Box},
+		ShapeTypeEntry{"Circle",	NewBodyModal::ShapeType::Circle},
 	};
 
 	NewBodyModal::NewBodyModal(const Ref<Scene>& scene)
@@ -35,7 +35,7 @@ namespace Laby {
 		Widgets::FloatEdit("Rotation", glm::degrees(mNewBodyDef.trans.rotation.z), [&](f32 r) { mNewBodyDef.trans.rotation.z = glm::radians(r); });
 		Widgets::Vector2Edit("Size", *(glm::vec2*)(&mNewBodyDef.trans.scale));
 
-		Widgets::Combobox("Body Type", Enum::ToString(mNewBodyDef.body.type), mNewBodyDef.body.type, sBodyTypes, 3);
+		Widgets::Combobox<RigidBodyComponent::BodyType>("Body Type", Enum::ToString(mNewBodyDef.body.type), mNewBodyDef.body.type, sBodyTypes);
 		Widgets::Checkbox("Fixed Rotation", mNewBodyDef.body.fixedRotation);
 
 		Widgets::Checkbox("Has Shape?", mNewBodyDef.hasShape, [&]()
@@ -51,7 +51,8 @@ namespace Laby {
         if (!mNewBodyDef.hasShape)
             return;
 
-        Widgets::Combobox("Shape Type", Enum::ToString(mNewBodyDef.shape), mNewBodyDef.shape, sShapeTypes, 2, [&](std::string_view key, auto value)
+        Widgets::Combobox<NewBodyModal::ShapeType>("Shape Type", Enum::ToString(mNewBodyDef.shape), mNewBodyDef.shape, sShapeTypes,
+        [&](std::string_view key, auto value)
         {
             mNewBodyDef.shape = value;
             switch (mNewBodyDef.shape)

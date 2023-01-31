@@ -1,5 +1,7 @@
 #pragma once
 
+#include <ranges>
+
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
@@ -95,10 +97,10 @@ namespace YAML {
 			LAB_DESERIALISE_PROPERTY(Solid, rhs.solid, node);
 			LAB_DESERIALISE_PROPERTY(Script, script, node);
 
-			const auto& appClasses = Laby::ScriptEngine::GetAppClasses();
-			auto it = appClasses.find(script);
-			if (it != appClasses.end())
-				rhs.script = it->first;
+			auto classNames = std::views::keys(Laby::ScriptEngine::GetAppClasses());
+			auto it = std::ranges::find(classNames, script);
+			if (it != classNames.end())
+				rhs.script = *it;
 
 			return true;
 		}

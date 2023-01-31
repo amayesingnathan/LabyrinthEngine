@@ -830,24 +830,27 @@ namespace Laby {
 		onEdit((u64)val);
 	}
 
-	const IComboEntry* Widgets::ComboboxInternal(std::string_view label, std::string_view preview, const std::vector<const IComboEntry*>& table)
+	bool Widgets::BeginCombo(std::string_view label, std::string_view preview)
+	{
+		return ImGui::BeginCombo(label.data(), preview.data());
+	}
+
+	const IComboEntry* Widgets::ComboboxEntry(std::string_view preview, const IComboEntry* entry)
 	{
 		const IComboEntry* result = nullptr;
-		if (ImGui::BeginCombo(label.data(), preview.data()))
-		{
-			for (const IComboEntry* entry : table)
-			{
-				bool isSelected = entry->key == preview;
+		bool isSelected = entry->key == preview;
 
-				if (ImGui::Selectable(entry->key.data(), isSelected))
-					result = entry;
+		if (ImGui::Selectable(entry->key.data(), isSelected))
+			result = entry;
 
-				if (isSelected)
-					ImGui::SetItemDefaultFocus();
-			}
+		if (isSelected)
+			ImGui::SetItemDefaultFocus();
 
-			ImGui::EndCombo();
-		}
 		return result;
+	}
+
+	void Widgets::EndCombo()
+	{
+		ImGui::EndCombo();
 	}
 }

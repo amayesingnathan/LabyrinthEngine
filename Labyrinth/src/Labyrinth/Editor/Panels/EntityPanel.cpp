@@ -18,26 +18,26 @@ namespace Laby {
 	using ScriptClassEntry = ComboEntry<Ref<ScriptClass>>;
 
 	using TexTypeEntry = ComboEntry<SpriteRendererComponent::TexType>;
-	static constexpr TexTypeEntry sTextureTypes[3] =
+	static constexpr std::array<TexTypeEntry, 3> sTextureTypes =
 	{
-		{ "Colour",			SpriteRendererComponent::TexType::None },
-		{ "Texture2D",		SpriteRendererComponent::TexType::Texture },
-		{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture }
+		TexTypeEntry{ "Colour",			SpriteRendererComponent::TexType::None },
+		TexTypeEntry{ "Texture2D",		SpriteRendererComponent::TexType::Texture },
+		TexTypeEntry{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture }
 	};
 
 	using CameraProjectionEntry = ComboEntry<SceneCamera::ProjectionType>;
-	static constexpr CameraProjectionEntry sCameraProjections[2] =
+	static constexpr std::array<CameraProjectionEntry, 2> sCameraProjections =
 	{
-		{ "Perspective",  SceneCamera::ProjectionType::Perspective },
-		{ "Orthographic", SceneCamera::ProjectionType::Orthographic }
+		CameraProjectionEntry{ "Perspective",  SceneCamera::ProjectionType::Perspective },
+		CameraProjectionEntry{ "Orthographic", SceneCamera::ProjectionType::Orthographic }
 	};
 
 	using BodyTypeEntry = ComboEntry<RigidBodyComponent::BodyType>;
-	static constexpr BodyTypeEntry sBodyTypes[3] =
+	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
-		{ "Static",		RigidBodyComponent::BodyType::Static },
-		{ "Kinematic",	RigidBodyComponent::BodyType::Kinematic },
-		{ "Dynamic",	RigidBodyComponent::BodyType::Dynamic }
+		BodyTypeEntry{ "Static",		RigidBodyComponent::BodyType::Static },
+		BodyTypeEntry{ "Kinematic",	RigidBodyComponent::BodyType::Kinematic },
+		BodyTypeEntry{ "Dynamic",	RigidBodyComponent::BodyType::Dynamic }
 	};
 
 	EntityPanel::EntityPanel(const Ref<Scene>& scene)
@@ -129,7 +129,7 @@ namespace Laby {
 			Entity parent = mSelectedEntity.getParent();
 			std::string currentParentString = parent ? fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID()) : "None";
 
-			Widgets::Combobox("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries.data(), comboEntries.size());
+			Widgets::Combobox<Entity>("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries);
 		}
 
 		Widgets::Component<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
@@ -160,7 +160,7 @@ namespace Laby {
 			});
 
 			const SceneCamera::ProjectionType& projectionType = camera.getProjectionType();
-			Widgets::Combobox("Projection", Enum::ToString(projectionType), projectionType, sCameraProjections, 2,
+			Widgets::Combobox<SceneCamera::ProjectionType>("Projection", Enum::ToString(projectionType), projectionType, sCameraProjections,
 				[&](std::string_view, SceneCamera::ProjectionType projType) { camera.setProjectionType(projType); });
 
 			switch (projectionType)
@@ -198,7 +198,7 @@ namespace Laby {
 		{
 			Widgets::UIntEdit("Layer", component.layer);
 			Widgets::ColourEdit("Colour", component.colour);
-			Widgets::Combobox("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes, 3);
+			Widgets::Combobox<SpriteRendererComponent::TexType>("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes);
 
 			Ref<IRenderable> tex = EditorResources::NoTexture;
 			switch (component.type)
@@ -246,7 +246,7 @@ namespace Laby {
 
 		Widgets::Component<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)
 		{
-			Widgets::Combobox("Type", Enum::ToString(component.type), component.type, sBodyTypes, 3);
+			Widgets::Combobox<RigidBodyComponent::BodyType>("Type", Enum::ToString(component.type), component.type, sBodyTypes);
 			Widgets::Checkbox("Fixed Rotation", component.fixedRotation);
 			Widgets::FloatEdit("Mass", component.mass, 0.01f, 0.0f, 100.0f);
 			Widgets::FloatEdit("Linear Drag", component.linearDrag, 0.01f, 0.0f, 100.0f);
@@ -282,7 +282,7 @@ namespace Laby {
 
 			UUID id = mSelectedEntity.getUUID();
 			Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(component.className.data());
-			Widgets::Combobox("Class", component.className, scriptClass, comboEntries.data(), comboEntries.size(), [&](std::string_view name, Ref<ScriptClass> klass) 
+			Widgets::Combobox<Ref<ScriptClass>>("Class", component.className, scriptClass, comboEntries, [&](std::string_view name, Ref<ScriptClass> klass) 
 			{				
 				ScriptCache::RemoveEntity(id);
 				component.className = name;

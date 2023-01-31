@@ -32,16 +32,19 @@ namespace Laby {
 
         // Call any completion callbacks before deleting modal entries
         auto removeStart = std::remove_if(sEditorModals.begin(), sEditorModals.end(), [](const ModalEntry& entry) { return !entry.open; });
-        for (auto it = removeStart; it != sEditorModals.end(); it++)
-        {
-            if (sModalCallbacks.count(it->heading) == 0) continue;
 
-            for (auto func : sModalCallbacks[it->heading])
+        auto toRemove = sEditorModals |
+            std::views::filter([](const ModalEntry& entry) { return entry.open && sModalCallbacks.contains(entry.heading); });
+
+        for (const ModalEntry& entry : toRemove)
+        {
+            for (auto func : sModalCallbacks[entry.heading])
                 func();
 
-            sModalCallbacks.erase(it->heading);
+            sModalCallbacks.erase(entry.heading);
         }
-        sEditorModals.erase(removeStart, sEditorModals.end());
+
+        std::erase_if(sEditorModals, [](const ModalEntry& entry) { return !entry.open; });
 	}
 
 	void ModalManager::RenderButtons(ModalEntry& modalData)

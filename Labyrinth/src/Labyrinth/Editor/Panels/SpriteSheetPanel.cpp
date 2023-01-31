@@ -69,7 +69,7 @@ namespace Laby {
         }
 
         std::string_view subTexName = mCurrentSubTex ? mCurrentSubTex->getName() : NO_NAME;
-        Widgets::Combobox("Subtextures", subTexName, mCurrentSubTex, comboEntries.data(), comboEntries.size());
+        Widgets::Combobox<Ref<SubTexture2D>>("Subtextures", subTexName, mCurrentSubTex, comboEntries);
 
         Widgets::NewLine();
 

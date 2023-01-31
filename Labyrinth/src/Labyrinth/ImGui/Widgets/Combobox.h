@@ -1,5 +1,7 @@
 #pragma once
 
+#include <array>
+
 #include <Labyrinth/Core/System/Base.h>
 
 namespace Laby {
@@ -22,7 +24,4 @@ namespace Laby {
 
 		virtual const void* getVal() const { return &value; }
 	};
-
-	template<typename T>
-	concept IsComboEntry = DerivedFrom<IComboEntry, T>;
 }
