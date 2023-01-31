@@ -1,5 +1,8 @@
 #pragma once
 
+#include <span>
+#include <ranges>
+
 #include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/Renderer/IRenderable.h>
@@ -158,13 +161,22 @@ namespace Laby {
 		static void Button(std::string_view label, const glm::vec2& size, Action<> action = {});
 
 		template<typename T>
-		static void Combobox(std::string_view label, std::string_view preview, T& value, const ComboEntry<T>* table, usize tableLength)
+		static void Combobox(std::string_view label, std::string_view preview, T& value, std::span<const ComboEntry<T>> table)
 		{
-			std::vector<const IComboEntry*> internalTable(tableLength);
-			for (usize i = 0; i < tableLength; i++)
-				internalTable[i] = &table[i];
+			if (!BeginCombo(label, preview))
+				return;
 
-			const IComboEntry* comboEntry = ComboboxInternal(label, preview, internalTable);
+			// Convert span of entries to base class view and display each entry and return value if item selected.
+			const IComboEntry* comboEntry = nullptr;
+			std::ranges::for_each(table | std::views::transform([](const ComboEntry<T>& entry) { return DynCast<const IComboEntry>(&entry); }),
+			[=, &comboEntry](const IComboEntry* entry)
+			{
+				const IComboEntry* result = Widgets::ComboboxEntry(preview, entry);
+				comboEntry = result ? result : comboEntry;
+			});
+
+			EndCombo();
+
 			if (!comboEntry)
 				return;
 
@@ -173,16 +185,25 @@ namespace Laby {
 				return;
 
 			value = T(*(const T*)comboValue);
-		}
+		}	
 
-		template<IsStandard T, typename Func>
-		static void Combobox(std::string_view label, std::string_view preview, T value, const ComboEntry<T>* table, usize tableLength, Func onEdit)
+		template<typename T, typename Func>
+		static void Combobox(std::string_view label, std::string_view preview, T value, std::span<const ComboEntry<T>> table, Func onEdit)
 		{
-			std::vector<const IComboEntry*> internalTable(tableLength);
-			for (usize i = 0; i < tableLength; i++)
-				internalTable[i] = &table[i];
+			if (!BeginCombo(label, preview))
+				return;
 
-			const IComboEntry* comboEntry = ComboboxInternal(label, preview, internalTable);
+			// Convert span of entries to base class view and display each entry and return value if item selected.
+			const IComboEntry* comboEntry = nullptr;
+			std::ranges::for_each(table | std::views::transform([](const ComboEntry<T>& entry) { return DynCast<const IComboEntry>(&entry); }), 
+			[=, &comboEntry](const IComboEntry* entry)
+			{ 
+				const IComboEntry* result = Widgets::ComboboxEntry(preview, entry);
+				comboEntry = result ? result : comboEntry;
+			});
+
+			EndCombo();
+
 			if (!comboEntry)
 				return;
 
@@ -198,21 +219,22 @@ namespace Laby {
 		{
 			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110; 
 			// ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-			if (entity.hasComponent<T>())
-			{
-				auto& component = entity.getComponent<T>();
-				const glm::vec2& contentRegionAvailable = ImGuiUtils::AvailableRegion();
+			if (!entity.hasComponent<T>())
+				return;
 
-				ImGuiUtils::PushStyle(11, glm::vec2{ 4, 4 }); //ImGuiStyleVar_FramePadding
-				f32 lineHeight = ImGuiUtils::FontSize() + ImGuiUtils::FramePadding().y * 2.0f;
-				Separator();
+			auto& component = entity.getComponent<T>();
+			const glm::vec2& contentRegionAvailable = ImGuiUtils::AvailableRegion();
 
-				bool removeComponent = ComponentInternal((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
-				if (removeComponent)
-					entity.removeComponent<T>();
+			ImGuiUtils::PushStyle(11, glm::vec2{ 4, 4 }); //ImGuiStyleVar_FramePadding
+			f32 lineHeight = ImGuiUtils::FontSize() + ImGuiUtils::FramePadding().y * 2.0f;
+			Separator();
 
-				ImGuiUtils::PopStyle();
-			}
+			bool removeComponent = ComponentInternal((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
+			if (removeComponent)
+				entity.removeComponent<T>();
+
+			ImGuiUtils::PopStyle();
+
 		}
 
 	private:
@@ -227,7 +249,9 @@ namespace Laby {
 		static void DragDropSourceInternal(std::string_view strID, Action<> createPayload);
 		static void* DragDropTargetInternal(std::string_view strID);
 
-		static const IComboEntry* ComboboxInternal(std::string_view label, std::string_view preview, const std::vector<const IComboEntry*>& table);
+		static bool BeginCombo(std::string_view label, std::string_view preview);
+		static const IComboEntry* ComboboxEntry(std::string_view preview, const IComboEntry* entry);
+		static void EndCombo();
 
 	private:
 		inline static Single<IPayload> sCurrentPayload = nullptr;

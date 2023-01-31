@@ -7,22 +7,7 @@
 
 namespace Laby {
 
-	class TileRenderLayer : public Grid<TileRenderData>
-	{
-	public:
-		TileRenderLayer() = default;
-		TileRenderLayer(usize layer, u32 width, u32 height)
-			: Grid<TileRenderData>(width, height), mIndex(layer) {}
-
-		bool operator==(const TileRenderLayer& other) const { return mIndex == other.mIndex; }
-
-		usize getLayer() const { return mIndex; }
-
-	private:
-		usize mIndex = 0;
-
-		friend class TilemapTexture;
-	};
+	using TileRenderLayer = Grid<TileRenderData>;
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderData& data)
 	{
@@ -36,7 +21,6 @@ namespace Laby {
 	{
 		mOut << YAML::BeginMap; // TileRenderLayer
 
-		LAB_SERIALISE_PROPERTY(Layer, layer.getLayer(), mOut);
 		LAB_SERIALISE_PROPERTY(Width, layer.getWidth(), mOut);
 		LAB_SERIALISE_PROPERTY(Height, layer.getHeight(), mOut);
 
@@ -77,9 +61,7 @@ namespace YAML {
 	{
 		inline static bool decode(const Node& node, Laby::TileRenderLayer& rhs)
 		{
-			Laby::usize layer;
 			Laby::u32 width, height;
-			LAB_DESERIALISE_PROPERTY(Layer, layer, node);
 			LAB_DESERIALISE_PROPERTY(Width, width, node);
 			LAB_DESERIALISE_PROPERTY(Height, height, node);
 
@@ -87,7 +69,7 @@ namespace YAML {
 			if (!tiles)
 				return false;
 
-			rhs = Laby::TileRenderLayer(layer, width, height);
+			rhs = Laby::TileRenderLayer(width, height);
 
 			Laby::usize index = 0;
 			for (auto tile : tiles)

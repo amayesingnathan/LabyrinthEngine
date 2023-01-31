@@ -28,7 +28,7 @@ namespace Laby {
 		TileRenderData getTile(usize layer, const GridPosition& pos) const;
 		void setTile(usize layer, const GridPosition& pos, const TileRenderData& renderData);
 
-		void addLayer() { mLayers.emplace_back(mLayers.size(), mWidth, mHeight); }
+		void addLayer() { mLayers.emplace_back(mWidth, mHeight); }
 		void removeLayer(usize layer);
 		void moveLayer(usize layer, LayerMoveDir direction);
 

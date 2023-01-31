@@ -70,11 +70,12 @@ namespace Laby {
         Widgets::BeginGroup();
 
         Widgets::BeginChild("Layers", { 0, -12 * mFrameHeightWithSpacing });
+        usize layerIndex = 0;
         for (const auto& layer : mTilemap->getLayers())
         {
-            usize layerIndex = layer.getLayer();
-            std::string layerLit = fmt::format("Layer {}", layerIndex);
-            Widgets::Selectable(layerLit.c_str(), mCurrentLayer == layerIndex, [&]() { mCurrentLayer = layerIndex; });
+            std::string layerLit = fmt::format("Layer {}", layerIndex + 1);
+            Widgets::Selectable(layerLit.c_str(), mCurrentLayer == layerIndex, [this, layerIndex]() { mCurrentLayer = layerIndex; });
+            layerIndex++;
         }
         Widgets::EndChild(); // Layers
 
@@ -103,7 +104,7 @@ namespace Laby {
         Widgets::Disable(validCurrentTile);
 
         Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(currentTileData.script);
-        Widgets::Combobox("Behaviour", currentTileData.script, scriptClass, comboEntries.data(), comboEntries.size(),
+        Widgets::Combobox<Ref<ScriptClass>>("Behaviour", currentTileData.script, scriptClass, comboEntries,
             [&](std::string_view name, Ref<ScriptClass> klass) { currentTileData.script = name; });
 
         Widgets::Checkbox("Solid", currentTileData.solid);
@@ -201,7 +202,7 @@ namespace Laby {
                 tilemapSheets.emplace_back(sheetData.sheet->getName(), sheetData.sheet->handle);
 
             Ref<Texture2DSheet> tilemapSheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
-            Widgets::Combobox("Tilemap Sheets", tilemapSheet ? tilemapSheet->getName() : "None", mCurrentSheet, tilemapSheets.data(), tilemapSheets.size());
+            Widgets::Combobox<AssetHandle>("Tilemap Sheets", tilemapSheet ? tilemapSheet->getName() : "None", mCurrentSheet, tilemapSheets);
 
             // All Sheets
             std::vector<SheetEntry> allSheets;
@@ -215,7 +216,7 @@ namespace Laby {
             }
 
             Ref<Texture2DSheet> sheetToAdd = AssetManager::GetAsset<Texture2DSheet>(mSheetToAdd);
-            Widgets::Combobox("Add", sheetToAdd ? sheetToAdd->getName() : "None", mSheetToAdd, allSheets.data(), allSheets.size());
+            Widgets::Combobox<AssetHandle>("Add", sheetToAdd ? sheetToAdd->getName() : "None", mSheetToAdd, allSheets);
             Widgets::SameLine();
             Widgets::Button("+", [this]() { mTilemap->addSheet(mSheetToAdd); });
         }

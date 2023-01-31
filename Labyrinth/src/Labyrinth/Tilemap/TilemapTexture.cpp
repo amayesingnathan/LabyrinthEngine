@@ -44,18 +44,17 @@ namespace Laby {
 
 	void TilemapTexture::removeLayer(usize layer)
 	{
-		auto layerIt = std::find_if(mLayers.begin(), mLayers.end(), [&](const TileRenderLayer& each) { return layer == each.getLayer(); });
-		if (layerIt == mLayers.end())
+		if (layer >= mLayers.size())
 			return;
 
-		for (auto it = layerIt + 1; it != mLayers.end(); ++it)
-			it->mIndex--;
-
-		mLayers.erase(layerIt);
+		mLayers.erase(mLayers.begin() + layer);
 	}
 
 	void TilemapTexture::moveLayer(usize layer, LayerMoveDir direction)
 	{
+		if (layer >= mLayers.size())
+			return;
+
 		switch (direction)
 		{
 		case LayerMoveDir::Down:
@@ -75,9 +74,6 @@ namespace Laby {
 		usize newIndex = StaticCast<usize>((i64)layer + (i64)direction);
 
 		std::swap(mLayers[layer], mLayers[newIndex]);
-		usize tempIndex = mLayers[layer].mIndex;
-		mLayers[layer].mIndex = mLayers[newIndex].mIndex;
-		mLayers[newIndex].mIndex = tempIndex;
 	}
 
 	void TilemapTexture::RenderTexture()

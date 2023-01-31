@@ -30,6 +30,7 @@
 #include <functional>
 #include <regex>
 #include <variant>
+#include <ranges>
 
 //C Standard Library
 #include <cstdlib>

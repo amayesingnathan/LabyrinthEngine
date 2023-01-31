@@ -238,18 +238,6 @@ namespace Laby {
 		return sEmptyMetadata; // make sure to check return value before you go changing it!
 	}
 
-	std::vector<AssetHandle> AssetManager::GetAssetsWithType(AssetType type)
-	{
-		std::vector<AssetHandle> assets;
-		for (const auto& [handle, data] : sAssetRegistry)
-		{
-			if (data.type == type)
-				assets.emplace_back(handle);
-		}
-
-		return assets;
-	}
-
 	const AssetMetadata& AssetManager::GetMetadata(AssetHandle handle)
 	{
 		if (sAssetRegistry.contains(handle))

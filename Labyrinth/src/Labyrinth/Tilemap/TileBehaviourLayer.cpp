@@ -201,8 +201,7 @@ namespace Laby {
         Shape vertices;
         TraverseR(vertexCount, vertices, currentPos, dIndex);
 
-        ChainShape finalShape(vertices, GetExtents(vertices));
-        return finalShape;
+        return ChainShape(vertices, GetExtents(vertices));
     }
 
     glm::vec2 GetExtents(const Shape& shape)

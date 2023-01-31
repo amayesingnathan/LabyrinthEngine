@@ -9,10 +9,12 @@ namespace Laby {
 
 	PanelManager::PanelEntry* PanelManager::Find(std::string_view key)
 	{
-		if (!Contains(key))
-			return nullptr;
+		return &(*std::ranges::find_if(sEditorPanels, [key](const auto& panel) { return panel.key == key; }));
+	}
 
-		return &sEditorPanels[sPanelIndices.at(key)];
+	bool PanelManager::Contains(std::string_view key)
+	{
+		return std::ranges::find_if(sEditorPanels, [&](const PanelEntry& entry) { return entry.key == key; }) != sEditorPanels.end();
 	}
 
 	void PanelManager::Delete(std::string_view key)
@@ -23,27 +25,13 @@ namespace Laby {
 			return;
 		}
 
-		if (sPanelIndices.at(key) == sEditorPanels.size() - 1)
-		{
-			sEditorPanels.pop_back();
-			sPanelIndices.erase(key);
-			return;
-		}
-
-		sEditorPanels.erase(sEditorPanels.begin() + sPanelIndices.at(key));
-
-		sPanelIndices.clear();
-		for (usize i = 0; i < sEditorPanels.size(); i++)
-			sPanelIndices[sEditorPanels[i].key] = i;
+		std::erase_if(sEditorPanels, [&](const PanelEntry& entry) { return entry.key == key; });
 	}
 
 	void PanelManager::Render()
 	{
-		for (PanelEntry& panelEntry : sEditorPanels)
+		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel && entry.displayed; }))
 		{
-			if (!panelEntry.panel || !panelEntry.displayed)
-				continue;
-
 			ImGui::Begin(panelEntry.key.data());
 			panelEntry.panel->onImGuiRender();
 			ImGui::End();
@@ -52,19 +40,13 @@ namespace Laby {
 
 	void PanelManager::ProjectChanged()
 	{
-		for (PanelEntry& panelEntry : sEditorPanels)
-		{
-			if (panelEntry.panel)
-				panelEntry.panel->onProjectChange();
-		}
+		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel; }))
+			panelEntry.panel->onProjectChange();
 	}
 
 	void PanelManager::SelectionChange()
 	{
-		for (PanelEntry& panelEntry : sEditorPanels)
-		{
-			if (panelEntry.panel)
-				panelEntry.panel->onSelectionChange();
-		}
+		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel; }))
+			panelEntry.panel->onProjectChange();
 	}
 }

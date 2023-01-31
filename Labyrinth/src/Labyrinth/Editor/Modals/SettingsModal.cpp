@@ -7,11 +7,11 @@ namespace Laby {
 
     using ResolutionEntry = ComboEntry<Resolution>;
 
-    static constexpr ResolutionEntry sResolutionTable[3]
+    static constexpr std::array<ResolutionEntry, 3> sResolutionTable
     {
-        { "1280x720", Resolution{1280, 720} },
-        { "1600x900", Resolution{1600, 900} },
-        { "1920x1080", Resolution{1920, 1080} }
+        ResolutionEntry{ "1280x720", Resolution{1280, 720} },
+        ResolutionEntry{ "1600x900", Resolution{1600, 900} },
+        ResolutionEntry{ "1920x1080", Resolution{1920, 1080} }
     };
 
     SettingsModal::SettingsModal() 
@@ -26,7 +26,7 @@ namespace Laby {
         Widgets::Checkbox("Fullscreen", mSettings.fullscreen);
         Widgets::PathEdit("Working Directory", mSettings.workingDir);
         Widgets::PathEdit("Core Assembly Path", mSettings.scriptConfig.coreAssemblyPath);
-        Widgets::Combobox("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable, 3);
+        Widgets::Combobox<Resolution>("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable);
 
         Widgets::PathEdit("Startup Project", mSettings.startupProject);
         Widgets::SameLine();
