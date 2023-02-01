@@ -8,6 +8,7 @@
 #include <Labyrinth/Renderer/Renderer.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Scripting/ScriptCache.h>
+#include <Labyrinth/Tilemap/Tilemap.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
 #include "SpriteSheetPanel.h"
@@ -18,11 +19,12 @@ namespace Laby {
 	using ScriptClassEntry = ComboEntry<Ref<ScriptClass>>;
 
 	using TexTypeEntry = ComboEntry<SpriteRendererComponent::TexType>;
-	static constexpr std::array<TexTypeEntry, 3> sTextureTypes =
+	static constexpr std::array<TexTypeEntry, 4> sTextureTypes =
 	{
 		TexTypeEntry{ "Colour",			SpriteRendererComponent::TexType::None },
 		TexTypeEntry{ "Texture2D",		SpriteRendererComponent::TexType::Texture },
-		TexTypeEntry{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture }
+		TexTypeEntry{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture },
+		TexTypeEntry{ "Tilemap",		SpriteRendererComponent::TexType::Tilemap }
 	};
 
 	using CameraProjectionEntry = ComboEntry<SceneCamera::ProjectionType>;
@@ -94,7 +96,7 @@ namespace Laby {
 
 		Widgets::Button("Add Component", []()
 		{
-			Widgets::OpenPopup("AddComponent");
+			Widgets::OpenPopup("AddComponentPopup");
 		});
 
 		UI::PopUp* addComponentPopup = Widgets::BeginPopup("AddComponentPopup");
@@ -124,7 +126,7 @@ namespace Laby {
 					comboEntries.emplace_back(fmt::format("{}\rID = ({})", tc.tag, idc.id.to_string()), Entity{entityID, mContext});
 			});
 
-			std::sort(comboEntries.begin() + 1, comboEntries.end(), [](const ParentEntityEntry& u, const ParentEntityEntry& v) { return u.value.getUUID() < v.value.getUUID(); });
+			std::sort(comboEntries.begin(), comboEntries.end());
 
 			Entity parent = mSelectedEntity.getParent();
 			std::string currentParentString = parent ? fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID()) : "None";
@@ -150,9 +152,9 @@ namespace Laby {
 				if (!component.primary)
 					return;
 
-				mContext->mRegistry.view<CameraComponent>().each([&](auto entity, auto& component)
+				mContext->mRegistry.view<CameraComponent>().each([&](EntityID entity, auto& component)
 				{
-					if (mSelectedEntity == entity)
+					if (mSelectedEntity == Entity{ entity, mContext })
 						return;
 
 					component.primary = false;
@@ -209,6 +211,9 @@ namespace Laby {
 			case SpriteRendererComponent::TexType::SubTexture:
 				tex = AssetManager::GetAsset<SubTexture2D>(component.handle);
 				break;
+			case SpriteRendererComponent::TexType::Tilemap:
+				tex = AssetManager::GetAsset<Tilemap>(component.handle);
+				break;
 			}
 
 			Widgets::Label("Texture");
@@ -228,10 +233,20 @@ namespace Laby {
 					component.type = SpriteRendererComponent::TexType::SubTexture;
 					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
 				}
+				else if (AssetManager::IsExtensionValid(extension, AssetType::Tilemap))
+				{
+					component.type = SpriteRendererComponent::TexType::Tilemap;
+					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+				}
 			});
 			Widgets::AddDragDropTarget<AssetHandle>("SPRITE_SHEET_ITEM", [&](const AssetHandle& var)
 			{
 				component.type = SpriteRendererComponent::TexType::SubTexture;
+				component.handle = var;
+			});
+			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& var)
+			{
+				component.type = SpriteRendererComponent::TexType::Tilemap;
 				component.handle = var;
 			});
 			Widgets::FloatEdit("Tiling Factor", component.tilingFactor, 0.1f, 0.0f, 100.0f);

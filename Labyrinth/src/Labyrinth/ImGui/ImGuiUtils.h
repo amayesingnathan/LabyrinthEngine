@@ -35,6 +35,7 @@ namespace Laby {
 		static void ResetButtonTransparency();
 
 		static glm::vec2 AvailableRegion();
+		static glm::vec2 AvailableRegionMax();
 
 		static f32 FontSize();
 		static glm::vec2 FramePadding();

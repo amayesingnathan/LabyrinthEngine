@@ -15,6 +15,8 @@ namespace Laby {
 		LAB_SERIALISE_PROPERTY(TextureID, data.textureID, mOut);
 		LAB_SERIALISE_PROPERTY(Rotation, data.rotation, mOut);
 		mOut << YAML::EndMap; // TileData
+
+		return mOut;
 	}
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileRenderLayer& layer)

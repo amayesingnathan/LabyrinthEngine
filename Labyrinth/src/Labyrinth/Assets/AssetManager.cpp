@@ -158,7 +158,7 @@ namespace Laby {
 				continue;
 			}
 
-			if (metadata.handle == 0)
+			if (!metadata.handle)
 			{
 				LAB_CORE_WARN("[AssetManager] AssetHandle for {0} is 0, this shouldn't happen.", metadata.filepath);
 				continue;

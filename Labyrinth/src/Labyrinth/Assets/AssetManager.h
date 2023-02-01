@@ -148,7 +148,7 @@ namespace Laby {
         static auto GetAssetsWithType(AssetType type)
         {
             return sAssetRegistry |
-                std::views::filter([&](const auto& entry) { return entry.second.type == type; }) |
+                std::views::filter([type](const auto& entry) { return entry.second.type == type; }) |
                 std::views::keys;
         }
 

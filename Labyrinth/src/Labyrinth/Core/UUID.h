@@ -11,13 +11,22 @@ namespace Laby {
 		UUID();
 		UUID(u64 id);
 
-		operator u64() const { return mID; }
+		u64 get() const { return mID; }
+
+		operator bool() const { return mID != 0; }
+		auto operator<=>(const UUID&) const = default;
 
 		std::string to_string() const { return std::to_string(mID); }
 
 	private:
 		u64 mID;
 	};
+
+	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const UUID& data)
+	{
+		mOut << data.get();
+		return mOut;
+	}
 }
 
 namespace YAML {
@@ -41,7 +50,7 @@ namespace std {
 	{
 		std::size_t operator()(const Laby::UUID& uuid) const
 		{
-			return (Laby::u64)uuid;
+			return uuid.get();;
 		}
 	};
 

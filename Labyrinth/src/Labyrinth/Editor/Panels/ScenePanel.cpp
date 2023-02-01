@@ -63,7 +63,7 @@ namespace Laby {
 		std::string& tag = entity.getComponent<TagComponent>();
 		auto& node = entity.getComponent<NodeComponent>();
 
-		Widgets::TreeNode((void*)&entity.getUUID(), tag, mSelectedEntity == entity, [&]()
+		Widgets::TreeNode((void*)&entity.getComponent<IDComponent>().id, tag, mSelectedEntity == entity, [&]()
 		{
 			// Range for loop iterators may become invalidated if a new entity is added
 			// to this node's children during looping, so ignore new additions for now

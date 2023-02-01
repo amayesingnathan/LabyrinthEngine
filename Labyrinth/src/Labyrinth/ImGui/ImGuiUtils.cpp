@@ -86,6 +86,11 @@ namespace Laby {
 
 	glm::vec2 ImGuiUtils::AvailableRegion()
 	{
+		return ToGLM(ImGui::GetContentRegionAvail());
+	}
+
+	glm::vec2 ImGuiUtils::AvailableRegionMax()
+	{
 		return ToGLM(ImGui::GetWindowContentRegionMax());
 	}
 

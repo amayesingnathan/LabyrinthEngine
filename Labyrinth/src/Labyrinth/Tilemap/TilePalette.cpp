@@ -21,7 +21,7 @@ namespace Laby {
 		if (Contains(sheetHandle, mSpriteSheets))
 			return;
 
-		bool hasSheet = mSpriteSheets.empty();
+		bool hasSheet = !mSpriteSheets.empty();
 		const SheetData& last = hasSheet ? mSpriteSheets.back() : SheetData();
 		u32 sheetTexCount = hasSheet ? last.sheet->subTexCount() : 0;
 

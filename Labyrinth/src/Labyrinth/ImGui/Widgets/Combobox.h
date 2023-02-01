@@ -21,6 +21,8 @@ namespace Laby {
 
 		constexpr ComboEntry(std::string_view label, const T& val)
 			: IComboEntry(label), value(val) {}
+		bool operator==(const ComboEntry<T>& other) const { return value == other.value; }
+		auto operator<=>(const ComboEntry<T>& other) const { return value <=> other.value; }
 
 		virtual const void* getVal() const { return &value; }
 	};
