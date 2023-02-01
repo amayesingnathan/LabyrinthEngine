@@ -7,10 +7,7 @@
 
 namespace Laby {
 
-	template<typename T>
-	concept IsIntegral = std::is_integral_v<T>;
-
-	template<IsIntegral T>
+	template<std::integral T>
 	struct Coordinate
 	{
 		static constexpr T NullCoord = Limits<T>::Max;
@@ -32,15 +29,15 @@ namespace Laby {
 
 	using GridPosition = Coordinate<u32>;
 
-	template<typename T, IsIntegral TPos = u32>
+	template<typename T, std::integral TPos = u32>
 	class Grid
 	{
 	public:
 		using Position = Coordinate<TPos>;
 
-		using GridBool = u8;
-		static constexpr int GridTrue = 1;
-		static constexpr int GridFalse = 0;
+		using Bool = u8;
+		static constexpr Bool True = 1;
+		static constexpr Bool False = 0;
 
 	public:
 		Grid() = default;

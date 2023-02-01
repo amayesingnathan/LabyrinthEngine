@@ -48,7 +48,7 @@ namespace Laby {
 
 	private:
 		std::vector<Shape> GetContiguousShapes() const;
-		Shape FloodFill(u32 x, u32 y, Grid<GridBool>& checkedGrid) const;
+		Shape FloodFill(u32 x, u32 y, Grid<Bool>& checkedGrid) const;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)
@@ -59,6 +59,8 @@ namespace Laby {
 		LAB_SERIALISE_PROPERTY(Script, data.script.data(), mOut);
 
 		mOut << YAML::EndMap; // TileData
+
+		return mOut;
 	}
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourLayer& layer)

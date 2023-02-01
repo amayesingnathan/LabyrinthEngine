@@ -81,12 +81,9 @@ namespace Laby {
 			return scene->mRegistry.all_of<T>(mEntID);
 		}
 
-		u32 getEntID() const
-		{
-			return StaticCast<u32>(mEntID);
-		}
+		EntityID getEntID() const { return mEntID; }
 
-		const UUID& getUUID() const;
+		UUID getUUID() const;
 
 		TransformComponent& getTransform();
 		const TransformComponent& getTransform() const;
@@ -94,28 +91,12 @@ namespace Laby {
 		std::string& getTag();
 		const std::string& getTag() const;
 
-		operator EntityID() const { return mEntID; }
-		operator u32() const { return StaticCast<u32>(mEntID); }
+		operator bool() const { return valid(); }
+		bool valid() const { return mEntID != NullEntity && mScene.valid(); }
 
-		operator UUID() const { return getUUID(); }
-		operator u64() const { return getUUID(); }
-
-		operator bool() const { return (mEntID != NullEntity && mScene.valid()); }
-
-		bool operator==(const Entity& other) const
-		{
-			// Be sure to check for cases involving null entity because we can't do getUUID() on null entity.
-			if (!*this != !other) return false;
-			if (!*this && !other) return true;
-
-			return getUUID() == other.getUUID();
-		}
-
-		bool operator!=(const Entity& other) const
-		{
-			return !(*this == other);
-		}
-
+		auto operator<=>(const Entity& other) const { return getUUID() <=> other.getUUID(); }
+		bool operator==(const Entity& other) const { return getUUID() == other.getUUID(); }
+		
 		void destroy();
 		Ref<Scene> getScene() { return mScene.lock(); }
 

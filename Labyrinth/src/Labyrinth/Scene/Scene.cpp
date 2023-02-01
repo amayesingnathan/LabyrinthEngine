@@ -30,7 +30,7 @@ namespace Laby {
 
 		toCopy->mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
 		{
-			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp);
+			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp).getEntID();
 		});
 
 		CopyAllComponents(toCopy->mRegistry, newScene->mRegistry, entMap);
@@ -188,7 +188,7 @@ namespace Laby {
 		//	tilemapController.getComponent<TilemapControllerComponent>().tileBehaviour.erase(tile.pos);
 		//}
 		mEntityMap.erase(entity.getUUID());
-		mRegistry.destroy(entity);
+		mRegistry.destroy(entity.getEntID());
 	}
 
 	Entity Scene::findEntity(UUID findID)

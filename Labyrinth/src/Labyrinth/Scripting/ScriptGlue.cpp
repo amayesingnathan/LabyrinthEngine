@@ -200,7 +200,7 @@ namespace Laby {
 
 	bool GlueFunctions::Scene_IsEntityValid(UUID entityID)
 	{
-		if (entityID == 0)
+		if (!entityID)
 			return false;
 
 		return (bool)(ScriptEngine::GetContext()->findEntity(entityID));
@@ -250,7 +250,7 @@ namespace Laby {
 		auto entity = GetEntity(entityID);
 		if (!entity)
 			return 0;
-		return entity.getParent();
+		return entity.getParent().getUUID();
 	}
 
 	void GlueFunctions::Entity_SetParent(UUID entityID, UUID parentID)

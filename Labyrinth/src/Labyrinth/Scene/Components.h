@@ -68,7 +68,7 @@ namespace Laby {
 	{
 		enum class TexType
 		{
-			None, Texture, SubTexture
+			None, Texture, SubTexture, Tilemap
 		};
 
 		u8 layer = 0;
@@ -85,10 +85,7 @@ namespace Laby {
 		SpriteRendererComponent(const glm::vec4& rgba, u8 layer = 0)
 			: layer(layer), colour(rgba) {}
 
-		bool hasTex() const
-		{
-			return handle != 0;
-		}
+		bool hasTex() const { return handle; }
 
 		// Get normalised layer value
 		f32 getNLayer() const { return (StaticCast<f32>(layer) / StaticCast<f32>(MaxLayers)); }

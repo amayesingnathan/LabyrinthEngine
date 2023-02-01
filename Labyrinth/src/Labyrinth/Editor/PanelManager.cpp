@@ -47,6 +47,6 @@ namespace Laby {
 	void PanelManager::SelectionChange()
 	{
 		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel; }))
-			panelEntry.panel->onProjectChange();
+			panelEntry.panel->onSelectionChange();
 	}
 }

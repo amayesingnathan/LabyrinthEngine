@@ -30,6 +30,8 @@ namespace Laby {
 		TileRenderData getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
 		void setTileData(usize layer, const GridPosition& pos, const TileRenderData& renderData) { mTexture.setTile(layer, pos, renderData); }
 
+		bool hasLayers() const { return mTexture.hasLayers(); }
+
 		TileBehaviourData getTileBehaviour(const GridPosition& pos) const;
 		void setTileBehaviour(const GridPosition& pos, const TileBehaviourData& behaviour) { mBehaviour(pos) = behaviour; }
 

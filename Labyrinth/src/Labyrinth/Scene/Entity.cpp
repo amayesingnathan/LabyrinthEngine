@@ -11,7 +11,13 @@ namespace Laby {
 	}
 
 	Entity Entity::getParent() const { return mScene.lock()->findEntity(getComponent<NodeComponent>().parent); }
-	const UUID& Entity::getUUID() const { return getComponent<IDComponent>().id; }
+	UUID Entity::getUUID() const 
+	{ 
+		if (!valid())
+			return 0;
+
+		return getComponent<IDComponent>().id; 
+	}
 
 	TransformComponent& Entity::getTransform() { return getComponent<TransformComponent>(); }
 	const TransformComponent& Entity::getTransform() const { return getComponent<TransformComponent>(); }
@@ -46,7 +52,7 @@ namespace Laby {
 		else
 			removeComponent<RootComponent>(); //No longer root entity (will have parent)
 
-		node.parent = newParent;
+		node.parent = newParent.getUUID();
 		return true;
 	}
 

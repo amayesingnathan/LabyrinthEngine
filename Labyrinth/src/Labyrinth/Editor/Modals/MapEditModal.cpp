@@ -69,6 +69,8 @@ namespace Laby {
 
         Widgets::BeginGroup();
 
+        Widgets::Label("Layers");
+        Widgets::Separator();
         Widgets::BeginChild("Layers", { 0, -12 * mFrameHeightWithSpacing });
         usize layerIndex = 0;
         for (const auto& layer : mTilemap->getLayers())
@@ -169,6 +171,12 @@ namespace Laby {
         ImGuiUtils::SetCursorPosX(pos.x + (0.75f * imageSize.x));
         Widgets::Checkbox("Colliders", mDisplayColliders);
 
+        if (!mTilemap->hasLayers())
+        {
+            Widgets::EndChild();
+            return;
+        }
+
         ImGuiUtils::SetButtonTransparent();
         Widgets::GridControl(pos, imageSize, mMapWidth, mMapHeight, [this](const GridPosition& pos, const glm::vec2 elementSize)
         {
@@ -195,6 +203,7 @@ namespace Laby {
     void MapEditModal::RightPane()
     {
         Widgets::BeginGroup();
+        Widgets::BeginChild("Sheets", { 0, 200 });
 
         {   // Sheets on Tilemap
             std::vector<SheetEntry> tilemapSheets;
@@ -218,8 +227,9 @@ namespace Laby {
             Ref<Texture2DSheet> sheetToAdd = AssetManager::GetAsset<Texture2DSheet>(mSheetToAdd);
             Widgets::Combobox<AssetHandle>("Add", sheetToAdd ? sheetToAdd->getName() : "None", mSheetToAdd, allSheets);
             Widgets::SameLine();
-            Widgets::Button("+", [this]() { mTilemap->addSheet(mSheetToAdd); });
+            Widgets::Button("+", [this]() { mTilemap->addSheet(mSheetToAdd); mSheetToAdd = 0; });
         }
+        Widgets::EndChild();
 
         DrawSheet();
         Widgets::EndGroup();
