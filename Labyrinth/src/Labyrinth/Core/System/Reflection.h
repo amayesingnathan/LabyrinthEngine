@@ -37,7 +37,7 @@ namespace Laby {
 
 #if defined LAB_FUNC_SIGNATURE_PREFIX
         template<typename Type>
-        static constexpr auto GetLongName() noexcept
+        static consteval auto GetLongName() noexcept
         {
             std::string_view pretty_function{ LAB_FUNC_SIGNATURE };
             auto first = pretty_function.find_first_not_of(' ', pretty_function.find_first_of(LAB_FUNC_SIGNATURE_PREFIX) + 1);
@@ -46,7 +46,7 @@ namespace Laby {
         }
 
         template<typename Type>
-        static constexpr auto GetName() noexcept
+        static consteval auto GetName() noexcept
         {
             std::string_view long_name = GetLongName<Type>();
             auto first = long_name.find_last_of("::");
@@ -86,12 +86,6 @@ namespace Laby {
 
     template<typename Base, typename Derived>
     concept DerivedFrom = std::is_base_of_v<Base, Derived>;
-
-    template<typename T>
-    concept SignedIntegral = std::is_integral_v<T> && std::is_signed_v<T>;
-
-    template<typename T>
-    concept UnsignedIntegral = std::is_integral_v<T> && !std::is_signed_v<T>;
 
     template<typename T>
     struct FunctionTraits;
