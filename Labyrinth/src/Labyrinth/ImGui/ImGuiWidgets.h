@@ -72,7 +72,7 @@ namespace Laby {
 		static void StringEdit(std::string_view label, std::string& field);
 		static void PathEdit(std::string_view label, fs::path& field);
 
-		template<SignedIntegral T>
+		template<typename T> requires std::signed_integral<T>
 		static void IntEdit(std::string_view label, T& field)
 		{
 			i64 result = ScalarEdit(label, field);
@@ -83,7 +83,7 @@ namespace Laby {
 
 			field = (T)result;
 		}
-		template<SignedIntegral T>
+		template<typename T> requires std::signed_integral<T>
 		static void IntEdit(std::string_view label, T field, Action<T> onEdit)
 		{
 			i64 result = ScalarEdit(label, field);
@@ -96,7 +96,7 @@ namespace Laby {
 			onEdit(field);
 		}
 
-		template<UnsignedIntegral T>
+		template<typename T> requires std::unsigned_integral<T>
 		static void UIntEdit(std::string_view label, T& field)
 		{
 			u64 result = UScalarEdit(label, field);
@@ -107,7 +107,7 @@ namespace Laby {
 
 			field = (T)result;
 		}
-		template<UnsignedIntegral T>
+		template<typename T> requires std::unsigned_integral<T>
 		static void UIntEdit(std::string_view label, T field, Action<T> onEdit)
 		{
 			u64 result = UScalarEdit(label, field);
