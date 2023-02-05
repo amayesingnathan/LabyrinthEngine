@@ -34,7 +34,7 @@ project "Labyrinth"
         "%{IncludeDir.glad}",
         "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
-        "%{IncludeDir.ImGui}",
+        "%{IncludeDir.imgui}",
         "%{IncludeDir.imgui_cpp}",
         "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.json}",
