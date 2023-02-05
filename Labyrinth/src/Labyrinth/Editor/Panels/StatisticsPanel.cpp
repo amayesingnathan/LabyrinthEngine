@@ -1,9 +1,11 @@
 #include "Lpch.h"
 #include "StatisticsPanel.h"
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scene/Entity.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 

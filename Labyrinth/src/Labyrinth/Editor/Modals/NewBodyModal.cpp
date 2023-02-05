@@ -1,12 +1,14 @@
 #include "Lpch.h"
 #include "NewBodyModal.h"
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Tools/EnumUtils.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 
-	using BodyTypeEntry = ComboEntry<RigidBodyComponent::BodyType>;
+	using BodyTypeEntry = imcpp::ComboEntry<RigidBodyComponent::BodyType>;
 	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
 		BodyTypeEntry{ "Static",			  RigidBodyComponent::BodyType::Static },
@@ -14,7 +16,7 @@ namespace Laby {
 		BodyTypeEntry{ "DynamicSubTexture2D", RigidBodyComponent::BodyType::Dynamic }
 	};
 
-	using ShapeTypeEntry = ComboEntry<NewBodyModal::ShapeType>;
+	using ShapeTypeEntry = imcpp::ComboEntry<NewBodyModal::ShapeType>;
 	static constexpr std::array<ShapeTypeEntry, 2> sShapeTypes =
 	{
 		ShapeTypeEntry{"Box",		NewBodyModal::ShapeType::Box},

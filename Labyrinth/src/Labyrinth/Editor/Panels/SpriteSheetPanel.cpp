@@ -6,20 +6,23 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
+using imcpp::Widgets;
+using imcpp::Utils;
+
 namespace Laby {
 
     static constexpr std::string_view NO_NAME = "None";
 
-    using SubTexEntry = ComboEntry<Ref<SubTexture2D>>;
+    using SubTexEntry = imcpp::ComboEntry<Ref<SubTexture2D>>;
 
     void SpriteSheetPanel::onImGuiRender()
     {
-        const glm::vec2& panelSize = ImGuiUtils::AvailableRegion();
+        const glm::vec2& panelSize = Utils::AvailableRegion<glm::vec2>();
         Ref<IRenderable> sheetImage = EditorResources::NoTexture;
         if (mCurrentSheet)
             sheetImage = mCurrentSheet;
 
-        Widgets::Image(sheetImage, { panelSize.x - 15.0f, 200.0f });
+        LabWidgets::Image(sheetImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
 
         Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [this](const fs::path& var)
         {
@@ -76,7 +79,7 @@ namespace Laby {
         Ref<IRenderable> subtexImage = EditorResources::NoTexture;
         if (mCurrentSubTex)
             subtexImage = mCurrentSubTex;
-        Widgets::Image(subtexImage, { panelSize.x - 15.0f, 200.0f });
+        LabWidgets::Image(subtexImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
         if (mCurrentSubTex)
             Widgets::AddDragDropSource("SPRITE_SHEET_ITEM", mCurrentSubTex->handle);
 

@@ -7,10 +7,13 @@
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
+using imcpp::Widgets;
+using imcpp::Utils;
+
 namespace Laby {
 
-    using SheetEntry = ComboEntry<AssetHandle>;
-    using ScriptClassEntry = ComboEntry<Ref<ScriptClass>>;
+    using SheetEntry = imcpp::ComboEntry<AssetHandle>;
+    using ScriptClassEntry = imcpp::ComboEntry<Ref<ScriptClass>>;
 
     static bool HasSheetEntry(AssetHandle sheet, const std::vector<SheetEntry>& entries)
     {
@@ -33,16 +36,16 @@ namespace Laby {
 
     void MapEditModal::onImGuiRender()
     {
-        if (mEditMode == EditMode::Paint && ImGuiUtils::IsMouseDown(Mouse::ButtonLeft))
+        if (mEditMode == EditMode::Paint && Utils::IsMouseDown(Mouse::ButtonLeft))
         {
             mCurrentlyPainting = true;
             if (mHoveredTile.valid() && mHoveredSubtex != mBrushSubtex)
                 mTilemap->setTileData(mCurrentLayer, mHoveredTile, mBrushSubtex);
         }
-        if (mCurrentlyPainting && ImGuiUtils::IsMouseReleased(Mouse::ButtonLeft))
+        if (mCurrentlyPainting && Utils::IsMouseReleased(Mouse::ButtonLeft))
             mCurrentlyPainting = false;
 
-        mFrameHeightWithSpacing = ImGuiUtils::FrameHeightWithSpacing();
+        mFrameHeightWithSpacing = Utils::FrameHeightWithSpacing();
 
         LeftPane();
         Widgets::SameLine();
@@ -65,13 +68,13 @@ namespace Laby {
 
     void MapEditModal::LeftPane()
     {
-        Widgets::BeginChild("Left Pane", { 300, -3 * mFrameHeightWithSpacing }, false);
+        Widgets::BeginChild<glm::vec2>("Left Pane", glm::vec2{ 300, -3 * mFrameHeightWithSpacing }, false);
 
         Widgets::BeginGroup();
 
         Widgets::Label("Layers");
         Widgets::Separator();
-        Widgets::BeginChild("Layers", { 0, -12 * mFrameHeightWithSpacing });
+        Widgets::BeginChild("Layers", glm::vec2{ 0, -12 * mFrameHeightWithSpacing });
         usize layerIndex = 0;
         for (const auto& layer : mTilemap->getLayers())
         {
@@ -92,7 +95,7 @@ namespace Laby {
         Widgets::EndGroup();
 
 
-        Widgets::BeginChild("Selected", { 0, -7 * mFrameHeightWithSpacing });
+        Widgets::BeginChild("Selected", glm::vec2{ 0, -7 * mFrameHeightWithSpacing });
         Widgets::Label(fmt::format("Tile: ({}, {})", mCurrentTile.x, mCurrentTile.y));
 
         bool validCurrentTile = mCurrentTile.valid();
@@ -122,7 +125,7 @@ namespace Laby {
 
         Widgets::Disable();
 
-        glm::vec2 imageSize = 0.5f * ImGuiUtils::AvailableRegion();
+        glm::vec2 imageSize = 0.5f * Utils::AvailableRegion<glm::vec2>();
         Widgets::Label(fmt::format("Hovered Tile: ({}, {})", mHoveredTile.x, mHoveredTile.y));
         Widgets::Label(fmt::format("Script: {}", mHoveredBehaviour.script));
         Widgets::Checkbox("Solid", mHoveredBehaviour.solid);
@@ -141,9 +144,10 @@ namespace Laby {
             image = mTilemap->getTileTex(mBrushSubtex.textureID);
             rotation = mBrushSubtex.rotation;
         }
-
-        ImGuiUtils::SetCursorPos(ImGuiUtils::CursorPos() + 0.25f * imageSize);
-        Widgets::Image(image, imageSize, rotation);
+        
+        glm::vec2 newPos = Utils::CursorPos<glm::vec2>() + 0.25f * imageSize;
+        Utils::SetCursorPos(newPos.x, newPos.y);
+        LabWidgets::Image(image, imageSize, rotation);
 
         Widgets::EndChild(); // Hovered
 
@@ -152,23 +156,23 @@ namespace Laby {
 
     void MapEditModal::CentrePane()
     {
-        Widgets::BeginChild("Map", { -400, -3 * mFrameHeightWithSpacing });
+        Widgets::BeginChild("Map", glm::vec2{ -400, -3 * mFrameHeightWithSpacing });
 
-        const glm::vec2& pos = ImGuiUtils::CursorPos();
+        const glm::vec2& pos = Utils::CursorPos<glm::vec2>();
 
-        auto imageSize = ImGuiUtils::AvailableRegion();
+        auto imageSize = Utils::AvailableRegion<glm::vec2>();
         imageSize.y -= mFrameHeightWithSpacing;
-        Widgets::Image(mTilemap, imageSize);
+        LabWidgets::Image(mTilemap, imageSize);
 
         Widgets::Label(fmt::format("Edit Mode: {}", Enum::ToString(mEditMode)));
         Widgets::SameLine();
-        ImGuiUtils::SetCursorPosX(pos.x + (0.2f * imageSize.x));
+        Utils::SetCursorPosX(pos.x + (0.2f * imageSize.x));
         Widgets::Label("Ctrl + B: Behaviour Mode");
         Widgets::SameLine();
-        ImGuiUtils::SetCursorPosX(pos.x + (0.4f * imageSize.x));
+        Utils::SetCursorPosX(pos.x + (0.4f * imageSize.x));
         Widgets::Label("Ctrl + P: Paint Mode");
         Widgets::SameLine();
-        ImGuiUtils::SetCursorPosX(pos.x + (0.75f * imageSize.x));
+        Utils::SetCursorPosX(pos.x + (0.75f * imageSize.x));
         Widgets::Checkbox("Colliders", mDisplayColliders);
 
         if (!mTilemap->hasLayers())
@@ -177,11 +181,12 @@ namespace Laby {
             return;
         }
 
-        ImGuiUtils::SetButtonTransparent();
-        Widgets::GridControl(pos, imageSize, mMapWidth, mMapHeight, [this](const GridPosition& pos, const glm::vec2 elementSize)
+        Utils::SetButtonTransparent();
+        imcpp::GridFunction<glm::vec2> gridFunc = [this](u32 x, u32 y, const glm::vec2& elementSize)
         {
-            std::string name = fmt::format("##MapTiles({}, {})", pos.x, pos.y);
-            Widgets::Button(name.c_str(), elementSize, [&]() { mCurrentTile = pos; });
+            GridPosition pos = { x, y };
+            std::string name = fmt::format("##MapTiles({}, {})", x, y);
+            Widgets::Button(elementSize, name.c_str(), [&]() { mCurrentTile = pos; });
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
@@ -194,8 +199,10 @@ namespace Laby {
                 mCurrentSubtex = mHoveredSubtex;
                 mCurrentBehaviour = mHoveredBehaviour;
             });
-        });
-        ImGuiUtils::ResetButtonTransparency();
+        };
+
+        Widgets::GridControl(pos, imageSize, mMapWidth, mMapHeight, gridFunc);
+        Utils::ResetButtonTransparency();
 
         Widgets::EndChild();
     }
@@ -203,7 +210,7 @@ namespace Laby {
     void MapEditModal::RightPane()
     {
         Widgets::BeginGroup();
-        Widgets::BeginChild("Sheets", { 0, 200 });
+        Widgets::BeginChild<glm::vec2>("Sheets", { 0, 200 });
 
         {   // Sheets on Tilemap
             std::vector<SheetEntry> tilemapSheets;
@@ -238,19 +245,19 @@ namespace Laby {
     void MapEditModal::DrawSheet()
     {
         Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
-        const glm::vec2& startPos = ImGuiUtils::CursorPos();
+        const glm::vec2& startPos = Utils::CursorPos<glm::vec2>();
 
         // Sprite Sheet
-        glm::vec2 sheetImageSize = ImGuiUtils::AvailableRegion();
+        glm::vec2 sheetImageSize = Utils::AvailableRegion<glm::vec2>();
         sheetImageSize.y -= 10 * mFrameHeightWithSpacing;
 
         Ref<IRenderable> sheetImage = EditorResources::NoTexture;
         if (sheet)
             sheetImage = sheet;
-        Widgets::Image(sheetImage, sheetImageSize);
+        LabWidgets::Image(sheetImage, sheetImageSize);
 
         // Selected Subtexture
-        auto subtexImageSize = ImGuiUtils::AvailableRegion();
+        auto subtexImageSize = Utils::AvailableRegion<glm::vec2>();
         subtexImageSize.x *= 0.5f;
         subtexImageSize.y -= (3 * mFrameHeightWithSpacing + 0.25f * subtexImageSize.y);
 
@@ -258,14 +265,14 @@ namespace Laby {
         if (mBrushSubtex.valid())
             subTexImage = mTilemap->getTileTex(mBrushSubtex.textureID);
 
-        glm::vec2 pos = ImGuiUtils::CursorPos();
+        glm::vec2 pos = Utils::CursorPos<glm::vec2>();
         pos.x += 0.25f * subtexImageSize.x;
         pos.y += 0.25f * subtexImageSize.y;
-        ImGuiUtils::SetCursorPos(pos);
-        Widgets::Image(subTexImage, subtexImageSize, mBrushSubtex.rotation);
+        Utils::SetCursorPos(pos.x, pos.y);
+        LabWidgets::Image(subTexImage, subtexImageSize, mBrushSubtex.rotation);
 
         Widgets::SameLine();
-        ImGuiUtils::SetCursorPosY(pos.y);
+        Utils::SetCursorPosY(pos.y);
         Widgets::Button("Clear", [this]() { mBrushSubtex = {}; });
         Widgets::Button("Rotate Right", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad270f, Angle::Rad360f); });
         Widgets::Button("Rotate Left", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad90f, Angle::Rad360f); });
@@ -277,18 +284,20 @@ namespace Laby {
         u32 tileCountX = sheet->getTileCountX();
         u32 tileCountY = sheet->getTileCountY();
 
-        ImGuiUtils::SetButtonTransparent();
+        Utils::SetButtonTransparent();
 
-        Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, [&](const GridPosition& pos, const glm::vec2& elementSize)
+        imcpp::GridFunction<glm::vec2> gridFunc = [this, sheet](u32 x, u32 y, const glm::vec2& elementSize)
         {
-            std::string name = fmt::format("##SheetTile({}, {})", pos.x, pos.y);
-            Widgets::Button(name, elementSize, [&]()
+            GridPosition pos = { x,y };
+            std::string name = fmt::format("##SheetTile({}, {})", x, y);
+            Widgets::Button(elementSize, name, [&]()
             {
                 mBrushSubtex = TileRenderData(GetStartIndex(sheet, mTilemap->getSheets()) + sheet->getPositionIndex(pos));
             });
-        });
+        };
+        Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, gridFunc);
 
-        ImGuiUtils::ResetButtonTransparency();
+        Utils::ResetButtonTransparency();
     }
 
     bool MapEditModal::OnKeyPressed(KeyPressedEvent& e)

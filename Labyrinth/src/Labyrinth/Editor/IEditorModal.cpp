@@ -1,9 +1,10 @@
 #include "Lpch.h"
 #include "IEditorModal.h"
 
-#include <imgui.h>
-
 #include <Labyrinth/Core/Application.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 
@@ -19,6 +20,6 @@ namespace Laby {
 
 	void WarningModal::onImGuiRender()
 	{
-		ImGui::Text(mMessage.c_str());
+		Widgets::Label(mMessage);
 	}
 }

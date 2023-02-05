@@ -1,8 +1,10 @@
 #include "Lpch.h"
 #include "OptionsPanel.h"
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 

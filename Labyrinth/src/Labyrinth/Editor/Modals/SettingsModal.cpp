@@ -1,11 +1,13 @@
 #include "Lpch.h"
 #include "SettingsModal.h"
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 
-    using ResolutionEntry = ComboEntry<Resolution>;
+    using ResolutionEntry = imcpp::ComboEntry<Resolution>;
 
     static constexpr std::array<ResolutionEntry, 3> sResolutionTable
     {

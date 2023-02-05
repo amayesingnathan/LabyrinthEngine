@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Editor/IEditorPanel.h>
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Renderer/Framebuffer.h>
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
@@ -25,15 +25,12 @@ namespace Laby {
 		void DrawComponents();
 
 		template<typename T>
-		void DrawAddComponentEntry(UI::PopUp* popup, std::string_view text)
+		void DrawAddComponentEntry(std::string_view text)
 		{
 			if (mSelectedEntity.hasComponent<T>())
 				return;
 
-			Widgets::AddMenuItem(popup, text, [&]()
-			{
-				mSelectedEntity.addComponent<T>();
-			});
+			imcpp::Widgets::AddPopupItem(text, [&]() { mSelectedEntity.addComponent<T>(); });
 		}
 
 		void DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags = 0);
