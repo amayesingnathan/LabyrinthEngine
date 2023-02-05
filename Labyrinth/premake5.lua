@@ -35,6 +35,7 @@ project "Labyrinth"
         "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.ImGui}",
+        "%{IncludeDir.imgui_cpp}",
         "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.json}",
         "%{IncludeDir.magic_enum}",
@@ -52,8 +53,7 @@ project "Labyrinth"
 		"asio",
 		"box2d",
 		"glad",
-		"glfw",
-		"ImGui",
+		"imgui-cpp",
 		"yaml-cpp",
          "%{Library.mono}"
 	}

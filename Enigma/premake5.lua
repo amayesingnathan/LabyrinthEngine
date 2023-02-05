@@ -21,7 +21,7 @@ project "Enigma"
         "%{IncludeDir.asio}",
 		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
-		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.imgui_cpp}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.json}",
 		"%{IncludeDir.magic_enum}",
@@ -31,7 +31,8 @@ project "Enigma"
 	
     links
     {
-        "Labyrinth"
+        "Labyrinth",
+        "imgui-cpp",
     }
 
     filter "system:windows"
