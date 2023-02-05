@@ -8,7 +8,7 @@
 
 #include <Labyrinth/Events/IEventListener.h>
 
-#include <Labyrinth/ImGui/ImGuiLayer.h>
+#include <Labyrinth/ImGui/ImGuiHandler.h>
 
 #include <Labyrinth/IO/Filesystem.h>
 
@@ -60,14 +60,12 @@ namespace Laby {
 
 	public:
 		Window& getWindow() { return *mWindow; }
-		ImGuiLayer* getImGuiLayer() { return mImGuiLayer; }
 
 		void onEvent(Event& e) override;
 
 	private:
 		bool OnWindowClose(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
-		bool OnKeyPressed(KeyPressedEvent& e);
 
 		void ExecuteMainThread();
 
@@ -92,14 +90,15 @@ namespace Laby {
 		static void WriteSettings(const std::filesystem::path& settingsPath);
 
 		static void BlockEsc(bool block = true);
+		static void BlockEvents(bool block);
 
 	private:
 		ApplicationSpec mSpecification;
 		ApplicationState mState;
 		Single<Window> mWindow;
-		ImGuiLayer* mImGuiLayer;
-		NetworkLayer* mNetworkLayer = nullptr;
+		Single<ImGuiHandler> mImGuiHandler;
 		LayerStack mLayerStack;
+		NetworkLayer* mNetworkLayer = nullptr;
 
 		friend class SettingsModal;
 

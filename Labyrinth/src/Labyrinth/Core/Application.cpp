@@ -24,8 +24,7 @@ namespace Laby {
 		Renderer::Init();
 		ScriptEngine::Init(spec.scriptConfig);
 
-		mImGuiLayer = new ImGuiLayer();
-		PushOverlay(mImGuiLayer);
+		mImGuiHandler = MakeSingle<ImGuiHandler>();
 	}
 
 	Application::~Application()
@@ -35,6 +34,7 @@ namespace Laby {
 			layer->onDetach();
 			delete layer;
 		}
+		mImGuiHandler.reset();
 
 		ScriptEngine::Shutdown();
 		Renderer::Shutdown();
@@ -114,12 +114,11 @@ namespace Laby {
 					layer->onUpdate(timestep);
 			}
 
-			sInstance->mImGuiLayer->begin();
-
-			for (Layer* layer : sInstance->mLayerStack)
-				layer->onImGuiRender();
-
-			sInstance->mImGuiLayer->end();
+			{
+				imcpp::ImScopedFrame imguiFrame = sInstance->mImGuiHandler->newFrame();
+				for (Layer* layer : sInstance->mLayerStack)
+					layer->onImGuiRender();
+			}
 
 			sInstance->mWindow->onUpdate();
 		}
@@ -201,5 +200,10 @@ namespace Laby {
 	void Application::BlockEsc(bool block)
 	{
 		sInstance->mState.blockExit = block;
+	}
+
+	void Application::BlockEvents(bool block)
+	{
+		sInstance->mImGuiHandler->blockEvents(block);
 	}
 }

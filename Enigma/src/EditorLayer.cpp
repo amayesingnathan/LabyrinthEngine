@@ -1,6 +1,5 @@
 #include "EditorLayer.h"
 
-#include <imgui.h>
 #include "ImGuizmo.h"
 
 #include <glm/gtc/matrix_transform.hpp>
@@ -26,7 +25,7 @@
 
 #include <Labyrinth/IO/Input.h>
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 
 #include <Labyrinth/Project/ProjectSerialiser.h>
 
@@ -38,6 +37,9 @@
 
 #include <Labyrinth/Tools/MathUtils.h>
 #include <Labyrinth/Tools/StringUtils.h>
+
+using imcpp::Widgets;
+using imcpp::Utils;
 
 namespace Laby {
 
@@ -134,7 +136,7 @@ namespace Laby {
 		}
 		}
 
-		auto [mx, my] = ImGui::GetMousePos();
+		auto [mx, my] = Utils::MousePos();
 		mx -= mEditorData.viewportBounds[0].x;
 		my -= mEditorData.viewportBounds[0].y;
 		glm::vec2 viewportSize = mEditorData.viewportBounds[1] - mEditorData.viewportBounds[0];
@@ -153,47 +155,7 @@ namespace Laby {
 
 	void EditorLayer::onImGuiRender()
 	{
-		static ImGuiDockNodeFlags dockspace_flags = ImGuiDockNodeFlags_None;
-		static bool dockspaceOpen = true;
-		static bool opt_fullscreen_persistant = true;
-		bool opt_fullscreen = opt_fullscreen_persistant;
-
-		ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking;
-		if (opt_fullscreen)
-		{
-			ImGuiViewport* viewport = ImGui::GetMainViewport();
-			ImGui::SetNextWindowPos(viewport->Pos);
-			ImGui::SetNextWindowSize(viewport->Size);
-			ImGui::SetNextWindowViewport(viewport->ID);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
-			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
-			window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-			window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
-		}
-
-		if (dockspace_flags & ImGuiDockNodeFlags_PassthruCentralNode)
-			window_flags |= ImGuiWindowFlags_NoBackground;
-
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
-		ImGui::Begin("DockSpace Demo", &dockspaceOpen, window_flags);
-		ImGui::PopStyleVar();
-
-		if (opt_fullscreen)
-			ImGui::PopStyleVar(2);
-
-		// DockSpace
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuiStyle& style = ImGui::GetStyle();
-		float minWinSizeX = style.WindowMinSize.x;
-		style.WindowMinSize.x = 370.0f;
-
-		if (io.ConfigFlags & ImGuiConfigFlags_DockingEnable)
-		{
-			ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
-			ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
-		}
-
-		style.WindowMinSize.x = minWinSizeX;
+		Widgets::BeginDockspace();
 
 		UI_Viewport();
 		UI_MenuBar();
@@ -202,7 +164,7 @@ namespace Laby {
 		PanelManager::Render();
 		ModalManager::Render();
 
-		ImGui::End();
+		Widgets::EndDockspace();
 	}
 
 	void EditorLayer::onEvent(Event& e)
@@ -253,7 +215,7 @@ namespace Laby {
 		{
 			ModalManager::OpenInline("Quit", ModalButtons::YesNo, 
 			[]() {
-				ImGui::Text("Are you sure you want to quit? Any unsaved changes will be lost.");
+				Widgets::Label("Are you sure you want to quit? Any unsaved changes will be lost.");
 			}, 
 			[]() {
 				Application::BlockEsc(false);
@@ -412,43 +374,34 @@ namespace Laby {
 
 	void EditorLayer::UI_Viewport()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
-		ImGui::Begin("Viewport");
+		Utils::PushStyle(ImGuiStyleVar_WindowPadding, ImVec2{ 0, 0 });
+		Widgets::BeginWindow("Viewport");
 
-		auto viewportMinRegion = ImGui::GetWindowContentRegionMin();
-		auto viewportMaxRegion = ImGui::GetWindowContentRegionMax();
-		auto viewportOffset = ImGui::GetWindowPos();
+		auto viewportMinRegion = Utils::AvailableRegionMin();
+		auto viewportMaxRegion = Utils::AvailableRegionMax();
+		auto viewportOffset = Utils::WindowPos();
 		mEditorData.viewportBounds[0] = { viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y };
 		mEditorData.viewportBounds[1] = { viewportMaxRegion.x + viewportOffset.x, viewportMaxRegion.y + viewportOffset.y };
 
-		mEditorData.viewportFocused = ImGui::IsWindowFocused();
-		mEditorData.viewportHovered = ImGui::IsWindowHovered();
-		Application::Get().getImGuiLayer()->blockEvents(!mEditorData.viewportFocused && !mEditorData.viewportHovered);
+		mEditorData.viewportFocused = Utils::WindowFocused();
+		mEditorData.viewportHovered = Utils::WindowHovered();
+		Application::BlockEvents(!mEditorData.viewportFocused && !mEditorData.viewportHovered);
 
-		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-		mEditorData.viewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+		mEditorData.viewportSize = Utils::AvailableRegion<glm::vec2>();
 
-		u32 textureID = mFramebuffer->getColourAttachmentRendererID();
-		ImGui::Image((ImTextureID)(intptr_t)textureID, ImVec2{ mEditorData.viewportSize.x, mEditorData.viewportSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-
-		if (ImGui::BeginDragDropTarget())
+		Widgets::Image(mFramebuffer->getTextureID(), mEditorData.viewportSize, 0.0f, glm::vec2{0, 1}, glm::vec2{1, 0});
+		Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [this](const fs::path& var)
 		{
-			if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("CONTENT_BROWSER_ITEM"))
-			{
-				const wchar_t* path = (const wchar_t*)payload->Data;
-				fs::path fullPath = Project::GetAssetDirectory() / path;
-				if (AssetManager::IsExtensionValid(fullPath.extension().string(), AssetType::Scene))
-					OpenScene(fullPath);
-			}
-			ImGui::EndDragDropTarget();
-		}
+			if (AssetManager::IsExtensionValid(var.extension(), AssetType::Scene))
+				OpenScene(var);
+		});
 
 		if (mSceneState == SceneEdit) 
 			UI_Gizmos();
 
-		ImGui::PopStyleVar();
+		Utils::PopStyle();
 
-		ImGui::End();
+		Widgets::EndWindow();
 	}
 
 	void EditorLayer::UI_Gizmos()
@@ -462,8 +415,8 @@ namespace Laby {
 			ImGuizmo::SetOrthographic(false);
 			ImGuizmo::SetDrawlist();
 
-			float windowWidth = (float)ImGui::GetWindowWidth();
-			float windowHeight = (float)ImGui::GetWindowHeight();
+			float windowWidth = Utils::WindowWidth();
+			float windowHeight = Utils::WindowHeight();
 			ImGuizmo::SetRect(mEditorData.viewportBounds[0].x, mEditorData.viewportBounds[0].y, mEditorData.viewportBounds[1].x - mEditorData.viewportBounds[0].x, mEditorData.viewportBounds[1].y - mEditorData.viewportBounds[0].y);
 
 			//Editor camera
@@ -513,11 +466,11 @@ namespace Laby {
 
 	void EditorLayer::UI_MenuBar()
 	{
-		UI::MenuBar* menu = Widgets::BeginMenuBar();
+		Widgets::BeginMenuBar();
 
-		Widgets::AddMenuHeading(menu, "File");
+		Widgets::AddMenuBarHeading("File");
 		{	// File Menu
-			Widgets::AddMenuItem(menu, "Create Project", [this]()
+			Widgets::AddMenuBarItem("Create Project", [this]()
 			{
 				ModalManager::Open<NewProjectModal>("New Project...", ModalButtons::OKCancel, mEditorData);
 				ModalManager::AddCallback([this]()
@@ -526,88 +479,84 @@ namespace Laby {
 						CreateProject(mEditorData.newProjectFilepath / mEditorData.newProjectName);
 				});
 			});
-			Widgets::AddMenuItem(menu, "Open Project", "Ctrl+O", [this]() 
+			Widgets::AddMenuBarItem("Open Project", "Ctrl+O", [this]() 
 			{
 				OpenProject();
 			});
-			Widgets::AddMenuItem(menu, "Save Project", [this]() 
+			Widgets::AddMenuBarItem("Save Project", [this]() 
 			{
 				SaveProject();
 			});
 			if (Project::IsActive())
 			{
-				Widgets::AddMenuItem(menu, "Project Settings", [this]() 
+				Widgets::AddMenuBarItem("Project Settings", [this]() 
 				{
 					ModalManager::Open<ProjectSettingsModal>("Project Settings", ModalButtons::OK, ActiveProject::Get());
 				});
 			}
 
-			Widgets::AddMenuSeparator(menu);
+			Widgets::AddMenuBarSeparator();
 
-			Widgets::AddMenuItem(menu, "New Scene", "Ctrl+N", [this]()
+			Widgets::AddMenuBarItem("New Scene", "Ctrl+N", [this]()
 			{
 				NewScene();
 			});
-			Widgets::AddMenuItem(menu, "Save Scene", "Ctrl+S", [this]()
+			Widgets::AddMenuBarItem("Save Scene", "Ctrl+S", [this]()
 			{
 				SaveScene();
 			});
-			Widgets::AddMenuItem(menu, "Save Scene As...", "Ctrl+Shift+S", [this]()
+			Widgets::AddMenuBarItem("Save Scene As...", "Ctrl+Shift+S", [this]()
 			{
 				SaveSceneAs();
 			});
 
-			Widgets::AddMenuSeparator(menu);
+			Widgets::AddMenuBarSeparator();
 
-			Widgets::AddMenuItem(menu, "Preferences", "Ctrl+P", [this]()
+			Widgets::AddMenuBarItem("Preferences", "Ctrl+P", [this]()
 			{
 				ModalManager::Open<SettingsModal>("Settings", ModalButtons::OKCancel);
 			});
 
-			Widgets::AddMenuSeparator(menu);
+			Widgets::AddMenuBarSeparator();
 
-			Widgets::AddMenuItem(menu, "Close", [this]()
+			Widgets::AddMenuBarItem("Close", [this]()
 			{
 				Application::Close();
 			});
 		}
 		
-		Widgets::AddMenuHeading(menu, "View");
+		Widgets::AddMenuBarHeading("View");
 		{	// View 
 			for (auto& [key, _panel, display] : PanelManager::GetPanels())
-				Widgets::AddMenuItem(menu, key, display);
+				Widgets::AddMenuBarItem(key, display);
 		}
 
-		Widgets::AddMenuHeading(menu, "Create");
+		Widgets::AddMenuBarHeading("Create");
 		{	// Create 
 
-			Widgets::AddMenuItem(menu, "Tilemap", [this]()
+			Widgets::AddMenuBarItem("Tilemap", [this]()
 			{
 				ModalManager::Open<NewMapModal>("New Tilemap...", ModalButtons::Custom);
 			});
 		}
 
-		Widgets::EndMenuBar(menu);
+		Widgets::EndMenuBar();
 	}
 
 	void EditorLayer::UI_Toolbar()
 	{
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
-		ImGui::PushStyleVar(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		auto& colours = ImGui::GetStyle().Colors;
-		const auto& buttonHovered = colours[ImGuiCol_ButtonHovered];
-		ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(buttonHovered.x, buttonHovered.y, buttonHovered.z, 0.5f));
-		const auto& buttonActive = colours[ImGuiCol_ButtonActive];
-		ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(buttonActive.x, buttonActive.y, buttonActive.z, 0.5f));
+		Utils::PushStyle(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
+		Utils::PushStyle(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
 
-		ImGui::Begin("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+		Utils::SetButtonTransparent();
 
-		float size = ImGui::GetWindowHeight() - 4.0f;
+		Widgets::BeginWindow("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+
+		float size = Utils::WindowHeight() - 4.0f;
 		{
 			Ref<Texture2D> icon = (mSceneState == SceneEdit || mSceneState == SceneSimulate) ? EditorResources::PlayIcon : EditorResources::StopIcon;
-			Widgets::SetXPosition((ImGuiUtils::AvailableRegionMax().x * 0.5f) - (size * 0.5f));
-			Widgets::ImageButton(icon, { size, size }, [this]()
+			Widgets::SetXPosition((Utils::AvailableRegionMax().x * 0.5f) - (size * 0.5f));
+			Widgets::ImageButton(icon->getTextureID(), glm::vec2{size, size}, [this]()
 			{
 				if (mSceneState == SceneEdit)
 					OnScenePlay();
@@ -615,10 +564,10 @@ namespace Laby {
 					OnSceneStop();
 			});
 		}
-		ImGui::SameLine();
+		Widgets::SameLine();
 		{
 			Ref<Texture2D> icon = (mSceneState == SceneEdit || mSceneState == ScenePlay) ? EditorResources::SimulateIcon : EditorResources::StopIcon;
-			Widgets::ImageButton(icon, { size, size }, [this]()
+			Widgets::ImageButton(icon->getTextureID(), glm::vec2{size, size}, [this]()
 			{
 				if (mSceneState == SceneEdit)
 				OnSceneSimulate();
@@ -627,9 +576,10 @@ namespace Laby {
 			});
 		}
 
-		ImGui::PopStyleVar(2);
-		ImGui::PopStyleColor(3);
-		ImGui::End();
+		Utils::ResetButtonTransparency();
+
+		Utils::PopStyle(2);
+		Widgets::EndWindow();
 	}
 
 	void EditorLayer::LoadSettings()

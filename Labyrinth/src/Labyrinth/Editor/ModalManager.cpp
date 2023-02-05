@@ -1,14 +1,16 @@
 #include "Lpch.h"
 #include "ModalManager.h"
 
-#include <imgui.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
+
+using imcpp::Widgets;
+using imcpp::Utils;
 
 namespace Laby {
 
 	void ModalManager::Render()
 	{
-        ImGuiIO& io = ImGui::GetIO();
-        io.ConfigWindowsMoveFromTitleBarOnly = true;
+        Utils::SetWindowMoveFromTitleBar();
         for (ModalEntry& modalData : sEditorModals)
         {
             if (!modalData.modal)
@@ -17,18 +19,17 @@ namespace Laby {
                 continue;
             }
 
-            ImVec2 centre = ImGui::GetMainViewport()->GetCenter();
-            ImGui::SetNextWindowSize(ImVec2(600, 400), ImGuiCond_FirstUseEver);
-            ImGui::SetNextWindowPos(centre, ImGuiCond_FirstUseEver, ImVec2(0.5f, 0.5f));
-            if (ImGui::Begin(modalData.heading.data(), &modalData.open, ImGuiWindowFlags_NoDocking))
+            Utils::SetNextWindowSize<glm::vec2>({ 600, 400 });
+            Utils::SetNextWindowPos<glm::vec2>(Utils::GetMainWindowCentre<glm::vec2>(), { 0.5f, 0.5f });
+            if (Widgets::BeginWindow(modalData.heading, &modalData.open, ImGuiWindowFlags_NoDocking))
             {
                 modalData.modal->onImGuiRender();
                 RenderButtons(modalData);
             }
 
-            ImGui::End();
+            Widgets::EndWindow();
         }
-        io.ConfigWindowsMoveFromTitleBarOnly = false;
+        Utils::SetWindowMoveFromTitleBar(false);
 
         // Call any completion callbacks before deleting modal entries
         auto removeStart = std::remove_if(sEditorModals.begin(), sEditorModals.end(), [](const ModalEntry& entry) { return !entry.open; });
@@ -52,47 +53,45 @@ namespace Laby {
         if (modalData.type == ModalButtons::None) 
             return;
 
-        ImGui::NewLine();
-        ImGui::Separator();
+        Widgets::NewLine();
+        Widgets::Separator();
 
         switch (modalData.type)
         {
         case ModalButtons::OK:
         {
-            if (ImGui::Button("OK"))
+            Widgets::Button("OK", [&]()
             {
                 modalData.modal->onComplete();
                 modalData.open = false;
-            }
+            });
             break;
         }
         case ModalButtons::OKCancel:
         {
-            if (ImGui::Button("OK"))
+            Widgets::Button("OK", [&]()
             {
                 modalData.modal->onComplete();
                 modalData.open = false;
-            }
+            });
 
-            ImGui::SameLine();
+            Widgets::SameLine();
 
-            if (ImGui::Button("Cancel"))
-                modalData.open = false;
+            Widgets::Button("Cancel", [&]() { modalData.open = false; });
 
             break;
         }
         case ModalButtons::YesNo:
         {
-            if (ImGui::Button("Yes"))
+            Widgets::Button("Yes", [&]()
             {
                 modalData.modal->onComplete();
                 modalData.open = false;
-            }
+            });
 
-            ImGui::SameLine();
+            Widgets::SameLine();
 
-            if (ImGui::Button("No"))
-                modalData.open = false;
+            Widgets::Button("No", [&]() { modalData.open = false; });
 
             break;
         }

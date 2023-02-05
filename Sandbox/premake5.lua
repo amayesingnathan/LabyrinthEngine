@@ -21,6 +21,7 @@ project "Sandbox"
 		"%{IncludeDir.asio}",
 		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
+        "%{IncludeDir.imgui_cpp}",
         "%{IncludeDir.json}",
         "%{IncludeDir.spdlog}",
 		"%{IncludeDir.yaml_cpp}",

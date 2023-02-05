@@ -4,7 +4,9 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/Editor/Modals/NewBodyModal.h>
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 
@@ -22,21 +24,21 @@ namespace Laby {
 			Widgets::OpenPopup("CreateEntityPopup");
 		});
 
-		UI::PopUp* createEntityPopup = Widgets::BeginPopup("CreateEntityPopup");
-		Widgets::AddMenuItem(createEntityPopup, "Empty Entity", [this]()
+		Widgets::BeginPopup("CreateEntityPopup");
+		Widgets::AddPopupItem("Empty Entity", [this]()
 		{
 			mSelectedEntity = mContext->CreateEntity("New Entity");
 		});
-		Widgets::AddMenuItem(createEntityPopup, "Camera", [this]()
+		Widgets::AddPopupItem("Camera", [this]()
 		{
 			mSelectedEntity = mContext->CreateEntity("New Camera");
 			mSelectedEntity.addComponent<CameraComponent>();
 		});
-		Widgets::AddMenuItem(createEntityPopup, "Rigid Body", [this]()
+		Widgets::AddPopupItem("Rigid Body", [this]()
 		{
 			ModalManager::Open<NewBodyModal>("New Rigid Body...", ModalButtons::OKCancel, mContext);
 		});
-		Widgets::EndPopup(createEntityPopup);
+		Widgets::EndPopup();
 
 		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
 		{
@@ -85,25 +87,25 @@ namespace Laby {
 				dragEntity.setParent(entity);
 		});
 
-		UI::PopUpContext* popup = Widgets::BeginContextPopup();
-		Widgets::AddMenuItem(popup, "Create Entity", [this]() 
+		Widgets::BeginContextPopup();
+		Widgets::AddContextItem("Create Entity", [this]() 
 		{
 			mContext->CreateEntity("Empty Entity");
 		});
-		Widgets::AddMenuItem(popup, "Create Child", [&]() 
+		Widgets::AddContextItem("Create Child", [&]() 
 		{
 			mContext->CreateEntity("Empty Entity", entity);
 		});
-		Widgets::AddMenuItem(popup, "Clone Entity", [&]() 
+		Widgets::AddContextItem("Clone Entity", [&]() 
 		{
 			mContext->CloneEntity(entity);
 		});
-		Widgets::AddMenuItem(popup, "Delete Entity", [&]() 
+		Widgets::AddContextItem("Delete Entity", [&]() 
 		{
 			mToRemove.emplace_back(entity); // Queue up to delete after range for loop so it isn't invalidated.
 			mSelectedEntity = {};
 			mPreviousEntity = {};
 		});
-		Widgets::EndContextPopup(popup);
+		Widgets::EndContextPopup();
 	}
 }

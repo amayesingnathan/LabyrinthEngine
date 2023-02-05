@@ -4,6 +4,9 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
+using imcpp::Widgets;
+using imcpp::Utils;
+
 namespace Laby {
 
 	ContentBrowserPanel::ContentBrowserPanel()
@@ -24,12 +27,12 @@ namespace Laby {
 		Widgets::Button("<-", [this]()
 		{
 			if (mCurrentDirectory != mAssetDirectory)
-			mCurrentDirectory = mCurrentDirectory.parent_path();
+				mCurrentDirectory = mCurrentDirectory.parent_path();
 		});
 
 		float cellSize = mThumbnailSize + mPadding;
 		
-		float panelWidth = ImGuiUtils::AvailableRegion().x;
+		float panelWidth = Utils::AvailableRegion<glm::vec2>().x;
 		i32 columnCount = (i32)(panelWidth / cellSize);
 		if (columnCount < 1)
 			columnCount = 1;
@@ -47,13 +50,13 @@ namespace Laby {
 
 			fs::path filename = dirEntry.path().filename();
 			std::string filenameStr = filename.string();
-			ImGuiUtils::PushID(filenameStr);
-			ImGuiUtils::PushStyleColour(21, glm::vec4{ 0.0f }); // ImGuiCol_Button
+			Utils::PushID(filenameStr);
+			Utils::PushStyleColour(21, Utils::ToImVec<ImVec4>(glm::vec4{ 0.0f })); // ImGuiCol_Button
 
-			Widgets::ImageButton(icon, { mThumbnailSize, mThumbnailSize });
+			LabWidgets::ImageButton(icon, glm::vec2{mThumbnailSize, mThumbnailSize});
 			Widgets::AddDragDropSource("CONTENT_BROWSER_ITEM", mAssetDirectory / relativePath);
 
-			ImGuiUtils::PopStyleColour();
+			Utils::PopStyleColour();
 
 			Widgets::OnWidgetSelected([&]()
 			{
@@ -63,7 +66,7 @@ namespace Laby {
 			Widgets::LabelWrapped(filenameStr);
 
 			Widgets::NextColumn();
-			ImGuiUtils::PopID();
+			Utils::PopID();
 		}
 
 		Widgets::EndColumns();

@@ -2,8 +2,10 @@
 #include "ProjectSettingsModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/IO/Filesystem.h>
+
+using imcpp::Widgets;
 
 namespace Laby{
 

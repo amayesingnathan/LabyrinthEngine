@@ -1,10 +1,12 @@
 #include "Lpch.h"
 #include "NewProjectModal.h"
 
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Project/Project.h>
 
 #include "../EditorData.h"
+
+using imcpp::Widgets;
 
 namespace Laby {
 

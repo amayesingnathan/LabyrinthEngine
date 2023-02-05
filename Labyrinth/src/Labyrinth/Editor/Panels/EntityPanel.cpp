@@ -13,12 +13,15 @@
 
 #include "SpriteSheetPanel.h"
 
+using imcpp::Widgets;
+using imcpp::Utils;
+
 namespace Laby {
 
-	using ParentEntityEntry = ComboEntry<Entity>;
-	using ScriptClassEntry = ComboEntry<Ref<ScriptClass>>;
+	using ParentEntityEntry = imcpp::ComboEntry<Entity>;
+	using ScriptClassEntry = imcpp::ComboEntry<Ref<ScriptClass>>;
 
-	using TexTypeEntry = ComboEntry<SpriteRendererComponent::TexType>;
+	using TexTypeEntry = imcpp::ComboEntry<SpriteRendererComponent::TexType>;
 	static constexpr std::array<TexTypeEntry, 4> sTextureTypes =
 	{
 		TexTypeEntry{ "Colour",			SpriteRendererComponent::TexType::None },
@@ -27,14 +30,14 @@ namespace Laby {
 		TexTypeEntry{ "Tilemap",		SpriteRendererComponent::TexType::Tilemap }
 	};
 
-	using CameraProjectionEntry = ComboEntry<SceneCamera::ProjectionType>;
+	using CameraProjectionEntry = imcpp::ComboEntry<SceneCamera::ProjectionType>;
 	static constexpr std::array<CameraProjectionEntry, 2> sCameraProjections =
 	{
 		CameraProjectionEntry{ "Perspective",  SceneCamera::ProjectionType::Perspective },
 		CameraProjectionEntry{ "Orthographic", SceneCamera::ProjectionType::Orthographic }
 	};
 
-	using BodyTypeEntry = ComboEntry<RigidBodyComponent::BodyType>;
+	using BodyTypeEntry = imcpp::ComboEntry<RigidBodyComponent::BodyType>;
 	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
 		BodyTypeEntry{ "Static",		RigidBodyComponent::BodyType::Static },
@@ -78,7 +81,7 @@ namespace Laby {
 			});
 		}
 
-		Widgets::SameLine(ImGuiUtils::WindowWidth() - 72.0f);
+		Widgets::SameLine(Utils::WindowWidth() - 72.0f);
 
 		Widgets::Button("Destroy", [&]()
 		{
@@ -94,22 +97,22 @@ namespace Laby {
 
 		Widgets::SameLine();
 
-		Widgets::Button("Add Component", []()
+		Widgets::Button("Add LabWidgets::Component", []()
 		{
 			Widgets::OpenPopup("AddComponentPopup");
 		});
 
-		UI::PopUp* addComponentPopup = Widgets::BeginPopup("AddComponentPopup");
-		DrawAddComponentEntry<CameraComponent>(addComponentPopup, "Camera");
-		DrawAddComponentEntry<SpriteRendererComponent>(addComponentPopup, "Sprite Renderer");
-		DrawAddComponentEntry<CircleRendererComponent>(addComponentPopup, "Circle Renderer");
-		DrawAddComponentEntry<RigidBodyComponent>(addComponentPopup, "Rigid Body");
-		DrawAddComponentEntry<BoxColliderComponent>(addComponentPopup, "Box Collider");
-		DrawAddComponentEntry<CircleColliderComponent>(addComponentPopup, "Circle Collider");
-		DrawAddComponentEntry<ChildControllerComponent>(addComponentPopup, "Child Controller");
-		DrawAddComponentEntry<ScriptComponent>(addComponentPopup, "Script");
-		DrawAddComponentEntry<TilemapComponent>(addComponentPopup, "Tilemap Controller");
-		Widgets::EndPopup(addComponentPopup);
+		Widgets::BeginPopup("AddComponentPopup");
+		DrawAddComponentEntry<CameraComponent>("Camera");
+		DrawAddComponentEntry<SpriteRendererComponent>("Sprite Renderer");
+		DrawAddComponentEntry<CircleRendererComponent>("Circle Renderer");
+		DrawAddComponentEntry<RigidBodyComponent>("Rigid Body");
+		DrawAddComponentEntry<BoxColliderComponent>("Box Collider");
+		DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
+		DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
+		DrawAddComponentEntry<ScriptComponent>("Script");
+		DrawAddComponentEntry<TilemapComponent>("Tilemap Controller");
+		Widgets::EndPopup();
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
 		{
@@ -134,7 +137,7 @@ namespace Laby {
 			Widgets::Combobox<Entity>("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries);
 		}
 
-		Widgets::Component<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
+		LabWidgets::Component<TransformComponent>("Transform", mSelectedEntity, [](auto& component)
 		{
 			Widgets::Vector3Edit("Translation", component.translation);
 			glm::vec3 rotation = glm::degrees(component.rotation);
@@ -143,7 +146,7 @@ namespace Laby {
 			Widgets::Vector3Edit("Scale", component.scale, 1.0f);
 		});
 
-		Widgets::Component<CameraComponent>("Camera", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<CameraComponent>("Camera", mSelectedEntity, [&](auto& component)
 		{
 			auto& camera = component.camera;
 			Widgets::Checkbox("Primary", component.primary, [&]()
@@ -196,7 +199,7 @@ namespace Laby {
 			}
 		});
 
-		Widgets::Component<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<SpriteRendererComponent>("Sprite Renderer", mSelectedEntity, [&](auto& component)
 		{
 			Widgets::UIntEdit("Layer", component.layer);
 			Widgets::ColourEdit("Colour", component.colour);
@@ -217,7 +220,7 @@ namespace Laby {
 			}
 
 			Widgets::Label("Texture");
-			Widgets::Image(tex, glm::vec2{ ImGuiUtils::AvailableRegion().x - 15.0f, 100.0f });
+			LabWidgets::Image(tex, glm::vec2{ Utils::AvailableRegion().x - 15.0f, 100.0f });
 			Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [&](const fs::path& var)
 			{
 				fs::path texturePath = Project::GetAssetDirectory() / var;
@@ -252,14 +255,14 @@ namespace Laby {
 			Widgets::FloatEdit("Tiling Factor", component.tilingFactor, 0.1f, 0.0f, 100.0f);
 		});
 
-		Widgets::Component<CircleRendererComponent>("Circle Renderer", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<CircleRendererComponent>("Circle Renderer", mSelectedEntity, [&](auto& component)
 		{
 			Widgets::UIntEdit("Layer", component.layer);
 			Widgets::ColourEdit("Colour", component.colour);
 			Widgets::FloatEdit("Thickness", component.thickness);
 		});
 
-		Widgets::Component<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<RigidBodyComponent>("Rigid Body", mSelectedEntity, [&](auto& component)
 		{
 			Widgets::Combobox<RigidBodyComponent::BodyType>("Type", Enum::ToString(component.type), component.type, sBodyTypes);
 			Widgets::Checkbox("Fixed Rotation", component.fixedRotation);
@@ -269,7 +272,7 @@ namespace Laby {
 			Widgets::FloatEdit("Gravity Scale", component.gravityScale, 0.01f, 0.0f, 100.0f);
 		});
 
-		Widgets::Component<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<BoxColliderComponent>("Box Collider", mSelectedEntity, [&](auto& component)
 		{
 			Widgets::Vector2Edit("Half Extents", component.halfExtents);
 			Widgets::Vector2Edit("Offset", component.offset);
@@ -279,7 +282,7 @@ namespace Laby {
 			Widgets::FloatEdit("Restitution Threshold", component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
-		Widgets::Component<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<CircleColliderComponent>("Circle Collider", mSelectedEntity, [&](auto& component)
 		{
 			Widgets::FloatEdit("Radius", component.radius);
 			Widgets::Vector2Edit("Offset", component.offset);
@@ -289,7 +292,7 @@ namespace Laby {
 			Widgets::FloatEdit("Restitution Threshold", component.restitutionThreshold, 0.01f, 0.0f, 100.0f);
 		});
 
-		Widgets::Component<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
+		LabWidgets::Component<ScriptComponent>("Script", mSelectedEntity, [&](auto& component)
 		{
 			std::vector<ScriptClassEntry> comboEntries;
 			for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
@@ -471,21 +474,21 @@ namespace Laby {
 			{
 				glm::vec2 data;
 				script.instance->getFieldValue(name, data);
-				Widgets::Vector2Edit(name, data, [&](const glm::vec2& val) { script.instance->setFieldValue(name, val); });
+				Widgets::Vector2Edit(name, data, [&](const ImVec2& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec2>(val)); });
 				break;
 			}
 			case ScriptFieldType::Vector3:
 			{
 				glm::vec3 data;
 				script.instance->getFieldValue(name, data);
-				Widgets::Vector3Edit(name, data, [&](const glm::vec3& val) { script.instance->setFieldValue(name, val); });
+				Widgets::Vector3Edit(name, data, [&](const ImVec3& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec3>(val)); });
 				break;
 			}
 			case ScriptFieldType::Vector4:
 			{
 				glm::vec4 data;
 				script.instance->getFieldValue(name, data);
-				Widgets::Vector4Edit(name, data, [&](const glm::vec4& val) { script.instance->setFieldValue(name, val); });
+				Widgets::Vector4Edit(name, data, [&](const ImVec4& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec4>(val)); });
 				break;
 			}
 			case ScriptFieldType::Entity:

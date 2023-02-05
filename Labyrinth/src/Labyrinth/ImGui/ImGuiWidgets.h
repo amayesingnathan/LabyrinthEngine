@@ -1,259 +1,40 @@
 #pragma once
 
-#include <span>
-#include <ranges>
-
-#include <Labyrinth/Containers/Grid.h>
-#include <Labyrinth/IO/Filesystem.h>
-#include <Labyrinth/Renderer/IRenderable.h>
 #include <Labyrinth/Scene/Entity.h>
-#include <Labyrinth/Tools/StringUtils.h>
 
-#include "ImGuiUtils.h"
-
-#include "Widgets/Combobox.h"
-#include "Widgets/MenuBar.h"
-#include "Widgets/Payload.h"
-#include "Widgets/PopUp.h"
+#include "ImGuiCpp.h"
 
 namespace Laby {
 
-	class Widgets
+	class LabWidgets
 	{
 	public:
-		static void NewLine();
-		static void SameLine(f32 xOffset = 0.0f);
-		static void Separator();
-
-		static void Disable(bool disable = true);
-		static void EndDisable();
-
-		static void SetXPosition(f32 pos);
-		static void SetYPosition(f32 pos);
-
-		using GridFunction = std::function<void(const GridPosition&, const glm::vec2&)>;
-		static void GridControl(const glm::vec2& pos, const glm::vec2& size, usize width, usize height, GridFunction func);
-		static void GridControl(const glm::vec2& size, usize width, usize height, GridFunction func);
-
-		static void BeginColumns(i32 count, bool border = false);
-		static void NextColumn();
-		static void EndColumns();
-
-		static void BeginChild(std::string_view strID, const glm::vec2& size = {0.0f, 0.0f}, bool border = true);
-		static void EndChild();
-
-		static void BeginGroup();
-		static void EndGroup();
-
-		static void TreeNode(void* id, std::string_view text, bool selected, Action<> whileOpen);
-
-		static void Selectable(std::string_view label, bool selected, Action<> action);
-
-		static UI::MenuBar* BeginMenuBar();
-		static void AddMenuHeading(UI::MenuBar* context, std::string_view heading);
-		static void AddMenuItem(UI::MenuBar* context, std::string_view heading, Action<> action);
-		static void AddMenuItem(UI::MenuBar* context, std::string_view heading, std::string_view shortcut, Action<> action);
-		static void AddMenuItem(UI::MenuBar* context, std::string_view heading, bool& displayed);
-		static void AddMenuSeparator(UI::MenuBar* context);
-		static void EndMenuBar(UI::MenuBar* bar);
-
-		static void OpenPopup(std::string_view popupName);
-		static UI::PopUp* BeginPopup(std::string_view popupName);
-		static void AddMenuItem(UI::PopUp* context, std::string_view heading, Action<> action);
-		static void EndPopup(UI::PopUp* popup);
-
-		static UI::PopUpContext* BeginContextPopup();
-		static void AddMenuItem(UI::PopUpContext* context, std::string_view heading, Action<> action);
-		static void EndContextPopup(UI::PopUpContext* popup);
-
-		static void Label(std::string_view fmt);
-		static void LabelWrapped(std::string_view fmt);
-
-		static void StringEdit(std::string_view label, std::string& field);
-		static void PathEdit(std::string_view label, fs::path& field);
-
-		template<typename T> requires std::signed_integral<T>
-		static void IntEdit(std::string_view label, T& field)
-		{
-			i64 result = ScalarEdit(label, field);
-			if (result < Limits<T>::Min)
-				result = Limits<T>::Min;
-			else if (result > Limits<T>::Max)
-				result = Limits<T>::Max;
-
-			field = (T)result;
-		}
-		template<typename T> requires std::signed_integral<T>
-		static void IntEdit(std::string_view label, T field, Action<T> onEdit)
-		{
-			i64 result = ScalarEdit(label, field);
-			if (result < Limits<T>::Min)
-				result = Limits<T>::Min;
-			else if (result > Limits<T>::Max)
-				result = Limits<T>::Max;
-
-			field = (T)result;
-			onEdit(field);
-		}
-
-		template<typename T> requires std::unsigned_integral<T>
-		static void UIntEdit(std::string_view label, T& field)
-		{
-			u64 result = UScalarEdit(label, field);
-			if (result < Limits<T>::Min)
-				result = Limits<T>::Min;
-			else if (result > Limits<T>::Max)
-				result = Limits<T>::Max;
-
-			field = (T)result;
-		}
-		template<typename T> requires std::unsigned_integral<T>
-		static void UIntEdit(std::string_view label, T field, Action<T> onEdit)
-		{
-			u64 result = UScalarEdit(label, field);
-			if (result < Limits<T>::Min)
-				result = Limits<T>::Min;
-			else if (result > Limits<T>::Max)
-				result = Limits<T>::Max;
-
-			field = (T)result;
-			onEdit(field);
-		}
-
-		static void FloatEdit(std::string_view label, f32& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-		static void DoubleEdit(std::string_view label, f64& field, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-		static void FloatEdit(std::string_view label, f32 field, Action<f32> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-		static void DoubleEdit(std::string_view label, f64 field, Action<f64> onEdit, f32 speed = 1.0f, f32 mix = 0.0f, f32 max = 0.0f);
-
-		static void Vector2Edit(std::string_view label, glm::vec2& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-		static void Vector3Edit(std::string_view label, glm::vec3& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-		static void Vector4Edit(std::string_view label, glm::vec4& values, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-		static void Vector2Edit(std::string_view label, glm::vec2 values, Action<const glm::vec2&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-		static void Vector3Edit(std::string_view label, glm::vec3 values, Action<const glm::vec3&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-		static void Vector4Edit(std::string_view label, glm::vec4 values, Action<const glm::vec4&> onEdit, f32 resetVal = 0.0f, f32 colWidth = 100.0f);
-
-		static void ColourEdit(std::string_view label, glm::vec4& colour);
-
-		static void Image(Ref<IRenderable> image, const glm::vec2& size, f32 rotation = 0.0f);
-		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {}, int padding = -1);
-
-		template<typename T>
-		static void AddDragDropSource(std::string_view strID, const T& data) 
-		{ 
-			DragDropSourceInternal(strID, [&](){ sCurrentPayload = MakeSingle<Payload<T>>(data); });
-		}
-		template<typename T>
-		static void AddDragDropTarget(std::string_view strID, Action<const T&> response)
-		{
-			void* imguiPayload = DragDropTargetInternal(strID);
-			if (!imguiPayload)
-				return;
-
-			const T& payload = *(T*)imguiPayload;
-			response(payload);
-		}
-
-		static void OnWidgetSelected(Action<> action);
-		static void OnWidgetHovered(Action<> action);
-
-		static void Checkbox(std::string_view label, bool& value, Action<> action = {});
-		static void Button(std::string_view label, Action<> action = {});
-		static void Button(std::string_view label, const glm::vec2& size, Action<> action = {});
-
-		template<typename T>
-		static void Combobox(std::string_view label, std::string_view preview, T& value, std::span<const ComboEntry<T>> table)
-		{
-			if (!BeginCombo(label, preview))
-				return;
-
-			// Convert span of entries to base class view and display each entry and return value if item selected.
-			const IComboEntry* comboEntry = nullptr;
-			std::ranges::for_each(table | std::views::transform([](const ComboEntry<T>& entry) { return DynCast<const IComboEntry>(&entry); }),
-			[=, &comboEntry](const IComboEntry* entry)
-			{
-				const IComboEntry* result = Widgets::ComboboxEntry(preview, entry);
-				comboEntry = result ? result : comboEntry;
-			});
-
-			EndCombo();
-
-			if (!comboEntry)
-				return;
-
-			const void* comboValue = comboEntry->getVal();
-			if (!comboValue)
-				return;
-
-			value = T(*(const T*)comboValue);
-		}	
-
-		template<typename T, typename Func>
-		static void Combobox(std::string_view label, std::string_view preview, T value, std::span<const ComboEntry<T>> table, Func onEdit)
-		{
-			if (!BeginCombo(label, preview))
-				return;
-
-			// Convert span of entries to base class view and display each entry and return value if item selected.
-			const IComboEntry* comboEntry = nullptr;
-			std::ranges::for_each(table | std::views::transform([](const ComboEntry<T>& entry) { return DynCast<const IComboEntry>(&entry); }), 
-			[=, &comboEntry](const IComboEntry* entry)
-			{ 
-				const IComboEntry* result = Widgets::ComboboxEntry(preview, entry);
-				comboEntry = result ? result : comboEntry;
-			});
-
-			EndCombo();
-
-			if (!comboEntry)
-				return;
-
-			const void* comboValue = comboEntry->getVal();
-			if (!comboValue)
-				return;
-
-			onEdit(comboEntry->key, *(const T*)comboValue);
-		}
-
 		template<typename T>
 		static void Component(std::string_view name, Entity entity, Action<T&> uiFunction)
 		{
-			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110; 
+			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110;
 			// ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
 			if (!entity.hasComponent<T>())
 				return;
 
 			auto& component = entity.getComponent<T>();
-			const glm::vec2& contentRegionAvailable = ImGuiUtils::AvailableRegion();
+			const glm::vec2& contentRegionAvailable = imcpp::Utils::AvailableRegion<glm::vec2>();
 
-			ImGuiUtils::PushStyle(11, glm::vec2{ 4, 4 }); //ImGuiStyleVar_FramePadding
-			f32 lineHeight = ImGuiUtils::FontSize() + ImGuiUtils::FramePadding().y * 2.0f;
-			Separator();
+			imcpp::Utils::PushStyle(11, imcpp::Utils::ToImVec<ImVec2>(glm::vec2{ 4, 4 })); //ImGuiStyleVar_FramePadding
+			f32 lineHeight = imcpp::Utils::FontSize() + imcpp::Utils::FramePadding().y * 2.0f;
+			imcpp::Widgets::Separator();
 
-			bool removeComponent = ComponentInternal((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
+			bool removeComponent = ComponentImpl((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
 			if (removeComponent)
 				entity.removeComponent<T>();
 
-			ImGuiUtils::PopStyle();
-
+			imcpp::Utils::PopStyle();
 		}
 
-	private:
-		static i64 ScalarEdit(std::string_view label, i64 field);
-		static void ScalarEdit(std::string_view label, i64 field, Action<i64> onEdit);
-		static u64 UScalarEdit(std::string_view label, u64 field);
-		static void UScalarEdit(std::string_view label, u64 field, Action<u64> onEdit);
-
-		static bool ComponentInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
-		static void TreeNodeInternal(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
-
-		static void DragDropSourceInternal(std::string_view strID, Action<> createPayload);
-		static void* DragDropTargetInternal(std::string_view strID);
-
-		static bool BeginCombo(std::string_view label, std::string_view preview);
-		static const IComboEntry* ComboboxEntry(std::string_view preview, const IComboEntry* entry);
-		static void EndCombo();
+		static void Image(Ref<IRenderable> image, const glm::vec2& size, float rotation = 0.0f);
+		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {});
 
 	private:
-		inline static Single<IPayload> sCurrentPayload = nullptr;
+		static bool ComponentImpl(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);
 	};
 }

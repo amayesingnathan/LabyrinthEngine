@@ -4,8 +4,10 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/ImGui/ImGuiWidgets.h>
+#include <Labyrinth/ImGui/ImGuiCpp.h>
 #include <Labyrinth/Tilemap/Tilemap.h>
+
+using imcpp::Widgets;
 
 namespace Laby {
 
