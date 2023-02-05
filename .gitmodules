@@ -13,6 +13,10 @@
 	url = https://github.com/g-truc/glm
 	branch = master
 	update = rebase
+[submodule "Labyrinth/dependencies/imgui-cpp"]
+	path = Labyrinth/dependencies/imgui-cpp
+	url = https://github.com/amayesingnathan/imgui-cpp
+	branch = submodule
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo

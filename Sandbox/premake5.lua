@@ -28,7 +28,8 @@ project "Sandbox"
 	
     links
     {
-        "Labyrinth"
+        "Labyrinth",
+        "imgui-cpp",
     }
 
     filter "system:windows"
