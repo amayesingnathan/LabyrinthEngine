@@ -3,11 +3,6 @@
 	url = https://github.com/gabime/spdlog
 	branch = v1.x
 	update = rebase
-[submodule "Labyrinth/dependencies/imgui"]
-	path = Labyrinth/dependencies/imgui
-	url = https://github.com/amayesingnathan/imgui
-	branch = docking
-	update = rebase
 [submodule "Labyrinth/dependencies/glm"]
 	path = Labyrinth/dependencies/glm
 	url = https://github.com/g-truc/glm
@@ -27,11 +22,6 @@
 	url = git@github.com:amayesingnathan/yaml-cpp.git
 	branch = master
 	update = rebase
-[submodule "Labyrinth/dependencies/glfw"]
-	path = Labyrinth/dependencies/glfw
-	url = git@github.com:amayesingnathan/glfw.git
-	branch = master
-	update = rebase
 [submodule "Labyrinth/dependencies/RapidXML"]
 	path = Labyrinth/dependencies/RapidXML
 	url = git@github.com:amayesingnathan/rapidxml.git
@@ -40,11 +30,6 @@
 [submodule "Labyrinth/dependencies/asio"]
 	path = Labyrinth/dependencies/asio
 	url = git@github.com:amayesingnathan/asio.git
-	branch = master
-	update = rebase
-[submodule "Labyrinth/dependencies/lua"]
-	path = Labyrinth/dependencies/lua
-	url = git@github.com:amayesingnathan/lua.git
 	branch = master
 	update = rebase
 [submodule "dependencies/premake-core"]
