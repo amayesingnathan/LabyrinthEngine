@@ -78,22 +78,6 @@ namespace Laby {
 		sInstance->mState.mainThreadQueue.clear();
 	}
 
-	void Application::SetClient(ClientLayer* client)
-	{
-		mNetworkLayer = client;
-
-		if (!mNetworkLayer)
-			mNetworkLayer = new ClientLayer;
-
-		PushLayer(mNetworkLayer);
-	}
-
-	void Application::SetServer(ServerLayer* server)
-	{
-		mNetworkLayer = server;
-		PushLayer(mNetworkLayer);
-	}
-
 	void Application::Run(int argc, char** argv)
 	{
 		CreateApplication(argc, argv);

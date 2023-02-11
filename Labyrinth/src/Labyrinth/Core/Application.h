@@ -70,11 +70,31 @@ namespace Laby {
 		void ExecuteMainThread();
 
 	protected:
-		void PushLayer(Layer* layer) { mLayerStack.pushLayer(layer); }
-		void PushOverlay(Layer* overlay) { mLayerStack.pushOverlay(overlay); }
+		template<IsLayer T, typename... Args>
+		void PushLayer(Args&&... args) 
+		{ 
+			T* layer = new T(std::forward<Args>(args)...);
+			mLayerStack.pushLayer(layer); 
+		}
+		void PushLayer(IsLayer auto* layer) { mLayerStack.pushLayer(layer); }
 
-		void SetClient(ClientLayer* client = nullptr);
-		void SetServer(ServerLayer* server);
+		template<IsClient T, typename... Args>
+		void SetClient(Args&&... args)
+		{
+			mNetworkLayer = new T(std::forward<Args>(args)...);
+			PushLayer(mNetworkLayer);
+		}
+		void SetClient()
+		{
+			mNetworkLayer = new ClientLayer();
+			PushLayer(mNetworkLayer);
+		}
+		template<IsServer T, typename... Args>
+		void SetServer(Args&&... args)
+		{
+			mNetworkLayer = new T(std::forward<Args>(args)...);
+			PushLayer(mNetworkLayer);
+		}
 
 	public:
 		static void Run(int argc, char** argv);

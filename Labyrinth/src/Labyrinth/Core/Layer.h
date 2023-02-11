@@ -18,4 +18,6 @@ namespace Laby {
 		virtual void onImGuiRender() {}
 	};
 
+	template<typename T>
+	concept IsLayer = DerivedFrom<Layer, T>;
 }

@@ -49,4 +49,7 @@ namespace Laby {
 	private:
 		TSQueue<OwnedMessage> mQMessagesIn;
 	};
+
+	template<typename T>
+	concept IsClient = DerivedFrom<ClientLayer, T>;
 }
