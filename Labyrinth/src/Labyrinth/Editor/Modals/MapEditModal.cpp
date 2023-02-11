@@ -163,6 +163,12 @@ namespace Laby {
         auto imageSize = Utils::AvailableRegion<glm::vec2>();
         imageSize.y -= mFrameHeightWithSpacing;
         LabWidgets::Image(mTilemap, imageSize);
+        Widgets::OnWidgetHovered([]() {}, [&]()
+        {
+            mHoveredTile = GridPosition();
+            mHoveredSubtex = TileRenderData();
+            mHoveredBehaviour = TileBehaviourData();
+        });
 
         Widgets::Label(fmt::format("Edit Mode: {}", Enum::ToString(mEditMode)));
         Widgets::SameLine();
@@ -186,18 +192,17 @@ namespace Laby {
         {
             GridPosition pos = { x, y };
             std::string name = fmt::format("##MapTiles({}, {})", x, y);
-            Widgets::Button(elementSize, name.c_str(), [&]() { mCurrentTile = pos; });
+            Widgets::Button(elementSize, name.c_str(), [&]() 
+            { 
+                mCurrentTile = pos;
+                mCurrentSubtex = mTilemap->getTileData(mCurrentLayer, pos);
+                mCurrentBehaviour = mTilemap->getTileBehaviour(pos);
+            });
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
                 mHoveredSubtex = mTilemap->getTileData(mCurrentLayer, pos);
                 mHoveredBehaviour = mTilemap->getTileBehaviour(pos);
-            });
-            Widgets::OnWidgetSelected([&]()
-            {
-                mCurrentTile = mHoveredTile;
-                mCurrentSubtex = mHoveredSubtex;
-                mCurrentBehaviour = mHoveredBehaviour;
             });
         };
 

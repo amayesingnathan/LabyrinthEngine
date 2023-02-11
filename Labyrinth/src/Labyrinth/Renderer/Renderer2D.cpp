@@ -15,7 +15,7 @@ namespace Laby {
 		{	// Quads
 			sRenderData.quadVertexArray = Ref<VertexArray>::Create();
 
-			sRenderData.quadVertexBuffer = Ref<VertexBuffer>::Create(sRenderData.MaxVertices * (u32)sizeof(QuadVertex));
+			sRenderData.quadVertexBuffer = Ref<VertexBuffer>::Create(Renderer2DData::MaxVertices * (u32)sizeof(QuadVertex));
 			sRenderData.quadVertexBuffer->setLayout({
 				{ ShaderDataType::Float3, "aPosition"	  },
 				{ ShaderDataType::Float4, "aColour"		  },
@@ -27,12 +27,12 @@ namespace Laby {
 
 			sRenderData.quadVertexArray->addVertexBuffer(sRenderData.quadVertexBuffer);
 
-			sRenderData.quadVertexBufferBase = new QuadVertex[sRenderData.MaxVertices];
+			sRenderData.quadVertexBufferBase = new QuadVertex[Renderer2DData::MaxVertices];
 
-			u32* quadIndices = new u32[sRenderData.MaxIndices];
+			u32* quadIndices = new u32[Renderer2DData::MaxIndices];
 
 			u32 offset = 0;
-			for (u32 i = 0; i < sRenderData.MaxIndices; i += 6)
+			for (u32 i = 0; i < Renderer2DData::MaxIndices; i += 6)
 			{
 				quadIndices[i + 0] = offset + 0;
 				quadIndices[i + 1] = offset + 1;
@@ -45,7 +45,7 @@ namespace Laby {
 				offset += 4;
 			}
 
-			Ref<IndexBuffer> quadIB = Ref<IndexBuffer>::Create(quadIndices, sRenderData.MaxIndices);
+			Ref<IndexBuffer> quadIB = Ref<IndexBuffer>::Create(quadIndices, Renderer2DData::MaxIndices);
 			sRenderData.quadVertexArray->setIndexBuffer(quadIB);
 			delete[] quadIndices;
 
