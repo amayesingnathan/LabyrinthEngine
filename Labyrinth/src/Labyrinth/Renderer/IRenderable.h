@@ -8,7 +8,7 @@ namespace Laby {
 	{
 	public:
 		virtual u32 getTextureID() const = 0;
-		virtual void bindTexture(u32 slot = 0) const = 0;
+		void bindTexture(u32 slot = 0) const;
 		virtual const glm::vec2* getTextureCoords() const 
 		{ 
 			return DEFAULT_COORDS; 

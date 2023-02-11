@@ -21,7 +21,6 @@ namespace Laby {
 		Texture2DSheet(const std::string& name, const fs::path& filepath, const glm::vec2& tileSize);
 
 		u32 getTextureID() const override { return mTexture->getTextureID(); }
-		void bindTexture(u32 slot = 0) const override { return mTexture->bindTexture(); }
 
 		const std::string& getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
@@ -66,7 +65,6 @@ namespace Laby {
 		~SubTexture2D() = default;
 
 		u32 getTextureID() const override { return mSheet->mTexture->getTextureID(); }
-		void bindTexture(u32 slot = 0) const override { return mSheet->mTexture->bindTexture(); }
 		const glm::vec2* getTextureCoords() const override { return mTexCoords; }
 		const GridPosition& getPosition() const { return mPosition; }
 

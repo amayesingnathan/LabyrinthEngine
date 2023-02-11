@@ -97,7 +97,7 @@ namespace Laby {
 
 		Widgets::SameLine();
 
-		Widgets::Button("Add LabWidgets::Component", []()
+		Widgets::Button("Add Component", []()
 		{
 			Widgets::OpenPopup("AddComponentPopup");
 		});
@@ -223,23 +223,22 @@ namespace Laby {
 			LabWidgets::Image(tex, glm::vec2{ Utils::AvailableRegion().x - 15.0f, 100.0f });
 			Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [&](const fs::path& var)
 			{
-				fs::path texturePath = Project::GetAssetDirectory() / var;
-				std::string extension = texturePath.extension().string();
+				std::string extension = var.extension().string();
 
 				if (AssetManager::IsExtensionValid(extension, AssetType::Texture))
 				{
 					component.type = SpriteRendererComponent::TexType::Texture;
-					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 				else if (AssetManager::IsExtensionValid(extension, AssetType::SubTexture))
 				{
 					component.type = SpriteRendererComponent::TexType::SubTexture;
-					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 				else if (AssetManager::IsExtensionValid(extension, AssetType::Tilemap))
 				{
 					component.type = SpriteRendererComponent::TexType::Tilemap;
-					component.handle = AssetManager::GetAssetHandleFromPath(texturePath);
+					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 			});
 			Widgets::AddDragDropTarget<AssetHandle>("SPRITE_SHEET_ITEM", [&](const AssetHandle& var)

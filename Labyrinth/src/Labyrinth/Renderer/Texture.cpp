@@ -102,10 +102,4 @@ namespace Laby {
 		glGetTextureImage(mRendererID, GL_TEXTURE_2D, mDataFormat, GL_UNSIGNED_BYTE, size, buffer.data());
 		return buffer;
 	}
-
-	void Texture2D::bindTexture(u32 slot) const
-	{
-		glBindTextureUnit(slot, mRendererID);
-	}
-
 }
