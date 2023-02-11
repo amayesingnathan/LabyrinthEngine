@@ -39,61 +39,29 @@ namespace Laby {
 		std::unordered_map<TileID, Ref<SubTexture2D>> mTileset;
 	};
 
-
-	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TilePalette& palette)
+	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const SheetData& palette)
 	{
-		mOut << YAML::Key << "TilePalette";
-		mOut << YAML::BeginMap; // TilePalette
+		mOut << YAML::BeginMap;
+		LAB_SERIALISE_PROPERTY_ASSET(Sheet, palette.sheet, mOut);
+		LAB_SERIALISE_PROPERTY(StartIndex, palette.startIndex, mOut);
+		mOut << YAML::EndMap;
 
-		mOut << YAML::Key << "SpriteSheets";
-		mOut << YAML::Value << YAML::BeginSeq;
-
-		for (const auto& [handle, startIndex] : palette.getSheets())
-		{
-			mOut << YAML::BeginMap;
-			LAB_SERIALISE_PROPERTY(Handle, handle, mOut);
-			LAB_SERIALISE_PROPERTY(StartIndex, startIndex, mOut);
-			mOut << YAML::EndMap;
-		}
-		mOut << YAML::EndSeq; // SpriteSheets
-
-		mOut << YAML::Key << "Sprites";
-		mOut << YAML::Value << YAML::BeginSeq;
-
-		for (const auto& [index, sprite] : palette.getTileset())
-		{
-			mOut << YAML::BeginMap;
-			LAB_SERIALISE_PROPERTY(Index, index, mOut);
-			LAB_SERIALISE_PROPERTY_ASSET(Sprite, sprite, mOut);
-			mOut << YAML::EndMap;
-		}
-		mOut << YAML::EndSeq; // Sprites
-
-		mOut << YAML::EndMap; // TilePalette
+		return mOut;
 	}
 }
 
 namespace YAML {
 
 	template<>
-	struct convert<Laby::TilePalette>
+	struct convert<Laby::SheetData>
 	{
-		inline static bool decode(const Node& node, Laby::TilePalette& rhs)
+		inline static bool decode(const Node& node, Laby::SheetData& rhs)
 		{
-			auto tilePalette = node["TilePalette"];
-			if (!tilePalette)
-				return false;
+			LAB_DESERIALISE_PROPERTY_ASSET(Sheet, rhs.sheet, node, Texture2DSheet);
+			LAB_DESERIALISE_PROPERTY(StartIndex, rhs.startIndex, node);
 
-			auto sprites = tilePalette["Sprites"];
-			if (!sprites)
+			if (!rhs.sheet)
 				return false;
-
-			for (auto sprite : sprites)
-			{
-				Laby::u32 index;
-				LAB_DESERIALISE_PROPERTY(Index, index, sprite);
-				LAB_DESERIALISE_PROPERTY_ASSET(Sprite, rhs[index], sprite, SubTexture2D);
-			}
 
 			return true;
 		}

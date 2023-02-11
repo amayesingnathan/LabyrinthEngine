@@ -138,7 +138,7 @@ namespace Laby {
 		Ref<Texture2DSheet> sheet = Ref<Texture2DSheet>::Create(texName, tex, tileSize);
 
 		auto subTextures = texNode["SubTextures"];
-		for (auto subTexNode: subTextures)
+		for (auto subTexNode : subTextures)
 			sheet->mSubTextures.emplace_back(subTexNode.as<AssetHandle>());
 
 		if (sheet->mSubTextures.empty())
@@ -192,18 +192,13 @@ namespace Laby {
 			out << YAML::Key << "SpriteSheets";
 			out << YAML::Value << YAML::BeginSeq;
 			for (const SheetData& data : tilemap->getSheets())
-			{
-				out << YAML::BeginMap;
-				LAB_SERIALISE_PROPERTY(SheetHandle, data.sheet->handle, out);
-				LAB_SERIALISE_PROPERTY(StartIndex, data.startIndex, out);
-				out << YAML::EndMap;
-			}
+				out << data;
 			out << YAML::EndSeq;
 
-			out << YAML::Key << "Texture";
+			out << YAML::Key << "TextureLayers";
 			out << YAML::Value << YAML::BeginSeq;
 			for (const TileRenderLayer& layer : tilemap->getLayers())
-				LAB_SERIALISE_PROPERTY(RenderLayer, layer, out);
+				out << layer;
 
 			out << YAML::EndSeq;
 
@@ -237,19 +232,14 @@ namespace Laby {
 		auto mapSheets = mapNode["SpriteSheets"];
 		for (auto sheet : mapSheets)
 		{
-			UUID handle;
-			TileID startIndex;
-			LAB_DESERIALISE_PROPERTY_DEF(SheetHandle, handle, sheet, 0);
-			LAB_DESERIALISE_PROPERTY(StartIndex, startIndex, sheet);
-
-			tilemap->addSheet(handle, startIndex);
+			const SheetData& sheetData = sheet.as<SheetData>();
+			tilemap->addSheet(sheetData.sheet->handle, sheetData.startIndex);
 		}
 
-		auto mapLayers = mapNode["Texture"];
+		auto mapLayers = mapNode["TextureLayers"];
 		for (auto texLayer : mapLayers)
 		{
-			TileRenderLayer renderLayer;
-			LAB_DESERIALISE_PROPERTY(RenderLayer, renderLayer, texLayer);
+			TileRenderLayer renderLayer = texLayer.as<TileRenderLayer>();
 			tilemap->addLayer(std::move(renderLayer));
 		}
 

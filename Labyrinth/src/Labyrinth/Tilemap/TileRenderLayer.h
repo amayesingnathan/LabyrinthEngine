@@ -30,12 +30,8 @@ namespace Laby {
 		mOut << YAML::Value << YAML::BeginSeq;
 
 		for (const auto& tileData : layer)
-		{
-			mOut << YAML::BeginMap;
-			LAB_SERIALISE_PROPERTY(TextureID, tileData.textureID, mOut);
-			LAB_SERIALISE_PROPERTY(Rotation, tileData.rotation, mOut);
-			mOut << YAML::EndMap;
-		}
+			mOut << tileData;
+
 		mOut << YAML::EndSeq;
 
 		mOut << YAML::EndMap; // TileRenderLayer
