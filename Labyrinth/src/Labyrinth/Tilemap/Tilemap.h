@@ -40,7 +40,6 @@ namespace Laby {
 		void moveLayer(usize layer, LayerMoveDir direction) { mTexture.moveLayer(layer, direction); }
 
 		u32 getTextureID() const override { return mTexture.mFramebuffer->getTextureID(); }
-		void bindTexture(u32 slot = 0) const override { mTexture.mFramebuffer->bindTexture(slot); }
 
 		std::vector<ChainShape> getPhysicsShapes() const { return mBehaviour.getShapes(); }
 		std::vector<TileScriptData> getTileScripts() const { return mBehaviour.getScripts(); }

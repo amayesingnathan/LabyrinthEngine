@@ -22,7 +22,6 @@ namespace Laby {
 		bool loaded() const { return mRendererID != -1; }
 
 		u32 getTextureID() const override { return mRendererID; }
-		void bindTexture(u32 slot = 0) const override;
 
 		i32 getWidth() const { return mWidth; }
 		i32 getHeight() const { return mHeight; }

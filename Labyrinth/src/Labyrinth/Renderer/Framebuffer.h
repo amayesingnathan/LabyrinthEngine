@@ -57,7 +57,6 @@ namespace Laby {
 		void unbind();
 
 		u32 getTextureID() const override { return getColourAttachmentRendererID(); }
-		void bindTexture(u32 slot = 0) const override { bindColourAttachment(slot); }
 
 		void resize(usize width, usize height);
 		i32 readPixel(u32 attachmentIndex, i32 x, i32 y) const;
