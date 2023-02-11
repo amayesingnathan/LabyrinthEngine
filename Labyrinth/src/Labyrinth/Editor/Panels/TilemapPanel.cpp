@@ -23,6 +23,7 @@ namespace Laby {
 		f32 imageHeight = mThumbnailSize - Utils::LineHeight();
 		glm::vec2 imageSize = imageHeight > 0 ? glm::vec2{ mThumbnailSize, imageHeight } : glm::vec2{ mThumbnailSize, mThumbnailSize };
 
+		std::vector<AssetHandle> toDestroy;
 		Widgets::BeginColumns(columnCount);
 		for (AssetHandle handle : AssetManager::GetAssetsWithType(AssetType::Tilemap))
 		{
@@ -33,10 +34,13 @@ namespace Laby {
 			Widgets::AddDragDropSource("TILEMAP_ITEM", handle);
 
 			Widgets::BeginContextPopup();
-			Widgets::AddContextItem("Delete", [&]() {AssetManager::DestroyAsset(handle); });
+			Widgets::AddContextItem("Delete", [&]() { toDestroy.emplace_back(handle); });
 			Widgets::EndContextPopup();
 		}
 		Widgets::EndColumns();
+
+		for (AssetHandle handle : toDestroy)
+			AssetManager::DestroyAsset(handle);
 
 		Widgets::FloatEdit("Thumbnail Size", mThumbnailSize, 1.0f, 16, 512);
 		Widgets::FloatEdit("Padding", mPadding, 1.0f, 0, 32);
