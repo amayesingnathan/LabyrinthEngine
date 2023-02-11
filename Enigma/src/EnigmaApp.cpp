@@ -12,7 +12,7 @@ namespace Laby {
 		EnigmaEditor(const ApplicationSpec& spec)
 			: Application(spec)
 		{
-			PushLayer(new EditorLayer);
+			PushLayer<EditorLayer>();
 		}
 
 		~EnigmaEditor()

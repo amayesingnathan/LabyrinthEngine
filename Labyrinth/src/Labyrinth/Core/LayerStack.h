@@ -11,10 +11,11 @@ namespace Laby {
 	public:
 		LayerStack() = default;
 
-		void pushLayer(Layer* layer);
-		void pushOverlay(Layer* overlay);
-		void popLayer(Layer* layer);
-		void popOverlay(Layer* overlay);
+		void pushLayer(Layer* layer)
+		{
+			mLayers.emplace_back(layer);
+			layer->onAttach();
+		}
 
 		std::vector<Layer*>::iterator begin() { return mLayers.begin(); }
 		std::vector<Layer*>::iterator end() { return mLayers.end(); }
@@ -28,7 +29,6 @@ namespace Laby {
 
 	private:
 		std::vector<Layer*> mLayers;
-		u32 mLayerInsertIndex = 0;
 	};
 
 }
