@@ -52,6 +52,44 @@ namespace Laby {
 			sRenderData.quadShader = Ref<Shader>::Create("resources/shaders/Renderer2DQuad.glsl");
 		}
 
+		// Circles
+		{
+			sRenderData.circleVertexArray = Ref<VertexArray>::Create();
+
+			sRenderData.circleVertexBuffer = Ref<VertexBuffer>::Create(sRenderData.MaxVertices * (u32)sizeof(QuadVertex));
+			sRenderData.circleVertexBuffer->setLayout({
+				{ ShaderDataType::Float3, "aWorldPosition" },
+				{ ShaderDataType::Float,  "aThickness"     },
+				{ ShaderDataType::Float2, "aLocalPosition" },
+				{ ShaderDataType::Float4, "aColour"        },
+				{ ShaderDataType::Int,    "aEntityID"      }
+				});
+
+			sRenderData.circleVertexArray->addVertexBuffer(sRenderData.circleVertexBuffer);
+
+			sRenderData.circleVertexBufferBase = new CircleVertex[sRenderData.MaxVertices];
+			sRenderData.circleVertexArray->setIndexBuffer(sRenderData.quadVertexArray->getIndexBuffer()); // Reuse quad index buffer
+
+			sRenderData.circleShader = Ref<Shader>::Create("resources/shaders/Renderer2DCircle.glsl");
+		}
+
+		// Lines
+		{
+			sRenderData.lineVertexArray = Ref<VertexArray>::Create();
+
+			sRenderData.lineVertexBuffer = Ref<VertexBuffer>::Create(sRenderData.MaxVertices * (u32)sizeof(QuadVertex));
+			sRenderData.lineVertexBuffer->setLayout({
+				{ ShaderDataType::Float3, "aPosition" },
+				{ ShaderDataType::Float4, "aColour"   },
+				{ ShaderDataType::Int,    "aEntityID" }
+				});
+
+			sRenderData.lineVertexArray->addVertexBuffer(sRenderData.lineVertexBuffer);
+			sRenderData.lineVertexBufferBase = new LineVertex[sRenderData.MaxVertices];
+
+			sRenderData.lineShader = Ref<Shader>::Create("resources/shaders/Renderer2DLine.glsl");
+		}
+
 		// White Texture
 		sRenderData.whiteTexture = Ref<Texture2D>::Create(1, 1);
 		u32 whiteTextureData = 0xffffffff;
@@ -65,6 +103,8 @@ namespace Laby {
 	void Renderer2D::Shutdown()
 	{
 		delete[] sRenderData.quadVertexBufferBase;
+		delete[] sRenderData.circleVertexBufferBase;
+		delete[] sRenderData.lineVertexBufferBase;
 	}
 
 	void Renderer2D::BeginState()
@@ -292,6 +332,12 @@ namespace Laby {
 	{
 		sRenderData.quadIndexCount = 0;
 		sRenderData.quadVertexBufferPtr = sRenderData.quadVertexBufferBase;
+
+		sRenderData.circleIndexCount = 0;
+		sRenderData.circleVertexBufferPtr = sRenderData.circleVertexBufferBase;
+
+		sRenderData.lineVertexCount = 0;
+		sRenderData.lineVertexBufferPtr = sRenderData.lineVertexBufferBase;
 
 		sRenderData.textureSlotIndex = 1;
 	}

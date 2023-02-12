@@ -173,10 +173,10 @@ namespace Laby {
         Widgets::Label(fmt::format("Edit Mode: {}", Enum::ToString(mEditMode)));
         Widgets::SameLine();
         Utils::SetCursorPosX(pos.x + (0.2f * imageSize.x));
-        Widgets::Label("Ctrl + B: Behaviour Mode");
+        Widgets::Label("Ctrl + Q: Paint Mode");
         Widgets::SameLine();
         Utils::SetCursorPosX(pos.x + (0.4f * imageSize.x));
-        Widgets::Label("Ctrl + P: Paint Mode");
+        Widgets::Label("Ctrl + W: Select Mode");
         Widgets::SameLine();
         Utils::SetCursorPosX(pos.x + (0.75f * imageSize.x));
         Widgets::Checkbox("Colliders", mDisplayColliders);

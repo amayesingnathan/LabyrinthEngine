@@ -20,10 +20,10 @@ namespace Laby {
 	{
 		Ref<Tilemap> copy = Ref<Tilemap>::Create(other->mName, other->getWidth(), other->getHeight());
 
-		for (const auto& layer : other->mTexture.mLayers)
-			copy->addLayer(layer);
 		for (const auto& sheetData : other->mTexture.getSheets())
 			copy->addSheet(sheetData.sheet->handle, sheetData.startIndex);
+		for (const auto& layer : other->mTexture.mLayers)
+			copy->addLayer(layer);
 
 		copy->setBehaviour(other->mBehaviour);
 		copy->handle = other->handle;
