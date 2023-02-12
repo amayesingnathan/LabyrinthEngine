@@ -18,6 +18,6 @@ namespace Laby {
 		void blockEvents(bool block) { mBlockEvents = block; }
 
 	private:
-		bool mBlockEvents;
+		bool mBlockEvents = false;
 	};
 }

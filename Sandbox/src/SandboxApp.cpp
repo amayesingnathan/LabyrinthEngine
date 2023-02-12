@@ -2,6 +2,8 @@
 
 #include "Labyrinth/Core/EntryPoint.h"
 
+#include "SandboxLayer.h"
+
 namespace Laby {
 
 	class SandboxApp : public Application
@@ -10,6 +12,7 @@ namespace Laby {
 		SandboxApp(const ApplicationSpec& spec)
 			: Application(spec)
 		{
+			PushLayer<SandboxLayer>();
 		}
 
 		~SandboxApp()
@@ -23,6 +26,7 @@ namespace Laby {
 		spec.name = "Sandbox";
 		spec.fullscreen = false;
 		spec.resolution = { 1600, 900 };
+		spec.workingDir = "../Enigma";
 
 		return new SandboxApp(spec);
 	}

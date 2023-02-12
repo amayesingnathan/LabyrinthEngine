@@ -23,6 +23,7 @@ project "Sandbox"
         "%{IncludeDir.glm}",
         "%{IncludeDir.imgui_cpp}",
         "%{IncludeDir.json}",
+		"%{IncludeDir.magic_enum}",
         "%{IncludeDir.spdlog}",
 		"%{IncludeDir.yaml_cpp}",
     }
