@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "Application.h"
 
+#include "ImGuizmo.h"
+
 #include <Labyrinth/IO/JSON.h>
 #include <Labyrinth/Networking/ServerLayer.h>
 #include <Labyrinth/Networking/ClientLayer.h>
@@ -100,6 +102,7 @@ namespace Laby {
 
 			{
 				imcpp::ImScopedFrame imguiFrame = sInstance->mImGuiHandler->newFrame();
+				ImGuizmo::BeginFrame();
 				for (Layer* layer : sInstance->mLayerStack)
 					layer->onImGuiRender();
 			}
