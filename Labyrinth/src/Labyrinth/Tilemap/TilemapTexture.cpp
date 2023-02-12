@@ -95,7 +95,7 @@ namespace Laby {
 			{
 				for (u32 x = 0; x < mWidth; x++)
 				{
-					const auto& tileData = layer(x, y);
+					const auto& tileData = layer(x, (mHeight - y - 1));
 					Ref<SubTexture2D> tex = mTilePalette[tileData.textureID];
 					if (!tex)
 						continue;

@@ -6,7 +6,7 @@
 namespace Laby {
 
 	OrthographicCamera::OrthographicCamera(f32 left, f32 right, f32 bottom, f32 top)
-		: Camera(glm::ortho(left, right, bottom, top, -1.0f, 1.0f))
+		: Camera(glm::ortho(left, right, bottom, top, -1.0f, 1.0f)), mView(1.0f)
 	{
 	}
 
