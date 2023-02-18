@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Base.h>
+#include <Labyrinth/Core/System/Ref.h>
 
 namespace Laby {
 
-	class Camera
+	class Camera : public virtual RefCounted
 	{
 	public:
 		Camera() = default;

@@ -8,12 +8,16 @@ namespace Laby {
 
 	class IEventListener;
 
+	enum class ListenerType
+	{
+		Generic,
+		App,
+		ImGui
+	};
+
 	class EventManager
 	{
 	public:
-		static void RegisterListener(IEventListener* listener) { sListeners.emplace_back(listener); }
-		static void DeregisterListener(IEventListener* listener) { std::erase(sListeners, listener); }
-
 		template<IsEvent TEvent, typename... TArgs>
 		static void Post(TArgs&&... args)
 		{
@@ -22,9 +26,16 @@ namespace Laby {
 		}
 
 		static void Dispatch();
+		
+	private:
+		static void RegisterListener(IEventListener* listener, ListenerType type = ListenerType::Generic);
+		static void DeregisterListener(IEventListener* listener);
 
 	private:
+		inline static IEventListener* sImGuiListener = nullptr;
 		inline static std::vector<IEventListener*> sListeners;
 		inline static std::queue<Event> sEventQueue;
+
+		friend IEventListener;
 	};
 }

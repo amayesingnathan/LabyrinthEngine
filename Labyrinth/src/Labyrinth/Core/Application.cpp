@@ -13,7 +13,7 @@
 namespace Laby {
 
 	Application::Application(const ApplicationSpec& spec)
-		: mSpecification(spec)
+		: IEventListener(ListenerType::App), mSpecification(spec)
 	{
 		LAB_CORE_ASSERT(!sInstance, "Application already exists");
 		sInstance = this;

@@ -6,7 +6,7 @@
 namespace Laby {
 
 	ImGuiHandler::ImGuiHandler()
-		: imcpp::ImHandler
+		: IEventListener(ListenerType::ImGui), imcpp::ImHandler
 		(
 			[]() { return Application::Get().getWindow().getNativeWindow(); },
 			[]() { return imcpp::Utils::ToImVec<ImVec2>(Application::Get().getWindow().getSize()); }

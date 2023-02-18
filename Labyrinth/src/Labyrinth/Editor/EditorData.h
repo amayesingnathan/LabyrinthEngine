@@ -20,7 +20,7 @@ namespace Laby {
 		std::string newProjectName;
 		fs::path newProjectFilepath;
 
-		EditorCamera camera;
+		Ref<EditorCamera> camera = nullptr;
 		Entity hoveredEntity;
 
 		i32 gizmoType = -1;

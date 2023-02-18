@@ -62,8 +62,8 @@ namespace Laby {
 		EditorResources::Init();
 
 		mEditorData.viewportSize = { fbSpec.width, fbSpec.height };
-		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
-		mEditorData.camera.setEventCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
+		mEditorData.camera = Ref<EditorCamera>::Create(30.0f, 1.778f, 0.1f, 1000.0f);;
+		mEditorData.camera->setEventCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
 
 		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", mCurrentScene);
 		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mCurrentScene);
@@ -98,7 +98,7 @@ namespace Laby {
 		{
 			mFramebuffer->resize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 
-			mEditorData.camera.setViewportSize(mEditorData.viewportSize.x, mEditorData.viewportSize.y);
+			mEditorData.camera->setViewportSize(mEditorData.viewportSize.x, mEditorData.viewportSize.y);
 			mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 		}
 
@@ -116,9 +116,9 @@ namespace Laby {
 		case SceneEdit:
 		{
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
-				mEditorData.camera.onUpdate(ts);
+				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateEditor(ts, mEditorData.camera);
+			mCurrentScene->onUpdateEditor(ts, *mEditorData.camera);
 			break;
 		}
 		case ScenePlay:
@@ -129,9 +129,9 @@ namespace Laby {
 		case SceneSimulate:
 		{
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
-				mEditorData.camera.onUpdate(ts);
+				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateSimulation(ts, mEditorData.camera);
+			mCurrentScene->onUpdateSimulation(ts, *mEditorData.camera);
 			break;
 		}
 		}
@@ -310,11 +310,11 @@ namespace Laby {
 		switch (mSceneState)
 		{
 		case SceneEdit:
-			Renderer2D::BeginState(mEditorData.camera);
+			Renderer2D::BeginState(*mEditorData.camera);
 			break;
 
 		case SceneSimulate:
-			Renderer2D::BeginState(mEditorData.camera);
+			Renderer2D::BeginState(*mEditorData.camera);
 			break;
 
 		case ScenePlay:
@@ -420,8 +420,8 @@ namespace Laby {
 			ImGuizmo::SetRect(mEditorData.viewportBounds[0].x, mEditorData.viewportBounds[0].y, mEditorData.viewportBounds[1].x - mEditorData.viewportBounds[0].x, mEditorData.viewportBounds[1].y - mEditorData.viewportBounds[0].y);
 
 			//Editor camera
-			const glm::mat4& cameraProjection = mEditorData.camera.getProjection();
-			glm::mat4 cameraView = mEditorData.camera.getViewMatrix();
+			const glm::mat4& cameraProjection = mEditorData.camera->getProjection();
+			glm::mat4 cameraView = mEditorData.camera->getViewMatrix();
 
 			// Entity transform
 			auto& tc = firstSelection.getComponent<TransformComponent>();
@@ -695,7 +695,7 @@ namespace Laby {
 
 		SelectionManager::DeselectAll();
 
-		mEditorData.camera = EditorCamera(30.0f, 1.778f, 0.1f, 1000.0f);
+		mEditorData.camera = Ref<EditorCamera>::Create(30.0f, 1.778f, 0.1f, 1000.0f);
 
 		mEditorData.newProjectName = std::string();
 		mEditorData.newProjectFilepath = fs::path();
