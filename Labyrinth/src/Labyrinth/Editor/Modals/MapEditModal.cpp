@@ -36,6 +36,14 @@ namespace Laby {
 
     void MapEditModal::onImGuiRender()
     {
+        if (Utils::IsKeyPressed(Key::LeftControl) || Utils::IsKeyPressed(Key::RightControl))
+        {
+            if (Utils::IsKeyPressed(Key::Q))
+                mEditMode = EditMode::Paint;
+            else if (Utils::IsKeyPressed(Key::W))
+                mEditMode = EditMode::Selection;
+        }
+
         if (mEditMode == EditMode::Paint && Utils::IsMouseDown(Mouse::ButtonLeft))
         {
             mCurrentlyPainting = true;
@@ -58,12 +66,6 @@ namespace Laby {
     {
         AssetImporter::Serialise(mTilemap);
         AssetManager::ReloadData(mTilemap->handle);
-    }
-
-    void MapEditModal::onEvent(Event& e)
-    {
-        LocalEventDispatcher dispatcher(e);
-        dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(MapEditModal::OnKeyPressed));
     }
 
     void MapEditModal::LeftPane()
@@ -106,7 +108,7 @@ namespace Laby {
         for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
             comboEntries.emplace_back(key, klass);
 
-        Widgets::Disable(validCurrentTile);
+        Widgets::Disable(!validCurrentTile);
 
         Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(currentTileData.script);
         Widgets::Combobox<Ref<ScriptClass>>("Behaviour", currentTileData.script, scriptClass, comboEntries,
@@ -303,27 +305,5 @@ namespace Laby {
         Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, gridFunc);
 
         Utils::ResetButtonTransparency();
-    }
-
-    bool MapEditModal::OnKeyPressed(KeyPressedEvent& e)
-    {
-        if (e.repeat)
-            return false;
-
-        bool control = Input::IsKeyPressed(Key::LeftControl) || Input::IsKeyPressed(Key::RightControl);
-        if (!control)
-            return false;
-
-        switch (e.keyCode)
-        {
-        case Key::Q:
-            mEditMode = EditMode::Paint;
-            return true;
-        case Key::W:
-            mEditMode = EditMode::Selection;
-            return true;
-        }
-
-        return false;
     }
 }

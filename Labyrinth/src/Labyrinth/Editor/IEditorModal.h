@@ -11,7 +11,7 @@ namespace Laby {
         None, OK, OKCancel, YesNo, Custom
     };
 
-    class IEditorModal : public RefCounted, public IEventListener
+    class IEditorModal : public RefCounted
     {
     public:
         IEditorModal();
@@ -21,9 +21,6 @@ namespace Laby {
         virtual void onImGuiRender() = 0;
         virtual void onComplete() {}
         virtual void onCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
-        
-        virtual void onEvent(Event& e) override {}
-        LISTENING_EVENTS(None)
 
     private:
         friend class ModalManager;
