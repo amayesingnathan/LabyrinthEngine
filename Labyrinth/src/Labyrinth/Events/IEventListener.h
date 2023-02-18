@@ -21,6 +21,12 @@ namespace Laby {
 		}
 
 	private:
+		IEventListener(ListenerType type) { EventManager::RegisterListener(this, type); }
+
+		friend class Application;
+		friend class ImGuiHandler;
+
+	private:
 		Predicate<> mAcceptCondition = [](){ return true; };
 	};
 
