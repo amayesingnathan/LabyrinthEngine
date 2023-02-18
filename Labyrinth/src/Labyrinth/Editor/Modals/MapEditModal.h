@@ -18,9 +18,6 @@ namespace Laby {
 		void onImGuiRender() override;
 		void onComplete() override;
 
-		void onEvent(Event& e) override;
-		LISTENING_EVENTS(KeyPressed)
-
 	private:
 		void LeftPane();
 		void CentrePane();

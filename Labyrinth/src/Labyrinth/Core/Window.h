@@ -27,8 +27,6 @@ namespace Laby {
 	class Window
 	{
 	public:
-		using EventCallbackFunc = std::function<void(Event&)>;
-
 		Window(const WindowProps& props);
 		virtual ~Window();
 
