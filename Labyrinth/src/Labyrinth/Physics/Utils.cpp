@@ -5,7 +5,7 @@
 
 namespace Laby {
 
-	b2BodyType PhysicsUtils::BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType)
+	constexpr b2BodyType PhysicsUtils::BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType)
 	{
 		switch (bodyType)
 		{

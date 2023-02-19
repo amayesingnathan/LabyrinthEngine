@@ -48,8 +48,8 @@ namespace Laby {
         static void Render();
         static void RenderButtons(ModalEntry& modalData);
 
+        static auto Find(std::string_view key) { return std::ranges::find_if(sEditorModals, [&key](const ModalEntry& panel) { return key == panel.heading; }); }
         static bool Contains(std::string_view key) { return Find(key) != sEditorModals.end(); }
-        static std::vector<ModalEntry>::iterator Find(std::string_view key) { return std::find_if(sEditorModals.begin(), sEditorModals.end(), [&key](const ModalEntry& panel) { return key == panel.heading; }); }
 
         static void Clear() { sEditorModals.clear(); }
 

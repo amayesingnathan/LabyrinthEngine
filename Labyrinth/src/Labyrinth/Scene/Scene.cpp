@@ -181,12 +181,6 @@ namespace Laby {
 			else DestroyEntityR(childEnt, entity);
 		}
 
-		//if (entity.hasComponent<TileComponent>())
-		//{
-		//	const auto& tile = entity.getComponent<TileComponent>();
-		//	Entity tilemapController = { mEntityMap.at(tile.tilemapEntity), Ref<Scene>(this) };
-		//	tilemapController.getComponent<TilemapControllerComponent>().tileBehaviour.erase(tile.pos);
-		//}
 		mEntityMap.erase(entity.getUUID());
 		mRegistry.destroy(entity.getEntID());
 	}

@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "Labyrinth/Core/System/Base.h"
+#include <Labyrinth/Core/System/Base.h>
 #include <Labyrinth/Core/LayerStack.h>
 #include <Labyrinth/Core/Window.h>
 
@@ -74,9 +74,9 @@ namespace Laby {
 		void PushLayer(Args&&... args) 
 		{ 
 			T* layer = new T(std::forward<Args>(args)...);
-			mLayerStack.pushLayer(layer); 
+			mLayerStack.emplace_back(layer); 
 		}
-		void PushLayer(IsLayer auto* layer) { mLayerStack.pushLayer(layer); }
+		void PushLayer(IsLayer auto* layer) { mLayerStack.emplace_back(layer); }
 
 		template<IsClient T, typename... Args>
 		void SetClient(Args&&... args)
@@ -117,7 +117,7 @@ namespace Laby {
 		ApplicationState mState;
 		Single<Window> mWindow;
 		Single<ImGuiHandler> mImGuiHandler;
-		LayerStack mLayerStack;
+		std::vector<Layer*> mLayerStack;
 		NetworkLayer* mNetworkLayer = nullptr;
 
 		friend class SettingsModal;

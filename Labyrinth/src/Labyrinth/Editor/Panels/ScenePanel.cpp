@@ -17,7 +17,7 @@ namespace Laby {
 
 	void ScenePanel::onImGuiRender()
 	{
-		Widgets::StringEdit("Name", mContext->mName);
+		Widgets::StringEdit("Name", mContext->getName());
 		Widgets::SameLine();
 		Widgets::Button("Create..", []()
 		{
@@ -40,7 +40,7 @@ namespace Laby {
 		});
 		Widgets::EndPopup();
 
-		mContext->mRegistry.view<RootComponent>().each([&](auto entityID, auto& rc)
+		mContext->getEntitiesWith<RootComponent>().each([&](auto entityID, auto& rc)
 		{
 			Entity entity{ entityID , mContext };
 			DrawEntityNode(entity);
