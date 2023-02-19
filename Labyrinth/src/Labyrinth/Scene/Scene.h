@@ -56,6 +56,7 @@ namespace Laby {
 		Entity getPrimaryCameraEntity();
 
 		void setName(const std::string& name) { mName = name; }
+		std::string& getName() { return mName; }
 		const std::string& getName() const { return mName; }
 		bool hasName() const { return (mName != "Untitled" && mName != ""); }
 
@@ -98,8 +99,6 @@ namespace Laby {
 
 		friend Entity;
 		friend class SceneUtils;
-		friend class ScenePanel;
-		friend class EntityPanel;
 	};
 
 	class SceneUtils

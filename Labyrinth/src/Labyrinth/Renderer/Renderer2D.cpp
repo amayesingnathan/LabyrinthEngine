@@ -265,6 +265,15 @@ namespace Laby {
 			DrawQuad(transform, subtex, src.tilingFactor, src.colour, entityID);
 			break;
 		}
+		case SpriteRendererComponent::TexType::Tilemap:
+		{
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(src.handle);
+			if (!subtex) 
+				return;
+
+			DrawQuad(transform, tilemap, src.tilingFactor, src.colour, entityID);
+			break;
+		}
 		}
 	}
 

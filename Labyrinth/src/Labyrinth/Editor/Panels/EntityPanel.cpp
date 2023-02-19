@@ -118,7 +118,7 @@ namespace Laby {
 		{
 			std::vector<ParentEntityEntry> comboEntries;
 
-			auto view = mContext->mRegistry.view<TagComponent, IDComponent>();
+			auto view = mContext->getEntitiesWith<TagComponent, IDComponent>();
 			comboEntries.reserve(view.size_hint() + 1);
 			comboEntries.emplace_back("None", Entity{});
 
@@ -155,7 +155,7 @@ namespace Laby {
 				if (!component.primary)
 					return;
 
-				mContext->mRegistry.view<CameraComponent>().each([&](EntityID entity, auto& component)
+				mContext->getEntitiesWith<CameraComponent>().each([&](EntityID entity, auto& component)
 				{
 					if (mSelectedEntity == Entity{ entity, mContext })
 						return;
@@ -319,7 +319,16 @@ namespace Laby {
 			imageSize = { imageSize.x - 15.0f, 150.0f };
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.mapHandle);
 			LabWidgets::Image(tilemap, imageSize);
-			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& map) { component.mapHandle = map; });
+			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& map) 
+			{
+				component.mapHandle = map; 
+				if (mSelectedEntity.hasComponent<SpriteRendererComponent>())
+				{
+					auto& sprite = mSelectedEntity.getComponent<SpriteRendererComponent>();
+					sprite.type = SpriteRendererComponent::TexType::Tilemap;
+					sprite.handle = map;	
+				} 
+			});
 
 			if (!tilemap)
 				return;

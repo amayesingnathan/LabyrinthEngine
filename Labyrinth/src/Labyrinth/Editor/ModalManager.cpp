@@ -31,13 +31,11 @@ namespace Laby {
         }
         Utils::SetWindowMoveFromTitleBar(false);
 
-        // Call any completion callbacks before deleting modal entries
-        auto removeStart = std::remove_if(sEditorModals.begin(), sEditorModals.end(), [](const ModalEntry& entry) { return !entry.open; });
-
-        auto toRemove = sEditorModals |
+        // Call any completion callbacks before deleting modal entries. Filter for modals that are open and have callbacks.
+        auto hasCallbackView = sEditorModals |
             std::views::filter([](const ModalEntry& entry) { return entry.open && sModalCallbacks.contains(entry.heading); });
 
-        for (const ModalEntry& entry : toRemove)
+        for (const ModalEntry& entry : hasCallbackView)
         {
             for (auto func : sModalCallbacks[entry.heading])
                 func();

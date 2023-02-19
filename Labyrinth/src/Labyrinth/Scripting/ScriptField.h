@@ -102,9 +102,9 @@ namespace Laby {
 			memcpy(mData, &val, newSize);
 		}
 
-		template<typename T>
+		template<IsFieldType T>
 		T& get() { return read<T>(); }
-		template<typename T>
+		template<IsFieldType T>
 		const T& get() const { return read<T>(); }
 
 		void clear() { release(); }

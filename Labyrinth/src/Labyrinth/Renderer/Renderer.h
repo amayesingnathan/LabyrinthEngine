@@ -12,7 +12,7 @@ namespace Laby {
 		static void Init();
 		static void Shutdown();
 
-		static void SetViewport(u32 x, u32 y, u32 w, u32 h);
+		static void SetViewport(u32 w, u32 h);
 		static void SetClearColor(const glm::vec4& colour);
 		static void Clear();
 

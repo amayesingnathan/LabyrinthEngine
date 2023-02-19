@@ -5,11 +5,6 @@
 
 namespace Laby {
 
-	enum class EditMode
-	{
-		Paint, Selection
-	};
-
 	class MapEditModal : public IEditorModal
 	{
 	public:
@@ -33,7 +28,9 @@ namespace Laby {
 
 		f32 mFrameHeightWithSpacing = 0.0f;
 
+		enum class EditMode { Paint, Selection };
 		EditMode mEditMode = EditMode::Selection;
+
 		bool mDisplayColliders = true;
 		bool mCurrentlyPainting = false;
 

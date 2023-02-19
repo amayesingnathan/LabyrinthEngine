@@ -17,12 +17,12 @@ namespace Laby {
 
     static bool HasSheetEntry(AssetHandle sheet, const std::vector<SheetEntry>& entries)
     {
-        return std::find_if(entries.begin(), entries.end(), [sheet](const SheetEntry& entry) { return entry.value == sheet; }) != entries.end();
+        return std::ranges::find_if(entries, [sheet](const SheetEntry& entry) { return entry.value == sheet; }) != entries.end();
     }
 
     static TileID GetStartIndex(Ref<Texture2DSheet> sheet, const std::vector<SheetData>& sheets)
     {
-        auto it = std::find_if(sheets.begin(), sheets.end(), [&](const SheetData& data) { return data.sheet == sheet; });
+        auto it = std::ranges::find_if(sheets, [&](const SheetData& data) { return data.sheet == sheet; });
         if (it == sheets.end())
             return NullTileID;
 

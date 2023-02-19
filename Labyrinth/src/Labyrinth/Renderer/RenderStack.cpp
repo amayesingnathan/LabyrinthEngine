@@ -14,12 +14,12 @@ namespace Laby {
 
 	bool RenderStack::hasLayer(RenderLayer* layer)
 	{
-		return std::find(mLayers.begin(), mLayers.end(), layer) != mLayers.end();
+		return std::ranges::find(mLayers, layer) != mLayers.end();
 	}
 
 	bool RenderStack::hasLayer(u8 layer)
 	{
-		return std::find_if(mLayers.begin(), mLayers.end(), [&](const RenderLayer* rLayer)
+		return std::ranges::find_if(mLayers, [&](const RenderLayer* rLayer)
 		{
 			return rLayer->getDepth() == layer;
 		}) != mLayers.end();
@@ -27,10 +27,11 @@ namespace Laby {
 
 	RenderLayer* RenderStack::getLayer(u8 layer)
 	{
-		auto it = std::find_if(mLayers.begin(), mLayers.end(), [&](const RenderLayer* rLayer)
+		auto it = std::ranges::find_if(mLayers, [&](const RenderLayer* rLayer)
 		{
 			return rLayer->getDepth() == layer;
 		});
+		
 		if (it == mLayers.end())
 			return nullptr;
 

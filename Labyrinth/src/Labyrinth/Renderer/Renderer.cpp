@@ -53,9 +53,9 @@ namespace Laby {
 		Renderer2D::Shutdown();
     }
 
-    void Renderer::SetViewport(u32 x, u32 y, u32 w, u32 h)
+    void Renderer::SetViewport(u32 w, u32 h)
     {
-		glViewport(x, y, w, h);
+		glViewport(0, 0, w, h);
     }
 
     void Renderer::SetClearColor(const glm::vec4& colour)
