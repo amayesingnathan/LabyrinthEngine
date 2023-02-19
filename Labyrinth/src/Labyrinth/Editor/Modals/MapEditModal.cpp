@@ -76,7 +76,7 @@ namespace Laby {
 
         Widgets::Label("Layers");
         Widgets::Separator();
-        Widgets::BeginChild("Layers", glm::vec2{ 0, -12 * mFrameHeightWithSpacing });
+        Widgets::BeginChild("Layers", glm::vec2{ 0, -20 * mFrameHeightWithSpacing });
         usize layerIndex = 0;
         for (const auto& layer : mTilemap->getLayers())
         {
@@ -96,15 +96,16 @@ namespace Laby {
 
         Widgets::EndGroup();
 
+        glm::vec2 imageSize = 0.25f * Utils::AvailableRegion<glm::vec2>();
 
-        Widgets::BeginChild("Selected", glm::vec2{ 0, -7 * mFrameHeightWithSpacing });
+        Widgets::BeginChild("Selected", glm::vec2{ 0, -10 * mFrameHeightWithSpacing });
         Widgets::Label(fmt::format("Tile: ({}, {})", mCurrentTile.x, mCurrentTile.y));
 
         bool validCurrentTile = mCurrentTile.valid();
         TileBehaviourData currentTileData = mTilemap->getTileBehaviour(mCurrentTile);
 
         std::vector<ScriptClassEntry> comboEntries;
-        comboEntries.emplace_back("", nullptr);
+        comboEntries.emplace_back("##NoScript", nullptr);
         for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
             comboEntries.emplace_back(key, klass);
 
@@ -120,6 +121,20 @@ namespace Laby {
 
         Widgets::EndDisable();
 
+        {
+            Ref<IRenderable> image = EditorResources::NoTexture;
+            f32 rotation = 0.0f;
+            if (mCurrentTile.valid())
+            {
+                image = mTilemap->getTileTex(mCurrentSubtex.textureID);
+                rotation = mCurrentSubtex.rotation;
+            }
+
+            glm::vec2 newPos = Utils::CursorPos<glm::vec2>() + 0.2f * imageSize;
+            Utils::SetCursorPos(newPos.x, newPos.y);
+            LabWidgets::Image(image, imageSize, rotation);
+        }
+
         Widgets::EndChild(); // Selected
 
 
@@ -127,29 +142,30 @@ namespace Laby {
 
         Widgets::Disable();
 
-        glm::vec2 imageSize = 0.5f * Utils::AvailableRegion<glm::vec2>();
         Widgets::Label(fmt::format("Hovered Tile: ({}, {})", mHoveredTile.x, mHoveredTile.y));
         Widgets::Label(fmt::format("Script: {}", mHoveredBehaviour.script));
         Widgets::Checkbox("Solid", mHoveredBehaviour.solid);
 
         Widgets::EndDisable();
 
-        Ref<IRenderable> image = EditorResources::NoTexture;
-        f32 rotation = 0.0f;
-        if (mHoveredTile.valid())
         {
-            image = mTilemap->getTileTex(mHoveredSubtex.textureID);
-            rotation = mHoveredSubtex.rotation;
+            Ref<IRenderable> image = EditorResources::NoTexture;
+            f32 rotation = 0.0f;
+            if (mHoveredTile.valid())
+            {
+                image = mTilemap->getTileTex(mHoveredSubtex.textureID);
+                rotation = mHoveredSubtex.rotation;
+            }
+            if (mCurrentlyPainting)
+            {
+                image = mTilemap->getTileTex(mBrushSubtex.textureID);
+                rotation = mBrushSubtex.rotation;
+            }
+
+            glm::vec2 newPos = Utils::CursorPos<glm::vec2>() + 0.2f * imageSize;
+            Utils::SetCursorPos(newPos.x, newPos.y);
+            LabWidgets::Image(image, imageSize, rotation);
         }
-        if (mCurrentlyPainting)
-        {
-            image = mTilemap->getTileTex(mBrushSubtex.textureID);
-            rotation = mBrushSubtex.rotation;
-        }
-        
-        glm::vec2 newPos = Utils::CursorPos<glm::vec2>() + 0.25f * imageSize;
-        Utils::SetCursorPos(newPos.x, newPos.y);
-        LabWidgets::Image(image, imageSize, rotation);
 
         Widgets::EndChild(); // Hovered
 
@@ -280,8 +296,15 @@ namespace Laby {
 
         Widgets::SameLine();
         Utils::SetCursorPosY(pos.y);
+        glm::vec2 buttonPos = Utils::CursorPos<glm::vec2>();
         Widgets::Button("Clear", [this]() { mBrushSubtex = {}; });
+
+        buttonPos.y += mFrameHeightWithSpacing;
+        Utils::SetCursorPos(buttonPos.x, buttonPos.y);
         Widgets::Button("Rotate Right", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad270f, Angle::Rad360f); });
+
+        buttonPos.y += mFrameHeightWithSpacing;
+        Utils::SetCursorPos(buttonPos.x, buttonPos.y);
         Widgets::Button("Rotate Left", [this]() { mBrushSubtex.rotation = std::fmod(mBrushSubtex.rotation + Angle::Rad90f, Angle::Rad360f); });
 
         if (!sheet)

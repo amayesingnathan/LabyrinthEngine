@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "ImGuiWidgets.h"
 
+#include <Labyrinth/Editor/EditorResources.h>
+
 using imcpp::Widgets;
 using imcpp::Utils;
 
@@ -9,7 +11,7 @@ namespace Laby {
 	void LabWidgets::Image(Ref<IRenderable> image, const glm::vec2& size, float rotation)
 	{
 		if (!image)
-			return;
+			image = EditorResources::NoTexture;
 
 		const glm::vec2* coords = image->getTextureCoords();
 		Widgets::Image(image->getTextureID(), size, rotation, coords[3], coords[1]);
@@ -18,7 +20,7 @@ namespace Laby {
 	void LabWidgets::ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action)
 	{
 		if (!image)
-			return;
+			image = EditorResources::NoTexture;
 
 		const glm::vec2* coords = image->getTextureCoords();
 		Widgets::ImageButton(image->getTextureID(), size, action, coords[3], coords[1]);
