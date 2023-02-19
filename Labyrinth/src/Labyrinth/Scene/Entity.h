@@ -110,6 +110,8 @@ namespace Laby {
 		const std::vector<UUID>& getChildren() const;
 		void removeChildren();
 
+		Entity findChild(std::string_view tag);
+
 		const usize getChildCount() const { return getChildren().size(); }
 		bool hasChild(Entity child) const;
 

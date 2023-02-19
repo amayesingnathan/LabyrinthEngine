@@ -199,7 +199,7 @@ namespace Laby {
 		return { mEntityMap.at(findID), Ref<Scene>(this) };
 	}
 
-	Entity Scene::getEntityByTag(const std::string& tag)
+	Entity Scene::getEntityByTag(std::string_view tag)
 	{
 		auto entities = mRegistry.view<TagComponent>();
 		for (auto e : entities)
@@ -211,7 +211,7 @@ namespace Laby {
 		return Entity{};
 	}
 
-	Entity Scene::getChildByTag(const std::string& tag, Entity parent)
+	Entity Scene::getChildByTag(std::string_view tag, Entity parent)
 	{
 		for (auto e : parent.getChildren())
 		{
@@ -346,7 +346,7 @@ namespace Laby {
 
 	void Scene::CreateTilemapShapes(Entity mapEntity, const TilemapComponent& comp)
 	{
-		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.tilemapHandle);
+		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.mapHandle);
 		if (!tilemap)
 		{
 			LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
@@ -383,7 +383,7 @@ namespace Laby {
 
 	void Scene::CreateTilemapScripts(Entity mapEntity, const TilemapComponent& comp)
 	{
-		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.tilemapHandle);
+		Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(comp.mapHandle);
 		if (!tilemap)
 		{
 			LAB_CORE_WARN("Tilemap failed to load or there was no tilemap.");
@@ -400,10 +400,9 @@ namespace Laby {
 		Entity scriptsEntity = CreateEntity("Scripts", mapEntity);
 		scriptsEntity.removeComponent<TransformComponent>();
 
-		usize i = 1;
 		for (const TileScriptData& tileData : tilemap->getTileScripts())
 		{
-			Entity scriptEntity = CreateEntity(fmt::format("{}-Script{}", mapName, i), scriptsEntity);
+			Entity scriptEntity = CreateEntity(fmt::format("{}-Script({}, {} - {})", mapName, tileData.pos.x, tileData.pos.y, tileData.script), scriptsEntity);
 			auto& scriptTransform = scriptEntity.getTransform();
 
 			scriptTransform.translation.x = tileSize.x * (tileData.pos.x - 0.5f * (f32)(width - 1));
