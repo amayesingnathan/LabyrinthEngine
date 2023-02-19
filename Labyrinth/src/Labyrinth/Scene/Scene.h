@@ -33,8 +33,8 @@ namespace Laby {
 		void DestroyEntity(Entity entity, bool linkChildren = false);
 
 		Entity findEntity(UUID id);
-		Entity getEntityByTag(const std::string& tag);
-		Entity getChildByTag(const std::string& tag, Entity parent);
+		Entity getEntityByTag(std::string_view tag);
+		Entity getChildByTag(std::string_view tag, Entity parent);
 
 		template<typename... Components>
 		auto getEntitiesWith() { return mRegistry.view<Components...>(); }

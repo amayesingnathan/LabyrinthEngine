@@ -24,7 +24,6 @@ namespace Laby {
 		UUID id;
 
 		IDComponent() = default;
-		IDComponent(const IDComponent&) = default;
 
 		operator UUID() const { return id; }
 	};
@@ -56,7 +55,6 @@ namespace Laby {
 		bool fixedAspectRatio = false;
 
 		CameraComponent() = default;
-		CameraComponent(const CameraComponent&) = default;
 		CameraComponent(const SceneCamera& cam, bool prime = true, bool fixedAR = false)
 			: camera(cam), primary(prime), fixedAspectRatio(fixedAR) {}
 
@@ -112,7 +110,6 @@ namespace Laby {
 		std::string tag;
 
 		TagComponent() = default;
-		TagComponent(const TagComponent&) = default;
 		TagComponent(const std::string& tag) : tag(tag) {}
 
 		operator std::string& () { return tag; }
@@ -128,7 +125,6 @@ namespace Laby {
 		glm::vec3 scale = glm::vec3{ 1.0f };
 
 		TransformComponent() = default;
-		TransformComponent(const TransformComponent&) = default;
 		TransformComponent(const glm::vec3& trans, const glm::vec3& rot, const glm::vec3& sc)
 			: translation(trans), rotation(rot), scale(sc) {}
 
@@ -163,7 +159,6 @@ namespace Laby {
 		glm::vec3 deltaScale = Zero::Vec3;
 
 		ChildControllerComponent() = default;
-		ChildControllerComponent(const ChildControllerComponent&) = default;
 
 		bool isZero() const
 		{
@@ -190,7 +185,6 @@ namespace Laby {
 		bool initialised = false;
 
 		ScriptComponent() = default;
-		ScriptComponent(const ScriptComponent&) = default;
 		ScriptComponent(std::string_view name) : className(name) {}
 	};
 
@@ -205,7 +199,6 @@ namespace Laby {
 		ContactListener* contactListener = nullptr;
 
 		Box2DWorldComponent() = default;
-		Box2DWorldComponent(const Box2DWorldComponent&) = default;
 	};
 
 	struct RigidBodyComponent
@@ -221,7 +214,6 @@ namespace Laby {
 		void* runtimeBody = nullptr;
 
 		RigidBodyComponent() = default;
-		RigidBodyComponent(const RigidBodyComponent&) = default;
 	};
 
 	struct BoxColliderComponent
@@ -239,7 +231,6 @@ namespace Laby {
 		void* runtimeFixture = nullptr;
 
 		BoxColliderComponent() = default;
-		BoxColliderComponent(const BoxColliderComponent&) = default;
 	};
 
 	struct CircleColliderComponent
@@ -257,7 +248,6 @@ namespace Laby {
 		void* runtimeFixture = nullptr;
 
 		CircleColliderComponent() = default;
-		CircleColliderComponent(const CircleColliderComponent&) = default;
 	};
 
 	struct ChainColliderComponent
@@ -288,10 +278,9 @@ namespace Laby {
 
 	struct TilemapComponent
 	{
-		AssetHandle tilemapHandle = 0;
+		AssetHandle mapHandle = 0;
 
 		TilemapComponent() = default;
-		TilemapComponent(const TilemapComponent&) = default;
 	};
 
 	using AllComponents = TypeList

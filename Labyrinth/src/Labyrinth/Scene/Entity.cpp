@@ -103,6 +103,25 @@ namespace Laby {
 		children.clear();
 	}
 
+	Entity Entity::findChild(std::string_view tag)
+	{
+		if (!valid())
+			return Entity{};
+
+		for (auto e : getChildren())
+		{
+			Entity entity = mScene.lock()->findEntity(e);
+			if (entity.getComponent<TagComponent>().tag == tag)
+				return entity;
+
+			Entity checkChildren = entity.findChild(tag);
+			if (checkChildren)
+				return checkChildren;
+		}
+
+		return Entity{};
+	}
+
 	bool Entity::isRelated(Entity filter) const
 	{
 		const auto& children = getComponent<NodeComponent>().children;

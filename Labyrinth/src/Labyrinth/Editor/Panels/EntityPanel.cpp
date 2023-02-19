@@ -111,7 +111,7 @@ namespace Laby {
 		DrawAddComponentEntry<CircleColliderComponent>("Circle Collider");
 		DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 		DrawAddComponentEntry<ScriptComponent>("Script");
-		DrawAddComponentEntry<TilemapComponent>("Tilemap Controller");
+		DrawAddComponentEntry<TilemapComponent>("Tilemap");
 		Widgets::EndPopup();
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
@@ -310,6 +310,44 @@ namespace Laby {
 				DrawScriptInstanceFields(mSelectedEntity);
 			else
 				DrawScriptClassFields(mSelectedEntity);
+		});
+
+		LabWidgets::Component<TilemapComponent>("Tilemap", mSelectedEntity, [&](auto& component)
+		{
+			glm::vec2 cursorPos = Utils::CursorPos<glm::vec2>();
+			auto imageSize = Utils::AvailableRegion<glm::vec2>();
+			imageSize = { imageSize.x - 15.0f, 150.0f };
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(component.mapHandle);
+			LabWidgets::Image(tilemap, imageSize);
+			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& map) { component.mapHandle = map; });
+
+			if (!tilemap)
+				return;
+
+			Utils::PushStyleColour(ImGuiCol_ButtonHovered, Utils::ToImVec<ImVec4>(EditorResources::HoveredColour));
+			Widgets::GridControl<glm::vec2>(cursorPos, imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, tilemap](u32 x, u32 y, const glm::vec2& elementSize)
+			{
+				const auto& behaviour = tilemap->getTileBehaviour({ x, y });
+				bool hasScript = !behaviour.script.empty();
+				const glm::vec4& buttonColour = hasScript ? EditorResources::HighlightedColour : EditorResources::ClearColour;
+				Utils::PushStyleColour(ImGuiCol_Button, Utils::ToImVec<ImVec4>(buttonColour));
+
+				Widgets::Button(elementSize, std::format("##SelectTile({}, {})", x, y), [&, this]()
+				{
+					Entity scriptEntity = mSelectedEntity
+						.findChild("Scripts")
+						.findChild(std::format("{}-Script({}, {} - {})", tilemap->getName(), x, y, behaviour.script));
+
+					if (!scriptEntity)
+						return;
+
+					SelectionManager::DeselectAll(SelectionDomain::Scene);
+					SelectionManager::Select(SelectionDomain::Scene, scriptEntity.getUUID());
+				});
+
+				Utils::PopStyleColour();
+			});
+			Utils::PopStyleColour();
 		});
 	}
 
