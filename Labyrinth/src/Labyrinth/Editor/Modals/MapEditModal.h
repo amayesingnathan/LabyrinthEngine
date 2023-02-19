@@ -33,7 +33,7 @@ namespace Laby {
 
 		f32 mFrameHeightWithSpacing = 0.0f;
 
-		EditMode mEditMode = EditMode::Paint;
+		EditMode mEditMode = EditMode::Selection;
 		bool mDisplayColliders = true;
 		bool mCurrentlyPainting = false;
 
