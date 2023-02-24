@@ -11,7 +11,7 @@ namespace Laby {
 	class Tilemap : public IRenderable, public Asset
 	{
 	public:
-		ASSET_STATIC_TYPE(AssetType::Tilemap)
+		ASSET_METADATA(AssetType::Tilemap, tilemaps)
 
 	public:
 		Tilemap(const std::string& name, u32 width, u32 height);

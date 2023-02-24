@@ -49,20 +49,22 @@ namespace Laby {
 
     public:
         template<IsAsset T, typename... Args>
-        static Ref<T> CreateNewAsset(const std::string& filename, const std::string& directoryPath, Args&&... args)
+        static Ref<T> CreateNewAsset(std::string_view filename, Args&&... args)
         {
+            fs::path directoryPath = T::GetAssetDirectory();
+
             if (!fs::exists(sAssetDirPath / directoryPath))
                 FileUtils::CreateDir(sAssetDirPath / directoryPath);
 
             AssetType type = T::GetStaticType();
-            std::string filenameExt = fmt::format("{}{}", filename, sAssetCreationMap[type]);
+            fs::path filenameExt = std::format("{}{}", filename, sAssetCreationMap[type]);
 
             AssetMetadata metadata;
             metadata.handle = AssetHandle();
             if (directoryPath.empty() || directoryPath == ".")
                 metadata.filepath = filenameExt;
             else
-                metadata.filepath = AssetManager::GetRelativePath(directoryPath + "/" + filenameExt);
+                metadata.filepath = AssetManager::GetRelativePath(directoryPath / filenameExt);
             metadata.dataLoaded = true;
             metadata.type = type;
 
@@ -73,13 +75,13 @@ namespace Laby {
 
                 while (!foundAvailableFileName)
                 {
-                    std::string nextFilePath = directoryPath + "/" + metadata.filepath.stem().string();
+                    fs::path nextFilePath = directoryPath  / metadata.filepath.stem();
 
                     if (current < 10)
-                        nextFilePath += " (0" + std::to_string(current) + ")";
+                        nextFilePath += std::format(" (0{})", current);
                     else
-                        nextFilePath += " (" + std::to_string(current) + ")";
-                    nextFilePath += metadata.filepath.extension().string();
+                        nextFilePath += std::format(" ({})", current);
+                    nextFilePath += metadata.filepath.extension();
 
                     if (!fs::exists(nextFilePath))
                     {

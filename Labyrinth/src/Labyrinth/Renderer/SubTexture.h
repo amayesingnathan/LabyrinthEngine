@@ -14,7 +14,7 @@ namespace Laby {
 	class Texture2DSheet : public IRenderable, public Asset
 	{
 	public:
-		ASSET_STATIC_TYPE(AssetType::TextureSheet)
+		ASSET_METADATA(AssetType::TextureSheet, spritesheets)
 
 	public:
 		Texture2DSheet(const std::string& name, const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
@@ -36,7 +36,8 @@ namespace Laby {
 		void generateTileset();
 		void destroyTileset();
 
-		u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
+		AssetHandle getFromPosition(const GridPosition& pos) { return mSubTextures[getPositionIndex(pos)]; }
+		constexpr u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
 		u32 subTexCount() const { return (u32)mSubTextures.size(); }
 		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
 
@@ -57,7 +58,7 @@ namespace Laby {
 	class SubTexture2D : public IRenderable, public Asset
 	{
 	public:
-		ASSET_STATIC_TYPE(AssetType::SubTexture)
+		ASSET_METADATA(AssetType::SubTexture, subtextures)
 
 	public:
 		SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2& spriteSize);

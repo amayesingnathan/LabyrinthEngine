@@ -26,6 +26,10 @@ namespace Laby {
 
 	void Texture2DSheet::generateTileset()
 	{
+		const fs::path& subtexDir = Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / mName;
+		if (!fs::exists(subtexDir))
+			FileUtils::CreateDir(subtexDir);
+
 		mSubTextures.clear();
 		mSubTextures.reserve(mTileCountX * mTileCountY);
 
@@ -49,9 +53,7 @@ namespace Laby {
 
 	void Texture2DSheet::CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
 	{
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(std::to_string(index), fmt::format("spritesheets/{}/subtextures", mName),
-			Ref<Texture2DSheet>(this), coords, spriteSize);
-
+		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}/{}", mName, index), Ref<Texture2DSheet>(this), coords, spriteSize);
 		mSubTextures.emplace_back(subTex->handle);
 	}
 

@@ -209,8 +209,7 @@ namespace Laby {
         imcpp::GridFunction<glm::vec2> gridFunc = [this](u32 x, u32 y, const glm::vec2& elementSize)
         {
             GridPosition pos = { x, y };
-            std::string name = fmt::format("##MapTiles({}, {})", x, y);
-            Widgets::Button(elementSize, name.c_str(), [&]() 
+            Widgets::Button(elementSize, std::format("##MapTiles({}, {})", x, y), [&]()
             { 
                 mCurrentTile = pos;
                 mCurrentSubtex = mTilemap->getTileData(mCurrentLayer, pos);

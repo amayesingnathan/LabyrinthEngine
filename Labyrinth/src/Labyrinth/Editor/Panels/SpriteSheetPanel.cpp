@@ -46,8 +46,7 @@ namespace Laby {
                     if (mNewSheetWidth == 0 || mNewSheetHeight == 0)
                         return;
 
-                    mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mNewSheetName, fmt::format("spritesheets/{}", mNewSheetName),
-                        mNewSheetName, var, glm::vec2{ (f32)mNewSheetWidth, (f32)mNewSheetHeight });
+                    mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mNewSheetName, mNewSheetName, var, glm::vec2{ (f32)mNewSheetWidth, (f32)mNewSheetHeight });
                     mCurrentSheet->generateTileset();
 
                     mCurrentSubTex = nullptr;

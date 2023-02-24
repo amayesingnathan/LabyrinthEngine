@@ -21,7 +21,7 @@ namespace Laby {
 
             Utils::SetNextWindowSize<glm::vec2>({ 600, 400 });
             Utils::SetNextWindowPos<glm::vec2>(Utils::GetMainWindowCentre<glm::vec2>(), { 0.5f, 0.5f });
-            if (Widgets::BeginWindow(modalData.heading, &modalData.open, 0))//ImGuiWindowFlags_NoDocking))
+            if (Widgets::BeginWindow(modalData.heading, &modalData.open, ImGuiWindowFlags_NoDocking))
             {
                 modalData.modal->onImGuiRender();
                 RenderButtons(modalData);

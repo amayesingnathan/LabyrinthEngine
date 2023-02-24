@@ -9,8 +9,9 @@ namespace Laby {
 
 	using AssetHandle = UUID;
 
-#define ASSET_STATIC_TYPE(type)	static AssetType GetStaticType() { return type; }\
-								virtual AssetType getAssetType() const override { return GetStaticType(); }
+#define ASSET_METADATA(type, directory)	static constexpr std::string_view GetAssetDirectory() { return #directory; }\
+										static constexpr AssetType GetStaticType() { return type; }\
+										virtual constexpr AssetType getAssetType() const override { return GetStaticType(); }
 
 	class Asset : public virtual RefCounted
 	{
@@ -20,8 +21,9 @@ namespace Laby {
 
 		virtual ~Asset() {}
 
-		static AssetType GetStaticType() { return AssetType::None; }
-		virtual AssetType getAssetType() const { return GetStaticType(); };
+		static constexpr std::string_view GetAssetDirectory() { return ""; }
+		static constexpr AssetType GetStaticType() { return AssetType::None; }
+		virtual constexpr AssetType getAssetType() const { return GetStaticType(); };
 
 		bool valid() const { return ((flags & (u16)AssetFlag::Missing) | (flags & (u16)AssetFlag::Invalid)) == 0; }
 
@@ -46,5 +48,5 @@ namespace Laby {
 	};
 
 	template<typename T>
-	concept IsAsset = DerivedFrom<Asset, T>;
+	concept IsAsset = DerivedFrom<Asset, T> && requires { T::GetAssetDirectory(); T::GetStaticType(); };
 }

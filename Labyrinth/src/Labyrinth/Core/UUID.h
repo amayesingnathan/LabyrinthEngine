@@ -15,6 +15,7 @@ namespace Laby {
 
 		operator bool() const { return mID != 0; }
 		auto operator<=>(const UUID&) const = default;
+		auto operator<=>(std::unsigned_integral auto val) const { return mID <=> val; }
 
 		std::string to_string() const { return std::to_string(mID); }
 

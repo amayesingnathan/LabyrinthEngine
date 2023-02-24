@@ -33,6 +33,8 @@ namespace Laby {
 			Widgets::BeginContextPopup();
 			Widgets::AddContextItem("Delete", [&]() { toDestroy = tilemap->handle; });
 			Widgets::EndContextPopup();
+
+			Widgets::NextColumn();
 		}
 		Widgets::EndColumns();
 

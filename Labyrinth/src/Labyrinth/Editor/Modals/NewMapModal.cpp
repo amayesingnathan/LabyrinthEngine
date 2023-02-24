@@ -39,6 +39,6 @@ namespace Laby {
 
     void NewMapModal::onComplete()
     {
-        AssetManager::CreateNewAsset<Tilemap>(mMapName, "tilemaps", mMapName, mMapWidth, mMapHeight);
+        AssetManager::CreateNewAsset<Tilemap>(mMapName, mMapName, mMapWidth, mMapHeight);
     }
 }

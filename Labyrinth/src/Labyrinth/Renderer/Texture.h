@@ -12,7 +12,7 @@ namespace Laby {
 	class Texture2D : public IRenderable, public Asset
 	{
 	public:
-		ASSET_STATIC_TYPE(AssetType::Texture)
+		ASSET_METADATA(AssetType::Texture, textures)
 		
 	public:
 		Texture2D(i32 width, i32 height);
