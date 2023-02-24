@@ -23,24 +23,21 @@ namespace Laby {
 		f32 imageHeight = mThumbnailSize - Utils::LineHeight();
 		glm::vec2 imageSize = imageHeight > 0 ? glm::vec2{ mThumbnailSize, imageHeight } : glm::vec2{ mThumbnailSize, mThumbnailSize };
 
-		std::vector<AssetHandle> toDestroy;
+		AssetHandle toDestroy = 0;
 		Widgets::BeginColumns(columnCount);
-		for (AssetHandle handle : AssetManager::GetAssetsWithType(AssetType::Tilemap))
+		for (Ref<Tilemap> tilemap : AssetManager::GetAssetsWithType<Tilemap>())
 		{
-			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(handle);
-
-			Ref<IRenderable> tex = tilemap ? tilemap.to<IRenderable>() : EditorResources::NoTexture.to<IRenderable>();
-			LabWidgets::ImageButton(tex, imageSize, [&]() { ModalManager::Open<MapEditModal>("Edit Tilemap...", ModalButtons::OKCancel, tilemap); });
-			Widgets::AddDragDropSource("TILEMAP_ITEM", handle);
+			LabWidgets::ImageButton(tilemap, imageSize, [&]() { ModalManager::Open<MapEditModal>("Edit Tilemap...", ModalButtons::OKCancel, tilemap); });
+			Widgets::AddDragDropSource("TILEMAP_ITEM", tilemap->handle);
 
 			Widgets::BeginContextPopup();
-			Widgets::AddContextItem("Delete", [&]() { toDestroy.emplace_back(handle); });
+			Widgets::AddContextItem("Delete", [&]() { toDestroy = tilemap->handle; });
 			Widgets::EndContextPopup();
 		}
 		Widgets::EndColumns();
 
-		for (AssetHandle handle : toDestroy)
-			AssetManager::DestroyAsset(handle);
+		if (toDestroy)
+			AssetManager::DestroyAsset(toDestroy);
 
 		Widgets::FloatEdit("Thumbnail Size", mThumbnailSize, 1.0f, 16, 512);
 		Widgets::FloatEdit("Padding", mPadding, 1.0f, 0, 32);

@@ -245,7 +245,7 @@ namespace Laby {
 
             // All Sheets
             std::vector<SheetEntry> allSheets;
-            for (AssetHandle sheetHandle : AssetManager::GetAssetsWithType(AssetType::TextureSheet))
+            for (AssetHandle sheetHandle : AssetManager::GetAssetHandlesWithType<Texture2DSheet>())
             {
                 if (HasSheetEntry(sheetHandle, tilemapSheets))
                     continue;

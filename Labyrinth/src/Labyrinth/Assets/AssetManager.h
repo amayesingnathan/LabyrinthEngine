@@ -145,10 +145,21 @@ namespace Laby {
         static const AssetCache& GetLoadedAssets() { return sLoadedAssets; }
         static const AssetRegistry& GetAssetRegistry() { return sAssetRegistry; }
         static const AssetCache& GetMemoryOnlyAssets() { return sMemoryAssets; }
-        static auto GetAssetsWithType(AssetType type)
+
+        template<IsAsset T>
+        static auto GetAssetsWithType()
         {
             return sAssetRegistry |
-                std::views::filter([type](const auto& entry) { return entry.second.type == type; }) |
+                std::views::filter([](const auto& entry) { return entry.second.type == T::GetStaticType(); }) |
+                std::views::transform([](const auto& entry) { return AssetManager::GetAsset<T>(entry.first); }) |
+                std::views::filter([](const Ref<T> asset) { return asset != nullptr; });
+        }
+
+        template<IsAsset T>
+        static auto GetAssetHandlesWithType()
+        {
+            return sAssetRegistry |
+                std::views::filter([](const auto& entry) { return entry.second.type == T::GetStaticType(); }) |
                 std::views::keys;
         }
 
