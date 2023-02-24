@@ -22,6 +22,7 @@ namespace Laby {
 
         static fs::path GetRelativePath(const fs::path& filepath);
         static fs::path GetFileSystemPath(const AssetMetadata& metadata) { return sAssetDirPath / metadata.filepath; }
+        static fs::path GetFileSystemPath(AssetHandle handle) { return GetFileSystemPath(GetMetadataInternal(handle)); }
         static std::string GetFileSystemPathString(const AssetMetadata& metadata) { return GetFileSystemPath(metadata).string(); }
 
         static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }

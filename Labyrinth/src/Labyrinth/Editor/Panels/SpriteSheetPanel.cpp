@@ -22,7 +22,12 @@ namespace Laby {
         if (mCurrentSheet)
             sheetImage = mCurrentSheet;
 
-        LabWidgets::Image(sheetImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
+        LabWidgets::ImageButton(sheetImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
+
+        bool toDelete = false;
+        Widgets::BeginContextPopup();
+        Widgets::AddContextItem("Delete", [&]() { toDelete = true; });
+        Widgets::EndContextPopup();
 
         Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [this](const fs::path& var)
         {
@@ -90,5 +95,14 @@ namespace Laby {
                 mCurrentSheet = mCurrentSubTex->getSheet();
             }
         });
+
+        if (toDelete && mCurrentSheet)
+        {
+            for (AssetHandle subtex : mCurrentSheet->getSubTextures())
+                AssetManager::DestroyAsset(subtex);
+            FileUtils::RemoveDir(Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / mCurrentSheet->getName());
+            AssetManager::DestroyAsset(mCurrentSheet->handle);
+            mCurrentSheet = nullptr;
+        }
     }
 }
