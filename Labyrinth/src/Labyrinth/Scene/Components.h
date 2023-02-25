@@ -283,6 +283,14 @@ namespace Laby {
 		TilemapComponent() = default;
 	};
 
+
+	// Amimation
+
+	struct AnimationComponent
+	{
+		AssetHandle handle;
+	};
+
 	using AllComponents = TypeList
 	<
 		NodeComponent,
@@ -295,7 +303,8 @@ namespace Laby {
 		CircleColliderComponent,
 		ChainColliderComponent,
 		ScriptComponent,
-		TilemapComponent
+		TilemapComponent,
+		AnimationComponent
 	>;
 
 	template<typename T>

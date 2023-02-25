@@ -12,7 +12,7 @@ namespace Laby::ECS {
 		Type group;
 
 		Group() = default;
-		Group(Ref<Scene> context)
+		Group(Scene* context)
 			: group(context->group<TOwned, TOther...>()) {}
 
 		template<typename F>
@@ -29,23 +29,23 @@ namespace Laby::ECS {
 	class Groups
 	{
 	public:
-		Groups(Ref<Scene> context);
+		Groups(Scene* context);
 
 		template<IsGroup T, typename F>
 		void each(F func) { std::get<T>(*mGroupTuple).each(func); }
 
 	private:
 		template<usize Index>
-		auto ToTupleElement(Ref<Scene> context)
+		auto ToTupleElement(Scene* context)
 		{
 			using ElementType = typename AllGroups::Type<Index>;
 			return ElementType(context);
 		}
 
 		template <usize... Is>
-		auto GenerateTupleImpl(Ref<Scene> context, std::index_sequence<Is...>) { return std::make_tuple(ToTupleElement<Is>(context)...); }
+		auto GenerateTupleImpl(Scene* context, std::index_sequence<Is...>) { return std::make_tuple(ToTupleElement<Is>(context)...); }
 
-		auto GenerateTuple(Ref<Scene> context) { return GenerateTupleImpl(context, std::make_index_sequence<AllGroups::Size>{}); }
+		auto GenerateTuple(Scene* context) { return GenerateTupleImpl(context, std::make_index_sequence<AllGroups::Size>{}); }
 
 	private:
 		Single<AllGroups::TupleType> mGroupTuple;

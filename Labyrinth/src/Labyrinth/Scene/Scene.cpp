@@ -8,6 +8,7 @@
 #include <box2d/b2_circle_shape.h>
 #include <box2d/b2_chain_shape.h>
 
+#include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Physics/Utils.h>
@@ -49,7 +50,7 @@ namespace Laby {
 
 	Scene::Scene(const std::string& name)
 		: mName(name),
-		  mGroups(MakeSingle<ECS::Groups>(Ref<Scene>(this))),
+		  mGroups(MakeSingle<ECS::Groups>(this)),
 		  mRenderStack(MakeSingle<RenderStack>())
 	{
 		mSceneEntity = mRegistry.create();
@@ -226,6 +227,7 @@ namespace Laby {
 	void Scene::onRuntimeStart()
 	{
 		CreateTilemapEntities();
+		ResetAnimations(true);
 
 		ScriptEngine::SetContext(Ref<Scene>(this));
 		ScriptEngine::OnRuntimeStart();
@@ -234,6 +236,7 @@ namespace Laby {
 	void Scene::onRuntimeStop()
 	{
 		CleanupTilemapEntities();
+		ResetAnimations();
 
 		ScriptEngine::OnRuntimeStop();
 		ScriptEngine::SetContext(nullptr);
@@ -242,17 +245,20 @@ namespace Laby {
 	void Scene::onSimulationStart()
 	{
 		CreateTilemapEntities();
+		ResetAnimations(true);
 	}
 
 	void Scene::onSimulationStop()
 	{
 		CleanupTilemapEntities();
+		ResetAnimations();
 	}
 
 	void Scene::onUpdateRuntime(Timestep ts)
 	{
 		UpdateScripts(ts);
 		StepPhysics2D(ts);
+		UpdateAnimation();
 
 		Entity camera = getPrimaryCameraEntity();
 		if (!camera)
@@ -268,6 +274,7 @@ namespace Laby {
 	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
 	{
 		StepPhysics2D(ts);
+		UpdateAnimation();
 
 		BuildScene();
 		DrawScene(camera);
@@ -275,6 +282,8 @@ namespace Laby {
 
 	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
+		UpdateAnimation();
+
 		BuildScene();
 		DrawScene(camera);
 	}
@@ -429,6 +438,24 @@ namespace Laby {
 		});
 	}
 
+	void Scene::ResetAnimations(bool start)
+	{
+		mGroups->each<ECS::Animation>([start](auto& ac, auto& src)
+		{
+			Ref<Animation> animation = AssetManager::GetAsset<Animation>(ac.handle);
+			if (!animation)
+				return;
+
+			animation->reset();
+			if (AssetHandle firstFrame = animation->currentFrame())
+			{
+				src.handle = firstFrame;
+				src.type = SpriteRendererComponent::TexType::SubTexture;
+			}
+			animation->play(start);
+		});
+	}
+
 	void Scene::BuildScene()
 	{
 		mRegistry.view<SpriteRendererComponent, TransformComponent>().each([this](auto entity, const auto& srComponent, const auto& trComponent)
@@ -487,6 +514,22 @@ namespace Laby {
 		{
 			if (sc.instance) 
 				sc.instance->onUpdate(ts);
+		});
+	}
+
+	void Scene::UpdateAnimation()
+	{
+		mGroups->each<ECS::Animation>([](auto e, auto& ac, auto& src)
+		{
+			Ref<Animation> animation = AssetManager::GetAsset<Animation>(ac.handle);
+			if (!animation)
+				return;
+
+			if (!animation->step())
+				return;
+
+			src.type = SpriteRendererComponent::TexType::SubTexture;
+			src.handle = animation->currentFrame();
 		});
 	}
 

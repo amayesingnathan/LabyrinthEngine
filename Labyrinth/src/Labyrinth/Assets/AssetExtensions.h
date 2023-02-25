@@ -13,6 +13,7 @@ namespace Laby {
 		{ ".lss", AssetType::TextureSheet },
 		{ ".lstex", AssetType::SubTexture },
 		{ ".lmap", AssetType::Tilemap },
+		{ ".lani", AssetType::Animation },
 
 		// Textures
 		{ ".png", AssetType::Texture },
@@ -26,6 +27,7 @@ namespace Laby {
 		{ AssetType::Scene, ".lscene" },
 		{ AssetType::TextureSheet, ".lss" },
 		{ AssetType::SubTexture, ".lstex" },
-		{ AssetType::Tilemap, ".lmap" }
+		{ AssetType::Tilemap, ".lmap" },
+		{ AssetType::Animation, ".lani" }
 	};
 }

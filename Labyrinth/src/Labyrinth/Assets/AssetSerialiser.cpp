@@ -2,6 +2,7 @@
 #include "AssetSerialiser.h"
 #include "AssetManager.h"
 
+#include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/IO/Filesystem.h>
 #include <Labyrinth/IO/YAML.h>
 #include <Labyrinth/Renderer/Texture.h>
@@ -248,6 +249,58 @@ namespace Laby {
 		tilemap->setBehaviour(std::move(behaviourLayer));
 
 		asset = tilemap;
+		asset->handle = metadata.handle;
+
+		return true;
+	}
+
+	void AnimationSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	{
+		Ref<Animation> animation = asset.to<Animation>();
+
+		YAML::Emitter out;
+		out << YAML::BeginMap; // Animation
+		out << YAML::Key << "Animation" << YAML::Value;
+		{
+			out << YAML::BeginMap;
+
+			LAB_SERIALISE_PROPERTY(Name, animation->getName().data(), out);
+
+			out << YAML::Key << "Frames";
+			out << YAML::Value << YAML::BeginSeq;
+			for (const AnimationFrame& frame : animation->getFrames())
+				out << frame;
+			out << YAML::EndSeq;
+
+			out << YAML::EndMap;
+		}
+
+		out << YAML::EndMap; // Animation
+
+		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
+	}
+
+	bool AnimationSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	{
+		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
+		std::string str;
+		FileUtils::Read(assetPath, str);
+		YAML::Node root = YAML::Load(str);
+		YAML::Node animationNode = root["Animation"];
+
+		std::string animatioName;
+		LAB_DESERIALISE_PROPERTY(Name, animatioName, animationNode);
+
+		Ref<Animation> animation = Ref<Animation>::Create(animatioName);
+
+		auto frames = animationNode["Frames"];
+		for (auto frameNode : frames )
+		{
+			AnimationFrame frame = frameNode.as<AnimationFrame>();
+			animation->addFrame(std::move(frame));
+		}
+
+		asset = animation;
 		asset->handle = metadata.handle;
 
 		return true;

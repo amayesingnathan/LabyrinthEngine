@@ -18,6 +18,7 @@ namespace Laby {
 		Texture,
 		SubTexture,
 		TextureSheet,
-		Tilemap
+		Tilemap,
+		Animation
 	};
 }

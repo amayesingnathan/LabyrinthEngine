@@ -3,7 +3,7 @@
 
 namespace Laby::ECS {
 
-	Groups::Groups(Ref<Scene> context)
+	Groups::Groups(Scene* context)
 	{
 		mGroupTuple = MakeSingle<AllGroups::TupleType>(GenerateTuple(context));
 	}

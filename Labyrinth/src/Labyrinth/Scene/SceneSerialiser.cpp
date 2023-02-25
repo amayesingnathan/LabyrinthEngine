@@ -270,6 +270,17 @@ namespace Laby {
 			out << YAML::EndMap; // TilemapComponent
 		}
 
+		if (entity.hasComponent<AnimationComponent>())
+		{
+			out << YAML::Key << "AnimationComponent";
+			out << YAML::BeginMap; // AnimationComponent
+
+			const auto& ac = entity.getComponent<AnimationComponent>();
+			LAB_SERIALISE_PROPERTY(Handle, ac.handle, out);
+
+			out << YAML::EndMap; // AnimationComponent
+		}
+
 		out << YAML::EndMap; // Entity
 	}
 
@@ -449,6 +460,13 @@ namespace Laby {
 				u64 handle;
 				LAB_DESERIALISE_PROPERTY_DEF(Tilemap, handle, tmComponent, 0);
 				tmc.mapHandle = handle;
+			}
+
+			auto animationComponent = entity["AnimationComponent"];
+			if (animationComponent)
+			{
+				auto& ac = deserializedEntity.addComponent<AnimationComponent>();
+				ac.handle = animationComponent["Handle"].as<AssetHandle>();
 			}
 		}
 	}

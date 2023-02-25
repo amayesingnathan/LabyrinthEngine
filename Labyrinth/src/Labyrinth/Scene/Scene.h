@@ -77,12 +77,15 @@ namespace Laby {
 		void CreateTilemapScripts(Entity mapEntity, const TilemapComponent& comp);
 		void CleanupTilemapEntities();
 
+		void ResetAnimations(bool start = false);
+
 		void BuildScene();
 		void DrawScene(EditorCamera& camera);
 		void DrawScene(Camera& camera, const glm::mat4& transform);
 
 		void StepPhysics2D(Timestep ts);
 		void UpdateScripts(Timestep ts);
+		void UpdateAnimation();
 
 	private:
 		void OnRigidBodyComponentConstruct(entt::registry& registry, entt::entity e);

@@ -1,6 +1,7 @@
 #include "Lpch.h"
 #include "EntityPanel.h"
 
+#include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/SelectionManager.h>
@@ -110,6 +111,7 @@ namespace Laby {
 		DrawAddComponentEntry<ChildControllerComponent>("Child Controller");
 		DrawAddComponentEntry<ScriptComponent>("Script");
 		DrawAddComponentEntry<TilemapComponent>("Tilemap");
+		DrawAddComponentEntry<AnimationComponent>("Animation");
 		Widgets::EndPopup();
 
 		if (mSelectedEntity.hasComponent<NodeComponent>())
@@ -355,6 +357,26 @@ namespace Laby {
 				Utils::PopStyleColour();
 			});
 			Utils::PopStyleColour();
+		});
+
+		LabWidgets::Component<AnimationComponent>("Animation", mSelectedEntity, [&](auto& component)
+		{
+			auto imageSize = Utils::AvailableRegion<glm::vec2>();
+			imageSize = { imageSize.x - 15.0f, 150.0f };
+
+			Ref<Animation> animation = AssetManager::GetAsset<Animation>(component.handle);
+			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->currentFrame()) : nullptr;
+
+			Widgets::Button(animation && animation->isPlaying() ? "Stop" : "Play", [&animation]() 
+			{ 
+				if (!animation)
+					return;
+
+				animation->play(!animation->isPlaying()); 
+			});
+
+			LabWidgets::Image(subtex, imageSize);
+			Widgets::AddDragDropTarget<AssetHandle>("ANIMATION_ITEM", [&](const AssetHandle& animation) { component.handle = animation; });
 		});
 	}
 

@@ -13,6 +13,7 @@ namespace Laby {
 		sSerialisers[AssetType::TextureSheet] = MakeSingle<TextureSheetSerialiser>();
 		sSerialisers[AssetType::SubTexture] = MakeSingle<SubTextureSerialiser>();
 		sSerialisers[AssetType::Tilemap] = MakeSingle<TilemapSerialiser>();
+		sSerialisers[AssetType::Animation] = MakeSingle<AnimationSerialiser>();
 	}
 
 	void AssetImporter::Shutdown()
@@ -22,6 +23,7 @@ namespace Laby {
 		sSerialisers[AssetType::TextureSheet].reset();
 		sSerialisers[AssetType::SubTexture].reset();
 		sSerialisers[AssetType::Tilemap].reset();
+		sSerialisers[AssetType::Animation].reset();
 	}
 
 	void AssetImporter::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset)

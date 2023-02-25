@@ -46,4 +46,11 @@ namespace Laby {
 		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
 	};
 
+	class AnimationSerialiser : public AssetSerialiser
+	{
+	public:
+		virtual void serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const override;
+		virtual bool deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const override;
+	};
+
 }

@@ -12,12 +12,14 @@
 #include <Labyrinth/Editor/PanelManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 
+#include <Labyrinth/Editor/Panels/AnimationPanel.h>
 #include <Labyrinth/Editor/Panels/ContentBrowserPanel.h>
 #include <Labyrinth/Editor/Panels/OptionsPanel.h>
 #include <Labyrinth/Editor/Panels/StatisticsPanel.h>
 #include <Labyrinth/Editor/Panels/SpriteSheetPanel.h>
 #include <Labyrinth/Editor/Panels/TilemapPanel.h>
 
+#include <Labyrinth/Editor/Modals/NewAnimationModal.h>
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
 #include <Labyrinth/Editor/Modals/NewProjectModal.h>
 #include <Labyrinth/Editor/Modals/ProjectSettingsModal.h>
@@ -72,6 +74,7 @@ namespace Laby {
 		PanelManager::Register<StatisticsPanel>("Statistics", mEditorData.hoveredEntity);
 		PanelManager::Register<SpriteSheetPanel>("Spritesheets");
 		PanelManager::Register<TilemapPanel>("Tilemaps");
+		PanelManager::Register<AnimationPanel>("Animations");
 
 		LoadSettings();
 
@@ -533,7 +536,11 @@ namespace Laby {
 
 		Widgets::AddMenuBarHeading("Create");
 		{	// Create 
-
+			
+			Widgets::AddMenuBarItem("Animation", [this]()
+			{
+				ModalManager::Open<NewAnimationModal>("New Animation...", ModalButtons::Custom);
+			});
 			Widgets::AddMenuBarItem("Tilemap", [this]()
 			{
 				ModalManager::Open<NewMapModal>("New Tilemap...", ModalButtons::Custom);
