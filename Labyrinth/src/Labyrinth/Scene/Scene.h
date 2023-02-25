@@ -13,6 +13,8 @@ namespace Laby {
 	class Entity;
 	struct TilemapComponent;
 
+	namespace ECS { class Groups; }
+
 	class Scene : public Asset
 	{
 	public:
@@ -40,6 +42,11 @@ namespace Laby {
 		auto getEntitiesWith() { return mRegistry.view<Components...>(); }
 		template<typename... Components>
 		const auto getEntitiesWith() const { return mRegistry.view<Components...>(); }
+
+		template<typename T, typename... R>
+		auto group() { return mRegistry.group<T>(entt::get<R...>); }
+		template<typename T, typename... R>
+		const auto group() const { return mRegistry.group<T>(entt::get<R...>); }
 
 		void onRuntimeStart();
 		void onRuntimeStop();
@@ -92,6 +99,8 @@ namespace Laby {
 		u32 mViewportWidth = 0, mViewportHeight = 0;
 
 		Registry mRegistry;
+		Single<ECS::Groups> mGroups;
+
 		Single<RenderStack> mRenderStack = nullptr;
 
 		EntityID mSceneEntity;

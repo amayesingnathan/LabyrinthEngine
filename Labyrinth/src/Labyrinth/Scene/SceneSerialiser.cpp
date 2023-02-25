@@ -1,14 +1,13 @@
 #include "Lpch.h"
 #include "SceneSerialiser.h"
 
+#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/IO/YAML.h>
+#include <Labyrinth/Scripting/ScriptCache.h>
+#include <Labyrinth/Tools/EnumUtils.h>
+
 #include "Entity.h"
 #include "Components.h"
-
-#include "Labyrinth/Assets/AssetManager.h"
-#include "Labyrinth/IO/YAML.h"
-#include "Labyrinth/Tools/EnumUtils.h"
-
-#include <fstream>
 
 namespace Laby {
 
@@ -232,7 +231,7 @@ namespace Laby {
 			{
 				out << YAML::BeginMap;
 				LAB_SERIALISE_PROPERTY(Name, fieldName, out);
-				LAB_SERIALISE_PROPERTY(Type, Enum::ToString(field.type), out);
+				LAB_SERIALISE_PROPERTY(Type, Enum::ToString(field.type).data(), out);
 
 				switch(field.type)
 				{
@@ -450,20 +449,6 @@ namespace Laby {
 				u64 handle;
 				LAB_DESERIALISE_PROPERTY_DEF(Tilemap, handle, tmComponent, 0);
 				tmc.mapHandle = handle;
-
-				auto behaviour = tmComponent["Behaviour"];
-				if (behaviour)
-				{
-					for (auto entry : behaviour)
-					{
-						TilePos pos;
-						u64 id;
-						LAB_DESERIALISE_PROPERTY(Position, pos, entry);
-						LAB_DESERIALISE_PROPERTY(Entity, id, entry);
-
-						tmc.tileBehaviour[pos] = id;
-					}
-				}
 			}
 		}
 	}

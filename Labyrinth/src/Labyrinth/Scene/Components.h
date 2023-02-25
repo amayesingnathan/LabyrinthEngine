@@ -180,7 +180,7 @@ namespace Laby {
 
 	struct ScriptComponent
 	{
-		std::string_view className;
+		std::string className;
 		Ref<ScriptObject> instance;
 		bool initialised = false;
 

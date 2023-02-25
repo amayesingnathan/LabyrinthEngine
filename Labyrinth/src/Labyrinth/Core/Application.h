@@ -74,9 +74,13 @@ namespace Laby {
 		void PushLayer(Args&&... args) 
 		{ 
 			T* layer = new T(std::forward<Args>(args)...);
-			mLayerStack.emplace_back(layer); 
+			PushLayer(layer);
 		}
-		void PushLayer(IsLayer auto* layer) { mLayerStack.emplace_back(layer); }
+		void PushLayer(IsLayer auto* layer) 
+		{ 
+			mLayerStack.emplace_back(layer);  
+			layer->onAttach();
+		}
 
 		template<IsClient T, typename... Args>
 		void SetClient(Args&&... args)

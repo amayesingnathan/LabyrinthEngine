@@ -16,7 +16,7 @@
 #include <Labyrinth/Tilemap/Tilemap.h>
 
 #include "Entity.h"
-#include "Components.h"
+#include "Groups.h"
 
 namespace Laby {
 
@@ -48,7 +48,9 @@ namespace Laby {
 	}
 
 	Scene::Scene(const std::string& name)
-		: mName(name), mRenderStack(MakeSingle<RenderStack>())
+		: mName(name),
+		  mGroups(MakeSingle<ECS::Groups>(Ref<Scene>(this))),
+		  mRenderStack(MakeSingle<RenderStack>())
 	{
 		mSceneEntity = mRegistry.create();
 
@@ -284,19 +286,20 @@ namespace Laby {
 
 		// Resize our non-FixedAspectRatio cameras
 		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent)
-			{
-				if (!cameraComponent.fixedAspectRatio)
+		{
+			if (!cameraComponent.fixedAspectRatio)
 				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
-			});
+		});
 	}
 
 	Entity Scene::getPrimaryCameraEntity()
 	{
 		Entity primaryCam;
-		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent) {
+		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent) 
+		{
 			if (cameraComponent.primary)
-			primaryCam = { entity, Ref<Scene>(this) };
-			});
+				primaryCam = { entity, Ref<Scene>(this) };
+		});
 		return primaryCam;
 	}
 

@@ -5,11 +5,18 @@
 
 namespace Laby {
 
+	void ScriptCache::RegisterEntity(UUID id, std::string_view scriptClass)
+	{
+		auto& cachedFields = sCachedFields[id];
+		for (const ScriptField& field : ScriptEngine::GetAppClass(scriptClass)->getFields())
+			cachedFields.try_emplace(field.name.data(), field);
+	}
+
 	void ScriptCache::RegisterEntity(UUID id, Ref<ScriptClass> scriptClass)
 	{
 		auto& cachedFields = sCachedFields[id];
 		for (const ScriptField& field : scriptClass->getFields())
-			cachedFields.try_emplace(field.name, field);
+			cachedFields.try_emplace(field.name.data(), field);
 	}
 
 	void ScriptCache::RemoveEntity(UUID id)
@@ -21,7 +28,7 @@ namespace Laby {
 		sCachedFields.erase(id);
 	}
 
-	void ScriptCache::UnsetField(UUID entID, std::string_view fieldName)
+	void ScriptCache::UnsetField(UUID entID, const std::string& fieldName)
 	{
 		auto& cachedFields = sCachedFields[entID];
 		auto& field = cachedFields[fieldName];

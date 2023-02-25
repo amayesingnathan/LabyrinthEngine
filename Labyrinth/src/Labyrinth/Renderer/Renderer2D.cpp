@@ -7,6 +7,7 @@
 
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Scene/Components.h>
+#include <Labyrinth/Tilemap/Tilemap.h>
 
 namespace Laby {
 
@@ -268,7 +269,7 @@ namespace Laby {
 		case SpriteRendererComponent::TexType::Tilemap:
 		{
 			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(src.handle);
-			if (!subtex) 
+			if (!tilemap)
 				return;
 
 			DrawQuad(transform, tilemap, src.tilingFactor, src.colour, entityID);

@@ -1,6 +1,10 @@
 #include "Lpch.h"
 #include "System.h"
 
+#include "Assert.h"
+#include "Log.h"
+#include "Platform.h"
+
 namespace Laby {
 
 	static void FormatPath(std::string& path);
@@ -44,7 +48,7 @@ namespace Laby {
 		return ".sh";
 #else
 		LAB_STATIC_ASSERT("Cannot get script extension on unsupprted platform!");
-		return "":
+		return "";
 #endif
 	}
 }

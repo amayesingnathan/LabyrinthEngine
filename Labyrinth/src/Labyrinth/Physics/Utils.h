@@ -9,6 +9,6 @@ namespace Laby {
 	class PhysicsUtils
 	{
 	public:
-		static constexpr b2BodyType BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType);
+		static b2BodyType BodyTypeToBox2D(RigidBodyComponent::BodyType bodyType);
 	};
 }

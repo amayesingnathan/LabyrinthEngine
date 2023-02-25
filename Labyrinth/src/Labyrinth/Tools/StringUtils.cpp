@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "StringUtils.h"
 
+#include <Labyrinth/Core/System/Base.h>
+
 namespace Laby::StringUtils {
 
 	std::string& ToLower(std::string& string)

@@ -11,8 +11,6 @@
 #include <Labyrinth/Tilemap/Tilemap.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
-#include "SpriteSheetPanel.h"
-
 using imcpp::Widgets;
 using imcpp::Utils;
 
@@ -63,7 +61,7 @@ namespace Laby {
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
 
-		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+		if (mSelectedEntity && (!mPreviousEntity || mPreviousEntity != mSelectedEntity))
 			mPreviousEntity = mSelectedEntity;
 	}
 

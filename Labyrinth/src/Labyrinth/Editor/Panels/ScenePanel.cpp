@@ -56,7 +56,7 @@ namespace Laby {
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
 		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
 
-		if (mSelectedEntity && mPreviousEntity != mSelectedEntity)
+		if (mSelectedEntity && (!mPreviousEntity || mPreviousEntity != mSelectedEntity))
 			mPreviousEntity = mSelectedEntity;
 	}
 
@@ -102,7 +102,7 @@ namespace Laby {
 		});
 		Widgets::AddContextItem("Delete Entity", [&]() 
 		{
-			mToRemove.emplace_back(entity); // Queue up to delete after range for loop so it isn't invalidated.
+			mToRemove.emplace_back(entity); 
 			mSelectedEntity = {};
 			mPreviousEntity = {};
 		});

@@ -570,8 +570,8 @@ namespace Laby {
 			Widgets::ImageButton(icon->getTextureID(), glm::vec2{size, size}, [this]()
 			{
 				if (mSceneState == SceneEdit)
-				OnSceneSimulate();
-				else if (mSceneState == ScenePlay)
+					OnSceneSimulate();
+				else if (mSceneState == SceneSimulate)
 					OnSceneStop();
 			});
 		}

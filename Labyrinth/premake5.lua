@@ -73,6 +73,7 @@ project "Labyrinth"
             "%{Library.WinVersion}",
             "%{Library.BCrypt}",
         }
+		buildoptions { "/wd5105" }
 		
 	filter "system:linux"
         kind "SharedLib"

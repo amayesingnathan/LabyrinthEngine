@@ -92,7 +92,7 @@ namespace Laby {
 		const std::string& getTag() const;
 
 		operator bool() const { return valid(); }
-		bool valid() const { return mEntID != NullEntity && mScene.valid(); }
+		bool valid() const { return mEntID != NullEntity && mScene.valid() && mScene->mRegistry.valid(mEntID); }
 
 		auto operator<=>(const Entity& other) const { return getUUID() <=> other.getUUID(); }
 		bool operator==(const Entity& other) const { return getUUID() == other.getUUID(); }

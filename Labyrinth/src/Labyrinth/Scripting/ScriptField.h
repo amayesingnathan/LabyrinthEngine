@@ -119,5 +119,5 @@ namespace Laby {
 		FieldInitialiser(const ScriptField& f);
 	};
 
-	using FieldValues = std::unordered_map<std::string_view, FieldInitialiser>;
+	using FieldValues = std::unordered_map<std::string, FieldInitialiser>;
 }

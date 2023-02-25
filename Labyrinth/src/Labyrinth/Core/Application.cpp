@@ -66,7 +66,7 @@ namespace Laby {
 		}
 
 		mState.minimised = false;
-		Renderer::SetViewport(e.getWidth(), e.getHeight());
+		Renderer::SetViewport(e.width, e.height);
 		return false;
 	}
 

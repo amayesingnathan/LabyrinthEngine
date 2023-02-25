@@ -32,8 +32,9 @@ namespace Laby {
 		bool open = Widgets::TreeNodeEx(id, text, flags);
 		bool removeComponent = false;
 
-		Widgets::SameLine(Utils::WindowWidth() - 0.5f * Utils::LineHeight());
-		Widgets::Button("+", []() { Widgets::OpenPopup("ComponentSettings"); });
+		f32 lineHeight = Utils::LineHeight();
+		Widgets::SameLine(Utils::WindowWidth() - lineHeight);
+		Widgets::Button(glm::vec2{ lineHeight }, "+", []() { Widgets::OpenPopup("ComponentSettings"); });
 
 		Widgets::BeginPopup("ComponentSettings");
 		Widgets::AddPopupItem("Remove component", [&]() { removeComponent = true; });

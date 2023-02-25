@@ -3,6 +3,8 @@
 #include <queue>
 #include <mutex>
 
+#include <Labyrinth/Core/System/Base.h>
+
 namespace Laby {
 
 	template<typename T>
