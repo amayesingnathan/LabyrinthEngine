@@ -9,7 +9,8 @@ namespace Laby {
 	class NewAnimationModal : public IEditorModal
 	{
 	public:
-		NewAnimationModal() = default;
+		NewAnimationModal() 
+			: mNewAnimation("New Animation", true) {}
 
 		void onImGuiRender() override;
 		void onCustomButtonRender(bool& open) override;
@@ -18,12 +19,7 @@ namespace Laby {
 	private:
 		Ref<Texture2DSheet> mSheet;
 
-		std::string mAnimationName;
-
-		std::vector<AnimationFrame> mNewAnimation;
-
+		Animation mNewAnimation;
 		AnimationFrame mFrameInProgress;
-		AnimationFrame* mSelectedFrame = nullptr;
-
 	};
 }

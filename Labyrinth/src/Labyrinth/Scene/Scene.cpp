@@ -440,7 +440,7 @@ namespace Laby {
 
 	void Scene::ResetAnimations(bool start)
 	{
-		mGroups->each<ECS::Animation>([start](auto& ac, auto& src)
+		mGroups->each<ECS::Animations>([start](auto& ac, auto& src)
 		{
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(ac.handle);
 			if (!animation)
@@ -458,11 +458,11 @@ namespace Laby {
 
 	void Scene::BuildScene()
 	{
-		mRegistry.view<SpriteRendererComponent, TransformComponent>().each([this](auto entity, const auto& srComponent, const auto& trComponent)
+		mGroups->each<ECS::Sprites>([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
 			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
 		});
-		mRegistry.view<CircleRendererComponent, TransformComponent>().each([this](auto entity, const auto& crComponent, const auto& trComponent)
+		mGroups->each<ECS::Circles>([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
 			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
 		});
@@ -498,7 +498,7 @@ namespace Laby {
 		const int32_t poslIters = 2;
 		world->Step(ts, velIters, poslIters);
 
-		mRegistry.view<RigidBodyComponent, TransformComponent>().each([this](auto entity, auto& rbComponent, auto& trComponent)
+		mGroups->each<ECS::Bodies>([this](auto entity, auto& rbComponent, auto& trComponent)
 		{
 			b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
 			const auto& pos = body->GetPosition();
@@ -519,7 +519,7 @@ namespace Laby {
 
 	void Scene::UpdateAnimation()
 	{
-		mGroups->each<ECS::Animation>([](auto e, auto& ac, auto& src)
+		mGroups->each<ECS::Animations>([](auto e, auto& ac, auto& src)
 		{
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(ac.handle);
 			if (!animation)

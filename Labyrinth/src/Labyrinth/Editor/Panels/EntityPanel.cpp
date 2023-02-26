@@ -362,21 +362,36 @@ namespace Laby {
 		LabWidgets::Component<AnimationComponent>("Animation", mSelectedEntity, [&](auto& component)
 		{
 			auto imageSize = Utils::AvailableRegion<glm::vec2>();
-			imageSize = { imageSize.x - 15.0f, 150.0f };
+			imageSize = { imageSize.x - 80.0f, 150.0f };
 
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(component.handle);
 			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->currentFrame()) : nullptr;
 
-			Widgets::Button(animation && animation->isPlaying() ? "Stop" : "Play", [&animation]() 
+			LabWidgets::Image(subtex, imageSize);
+			Widgets::AddDragDropTarget<AssetHandle>("ANIMATION_ITEM", [&](const AssetHandle& handle) 
 			{ 
+				component.handle = handle;
+				if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
+					return;
+
+				Ref<Animation> animation = AssetManager::GetAsset<Animation>(handle);
 				if (!animation)
 					return;
 
-				animation->play(!animation->isPlaying()); 
+				auto& src = mSelectedEntity.getComponent<SpriteRendererComponent>();
+				src.type = SpriteRendererComponent::TexType::SubTexture;
+				src.handle = animation->currentFrame();
 			});
 
-			LabWidgets::Image(subtex, imageSize);
-			Widgets::AddDragDropTarget<AssetHandle>("ANIMATION_ITEM", [&](const AssetHandle& animation) { component.handle = animation; });
+			Widgets::SameLine();
+			Widgets::Button(animation&& animation->isPlaying() ? "Stop" : "Play", [&animation]()
+			{
+				if (!animation)
+					return;
+
+				animation->reset();
+				animation->play(!animation->isPlaying());
+			});
 		});
 	}
 

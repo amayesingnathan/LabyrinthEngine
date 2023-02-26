@@ -314,13 +314,13 @@ namespace Laby {
 	static void CopyComponent(TypeList<Component...>, const Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
 	{
 		([&]()
+		{
+			src.view<Component, IDComponent>().each([&dest, &entMap](auto entity, const auto& component, const auto& id)
 			{
-				src.view<Component, IDComponent>().each([&dest, &entMap](auto entity, const auto& component, const auto& id)
-					{
-						LAB_CORE_ASSERT(entMap.count(id) != 0);
-		dest.emplace_or_replace<Component>(entMap.at(id), component);
-					});
-			}(), ...);
+				LAB_CORE_ASSERT(entMap.count(id) != 0);
+				dest.emplace_or_replace<Component>(entMap.at(id), component);
+			});
+		}(), ...);
 	}
 	static void CopyAllComponents(Registry& src, Registry& dest, const std::unordered_map<UUID, EntityID>& entMap)
 	{
@@ -331,10 +331,10 @@ namespace Laby {
 	static void CopyComponent(TypeList<Component...>, Entity src, Entity dest)
 	{
 		([&]()
-			{
-				if (src.hasComponent<Component>())
-				dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
-			}(), ...);
+		{
+			if (src.hasComponent<Component>())
+			dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+		}(), ...);
 	}
 	static void CopyAllComponents(Entity src, Entity dest)
 	{

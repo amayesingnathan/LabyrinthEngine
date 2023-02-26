@@ -24,4 +24,13 @@ namespace Laby {
 
 		return mFrames[mFrameIndex].sprite;
 	}
+
+	Ref<Animation> AnimationUtils::Clone(Ref<Animation> other)
+	{
+		Ref<Animation> copy = Ref<Animation>::Create(other->mName);
+		copy->mFrames = other->mFrames;
+		copy->handle = other->handle;
+
+		return copy;
+	}
 }

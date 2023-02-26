@@ -8,7 +8,7 @@ namespace Laby {
 	struct AnimationFrame
 	{
 		AssetHandle sprite = 0;
-		usize frameLength = 0;
+		usize frameLength = 8;
 
 		AnimationFrame() = default;
 		AnimationFrame(AssetHandle subtex, usize length)

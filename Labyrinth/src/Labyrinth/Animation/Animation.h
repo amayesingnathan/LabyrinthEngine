@@ -9,7 +9,7 @@ namespace Laby {
 		ASSET_METADATA(AssetType::Animation, animations)
 
 	public:
-		Animation(std::string_view name) : mName(name) {}
+		Animation(std::string_view name, bool playing = false) : mName(name), mPlaying(playing) {}
 
 		bool isPlaying() const { return mPlaying; }
 		void play(bool start = true) { mPlaying = start; }
@@ -24,6 +24,11 @@ namespace Laby {
 		void addFrame(AnimationFrame&& frame) { mFrames.push_back(std::move(frame)); }
 		void addFrames(std::vector<AnimationFrame>&& frames) { mFrames = std::move(frames); }
 
+		auto begin() { return mFrames.begin(); }
+		auto begin() const { return mFrames.cbegin(); }
+		auto end() { return mFrames.end(); }
+		auto end() const { return mFrames.cend(); }
+
 	private:
 		std::string mName;
 
@@ -32,5 +37,15 @@ namespace Laby {
 		usize mFrameIndex = 0;
 
 		bool mPlaying = false;
+
+		friend class AnimationUtils;
+		friend class NewAnimationModal;
+		friend class AnimationEditModal;
+	};
+
+	class AnimationUtils
+	{
+	public:
+		static Ref<Animation> Clone(Ref<Animation> other);
 	};
 }

@@ -11,7 +11,6 @@ namespace Laby::ECS {
 		using Type = entt::basic_group<entt::entity, entt::owned_t<TOwned>, entt::get_t<TOther...>, entt::exclude_t<>>;
 		Type group;
 
-		Group() = default;
 		Group(Scene* context)
 			: group(context->group<TOwned, TOther...>()) {}
 
@@ -19,9 +18,12 @@ namespace Laby::ECS {
 		void each(F func) { group.each(func); }
 	};
 
-	using Animation = Group<AnimationComponent, SpriteRendererComponent>;
+	using Animations = Group<AnimationComponent, SpriteRendererComponent>;
+	using Bodies = Group<RigidBodyComponent, TransformComponent>;
+	using Circles = Group<CircleRendererComponent, TransformComponent>;
+	using Sprites = Group<SpriteRendererComponent, TransformComponent>;
 
-	using AllGroups = TypeList<Animation>;
+	using AllGroups = TypeList<Animations, Bodies, Circles, Sprites>;
 
 	template<typename T>
 	concept IsGroup = AllGroups::Contains<T>;
@@ -32,7 +34,7 @@ namespace Laby::ECS {
 		Groups(Scene* context);
 
 		template<IsGroup T, typename F>
-		void each(F func) { std::get<T>(*mGroupTuple).each(func); }
+		void each(F func) { std::get<T>(mGroupTuple).each(func); }
 
 	private:
 		template<usize Index>
@@ -43,11 +45,11 @@ namespace Laby::ECS {
 		}
 
 		template <usize... Is>
-		auto GenerateTupleImpl(Scene* context, std::index_sequence<Is...>) { return std::make_tuple(ToTupleElement<Is>(context)...); }
+		AllGroups::TupleType GenerateTupleImpl(Scene* context, std::index_sequence<Is...>) { return std::make_tuple(ToTupleElement<Is>(context)...); }
 
-		auto GenerateTuple(Scene* context) { return GenerateTupleImpl(context, std::make_index_sequence<AllGroups::Size>{}); }
+		AllGroups::TupleType GenerateTuple(Scene* context) { return GenerateTupleImpl(context, std::make_index_sequence<AllGroups::Size>{}); }
 
 	private:
-		Single<AllGroups::TupleType> mGroupTuple;
+		AllGroups::TupleType mGroupTuple;
 	};
 }

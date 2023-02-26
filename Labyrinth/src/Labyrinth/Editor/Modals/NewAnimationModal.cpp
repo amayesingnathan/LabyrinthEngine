@@ -14,6 +14,9 @@ namespace Laby {
 
     void NewAnimationModal::onImGuiRender()
 	{
+        if (!mNewAnimation.mFrames.empty())
+            mNewAnimation.step();
+
         std::vector<TextureSheetEntry> tilemapSheets;
         for (Ref<Texture2DSheet> sheet : AssetManager::GetAssetsWithType<Texture2DSheet>())
             tilemapSheets.emplace_back(sheet->getName(), sheet);
@@ -24,7 +27,7 @@ namespace Laby {
 
         Widgets::Label("Please enter a name for the animation:");
         Widgets::NewLine();
-        Widgets::StringEdit("Name", mAnimationName);
+        Widgets::StringEdit("Name", mNewAnimation.mName);
 
         glm::vec2 cursorPos = Utils::CursorPos<glm::vec2>();
         glm::vec2 region = Utils::AvailableRegion<glm::vec2>();
@@ -57,25 +60,33 @@ namespace Laby {
 
         Widgets::UIntEdit("Frame Length", mFrameInProgress.frameLength);
         Widgets::Disable(!mFrameInProgress.valid());
-        Widgets::Button("Add", [this]() { mNewAnimation.push_back(std::move(mFrameInProgress)); mFrameInProgress = AnimationFrame(); });
+        Widgets::Button("Add", [this]() { mNewAnimation.addFrame(std::move(mFrameInProgress)); mFrameInProgress = AnimationFrame(); });
         Widgets::EndDisable();
 
         Widgets::EndChild();
 
-        Widgets::BeginChild("Current Animation", glm::vec2{ 0, -2 * Utils::FrameHeightWithSpacing() });
-        glm::vec2 animationRegion = 0.0625f * Utils::AvailableRegion<glm::vec2>();
+        f32 bottomPanelIndent = 0.0625f * Utils::AvailableRegion().x;
+        Widgets::BeginChild("Current Animation", glm::vec2{ -bottomPanelIndent, -2 * Utils::FrameHeightWithSpacing() });
+        f32 animationRegion = 0.0625f * Utils::AvailableRegion().x;
 
         Widgets::BeginColumns(16);
 
+        animationRegion /= ((mNewAnimation.mFrames.size() / 16) + 1);
+
         for (const AnimationFrame& frame : mNewAnimation)
         {
-            LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(frame.sprite), { animationRegion.x, animationRegion.x });
+            LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(frame.sprite), { animationRegion, animationRegion });
+
             Widgets::NextColumn();
         }
 
         Widgets::EndColumns();
 
         Widgets::EndChild();
+
+        Widgets::SameLine();
+
+        LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mNewAnimation.currentFrame()), { bottomPanelIndent, bottomPanelIndent });
 
         Widgets::EndDisable();
 	}
@@ -100,8 +111,8 @@ namespace Laby {
 
 	void NewAnimationModal::onComplete()
 	{
-		Ref<Animation> newAnimation = AssetManager::CreateNewAsset<Animation>(mAnimationName, mAnimationName);
-        newAnimation->addFrames(std::move(mNewAnimation));
+		Ref<Animation> newAnimation = AssetManager::CreateNewAsset<Animation>(mNewAnimation.mName, mNewAnimation.mName);
+        newAnimation->addFrames(std::move(mNewAnimation.mFrames));
         AssetImporter::Serialise(newAnimation);
         AssetManager::ReloadData(newAnimation->handle);
 	}
