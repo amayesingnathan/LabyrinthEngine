@@ -3,24 +3,23 @@
 
 namespace Laby {
 
+	enum class AnimationState
+	{
+		NoChange, NewFrame, CycleComplete
+	};
+
 	class Animation : public Asset
 	{
 	public:
 		ASSET_METADATA(AssetType::Animation, animations)
 
 	public:
-		Animation(std::string_view name, bool playing = false, bool playOnce = false) : mName(name), mPlaying(playing), mPlayOnce(playOnce) {}
+		Animation(std::string_view name) : mName(name) {}
 
 		std::string_view getName() const { return mName; }
 
-		bool isPlaying() const { return mPlaying; }
-		void play() { mPlaying = true; }
-		void setPlayOnce(bool playOnce = true) { mPlayOnce = playOnce; }
-		// Returns true if an animation cycle completed
-		bool step();
-		void pause() { mPlaying = false; }
-		void stop() { mPlaying = false; reset(); }
-		void reset(bool play = false) { mFrameCounter = 0; mFrameIndex = 0; mPlaying = play; }
+		AnimationState step();
+		void reset() { mFrameCounter = 0; mFrameIndex = 0; }
 
 		AssetHandle currentFrame() const;
 
@@ -43,9 +42,6 @@ namespace Laby {
 		usize mFrameCounter = 0;
 		std::vector<AnimationFrame> mFrames;
 		usize mFrameIndex = 0;
-
-		bool mPlaying = false;
-		bool mPlayOnce = false;
 
 		friend class AnimationUtils;
 		friend class AnimationEditModal;

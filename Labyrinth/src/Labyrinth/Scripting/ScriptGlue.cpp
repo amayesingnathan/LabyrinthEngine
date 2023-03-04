@@ -936,7 +936,8 @@ namespace Laby {
 			return;
 		}
 
-		Ref<Animation> animation = AssetManager::GetAsset<Animation>(entity.getComponent<AnimationComponent>().handle);
+		auto& animationComp = entity.getComponent<AnimationComponent>();
+		Ref<Animation> animation = AssetManager::GetAsset<Animation>(animationComp.handle);
 		if (!animation)
 		{
 			LAB_CORE_ERROR("Animation.PlayAnimation could not retrieve Animation asset!");
@@ -946,8 +947,8 @@ namespace Laby {
 		if (reset)
 			animation->reset();
 
-		animation->setPlayOnce(playOnce);
-		animation->play();
+		animationComp.playing = true;
+		animationComp.playOnce = playOnce;
 	}
 
 	void GlueFunctions::Animation_PlayAnimation(u64 entityID, AssetHandle animationHandle, bool playOnce)
@@ -965,7 +966,8 @@ namespace Laby {
 			return;
 		}
 
-		entity.getComponent<AnimationComponent>().handle = animationHandle;
+		auto& animationComp = entity.getComponent<AnimationComponent>();
+		animationComp.handle = animationHandle;
 		Ref<Animation> animation = AssetManager::GetAsset<Animation>(animationHandle);
 		if (!animation)
 		{
@@ -974,8 +976,8 @@ namespace Laby {
 		}
 
 		animation->reset();
-		animation->setPlayOnce(playOnce);
-		animation->play();
+		animationComp.playing = true;
+		animationComp.playOnce = playOnce;
 	}
 
 	void GlueFunctions::Animation_StopAnimation(u64 entityID)
@@ -992,15 +994,7 @@ namespace Laby {
 			LAB_CORE_ERROR("Animation.PlayAnimation tried to stop Entity without animation component!");
 			return;
 		}
-
-		Ref<Animation> animation = AssetManager::GetAsset<Animation>(entity.getComponent<AnimationComponent>().handle);
-		if (!animation)
-		{
-			LAB_CORE_ERROR("Animation.PlayAnimation could not retrieve Animation asset!");
-			return;
-		}
-
-		animation->stop();
+		entity.getComponent<AnimationComponent>().playing = false;
 	}
 
 #pragma endregion

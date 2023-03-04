@@ -277,6 +277,8 @@ namespace Laby {
 
 			const auto& ac = entity.getComponent<AnimationComponent>();
 			LAB_SERIALISE_PROPERTY(Handle, ac.handle, out);
+			LAB_SERIALISE_PROPERTY(Playing, ac.playing, out);
+			LAB_SERIALISE_PROPERTY(PlayOnce, ac.playOnce, out);
 
 			out << YAML::EndMap; // AnimationComponent
 		}
@@ -467,6 +469,8 @@ namespace Laby {
 			{
 				auto& ac = deserializedEntity.addComponent<AnimationComponent>();
 				ac.handle = animationComponent["Handle"].as<AssetHandle>();
+				ac.playing = animationComponent["Playing"].as<bool>();
+				ac.playOnce = animationComponent["PlayOnce"].as<bool>();
 			}
 		}
 	}

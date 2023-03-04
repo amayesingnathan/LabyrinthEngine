@@ -446,7 +446,8 @@ namespace Laby {
 			if (!animation)
 				return;
 
-			animation->reset(start);
+			animation->reset();
+			ac.playing = start;
 			if (AssetHandle firstFrame = animation->currentFrame())
 			{
 				src.handle = firstFrame;
@@ -524,11 +525,28 @@ namespace Laby {
 			if (!animation)
 				return;
 
-			if (!animation->step())
+			if (!ac.playing)
 				return;
 
-			src.type = SpriteRendererComponent::TexType::SubTexture;
-			src.handle = animation->currentFrame();
+			switch (animation->step())
+			{
+			case AnimationState::NoChange: return;
+			case AnimationState::CycleComplete:
+			{
+				if (!ac.playOnce)
+				{
+					ac.playing = false;
+					break;
+				}
+			}
+			[[fallthrough]];
+			case AnimationState::NewFrame:
+			{
+				src.type = SpriteRendererComponent::TexType::SubTexture;
+				src.handle = animation->currentFrame();
+				break;
+			}
+			}
 		});
 	}
 

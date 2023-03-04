@@ -125,17 +125,9 @@ namespace Laby {
 			glm::vec2 rightPanelSize = std::invoke([](const glm::vec2& vec) { return glm::vec2{ vec.x, 0.75f * vec.y }; }, Utils::AvailableRegion<glm::vec2>());
 			Widgets::BeginChild("Preview", rightPanelSize, true);
 
-			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->currentFrame()), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 3 * Utils::FrameHeightWithSpacing() });
+			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->currentFrame()), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 2 * Utils::FrameHeightWithSpacing() });
 
 			Widgets::StringEdit("Name", mAnimation->mName);
-
-			Widgets::Button("Play", [this]() { mAnimation->play(); });
-			Widgets::SameLine();
-			Widgets::Button("Pause", [this]() { mAnimation->pause(); });
-			Widgets::SameLine();
-			Widgets::Button("Stop", [this]() { mAnimation->stop(); mAnimation->reset(); });
-			Widgets::SameLine();
-			Widgets::Checkbox("Play Once", mAnimation->mPlayOnce);
 
 			Widgets::EndChild();
 		}

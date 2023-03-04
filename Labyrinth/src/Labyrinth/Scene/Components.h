@@ -288,7 +288,12 @@ namespace Laby {
 
 	struct AnimationComponent
 	{
-		AssetHandle handle;
+		AssetHandle handle = 0;
+
+		bool playing = false;
+		bool playOnce = false;
+
+		AnimationComponent() = default;
 	};
 
 	using AllComponents = TypeList

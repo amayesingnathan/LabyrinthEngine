@@ -3,23 +3,25 @@
 
 namespace Laby {
 
-	bool Animation::step()
+	AnimationState Animation::step()
 	{
-		if (!mPlaying)
-			return false;
+		AnimationState result = AnimationState::NoChange;
 
 		mFrameCounter++;
 		if (mFrameCounter < mFrames[mFrameIndex].length)
-			return false;
+			return result;
 
+		result = AnimationState::NewFrame;
 		mFrameIndex++;
+
 		if (mFrameIndex == mFrames.size())
 		{
-			mPlaying = !mPlayOnce;
 			mFrameIndex = 0;
+			result = AnimationState::CycleComplete;
 		}
+
 		mFrameCounter = 0;
-		return true;
+		return result;
 	}
 
 	AssetHandle Animation::currentFrame() const
