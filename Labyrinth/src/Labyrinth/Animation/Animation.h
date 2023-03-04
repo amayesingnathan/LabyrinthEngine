@@ -11,6 +11,8 @@ namespace Laby {
 	public:
 		Animation(std::string_view name, bool playing = false) : mName(name), mPlaying(playing) {}
 
+		std::string_view getName() const { return mName; }
+
 		bool isPlaying() const { return mPlaying; }
 		void play(bool start = true) { mPlaying = start; }
 		bool step();
@@ -18,11 +20,13 @@ namespace Laby {
 
 		AssetHandle currentFrame() const;
 
-		std::string_view getName() const { return mName; }
-
+		std::vector<AnimationFrame>& getFrames() { return mFrames; }
 		const std::vector<AnimationFrame>& getFrames() const { return mFrames; }
-		void addFrame(AnimationFrame&& frame) { mFrames.push_back(std::move(frame)); }
+
+		void addFrame(const AnimationFrame& frame) { mFrames.push_back(frame); }
 		void addFrames(std::vector<AnimationFrame>&& frames) { mFrames = std::move(frames); }
+
+		void overwriteFrame(const AnimationFrame& overwritingFrame);
 
 		auto begin() { return mFrames.begin(); }
 		auto begin() const { return mFrames.cbegin(); }
@@ -39,7 +43,6 @@ namespace Laby {
 		bool mPlaying = false;
 
 		friend class AnimationUtils;
-		friend class NewAnimationModal;
 		friend class AnimationEditModal;
 	};
 

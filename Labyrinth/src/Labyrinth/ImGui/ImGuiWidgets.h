@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Scene/Entity.h>
+#include <Labyrinth/Renderer/SubTexture.h>
 
 #include "ImGuiCpp.h"
 
@@ -33,6 +34,8 @@ namespace Laby {
 
 		static void Image(Ref<IRenderable> image, const glm::vec2& size, float rotation = 0.0f);
 		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<> action = {});
+
+		static void TextureSheet(std::string_view id, Ref<Texture2DSheet> sheet, const glm::vec2& size, Action<AssetHandle> subtexSelected = [](AssetHandle) {});
 
 	private:
 		static bool ComponentImpl(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<> whileOpen);

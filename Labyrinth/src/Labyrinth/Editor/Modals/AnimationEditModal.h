@@ -2,18 +2,28 @@
 
 #include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/Editor/IEditorModal.h>
+#include <Labyrinth/Renderer/SubTexture.h>
 
 namespace Laby {
+
+	enum class EditingMode { None, Add, Edit };
 
 	class AnimationEditModal : public IEditorModal
 	{
 	public:
-		AnimationEditModal(Ref<Animation> animation);
+		AnimationEditModal(EditingMode mode, Ref<Animation> animation = nullptr);
 
 		void onImGuiRender() override;
+		void onCustomButtonRender(bool& open) override;
 		void onComplete() override;
 
 	private:
+		EditingMode mWindowMode;
+
 		Ref<Animation> mAnimation;
+		Ref<Texture2DSheet> mCurrentSheet;
+
+		EditingMode mFrameMode = EditingMode::None;
+		AnimationFrame mSelectedFrame;
 	};
 }

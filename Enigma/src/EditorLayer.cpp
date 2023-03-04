@@ -19,7 +19,7 @@
 #include <Labyrinth/Editor/Panels/SpriteSheetPanel.h>
 #include <Labyrinth/Editor/Panels/TilemapPanel.h>
 
-#include <Labyrinth/Editor/Modals/NewAnimationModal.h>
+#include <Labyrinth/Editor/Modals/AnimationEditModal.h>
 #include <Labyrinth/Editor/Modals/NewMapModal.h>
 #include <Labyrinth/Editor/Modals/NewProjectModal.h>
 #include <Labyrinth/Editor/Modals/ProjectSettingsModal.h>
@@ -539,7 +539,7 @@ namespace Laby {
 			
 			Widgets::AddMenuBarItem("Animation", [this]()
 			{
-				ModalManager::Open<NewAnimationModal>("New Animation...", ModalButtons::Custom);
+				ModalManager::Open<AnimationEditModal>("New Animation...", ModalButtons::Custom, EditingMode::Add);
 			});
 			Widgets::AddMenuBarItem("Tilemap", [this]()
 			{

@@ -36,7 +36,7 @@ namespace Laby {
 		void generateTileset();
 		void destroyTileset();
 
-		AssetHandle getFromPosition(const GridPosition& pos) { return mSubTextures[getPositionIndex(pos)]; }
+		AssetHandle getFromPosition(const GridPosition& pos) const { return mSubTextures[getPositionIndex(pos)]; }
 		constexpr u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
 		u32 subTexCount() const { return (u32)mSubTextures.size(); }
 		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
