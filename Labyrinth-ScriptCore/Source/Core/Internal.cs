@@ -181,5 +181,19 @@ namespace Labyrinth
         internal extern static float RigidBody_AddTorque(ulong entUUID, float torque, bool wake);
 
         #endregion
+
+        #region AnimationComponent
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Animation_PlayAnimation(ulong entUUID, bool reset, bool playOnce);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Animation_PlayAnimation(ulong entUUID, ref AssetHandle handle, bool playOnce);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Animation_StopAnimation(ulong entUUID);
+
+
+        #endregion
     }
 }

@@ -12,7 +12,12 @@ namespace Laby {
 		if (mFrameCounter < mFrames[mFrameIndex].length)
 			return false;
 
-		++mFrameIndex %= mFrames.size();
+		mFrameIndex++;
+		if (mFrameIndex == mFrames.size())
+		{
+			mPlaying = !mPlayOnce;
+			mFrameIndex = 0;
+		}
 		mFrameCounter = 0;
 		return true;
 	}

@@ -142,4 +142,11 @@ namespace Labyrinth
 	public class CircleColliderComponent : Component
 	{
 	}
+
+	public class AnimationComponent : Component
+	{
+		public void Play(bool reset = true, bool playOnce = false) { Internal.Animation_PlayAnimation(Entity.ID, reset, playOnce); }
+		public void Play(AssetHandle newAnimation, bool playOnce = false) { Internal.Animation_PlayAnimation(Entity.ID, newAnimation, playOnce); }
+		public void Stop() { Internal.Animation_StopAnimation(Entity.ID); }
+	}
 }

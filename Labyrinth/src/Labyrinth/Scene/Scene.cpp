@@ -446,13 +446,12 @@ namespace Laby {
 			if (!animation)
 				return;
 
-			animation->reset();
+			animation->reset(start);
 			if (AssetHandle firstFrame = animation->currentFrame())
 			{
 				src.handle = firstFrame;
 				src.type = SpriteRendererComponent::TexType::SubTexture;
 			}
-			animation->play(start);
 		});
 	}
 

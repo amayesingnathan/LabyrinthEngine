@@ -32,8 +32,6 @@ namespace Laby {
 			LAB_CORE_ERROR("Failed to initialise animation.");
 			return;
 		}
-
-		mAnimation->play();
 	}
 
 	void AnimationEditModal::onImGuiRender()
@@ -133,9 +131,11 @@ namespace Laby {
 
 			Widgets::Button("Play", [this]() { mAnimation->play(); });
 			Widgets::SameLine();
-			Widgets::Button("Pause", [this]() { mAnimation->play(false); });
+			Widgets::Button("Pause", [this]() { mAnimation->pause(); });
 			Widgets::SameLine();
-			Widgets::Button("Stop", [this]() { mAnimation->play(false); mAnimation->reset(); });
+			Widgets::Button("Stop", [this]() { mAnimation->stop(); mAnimation->reset(); });
+			Widgets::SameLine();
+			Widgets::Checkbox("Play Once", mAnimation->mPlayOnce);
 
 			Widgets::EndChild();
 		}

@@ -390,7 +390,10 @@ namespace Laby {
 					return;
 
 				animation->reset();
-				animation->play(!animation->isPlaying());
+				if (animation->isPlaying())
+					animation->stop();
+				else
+					animation->play();
 			});
 		});
 	}

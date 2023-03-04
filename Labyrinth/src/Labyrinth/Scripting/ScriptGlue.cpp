@@ -12,12 +12,10 @@
 #include "ScriptEngine.h"
 #include "MarshalUtils.h"
 
+#include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/Assets/AssetManager.h>
-
 #include <Labyrinth/Containers/Buffer.h>
-
 #include <Labyrinth/IO/Input.h>
-
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
 
@@ -273,7 +271,7 @@ namespace Laby {
 		child.setParent(parent);
 	}
 
-	MonoArray* GlueFunctions::Entity_GetChildren(uint64_t entityID)
+	MonoArray* GlueFunctions::Entity_GetChildren(u64 entityID)
 	{
 		Entity entity = GetEntity(entityID);
 		if (!entity)
@@ -294,7 +292,7 @@ namespace Laby {
 		return result;
 	}
 
-	void GlueFunctions::Entity_CreateComponent(uint64_t entityID, MonoReflectionType* reflectionType)
+	void GlueFunctions::Entity_CreateComponent(u64 entityID, MonoReflectionType* reflectionType)
 	{
 		auto entity = GetEntity(entityID);
 		if (!entity)
@@ -321,7 +319,7 @@ namespace Laby {
 		sCreateComponentFuncs.at(managedType)(entity);
 	}
 
-	bool GlueFunctions::Entity_HasComponent(uint64_t entityID, MonoReflectionType* reflectionType)
+	bool GlueFunctions::Entity_HasComponent(u64 entityID, MonoReflectionType* reflectionType)
 	{
 		auto entity = GetEntity(entityID);
 		if (!entity)
@@ -348,7 +346,7 @@ namespace Laby {
 		return sHasComponentFuncs.at(managedType)(entity);
 	}
 
-	bool GlueFunctions::Entity_RemoveComponent(uint64_t entityID, MonoReflectionType* componentType)
+	bool GlueFunctions::Entity_RemoveComponent(u64 entityID, MonoReflectionType* componentType)
 	{
 		auto entity = GetEntity(entityID);
 		if (!entity)
@@ -917,6 +915,92 @@ namespace Laby {
 
 		b2Body* body = (b2Body*)component.runtimeBody;
 		body->ApplyTorque(torque, wake);
+	}
+
+#pragma endregion
+
+#pragma region AnimationComponent
+
+	void GlueFunctions::Animation_PlayAnimation(u64 entityID, bool reset, bool playOnce)
+	{
+		Entity entity = GetEntity(entityID);
+		if (!entity)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation called on an invalid Entity!");
+			return;
+		}
+
+		if (!entity.hasComponent<AnimationComponent>())
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation called on entity with no animation!");
+			return;
+		}
+
+		Ref<Animation> animation = AssetManager::GetAsset<Animation>(entity.getComponent<AnimationComponent>().handle);
+		if (!animation)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation could not retrieve Animation asset!");
+			return;
+		}
+
+		if (reset)
+			animation->reset();
+
+		animation->setPlayOnce(playOnce);
+		animation->play();
+	}
+
+	void GlueFunctions::Animation_PlayAnimation(u64 entityID, AssetHandle animationHandle, bool playOnce)
+	{
+		Entity entity = GetEntity(entityID);
+		if (!entity)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation called on an invalid Entity!");
+			return;
+		}
+
+		if (!animationHandle)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation called with no animation on entity with no animation!");
+			return;
+		}
+
+		entity.getComponent<AnimationComponent>().handle = animationHandle;
+		Ref<Animation> animation = AssetManager::GetAsset<Animation>(animationHandle);
+		if (!animation)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation could not retrieve Animation asset!");
+			return;
+		}
+
+		animation->reset();
+		animation->setPlayOnce(playOnce);
+		animation->play();
+	}
+
+	void GlueFunctions::Animation_StopAnimation(u64 entityID)
+	{
+		Entity entity = GetEntity(entityID);
+		if (!entity)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation called on an invalid Entity!");
+			return;
+		}
+
+		if (!entity.hasComponent<AnimationComponent>())
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation tried to stop Entity without animation component!");
+			return;
+		}
+
+		Ref<Animation> animation = AssetManager::GetAsset<Animation>(entity.getComponent<AnimationComponent>().handle);
+		if (!animation)
+		{
+			LAB_CORE_ERROR("Animation.PlayAnimation could not retrieve Animation asset!");
+			return;
+		}
+
+		animation->stop();
 	}
 
 #pragma endregion

@@ -115,6 +115,14 @@ namespace Laby {
 
 #pragma endregion
 
+#pragma region AnimationComponent
+
+		static void Animation_PlayAnimation(u64 entityID, bool reset = true, bool playOnce = false);
+		static void Animation_PlayAnimation(u64 entityID, AssetHandle animationHandle, bool playOnce = false);
+		static void Animation_StopAnimation(u64 entityID);
+
+#pragma endregion
+
 		friend class ScriptGlue;
 	};
 
