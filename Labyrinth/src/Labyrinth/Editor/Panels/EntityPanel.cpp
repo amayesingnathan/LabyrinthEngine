@@ -365,16 +365,9 @@ namespace Laby {
 			imageSize = { imageSize.x - 80.0f, 150.0f };
 
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(component.handle);
-			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->currentFrame()) : nullptr;
+			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->getFrame(component.frameIndex).sprite) : nullptr;
 
-			Widgets::Button(animation && component.playing ? "Stop" : "Play", [&animation, &component]()
-			{
-				if (!animation)
-					return;
-
-				animation->reset();
-				component.playing = !component.playing;
-			});
+			Widgets::Button(animation&& component.playing ? "Stop" : "Play", [&component]() { component.playing = !component.playing; });
 			Widgets::SameLine();
 			Widgets::Checkbox("Play Once", component.playOnce);
 
@@ -382,16 +375,6 @@ namespace Laby {
 			Widgets::AddDragDropTarget<AssetHandle>("ANIMATION_ITEM", [&](const AssetHandle& handle) 
 			{ 
 				component.handle = handle;
-				if (!mSelectedEntity.hasComponent<SpriteRendererComponent>())
-					return;
-
-				Ref<Animation> animation = AssetManager::GetAsset<Animation>(handle);
-				if (!animation)
-					return;
-
-				auto& src = mSelectedEntity.getComponent<SpriteRendererComponent>();
-				src.type = SpriteRendererComponent::TexType::SubTexture;
-				src.handle = animation->currentFrame();
 			});
 		});
 	}

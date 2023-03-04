@@ -945,7 +945,10 @@ namespace Laby {
 		}
 
 		if (reset)
-			animation->reset();
+		{
+			animationComp.frameCounter = 0;
+			animationComp.frameIndex = 0;
+		}
 
 		animationComp.playing = true;
 		animationComp.playOnce = playOnce;
@@ -975,7 +978,8 @@ namespace Laby {
 			return;
 		}
 
-		animation->reset();
+		animationComp.frameCounter = 0;
+		animationComp.frameIndex = 0;
 		animationComp.playing = true;
 		animationComp.playOnce = playOnce;
 	}

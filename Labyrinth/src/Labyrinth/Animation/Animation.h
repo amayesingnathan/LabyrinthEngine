@@ -18,13 +18,11 @@ namespace Laby {
 
 		std::string_view getName() const { return mName; }
 
-		AnimationState step();
-		void reset() { mFrameCounter = 0; mFrameIndex = 0; }
-
-		AssetHandle currentFrame() const;
-
+		const AnimationFrame& getFrame(u32 frameIndex) const { return mFrames[frameIndex]; }
 		std::vector<AnimationFrame>& getFrames() { return mFrames; }
 		const std::vector<AnimationFrame>& getFrames() const { return mFrames; }
+		usize getFrameCount() const { return mFrames.size(); }
+		bool hasFrames() const { return !mFrames.empty(); }
 
 		void addFrame(const AnimationFrame& frame) { mFrames.push_back(frame); }
 		void addFrames(std::vector<AnimationFrame>&& frames) { mFrames = std::move(frames); }
@@ -38,10 +36,7 @@ namespace Laby {
 
 	private:
 		std::string mName;
-
-		usize mFrameCounter = 0;
 		std::vector<AnimationFrame> mFrames;
-		usize mFrameIndex = 0;
 
 		friend class AnimationUtils;
 		friend class AnimationEditModal;

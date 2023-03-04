@@ -290,6 +290,9 @@ namespace Laby {
 	{
 		AssetHandle handle = 0;
 
+		u32 frameCounter = 0;
+		u32 frameIndex = 0;
+
 		bool playing = false;
 		bool playOnce = false;
 

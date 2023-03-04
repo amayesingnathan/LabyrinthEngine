@@ -18,6 +18,9 @@ namespace Laby {
 		void onComplete() override;
 
 	private:
+		void StepAnimation();
+
+	private:
 		EditingMode mWindowMode;
 
 		Ref<Animation> mAnimation;
@@ -25,5 +28,9 @@ namespace Laby {
 
 		EditingMode mFrameMode = EditingMode::None;
 		AnimationFrame mSelectedFrame;
+
+		u32 mFrameCounter = 0;
+		u32 mFrameIndex = 0;
+		bool mPlaying = true;
 	};
 }

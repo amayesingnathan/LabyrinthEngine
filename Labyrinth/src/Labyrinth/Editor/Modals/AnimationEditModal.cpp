@@ -39,8 +39,7 @@ namespace Laby {
 		if (!mAnimation)
 			return;
 
-        if (!mAnimation->mFrames.empty())
-            mAnimation->step();
+		StepAnimation();
 
 		glm::vec2 availableRegion = Utils::AvailableRegion<glm::vec2>();
 		bool validFrame = mSelectedFrame.valid();
@@ -125,9 +124,11 @@ namespace Laby {
 			glm::vec2 rightPanelSize = std::invoke([](const glm::vec2& vec) { return glm::vec2{ vec.x, 0.75f * vec.y }; }, Utils::AvailableRegion<glm::vec2>());
 			Widgets::BeginChild("Preview", rightPanelSize, true);
 
-			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->currentFrame()), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 2 * Utils::FrameHeightWithSpacing() });
+			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->getFrame(mFrameIndex).sprite), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 2 * Utils::FrameHeightWithSpacing() });
 
 			Widgets::StringEdit("Name", mAnimation->mName);
+			Widgets::SameLine();
+			Widgets::Button(mPlaying ? "Stop" : "Play", [this]() { mPlaying = !mPlaying; });
 
 			Widgets::EndChild();
 		}
@@ -207,5 +208,18 @@ namespace Laby {
 			break;
 		}
 		}
+	}
+
+	void AnimationEditModal::StepAnimation()
+	{
+		if (mAnimation->mFrames.empty() || !mPlaying)
+			return;
+
+		const auto& frame = mAnimation->getFrame(mFrameIndex);
+		if (++mFrameCounter < frame.length)
+			return;
+
+		++mFrameIndex %= mAnimation->getFrameCount();
+		mFrameCounter = 0;
 	}
 }

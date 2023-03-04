@@ -446,13 +446,12 @@ namespace Laby {
 			if (!animation)
 				return;
 
-			animation->reset();
+			ac.frameCounter = 0;
+			ac.frameIndex = 0;
 			ac.playing = start;
-			if (AssetHandle firstFrame = animation->currentFrame())
-			{
-				src.handle = firstFrame;
-				src.type = SpriteRendererComponent::TexType::SubTexture;
-			}
+
+			src.handle = animation->getFrame(ac.frameIndex).sprite;
+			src.type = SpriteRendererComponent::TexType::SubTexture;
 		});
 	}
 
@@ -521,32 +520,26 @@ namespace Laby {
 	{
 		mGroups->each<ECS::Animations>([](auto e, auto& ac, auto& src)
 		{
+			if (!ac.playing)
+				return;
+
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(ac.handle);
 			if (!animation)
 				return;
 
-			if (!ac.playing)
+			const auto& frame = animation->getFrame(ac.frameIndex);
+			if (++ac.frameCounter < frame.length)
 				return;
 
-			switch (animation->step())
+			if (++ac.frameIndex == animation->getFrameCount())
 			{
-			case AnimationState::NoChange: return;
-			case AnimationState::CycleComplete:
-			{
-				if (!ac.playOnce)
-				{
-					ac.playing = false;
-					break;
-				}
+				ac.frameIndex = 0;
+				ac.playing = !ac.playOnce;
 			}
-			[[fallthrough]];
-			case AnimationState::NewFrame:
-			{
-				src.type = SpriteRendererComponent::TexType::SubTexture;
-				src.handle = animation->currentFrame();
-				break;
-			}
-			}
+
+			ac.frameCounter = 0;
+			src.type = SpriteRendererComponent::TexType::SubTexture;
+			src.handle = frame.sprite;
 		});
 	}
 

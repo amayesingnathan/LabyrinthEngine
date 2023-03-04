@@ -30,7 +30,7 @@ namespace Laby {
 
 		for (Ref<Animation> animation : AssetManager::GetAssetsWithType<Animation>())
 		{
-			LabWidgets::ImageButton(AssetManager::GetAsset<SubTexture2D>(animation->currentFrame()),
+			LabWidgets::ImageButton(AssetManager::GetAsset<SubTexture2D>(animation->hasFrames() ? animation->getFrame(0).sprite : AssetHandle(0)),
 				imageSize, [=]() { ModalManager::Open<AnimationEditModal>("Edit Animation...", ModalButtons::Custom, EditingMode::Edit, animation); });
 			Widgets::AddDragDropSource("ANIMATION_ITEM", animation->handle);
 
