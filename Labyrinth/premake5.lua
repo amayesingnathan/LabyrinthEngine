@@ -31,6 +31,7 @@ project "Labyrinth"
         "%{IncludeDir.asio}",
         "%{IncludeDir.box2d}",
 		"%{IncludeDir.entt}",
+		"%{IncludeDir.fmod}",
         "%{IncludeDir.glad}",
         "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
@@ -55,9 +56,10 @@ project "Labyrinth"
 		"glad",
 		"imgui-cpp",
 		"yaml-cpp",
-         "%{Library.mono}"
+         "%{Library.fmod}",
+         "%{Library.mono}",
 	}
-	
+
 	filter "files:dependencies/ImGuizmo/**.cpp"
 		flags { "NoPCH" }
 	
@@ -92,6 +94,11 @@ project "Labyrinth"
 			"%{Library.SPIRV_Cross_Debug}",
 			"%{Library.SPIRV_Cross_GLSL_Debug}"
 		}
+		postbuildcommands
+		{
+			"{COPYFILE} \"%{LibraryDir.fmod}/fmodL.dll\" \"%{wks.location}/bin/Enigma/%{outputDir}/\"",
+			"{COPYFILE} \"%{LibraryDir.fmod}/fmodL.dll\" \"%{wks.location}/bin/Sandbox/%{outputDir}/\"",
+		}
 
     filter "configurations:Release"
         defines { "LAB_RELEASE" }
@@ -102,4 +109,9 @@ project "Labyrinth"
 			"%{Library.ShaderC_Release}",
 			"%{Library.SPIRV_Cross_Release}",
 			"%{Library.SPIRV_Cross_GLSL_Release}"
+		}
+		postbuildcommands
+		{
+			"{COPYFILE} \"%{LibraryDir.fmod}/fmod.dll\" \"%{wks.location}/bin/Enigma/%{outputDir}/\"",
+			"{COPYFILE} \"%{LibraryDir.fmod}/fmod.dll\" \"%{wks.location}/bin/Sandbox/%{outputDir}/\"",
 		}

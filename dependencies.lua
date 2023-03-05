@@ -6,6 +6,7 @@ IncludeDir["LabCore"] 		= "%{wks.location}/Labyrinth/src/Labyrinth/Core"
 IncludeDir["asio"] 			= "%{wks.location}/Labyrinth/dependencies/asio/include"
 IncludeDir["box2d"] 		= "%{wks.location}/Labyrinth/dependencies/box2d/include"
 IncludeDir["entt"] 			= "%{wks.location}/Labyrinth/dependencies/entt/include"
+IncludeDir["fmod"] 			= "%{wks.location}/Labyrinth/dependencies/fmod/include"
 IncludeDir["glad"] 			= "%{wks.location}/Labyrinth/dependencies/glad/include"
 IncludeDir["glfw"] 			= "%{wks.location}/Labyrinth/dependencies/imgui-cpp/dependencies/glfw/include"
 IncludeDir["glm"] 			= "%{wks.location}/Labyrinth/dependencies/glm"
@@ -26,11 +27,14 @@ IncludeDir["VulkanSDK"] 	= "%{VULKAN_SDK}/Include"
 
 LibraryDir = {}
 
+LibraryDir["fmod"] 					= "%{wks.location}/Labyrinth/dependencies/fmod/lib/%{cfg.buildcfg}"
 LibraryDir["mono"] 					= "%{wks.location}/Labyrinth/dependencies/mono/lib/%{cfg.buildcfg}"
-
 LibraryDir["VulkanSDK"] 		 	= "%{VULKAN_SDK}/Lib"
 
 Library = {}
+
+fmodSuffix = "%{cfg.buildcfg}" == "Debug" and "L" or ""
+Library["fmod"]						= "%{LibraryDir.fmod}/fmod_vc%{fmodSuffix}.lib"
 
 Library["mono"]						= "%{LibraryDir.mono}/libmono-static-sgen.lib"
 
