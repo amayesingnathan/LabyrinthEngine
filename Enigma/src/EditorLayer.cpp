@@ -7,6 +7,8 @@
 
 #include <Labyrinth/Core/Application.h>
 
+#include <Labyrinth/Audio/AudioEngine.h>
+
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/PanelManager.h>
@@ -293,6 +295,9 @@ namespace Laby {
 		{
 		case Mouse::ButtonLeft:
 		{
+			if (Input::IsKeyPressed(Key::LeftAlt))
+				AudioEngine::PlaySound(AudioEngine::CreateSound(StreamType::File, "test-sound.mp3"));
+
 			if (mEditorData.viewportHovered && !ImGuizmo::IsOver() && !Input::IsKeyPressed(Key::LeftAlt))
 			{
 				if (!control)

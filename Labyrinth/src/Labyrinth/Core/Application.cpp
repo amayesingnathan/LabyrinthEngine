@@ -3,6 +3,7 @@
 
 #include "ImGuizmo.h"
 
+#include <Labyrinth/Audio/AudioEngine.h>
 #include <Labyrinth/IO/JSON.h>
 #include <Labyrinth/Networking/ServerLayer.h>
 #include <Labyrinth/Networking/ClientLayer.h>
@@ -24,6 +25,7 @@ namespace Laby {
 		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
 
 		Renderer::Init();
+		AudioEngine::Init();
 		ScriptEngine::Init(spec.scriptConfig);
 
 		mImGuiHandler = MakeSingle<ImGuiHandler>();
