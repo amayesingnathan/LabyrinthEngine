@@ -12,6 +12,7 @@
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Physics/Utils.h>
+#include <Labyrinth/Renderer/Renderer.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Tilemap/Tilemap.h>
@@ -51,7 +52,8 @@ namespace Laby {
 	Scene::Scene(const std::string& name)
 		: mName(name),
 		  mGroups(MakeSingle<ECS::Groups>(this)),
-		  mRenderStack(MakeSingle<RenderStack>())
+		  mRenderStack(MakeSingle<RenderStack>()),
+		  mBufferStack(MakeSingle<RenderStack>())
 	{
 		mSceneEntity = mRegistry.create();
 
@@ -68,10 +70,14 @@ namespace Laby {
 		mRegistry.on_destroy<CircleColliderComponent>().connect<&Scene::OnCircleColliderComponentDestroy>(this);
 		mRegistry.on_construct<ChainColliderComponent>().connect<&Scene::OnChainColliderComponentConstruct>(this);
 		mRegistry.on_destroy<ChainColliderComponent>().connect<&Scene::OnChainColliderComponentDestroy>(this);
+
+		mStackSwapCallbackID = Renderer::AddFrameCallback([this] { std::swap(mRenderStack, mBufferStack); });
 	}
 
 	Scene::~Scene()
 	{
+		Renderer::RemoveFrameCallback(mStackSwapCallbackID);
+
 		mRegistry.on_construct<RigidBodyComponent>().disconnect();
 		mRegistry.on_destroy<RigidBodyComponent>().disconnect();
 		mRegistry.on_construct<BoxColliderComponent>().disconnect();
@@ -457,32 +463,35 @@ namespace Laby {
 
 	void Scene::BuildScene()
 	{
+		mBufferStack->clearItems();
 		mGroups->each<ECS::Sprites>([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
-			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
+			mBufferStack->addQuad(trComponent, srComponent, (i32)entity);
 		});
 		mGroups->each<ECS::Circles>([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
-			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
+			mBufferStack->addCircle(trComponent, crComponent, (i32)entity);
 		});
 	}
 
 	void Scene::DrawScene(EditorCamera& camera)
 	{
-		Renderer2D::BeginState(camera);
-		mRenderStack->draw();
-		Renderer2D::EndState();
-
-		mRenderStack->clearItems();
+		Renderer::Submit([&, this]()
+		{
+			Renderer2D::BeginState(camera);
+			mRenderStack->draw();
+			Renderer2D::EndState();
+		});
 	}
 
 	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
 	{
-		Renderer2D::BeginState(camera, transform);
-		mRenderStack->draw();
-		Renderer2D::EndState();
-
-		mRenderStack->clearItems();
+		Renderer::Submit([&, this]()
+		{
+			Renderer2D::BeginState(camera, transform);
+			mRenderStack->draw();
+			Renderer2D::EndState();
+		});
 	}
 
 	void Scene::StepPhysics2D(Timestep ts)

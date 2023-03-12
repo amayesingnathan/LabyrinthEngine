@@ -85,6 +85,8 @@ namespace Laby {
 
 		while (sInstance->mState.running)
 		{
+			Renderer::NewFrame();
+
 			f32 time = Stopwatch::GetTime();
 			Timestep timestep = time - sInstance->mState.lastFrameTime;
 			sInstance->mState.lastFrameTime = time;
@@ -106,6 +108,7 @@ namespace Laby {
 					layer->onImGuiRender();
 			}
 
+			Renderer::EndFrame();
 			sInstance->mWindow->onUpdate();
 		}
 

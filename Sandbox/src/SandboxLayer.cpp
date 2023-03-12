@@ -25,25 +25,28 @@ namespace Laby {
 
 	void SandboxLayer::onUpdate(Timestep ts)
 	{
-		mFramebuffer->bind();
+		Renderer::Submit([this]()
+		{
+			mFramebuffer->bind();
 
-		Renderer::SetClearColor({ 1, 0, 1, 1 });
-		Renderer::Clear();
+			Renderer::SetClearColor({ 1, 0, 1, 1 });
+			Renderer::Clear();
 
-		const auto& spec = mFramebuffer->getSpecification();
+			Renderer2D::BeginState();
+			for (i64 y = 0; y < 16; y++)
+			{
+				for (i64 x = 0; x < 16; x++)
+				{
+					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
+					pos += 0.5f * TileSizeF;
 
-		Renderer2D::BeginState();
-		//for (f32 y = 0; y < spec.height; y += 16.0f)
-		//{
-		//	for (f32 x = 0; x < spec.width; x += 16.0f)
-		//	{
-		//		glm::vec4 colour = { (x + 5.0f) / 10.0f, 0.4f, (y + 5.0f) / 10.0f, 0.7f };
-		//		Renderer2D::DrawQuad({ x, y }, { 0.45f, 0.45f }, colour);
-		//	}
-		//}
-		Renderer2D::EndState();
+					Renderer2D::DrawRotatedQuad(pos, TileSizeF, 0, mSquareColours[rand() % 4]);
+				}
+			}
+			Renderer2D::EndState();
 
-		mFramebuffer->unbind();
+			mFramebuffer->unbind();
+		});
 	}
 
 	void SandboxLayer::onImGuiRender()

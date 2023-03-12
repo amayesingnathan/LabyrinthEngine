@@ -4,6 +4,7 @@
 #include <glad/glad.h>
 
 #include "Renderer2D.h"
+#include "RenderThread.h"
 
 namespace Laby {
 
@@ -46,12 +47,38 @@ namespace Laby {
 		glEnable(GL_LINE_SMOOTH);
 
 		Renderer2D::Init();
+		RenderThread::Init();
     }
 
     void Renderer::Shutdown()
     {
 		Renderer2D::Shutdown();
     }
+
+	void Renderer::NewFrame()
+	{
+		RenderThread::Start();
+	}
+
+	void Renderer::EndFrame()
+	{
+		RenderThread::Wait();
+	}
+
+	UUID Renderer::AddFrameCallback(Action<>&& callback)
+	{
+		return RenderThread::AddWaitCallback(std::move(callback));
+	}
+
+	void Renderer::RemoveFrameCallback(UUID id)
+	{
+		RenderThread::RemoveWaitCallback(id);
+	}
+
+	void Renderer::Submit(Action<>&& renderWork)
+	{
+		RenderThread::Submit(std::move(renderWork));
+	}
 
     void Renderer::SetViewport(u32 w, u32 h)
     {
@@ -95,6 +122,11 @@ namespace Laby {
 	void Renderer::EnableDepth()
 	{
 		glEnable(GL_DEPTH_TEST);
+	}
+
+	void Renderer::SetDepth(f64 nearVal, f64 farVal)
+	{
+		glDepthRange(nearVal, farVal);
 	}
 
 	void Renderer::DisableDepth()

@@ -61,6 +61,24 @@ namespace Laby {
 
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
 
+		// At the end of every frame once the main and render thread have synchronised, read pixel from framebuffer.
+		Renderer::AddFrameCallback([this]
+		{
+			auto [mx, my] = Utils::MousePos();
+			mx -= mEditorData.viewportBounds[0].x;
+			my -= mEditorData.viewportBounds[0].y;
+			glm::vec2 viewportSize = mEditorData.viewportBounds[1] - mEditorData.viewportBounds[0];
+			my = viewportSize.y - my;
+			i32 mouseX = (i32)mx;
+			i32 mouseY = (i32)my;
+
+			if (mouseX < 0 || mouseY < 0 || mouseX >= (i32)viewportSize.x || mouseY >= (i32)viewportSize.y)
+				return;
+
+			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY);
+			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, mCurrentScene);
+		});
+
 		EditorResources::Init();
 
 		mEditorData.viewportSize = { fbSpec.width, fbSpec.height };
@@ -105,14 +123,17 @@ namespace Laby {
 			mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 		}
 
-		Renderer2D::ResetStats();
+		Renderer::Submit([this]
+		{
+			Renderer2D::ResetStats();
 
-		mFramebuffer->bind();
-		Renderer::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
-		Renderer::Clear();
+			mFramebuffer->bind();
+			Renderer::SetClearColor({ 0.125f, 0.0625f, 0.25f, 1.0f });
+			Renderer::Clear();
 
-		// Clear our entity ID attachment to -1
-		mFramebuffer->clearAttachment(1, -1);
+			// Clear our entity ID attachment to -1
+			mFramebuffer->clearAttachment(1, -1);
+		});
 
 		switch (mSceneState)
 		{
@@ -139,21 +160,10 @@ namespace Laby {
 		}
 		}
 
-		auto [mx, my] = Utils::MousePos();
-		mx -= mEditorData.viewportBounds[0].x;
-		my -= mEditorData.viewportBounds[0].y;
-		glm::vec2 viewportSize = mEditorData.viewportBounds[1] - mEditorData.viewportBounds[0];
-		my = viewportSize.y - my;
-		i32 mouseX = (i32)mx;
-		i32 mouseY = (i32)my;
-
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
+		Renderer::Submit([this]
 		{
-			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY);
-			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, mCurrentScene);
-		}
-
-		mFramebuffer->unbind();
+			mFramebuffer->unbind();
+		});
 	}
 
 	void EditorLayer::onImGuiRender()
@@ -309,14 +319,15 @@ namespace Laby {
 
 	void EditorLayer::OnOverlayRender()
 	{
+		glm::mat4 cameraTransform{ 1.0f };
 		switch (mSceneState)
 		{
 		case SceneEdit:
-			Renderer2D::BeginState(*mEditorData.camera);
+			cameraTransform = mEditorData.camera->getViewProjection();
 			break;
 
 		case SceneSimulate:
-			Renderer2D::BeginState(*mEditorData.camera);
+			cameraTransform = mEditorData.camera->getViewProjection();
 			break;
 
 		case ScenePlay:
@@ -325,53 +336,57 @@ namespace Laby {
 			if (!camera) 
 				return;
 
-			Renderer2D::BeginState(camera.getComponent<CameraComponent>().camera, camera.getComponent<TransformComponent>());
+			cameraTransform = camera.getComponent<CameraComponent>().camera->getProjection() * glm::inverse(camera.getComponent<TransformComponent>().getTransform());
 			break;
 		}
-		default:
-			return;
 		}
 
-		if (mEditorData.displayColliders)
+		Renderer::Submit([=, this]
 		{
-			mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](auto entity, const auto& tc, const auto& bcc)
+			Renderer2D::BeginState(cameraTransform);
+
+			if (mEditorData.displayColliders)
 			{
-				glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
-
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.translation)
-					* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
-					* glm::translate(glm::mat4(1.0f), glm::vec3(bcc.offset, 0.001f))
-					* glm::scale(glm::mat4(1.0f), scale);
-
-				Renderer2D::DrawRect(transform, mEditorData.colliderColour);
-			});
-
-			mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](auto entity, const auto& tc, const auto& ccc)
-			{
-				glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
-
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.translation)
-					* glm::translate(glm::mat4(1.0f), glm::vec3(ccc.offset, 0.001f))
-					* glm::scale(glm::mat4(1.0f), scale);
-
-				Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.05f);
-			});
-		}
-
-		{
-			const auto& selection = SelectionManager::GetSelections(SelectionDomain::Scene);
-			SelectionManager::ForEach(SelectionDomain::Scene, [this](const UUID& id)
-			{
-				Entity selectedEntity = mCurrentScene->findEntity(id);
-				if (selectedEntity && selectedEntity.hasComponent<TransformComponent>())
+				mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](auto entity, const auto& tc, const auto& bcc)
 				{
-					const auto& transform = selectedEntity.getComponent<TransformComponent>();
-					Renderer2D::DrawRect(transform.getTransform(), mEditorData.selectionColour);
-				}
-			});
-		}
+					glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
 
-		Renderer2D::EndState();
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.translation)
+						* glm::rotate(glm::mat4(1.0f), tc.rotation.z, glm::vec3(0.0f, 0.0f, 1.0f))
+						* glm::translate(glm::mat4(1.0f), glm::vec3(bcc.offset, 0.001f))
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawRect(transform, mEditorData.colliderColour);
+				});
+
+				mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](auto entity, const auto& tc, const auto& ccc)
+				{
+					glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
+
+					glm::mat4 transform = glm::translate(glm::mat4(1.0f), tc.translation)
+						* glm::translate(glm::mat4(1.0f), glm::vec3(ccc.offset, 0.001f))
+						* glm::scale(glm::mat4(1.0f), scale);
+
+					Renderer2D::DrawCircle(transform, mEditorData.colliderColour, 0.05f);
+				});
+			}
+
+			{
+				const auto& selection = SelectionManager::GetSelections(SelectionDomain::Scene);
+				SelectionManager::ForEach(SelectionDomain::Scene, [this](const UUID& id)
+				{
+					Entity selectedEntity = mCurrentScene->findEntity(id);
+					if (selectedEntity && selectedEntity.hasComponent<TransformComponent>())
+					{
+						const auto& transform = selectedEntity.getComponent<TransformComponent>();
+						Renderer2D::DrawRect(transform.getTransform(), mEditorData.selectionColour);
+					}
+				});
+			}
+
+			Renderer2D::EndState();
+		})
+
 	}
 
 	void EditorLayer::UI_Viewport()

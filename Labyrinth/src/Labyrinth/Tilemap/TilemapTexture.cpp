@@ -81,35 +81,39 @@ namespace Laby {
 
 	void TilemapTexture::RenderTexture()
 	{
-		mFramebuffer->bind();
-
-		Renderer::SetClearColor({ 0.f, 0.f, 0.f, 1 });
-		Renderer::Clear();
-		Renderer::DisableDepth();
-
-		Renderer2D::BeginState(mCamera);
-
-		for (const TileRenderLayer& layer : mLayers)
+		Renderer::Submit([this]()
 		{
-			for (u32 y = 0; y < mHeight; y++)
-			{
-				for (u32 x = 0; x < mWidth; x++)
-				{
-					const auto& tileData = layer(x, (mHeight - y - 1));
-					Ref<SubTexture2D> tex = mTilePalette[tileData.textureID];
-					if (!tex)
-						continue;
+			mFramebuffer->bind();
 
-					glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
-					pos += 0.5f * TileSizeF;
-					Renderer2D::DrawRotatedQuad(pos, TileSizeF, tileData.rotation, tex);
+			Renderer::SetClearColor({ 0.f, 0.f, 0.f, 1 });
+			Renderer::Clear();
+			Renderer::DisableDepth();
+
+			Renderer2D::BeginState(mCamera);
+
+			for (const TileRenderLayer& layer : mLayers)
+			{
+				for (u32 y = 0; y < mHeight; y++)
+				{
+					for (u32 x = 0; x < mWidth; x++)
+					{
+						const auto& tileData = layer(x, (mHeight - y - 1));
+						Ref<SubTexture2D> tex = mTilePalette[tileData.textureID];
+						if (!tex)
+							continue;
+
+						glm::vec2 pos = { x * TileSize.x, y * TileSize.y };
+						pos += 0.5f * TileSizeF;
+						Renderer2D::DrawRotatedQuad(pos, TileSizeF, tileData.rotation, tex);
+					}
 				}
 			}
-		}
 
-		Renderer2D::EndState();
-		Renderer::EnableDepth();
-		mFramebuffer->unbind();
+			Renderer2D::EndState();
+
+			Renderer::EnableDepth();
+			mFramebuffer->unbind();
+		});
 	}
 
 	void TilemapTexture::UpdateLayers(const std::unordered_map<TileID, TileID>& mapping)

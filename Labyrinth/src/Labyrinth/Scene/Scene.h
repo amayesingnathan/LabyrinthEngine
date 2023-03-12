@@ -105,6 +105,8 @@ namespace Laby {
 		Single<ECS::Groups> mGroups;
 
 		Single<RenderStack> mRenderStack = nullptr;
+		Single<RenderStack> mBufferStack = nullptr;
+		UUID mStackSwapCallbackID;
 
 		EntityID mSceneEntity;
 		std::unordered_map<UUID, EntityID> mEntityMap;
