@@ -21,6 +21,11 @@ int main(int argc, char* argv[]);
 
 namespace Laby {
 
+	class Application;
+
+	//To be defined in client
+	extern Application* CreateApplication(int argc, char** argv);
+
 	struct Resolution
 	{
 		u32 width, height;
@@ -130,7 +135,4 @@ namespace Laby {
 		inline static Application* sInstance = nullptr;
 		friend int ::main(int argc, char** argv);
 	};
-
-	//To be defined in client
-	extern Application* CreateApplication(int argc, char** argv);
 }

@@ -240,47 +240,25 @@ namespace Laby {
 
 	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID)
 	{
-		if (!src.hasTex())
-		{
-			DrawQuad(transform, src.colour, entityID);
-			return;
-		}
-
-		switch (src.type)
-		{
-		case SpriteRendererComponent::TexType::Texture:
-		{
-			Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(src.handle);
-			if (!tex) 
-				return;
-
-			DrawQuad(transform, tex, src.tilingFactor, src.colour, entityID);
-			break;
-		}
-		case SpriteRendererComponent::TexType::SubTexture:
-		{
-			Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(src.handle);
-			if (!subtex) 
-				return;
-
-			DrawQuad(transform, subtex, src.tilingFactor, src.colour, entityID);
-			break;
-		}
-		case SpriteRendererComponent::TexType::Tilemap:
-		{
-			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(src.handle);
-			if (!tilemap)
-				return;
-
-			DrawQuad(transform, tilemap, src.tilingFactor, src.colour, entityID);
-			break;
-		}
-		}
+		DrawQuad(transform.getTransform(), src.type, src.handle, src.colour, src.tilingFactor, entityID);
 	}
 
 	void Renderer2D::DrawCircle(const TransformComponent& transform, const CircleRendererComponent& crc, i32 entityID)
 	{
 		DrawCircle(transform, crc.colour, crc.thickness, entityID);
+	}
+
+	void Renderer2D::DrawElement(const DrawData& drawData)
+	{
+		switch (drawData.drawType)
+		{
+		case DrawData::Quad:
+			DrawQuad(drawData.transform, drawData.texType, drawData.handle, drawData.colour, drawData.tilingFactorOrThickness, drawData.entityID);
+			break;
+		case DrawData::Circle:
+			DrawCircle(drawData.transform, drawData.colour, drawData.tilingFactorOrThickness, drawData.entityID);
+			break;
+		}
 	}
 
 	void Renderer2D::DrawLine(const glm::vec3& p0, const glm::vec3& p1, const glm::vec4& colour, i32 entityID)
@@ -406,5 +384,45 @@ namespace Laby {
 	const RenderStatistics& Renderer2D::GetStats()
 	{
 		return sRenderData.stats;
+	}
+
+	void Renderer2D::DrawQuad(const glm::mat4& trans, RenderType type, AssetHandle handle, const glm::vec4 colour, f32 tilingFactor, i32 entityID)
+	{
+		if (!handle || type == RenderType::None)
+		{
+			DrawQuad(trans, colour, entityID);
+			return;
+		}
+
+		switch (type)
+		{
+		case RenderType::Texture:
+		{
+			Ref<Texture2D> tex = AssetManager::GetAsset<Texture2D>(handle);
+			if (!tex)
+				return;
+
+			DrawQuad(trans, tex, tilingFactor, colour, entityID);
+			break;
+		}
+		case RenderType::SubTexture:
+		{
+			Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(handle);
+			if (!subtex)
+				return;
+
+			DrawQuad(trans, subtex, tilingFactor, colour, entityID);
+			break;
+		}
+		case RenderType::Tilemap:
+		{
+			Ref<Tilemap> tilemap = AssetManager::GetAsset<Tilemap>(handle);
+			if (!tilemap)
+				return;
+
+			DrawQuad(trans, tilemap, tilingFactor, colour, entityID);
+			break;
+		}
+		}
 	}
 }

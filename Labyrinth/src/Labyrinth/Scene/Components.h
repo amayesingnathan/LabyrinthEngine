@@ -64,15 +64,9 @@ namespace Laby {
 
 	struct SpriteRendererComponent
 	{
-		enum class TexType
-		{
-			None, Texture, SubTexture, Tilemap
-		};
-
 		u8 layer = 0;
-		static const u8 MaxLayers = std::numeric_limits<u8>::max();
 
-		TexType type = TexType::None;
+		RenderType type = RenderType::None;
 		glm::vec4 colour = { 1.0f, 1.0f, 1.0f, 1.0f };
 		AssetHandle handle = 0;
 		f32 tilingFactor = 1.0f;
@@ -82,17 +76,11 @@ namespace Laby {
 			: layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
 		SpriteRendererComponent(const glm::vec4& rgba, u8 layer = 0)
 			: layer(layer), colour(rgba) {}
-
-		bool hasTex() const { return handle; }
-
-		// Get normalised layer value
-		f32 getNLayer() const { return (StaticCast<f32>(layer) / StaticCast<f32>(MaxLayers)); }
 	};
 
 	struct CircleRendererComponent
 	{
 		u8 layer = 0;
-		static const u8 MaxLayers = std::numeric_limits<u8>::max();
 
 		glm::vec4 colour{ 1.0f, 1.0f, 1.0f, 1.0f };
 		f32 thickness = 1.0f;
@@ -100,9 +88,6 @@ namespace Laby {
 		CircleRendererComponent() = default;
 		CircleRendererComponent(u8 layer)
 			: layer(layer), colour({ 1.0f, 1.0f, 1.0f, 1.0f }) {}
-
-		// Get normalised layer value
-		f32 getNLayer() const { return (StaticCast<f32>(layer) / StaticCast<f32>(MaxLayers)); }
 	};
 
 	struct TagComponent

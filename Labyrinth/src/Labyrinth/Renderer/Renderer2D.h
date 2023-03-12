@@ -2,6 +2,7 @@
 
 #include "IRenderable.h"
 #include "Renderer2DInternal.h"
+#include "RenderLayer.h"
 
 namespace Laby {
 
@@ -20,12 +21,15 @@ namespace Laby {
 		static void Shutdown();
 
 		static void BeginState();
+		static void BeginState(const glm::mat4& transform);
 		static void BeginState(const Camera& camera, const glm::mat4& transform);
 		static void BeginState(const Camera& camera);
 		static void EndState();
 
 		static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID);
 		static void DrawCircle(const TransformComponent& transform, const CircleRendererComponent& crc, i32 entityID = -1);
+
+		static void DrawElement(const DrawData& drawData);
 
 		static void DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& colour, i32 entityID = -1);
 		static void DrawQuad(const glm::mat4& transform, const glm::vec4& colour, i32 entityID = -1);
@@ -47,8 +51,9 @@ namespace Laby {
 		static const RenderStatistics& GetStats();
 
 	private:
-		static void BeginState(const glm::mat4& cameraTransform);
+		static void DrawQuad(const glm::mat4& trans, RenderType type, AssetHandle handle, const glm::vec4 colour, f32 tilingFactor, i32 entityID);
 
+	private:
 		static void StartBatch();
 		static void Flush();
 		static void NextBatch();

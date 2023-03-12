@@ -451,7 +451,7 @@ namespace Laby {
 			ac.playing = start;
 
 			src.handle = animation->getFrame(ac.frameIndex).sprite;
-			src.type = SpriteRendererComponent::TexType::SubTexture;
+			src.type = RenderType::SubTexture;
 		});
 	}
 
@@ -538,7 +538,7 @@ namespace Laby {
 			}
 
 			ac.frameCounter = 0;
-			src.type = SpriteRendererComponent::TexType::SubTexture;
+			src.type = RenderType::SubTexture;
 			src.handle = frame.sprite;
 		});
 	}

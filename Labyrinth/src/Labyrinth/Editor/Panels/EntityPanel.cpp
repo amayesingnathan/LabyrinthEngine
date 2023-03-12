@@ -20,13 +20,13 @@ namespace Laby {
 	using ParentEntityEntry = imcpp::ComboEntry<Entity>;
 	using ScriptClassEntry = imcpp::ComboEntry<Ref<ScriptClass>>;
 
-	using TexTypeEntry = imcpp::ComboEntry<SpriteRendererComponent::TexType>;
+	using TexTypeEntry = imcpp::ComboEntry<RenderType>;
 	static constexpr std::array<TexTypeEntry, 4> sTextureTypes =
 	{
-		TexTypeEntry{ "Colour",			SpriteRendererComponent::TexType::None },
-		TexTypeEntry{ "Texture2D",		SpriteRendererComponent::TexType::Texture },
-		TexTypeEntry{ "SubTexture2D",	SpriteRendererComponent::TexType::SubTexture },
-		TexTypeEntry{ "Tilemap",		SpriteRendererComponent::TexType::Tilemap }
+		TexTypeEntry{ "Colour",			RenderType::None },
+		TexTypeEntry{ "Texture2D",		RenderType::Texture },
+		TexTypeEntry{ "SubTexture2D",	RenderType::SubTexture },
+		TexTypeEntry{ "Tilemap",		RenderType::Tilemap }
 	};
 
 	using CameraProjectionEntry = imcpp::ComboEntry<SceneCamera::ProjectionType>;
@@ -203,18 +203,18 @@ namespace Laby {
 		{
 			Widgets::UIntEdit("Layer", component.layer);
 			Widgets::ColourEdit("Colour", component.colour);
-			Widgets::Combobox<SpriteRendererComponent::TexType>("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes);
+			Widgets::Combobox<RenderType>("Texture Type", Enum::ToString(component.type), component.type, sTextureTypes);
 
 			Ref<IRenderable> tex = EditorResources::NoTexture;
 			switch (component.type)
 			{
-			case SpriteRendererComponent::TexType::Texture:
+			case RenderType::Texture:
 				tex = AssetManager::GetAsset<Texture2D>(component.handle);
 				break;
-			case SpriteRendererComponent::TexType::SubTexture:
+			case RenderType::SubTexture:
 				tex = AssetManager::GetAsset<SubTexture2D>(component.handle);
 				break;
-			case SpriteRendererComponent::TexType::Tilemap:
+			case RenderType::Tilemap:
 				tex = AssetManager::GetAsset<Tilemap>(component.handle);
 				break;
 			}
@@ -227,28 +227,28 @@ namespace Laby {
 
 				if (AssetManager::IsExtensionValid(extension, AssetType::Texture))
 				{
-					component.type = SpriteRendererComponent::TexType::Texture;
+					component.type = RenderType::Texture;
 					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 				else if (AssetManager::IsExtensionValid(extension, AssetType::SubTexture))
 				{
-					component.type = SpriteRendererComponent::TexType::SubTexture;
+					component.type = RenderType::SubTexture;
 					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 				else if (AssetManager::IsExtensionValid(extension, AssetType::Tilemap))
 				{
-					component.type = SpriteRendererComponent::TexType::Tilemap;
+					component.type = RenderType::Tilemap;
 					component.handle = AssetManager::GetAssetHandleFromPath(var);
 				}
 			});
 			Widgets::AddDragDropTarget<AssetHandle>("SPRITE_SHEET_ITEM", [&](const AssetHandle& var)
 			{
-				component.type = SpriteRendererComponent::TexType::SubTexture;
+				component.type = RenderType::SubTexture;
 				component.handle = var;
 			});
 			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& var)
 			{
-				component.type = SpriteRendererComponent::TexType::Tilemap;
+				component.type = RenderType::Tilemap;
 				component.handle = var;
 			});
 			Widgets::FloatEdit("Tiling Factor", component.tilingFactor, 0.1f, 0.0f, 100.0f);
@@ -325,7 +325,7 @@ namespace Laby {
 				if (mSelectedEntity.hasComponent<SpriteRendererComponent>())
 				{
 					auto& sprite = mSelectedEntity.getComponent<SpriteRendererComponent>();
-					sprite.type = SpriteRendererComponent::TexType::Tilemap;
+					sprite.type = RenderType::Tilemap;
 					sprite.handle = map;	
 				} 
 			});

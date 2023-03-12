@@ -353,7 +353,7 @@ namespace Laby {
 			{
 				auto& src = deserializedEntity.addComponent<SpriteRendererComponent>();
 
-				src.type = (SpriteRendererComponent::TexType)spriteRendererComponent["Type"].as<i32>();
+				src.type = (RenderType)spriteRendererComponent["Type"].as<i32>();
 				src.layer = spriteRendererComponent["Layer"].as<u8>();
 				src.handle = spriteRendererComponent["Handle"].as<u64>();
 				src.colour = spriteRendererComponent["Colour"].as<glm::vec4>();

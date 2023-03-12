@@ -4,6 +4,11 @@
 
 namespace Laby {
 
+	enum class RenderType
+	{
+		None, Texture, SubTexture, Tilemap
+	};
+
 	class IRenderable : public virtual RefCounted
 	{
 	public:
