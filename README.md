@@ -57,7 +57,7 @@ animation, as well as a runtime in order to export projects as full standalone g
   
   Users can easily add listeners to the system by inheriting from the `IEventListener` class and must implement `void onEvent(Event& e)`. Layers in the application automatically inherit from IEventListener but do not implement onEvent. Any class that inherits from IEventListener (including Layers) must specify the individual events to listen for using the `LISTENING_EVENTS(...)` macro, which takes in a variable number of values from the `EventType::Flag` enum, separated by commas, e.g. `LISTENING_EVENTS(WindowResize, MouseMoved)`.
   
-  A local event dispatcher is also included to allow users to simplify the `onEvent` function of any listener. This takes a reference to an event as its constructor. Specific event types can easily be dispatched to other functions by doing `dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(FooBar))` where FooBar is a member function that takes a `KeyPresedEvent&` as a parameter.
+  A dispatch function is also included on the Event to allow users to simplify the `onEvent` function of any listener. Specific event types can easily be dispatched to other functions by doing `e.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(FooBar))` where FooBar is a member function that takes a `KeyPresedEvent&` as a parameter and returns a bool indicating if the event was handled. LAB_BIND_EVENT_FUNC can be omitted if providing a non-member function.
   
   ### Scene Management ###
   

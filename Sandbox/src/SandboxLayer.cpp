@@ -64,8 +64,7 @@ namespace Laby {
 
 	void SandboxLayer::onEvent(Event& e)
 	{
-		LocalEventDispatcher dispatcher(e);
-		dispatcher.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressedEvent));
+		e.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressedEvent));
 	}
 
 	bool SandboxLayer::OnKeyPressedEvent(KeyPressedEvent& e)

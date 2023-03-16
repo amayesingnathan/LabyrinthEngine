@@ -33,27 +33,17 @@ namespace Laby {
 			type = LAB_BIT(AllEvents::Index<TEvent>);
 			data = TEvent(std::forward<TArgs>(args)...);
 		}
-	};
 
-	class LocalEventDispatcher
-	{
-	public:
-		LocalEventDispatcher(Event& event)
-			: mEvent(event) {}
-
-		template<typename T>
+		template<IsEvent T>
 		void dispatch(Predicate<T&> func)
 		{
-			if (mEvent.type != T::GetStaticType())
+			if (type != T::GetStaticType())
 				return;
 
-			if (mEvent.handled)
+			if (handled)
 				return;
 
-			mEvent.handled = func(std::get<T>(mEvent.data));
+			handled = func(std::get<T>(data));
 		}
-
-	private:
-		Event& mEvent;
 	};
 }

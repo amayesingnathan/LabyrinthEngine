@@ -45,9 +45,8 @@ namespace Laby {
 
 	void Application::onEvent(Event& e)
 	{
-		LocalEventDispatcher dispatcher(e);
-		dispatcher.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(OnWindowClose));
-		dispatcher.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OnWindowResize));
+		e.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(OnWindowClose));
+		e.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OnWindowResize));
 	}
 
 	bool Application::OnWindowClose(WindowCloseEvent& e)

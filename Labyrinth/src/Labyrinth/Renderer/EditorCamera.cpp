@@ -90,8 +90,7 @@ namespace Laby {
 
 	void EditorCamera::onEvent(Event& e)
 	{
-		LocalEventDispatcher dispatcher(e);
-		dispatcher.dispatch<MouseScrolledEvent>(LAB_BIND_EVENT_FUNC(EditorCamera::OnMouseScroll));
+		e.dispatch<MouseScrolledEvent>(LAB_BIND_EVENT_FUNC(EditorCamera::OnMouseScroll));
 	}
 
 	bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
