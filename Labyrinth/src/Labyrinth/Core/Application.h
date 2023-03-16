@@ -112,7 +112,7 @@ namespace Laby {
 
 		static const ApplicationSpec& GetSpec() { return sInstance->mSpecification; }
 
-		static void SubmitActionToMainThread(const Action<>& function);
+		static void SubmitActionToMainThread(Action<>&& function);
 		static void SendNetMessage(const Message& msg);
 
 		static void ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec);

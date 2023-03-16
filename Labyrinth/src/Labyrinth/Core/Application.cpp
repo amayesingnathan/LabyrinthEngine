@@ -118,11 +118,11 @@ namespace Laby {
 			sInstance->mState.running = false;
 	}
 
-	void Application::SubmitActionToMainThread(const Action<>& function)
+	void Application::SubmitActionToMainThread(Action<>&& function)
 	{
 		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
 
-		sInstance->mState.mainThreadQueue.emplace_back(function);
+		sInstance->mState.mainThreadQueue.emplace_back(std::move(function));
 	}
 
 	void Application::SendNetMessage(const Message& msg)

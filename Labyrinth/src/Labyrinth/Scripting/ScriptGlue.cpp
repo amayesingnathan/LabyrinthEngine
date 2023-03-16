@@ -26,11 +26,11 @@ namespace Laby {
 		Ref<Scene> scene = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 		return scene->findEntity(entityID);
-	};
+	}; 
 
-	static std::unordered_map<MonoType*, std::function<void(Entity&)>> sCreateComponentFuncs;
-	static std::unordered_map<MonoType*, std::function<bool(Entity&)>> sHasComponentFuncs;
-	static std::unordered_map<MonoType*, std::function<void(Entity&)>> sRemoveComponentFuncs;
+	static std::unordered_map<MonoType*, Action<Entity&>> sCreateComponentFuncs;
+	static std::unordered_map<MonoType*, Predicate<Entity&>> sHasComponentFuncs;
+	static std::unordered_map<MonoType*, Action<Entity&>> sRemoveComponentFuncs;
 
 #define LAB_ADD_INTERNAL_CALL(funcName) mono_add_internal_call("Labyrinth.Internal::"#funcName, GlueFunctions::funcName)
 

@@ -12,7 +12,7 @@ namespace Laby {
 
 		virtual constexpr EventTypeFlag getListeningEvents() const = 0;
 		virtual void onEvent(Event& e) = 0;
-		virtual void setEventCondition(Predicate<> condition) { mAcceptCondition = condition; }
+		virtual void setEventCondition(Predicate<>&& condition) { mAcceptCondition = std::move(condition); }
 
 		bool accept(EventTypeFlag type) const
 		{ 

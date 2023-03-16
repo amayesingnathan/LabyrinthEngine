@@ -35,7 +35,7 @@ namespace Laby {
 		}
 
 		template<IsEvent T>
-		void dispatch(Predicate<T&> func)
+		void dispatch(Predicate<T&>&& func)
 		{
 			if (type != T::GetStaticType())
 				return;

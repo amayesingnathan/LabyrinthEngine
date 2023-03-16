@@ -13,7 +13,7 @@ namespace Laby {
 	{
 	public:
 		template<typename T, typename Func, typename... Args>
-		static T WrapArgs(Func function, Args&&... args)
+		static T WrapArgs(Func&& function, Args&&... args)
 		{
 			constexpr size_t argc = sizeof...(Args);
 

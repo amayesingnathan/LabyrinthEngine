@@ -96,7 +96,7 @@ namespace Laby {
         return sSelectionMap[domain];
     }
 
-    void SelectionManager::ForEach(SelectionDomain domain, std::function<void(UUID)> func)
+    void SelectionManager::ForEach(SelectionDomain domain, Action<UUID>&& func)
     {
         if (!sSelectionMap.contains(domain))
             return;
@@ -105,7 +105,7 @@ namespace Laby {
             func(id);
     }
 
-    void SelectionManager::ForEach(std::function<void(UUID)> func)
+    void SelectionManager::ForEach(Action<UUID>&& func)
     {
         for (const auto& [domain, selections] : sSelectionMap)
         {

@@ -28,8 +28,8 @@ namespace Laby {
 
         static const std::vector<UUID>& GetSelections(SelectionDomain domain);
 
-        static void ForEach(SelectionDomain domain, std::function<void(UUID)> func);
-        static void ForEach(std::function<void(UUID)> func);
+        static void ForEach(SelectionDomain domain, Action<UUID>&& func);
+        static void ForEach(Action<UUID>&& func);
 
     private:
         inline static std::unordered_map<SelectionDomain, std::vector<UUID>> sSelectionMap;

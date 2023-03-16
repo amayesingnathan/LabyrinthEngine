@@ -44,14 +44,14 @@ namespace Laby {
     class InlineModal : public IEditorModal
     {
     public:
-        InlineModal(std::function<void()> onImGuiRenderLambda, std::function<void()> onCompleteLambda)
-            : mOnImGuiRender(onImGuiRenderLambda), mOnComplete(onCompleteLambda)
+        InlineModal(Action<>&& onImGuiRenderLambda, Action<>&& onCompleteLambda)
+            : mOnImGuiRender(std::move(onImGuiRenderLambda)), mOnComplete(std::move(onCompleteLambda))
         {}
 
         void onImGuiRender() override { mOnImGuiRender(); }
         void onComplete() override { mOnComplete(); }
 
     private:
-        std::function<void()> mOnImGuiRender, mOnComplete;
+        Action<> mOnImGuiRender, mOnComplete;
     };
 }
