@@ -51,7 +51,7 @@ namespace Laby {
 		TilePalette mTilePalette;
 
 		Ref<Framebuffer> mFramebuffer = nullptr;
-		OrthographicCamera mCamera;
+		Ref<OrthographicCamera> mCamera;
 
 		friend class Tilemap;
 		friend class TilemapUtils;

@@ -3,12 +3,9 @@
 #include "IRenderable.h"
 #include "Renderer2DInternal.h"
 #include "RenderLayer.h"
+#include "Camera.h"
 
 namespace Laby {
-
-	class Camera;
-	class OrthographicCamera;
-	class EditorCamera;
 
 	struct TransformComponent;
 	struct SpriteRendererComponent;
@@ -22,8 +19,8 @@ namespace Laby {
 
 		static void BeginState();
 		static void BeginState(const glm::mat4& transform);
-		static void BeginState(const Camera& camera, const glm::mat4& transform);
-		static void BeginState(const Camera& camera);
+		static void BeginState(const Ref<Camera>& camera, const glm::mat4& transform);
+		static void BeginState(const Ref<Camera>& camera);
 		static void EndState();
 
 		static void DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID);

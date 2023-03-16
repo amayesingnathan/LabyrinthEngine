@@ -8,7 +8,7 @@
 namespace Laby {
 
 	TilemapTexture::TilemapTexture(u32 width, u32 height)
-		: mWidth(width), mHeight(height), mCamera(0.0f, StaticCast<f32>(mWidth * TileSize.x), 0.0f, StaticCast<f32>(mHeight * TileSize.y))
+		: mWidth(width), mHeight(height)
 	{
 		FramebufferSpec fbSpec;
 		fbSpec.width = (i32)mWidth * TileSize.x;
@@ -17,6 +17,7 @@ namespace Laby {
 		fbSpec.samples = 1;
 
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
+		mCamera = Ref<OrthographicCamera>::Create(0.0f, StaticCast<f32>(mWidth * TileSize.x), 0.0f, StaticCast<f32>(mHeight * TileSize.y));
 	}
 
 	void TilemapTexture::removeSheet(AssetHandle handle)

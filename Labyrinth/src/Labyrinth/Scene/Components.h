@@ -50,16 +50,13 @@ namespace Laby {
 
 	struct CameraComponent
 	{
-		SceneCamera camera;
+		Ref<SceneCamera> camera;
 		bool primary = true; //ToDo: Maybe move to Scene
 		bool fixedAspectRatio = false;
 
 		CameraComponent() = default;
-		CameraComponent(const SceneCamera& cam, bool prime = true, bool fixedAR = false)
+		CameraComponent(const Ref<SceneCamera>& cam, bool prime = true, bool fixedAR = false)
 			: camera(cam), primary(prime), fixedAspectRatio(fixedAR) {}
-
-		operator SceneCamera& () { return camera; }
-
 	};
 
 	struct SpriteRendererComponent

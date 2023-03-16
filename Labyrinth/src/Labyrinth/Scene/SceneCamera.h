@@ -13,7 +13,6 @@ namespace Laby {
 
 	public:
 		SceneCamera();
-		virtual ~SceneCamera() = default;
 
 		void setPerspective(f32 verticalFOV, f32 nearClip, f32 farClip);
 		void setOrthographic(f32 size, f32 nearClip, f32 farClip);

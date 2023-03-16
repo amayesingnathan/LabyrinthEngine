@@ -14,14 +14,14 @@ namespace Laby {
 	class RefCounted
 	{
 	public:
-		u32 getRefCount() const { return mRefCount; }
+		u32 getRefCount() const { return mRefCount.load(); }
 
 	private:
 		void incRefCount() const { ++mRefCount; }
 		void decRefCount() const { --mRefCount; }
 
 	private:
-		mutable u32 mRefCount = 0;
+		mutable std::atomic<u32> mRefCount = 0;
 
 		template<RefCountable T>
 		friend class Ref;

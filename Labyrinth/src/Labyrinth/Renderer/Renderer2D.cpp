@@ -113,14 +113,14 @@ namespace Laby {
 		BeginState(glm::mat4{ 1.0f });
 	}
 
-	void Renderer2D::BeginState(const Camera& camera, const glm::mat4& transform)
+	void Renderer2D::BeginState(const Ref<Camera>& camera, const glm::mat4& transform)
 	{
-		BeginState(camera.getProjection() * glm::inverse(transform));
+		BeginState(camera->getProjection() * glm::inverse(transform));
 	}
 
-	void Renderer2D::BeginState(const Camera& camera)
+	void Renderer2D::BeginState(const Ref<Camera>& camera)
 	{
-		BeginState(camera.getViewProjection());
+		BeginState(camera->getViewProjection());
 	}
 
 	void Renderer2D::BeginState(const glm::mat4& cameraTransform)

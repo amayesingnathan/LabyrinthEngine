@@ -274,10 +274,10 @@ namespace Laby {
 		}
 
 		BuildScene();
-		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
+		DrawScene(camera.getComponent<CameraComponent>().camera, camera.getTransform());
 	}
 
-	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
+	void Scene::onUpdateSimulation(Timestep ts, const Ref<EditorCamera>& camera)
 	{
 		StepPhysics2D(ts);
 		UpdateAnimation();
@@ -286,7 +286,7 @@ namespace Laby {
 		DrawScene(camera);
 	}
 
-	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
+	void Scene::onUpdateEditor(Timestep ts, const Ref<EditorCamera>& camera)
 	{
 		UpdateAnimation();
 
@@ -303,7 +303,7 @@ namespace Laby {
 		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent)
 		{
 			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+				cameraComponent.camera->setViewportSize(mViewportWidth, mViewportHeight);
 		});
 	}
 
@@ -474,9 +474,9 @@ namespace Laby {
 		});
 	}
 
-	void Scene::DrawScene(EditorCamera& camera)
+	void Scene::DrawScene(const Ref<EditorCamera>& camera)
 	{
-		Renderer::Submit([&, this]()
+		Renderer::Submit([=, this]()
 		{
 			Renderer2D::BeginState(camera);
 			mRenderStack->draw();
@@ -484,9 +484,9 @@ namespace Laby {
 		});
 	}
 
-	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
+	void Scene::DrawScene(const Ref<Camera>& camera, const glm::mat4& transform)
 	{
-		Renderer::Submit([&, this]()
+		Renderer::Submit([=, this]()
 		{
 			Renderer2D::BeginState(camera, transform);
 			mRenderStack->draw();

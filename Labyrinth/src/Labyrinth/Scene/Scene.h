@@ -55,8 +55,8 @@ namespace Laby {
 		void onSimulationStop();
 
 		void onUpdateRuntime(Timestep ts);
-		void onUpdateSimulation(Timestep ts, EditorCamera& camera);
-		void onUpdateEditor(Timestep ts, EditorCamera& camera);
+		void onUpdateSimulation(Timestep ts, const Ref<EditorCamera>& camera);
+		void onUpdateEditor(Timestep ts, const Ref<EditorCamera>& camera);
 
 		void onViewportResize(u32 width, u32 height);
 
@@ -80,8 +80,8 @@ namespace Laby {
 		void ResetAnimations(bool start = false);
 
 		void BuildScene();
-		void DrawScene(EditorCamera& camera);
-		void DrawScene(Camera& camera, const glm::mat4& transform);
+		void DrawScene(const Ref<EditorCamera>& camera);
+		void DrawScene(const Ref<Camera>& camera, const glm::mat4& transform);
 
 		void StepPhysics2D(Timestep ts);
 		void UpdateScripts(Timestep ts);

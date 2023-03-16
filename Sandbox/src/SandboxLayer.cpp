@@ -16,7 +16,26 @@ namespace Laby {
 		fbSpec.samples = 1;
 
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
-		mCamera = OrthographicCamera(0.0f, StaticCast<f32>(fbSpec.width), 0.0f, StaticCast<f32>(fbSpec.height));
+		mCamera = Ref<OrthographicCamera>::Create(0.0f, StaticCast<f32>(fbSpec.width), 0.0f, StaticCast<f32>(fbSpec.height));
+
+		srand((unsigned)std::time(NULL));
+
+		float r = ((float)rand() / RAND_MAX);
+		float g = ((float)rand() / RAND_MAX);
+		float b = ((float)rand() / RAND_MAX);
+		mSquareColours[0] = {r, g, b, 1};
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
+		mSquareColours[1] = { r, g, b, 1 };
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
+		mSquareColours[2] = { r, g, b, 1 };
+		r = ((float)rand() / RAND_MAX);
+		g = ((float)rand() / RAND_MAX);
+		b = ((float)rand() / RAND_MAX);
+		mSquareColours[3] = { r, g, b, 1 };
 	}
 
 	void SandboxLayer::onDetach()
@@ -54,14 +73,16 @@ namespace Laby {
 		Renderer2D::ResetStats();
 
 		Widgets::BeginDockspace();
-		ImGui::Begin("Demo");
+
+		Widgets::BeginWindow("Demo");
+		LabWidgets::Image(mFramebuffer, { 1280, 720 });
 
 		static bool demo = true; //Enable demo
 		ImGui::ShowDemoWindow(&demo);
 
-		ImGui::Image((ImTextureID)(uintptr_t)mFramebuffer->getTextureID(), ImVec2{ 1280, 720 });
+		//ImGui::Image((ImTextureID)(uintptr_t)mFramebuffer->getTextureID(), ImVec2{ 1280, 720 });
 
-		ImGui::End();
+		Widgets::EndWindow();
 		Widgets::EndDockspace();
 	}
 

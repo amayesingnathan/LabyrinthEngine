@@ -144,13 +144,13 @@ namespace Laby {
 
 			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
-			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera.getProjectionType(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera.getPerspectiveVerticalFOV(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveNear, cameraComponent.camera.getPerspectiveNearClip(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveFar, cameraComponent.camera.getPerspectiveFarClip(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicSize, cameraComponent.camera.getOrthographicSize(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicNear, cameraComponent.camera.getOrthographicNearClip(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicFar, cameraComponent.camera.getOrthographicFarClip(), out);
+			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera->getProjectionType(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera->getPerspectiveVerticalFOV(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveNear, cameraComponent.camera->getPerspectiveNearClip(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFar, cameraComponent.camera->getPerspectiveFarClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicSize, cameraComponent.camera->getOrthographicSize(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicNear, cameraComponent.camera->getOrthographicNearClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicFar, cameraComponent.camera->getOrthographicFarClip(), out);
 			out << YAML::EndMap; // Camera
 
 			LAB_SERIALISE_PROPERTY(Primary, cameraComponent.primary, out);
@@ -334,15 +334,16 @@ namespace Laby {
 				auto cameraProps = cameraComponent["Camera"];
 
 				auto& cc = deserializedEntity.addComponent<CameraComponent>();
-				cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
+				cc.camera = Ref<SceneCamera>::Create();
+				cc.camera->setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
 
-				cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
-				cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
-				cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
+				cc.camera->setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+				cc.camera->setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
+				cc.camera->setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
 
-				cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
-				cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
-				cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
+				cc.camera->setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+				cc.camera->setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+				cc.camera->setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
 
 				cc.primary = cameraComponent["Primary"].as<bool>();
 				cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();

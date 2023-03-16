@@ -142,7 +142,7 @@ namespace Laby {
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
 				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateEditor(ts, *mEditorData.camera);
+			mCurrentScene->onUpdateEditor(ts, mEditorData.camera);
 			break;
 		}
 		case ScenePlay:
@@ -155,7 +155,7 @@ namespace Laby {
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
 				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateSimulation(ts, *mEditorData.camera);
+			mCurrentScene->onUpdateSimulation(ts, mEditorData.camera);
 			break;
 		}
 		}
@@ -385,7 +385,7 @@ namespace Laby {
 			}
 
 			Renderer2D::EndState();
-		})
+		});
 
 	}
 

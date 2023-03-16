@@ -519,7 +519,7 @@ namespace Laby {
 		}
 
 		const auto& component = entity.getComponent<CameraComponent>();
-		return component.camera.getPerspectiveVerticalFOV();
+		return component.camera->getPerspectiveVerticalFOV();
 	}
 
 	void GlueFunctions::Camera_SetVerticalFOV(UUID entityID, float verticalFOV)
@@ -539,7 +539,7 @@ namespace Laby {
 		}
 
 		auto& component = entity.getComponent<CameraComponent>();
-		return component.camera.setPerspectiveVerticalFOV(verticalFOV);
+		return component.camera->setPerspectiveVerticalFOV(verticalFOV);
 	}
 
 #pragma endregion

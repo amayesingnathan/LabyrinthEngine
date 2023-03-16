@@ -148,7 +148,7 @@ namespace Laby {
 
 		LabWidgets::Component<CameraComponent>("Camera", mSelectedEntity, [&](auto& component)
 		{
-			auto& camera = component.camera;
+			Ref<SceneCamera> camera = component.camera;
 			Widgets::Checkbox("Primary", component.primary, [&]()
 			{
 				//Ensure only one camera can be primary at once
@@ -164,34 +164,34 @@ namespace Laby {
 				});
 			});
 
-			const SceneCamera::ProjectionType& projectionType = camera.getProjectionType();
+			const SceneCamera::ProjectionType& projectionType = camera->getProjectionType();
 			Widgets::Combobox<SceneCamera::ProjectionType>("Projection", Enum::ToString(projectionType), projectionType, sCameraProjections,
-				[&](std::string_view, SceneCamera::ProjectionType projType) { camera.setProjectionType(projType); });
+				[&](std::string_view, SceneCamera::ProjectionType projType) { camera->setProjectionType(projType); });
 
 			switch (projectionType)
 			{
 			case SceneCamera::ProjectionType::Perspective:
 			{
-				Widgets::FloatEdit("Vertical FOV", glm::degrees(camera.getPerspectiveVerticalFOV()), 
-					[&](f32 var) { camera.setPerspectiveVerticalFOV(glm::radians(var)); });
+				Widgets::FloatEdit("Vertical FOV", glm::degrees(camera->getPerspectiveVerticalFOV()), 
+					[&](f32 var) { camera->setPerspectiveVerticalFOV(glm::radians(var)); });
 
-				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
-					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+				Widgets::FloatEdit("Near", camera->getPerspectiveNearClip(),
+					[&](f32 var) { camera->setPerspectiveNearClip(var); });
 
-				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
-					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+				Widgets::FloatEdit("Far", camera->getPerspectiveFarClip(),
+					[&](f32 var) { camera->setPerspectiveFarClip(var); });
 				break;
 			}
 			case SceneCamera::ProjectionType::Orthographic:
 			{
-				Widgets::FloatEdit("Size", camera.getOrthographicSize(),
-					[&](f32 var) { camera.setOrthographicSize(var); });
+				Widgets::FloatEdit("Size", camera->getOrthographicSize(),
+					[&](f32 var) { camera->setOrthographicSize(var); });
 
-				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
-					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+				Widgets::FloatEdit("Near", camera->getPerspectiveNearClip(),
+					[&](f32 var) { camera->setPerspectiveNearClip(var); });
 
-				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
-					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+				Widgets::FloatEdit("Far", camera->getPerspectiveFarClip(),
+					[&](f32 var) { camera->setPerspectiveFarClip(var); });
 
 				Widgets::Checkbox("Fixed Aspect Ratio", component.fixedAspectRatio);
 				break;
