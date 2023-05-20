@@ -56,15 +56,16 @@ namespace Laby {
 		void OnSceneSimulate();
 		void OnSceneStop();
 
-		void SetCurrentScene(const Ref<Scene>& currentScene);
-		void SyncWindowTitle();
+		void OnSceneChange(Ref<Scene> scene);
+		void SyncWindowTitle(Ref<Scene> scene = nullptr);
 
 		void CloneEntity();
 
 	private:
 		Ref<Framebuffer> mFramebuffer;
 
-		Ref<Scene> mCurrentScene, mEditorScene;
+		Ref<SceneManager> mSceneManager;
+		UUID mEditorScene = 0, mRuntimeScene = 0;
 
 		EditorData mEditorData;
 

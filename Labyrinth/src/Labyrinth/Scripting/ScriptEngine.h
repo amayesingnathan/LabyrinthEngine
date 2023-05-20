@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Scene/Scene.h>
+#include <Labyrinth/Scene/SceneManager.h>
 
 #include "ScriptEngineInternal.h"
 #include "ScriptObject.h"
@@ -17,8 +17,9 @@ namespace Laby {
 		static void OnRuntimeStart();
 		static void OnRuntimeStop();
 
-		static void SetContext(const Ref<Scene>& scene) { sContext = scene; }
-		static Ref<Scene> GetContext() { return sContext; }
+		static void SetContext(const Ref<SceneManager>& scene);
+		static Ref<SceneManager> GetContext() { return sContext; }
+		static void OnSceneChange(Ref<Scene> newScene);
 
 		static void LoadAppAssembly();
 		static void ReloadAssembly();
@@ -32,6 +33,6 @@ namespace Laby {
 		static Ref<ScriptObject> GetScriptInstance(UUID id);
 
 	private:
-		inline static Ref<Scene> sContext = nullptr;
+		inline static Ref<SceneManager> sContext = nullptr;
 	};
 }

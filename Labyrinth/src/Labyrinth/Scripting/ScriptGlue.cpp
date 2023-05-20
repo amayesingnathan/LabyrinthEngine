@@ -23,7 +23,7 @@ namespace Laby {
 
 	static inline Entity GetEntity(UUID entityID)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext();
+		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 		return scene->findEntity(entityID);
 	}; 
@@ -186,7 +186,7 @@ namespace Laby {
 
 	u64 GlueFunctions::Scene_FindEntityByTag(MonoString* tag)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext();
+		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 		Entity entity = scene->getEntityByTag(MarshalUtils::MonoStringToUTF8(tag));
 
@@ -201,12 +201,12 @@ namespace Laby {
 		if (!entityID)
 			return false;
 
-		return (bool)(ScriptEngine::GetContext()->findEntity(entityID));
+		return (bool)(ScriptEngine::GetContext()->getActive()->findEntity(entityID));
 	}
 
 	u64 GlueFunctions::Scene_CreateEntity(MonoString* tag)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext();
+		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 		return scene->CreateEntity(MarshalUtils::MonoStringToUTF8(tag)).getUUID();
 	}
@@ -217,13 +217,13 @@ namespace Laby {
 		if (!entity)
 			return;
 
-		Ref<Scene> scene = ScriptEngine::GetContext();
+		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
 		scene->DestroyEntity(entity);
 	}
 
 	MonoArray* GlueFunctions::Scene_GetEntities()
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext();
+		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 
 		auto entities = scene->getEntitiesWith<IDComponent>();
