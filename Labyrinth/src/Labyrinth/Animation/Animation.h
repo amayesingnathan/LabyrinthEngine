@@ -11,7 +11,7 @@ namespace Laby {
 	class Animation : public Asset
 	{
 	public:
-		ASSET_METADATA(AssetType::Animation, animations)
+		ASSET_METADATA(AssetType::Animation, "animations")
 
 	public:
 		Animation(std::string_view name) : mName(name) {}
