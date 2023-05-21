@@ -42,6 +42,13 @@ namespace Laby {
 
 #pragma region Scene
 
+		static u64 Scene_PreLoadScene(MonoString* path);
+		static void Scene_LoadPreLoadedScene();
+		static void Scene_LoadSceneFromID(UUID sceneID);
+		static u64 Scene_LoadSceneFromPath(MonoString* path);
+		static u64 Scene_LoadClonedScene(UUID sceneID);
+		static void Scene_UnloadScene(UUID sceneID);
+
 		static u64 Scene_FindEntityByTag(MonoString* tag);
 		static bool Scene_IsEntityValid(UUID entityID);
 		static u64 Scene_CreateEntity(MonoString* tag);
