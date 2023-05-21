@@ -38,9 +38,9 @@ namespace Laby {
         }
         Utils::SetWindowMoveFromTitleBar(false);
 
-        // Call any completion callbacks before deleting modal entries. Filter for modals that are open and have callbacks.
+        // Call any completion callbacks before deleting modal entries. Filter for modals that are now closed and have callbacks.
         auto hasCallbackView = sEditorModals |
-            std::views::filter([](const ModalEntry& entry) { return entry.open && sModalCallbacks.contains(entry.heading); });
+            std::views::filter([](const ModalEntry& entry) { return !entry.open && sModalCallbacks.contains(entry.heading); });
 
         for (const ModalEntry& entry : hasCallbackView)
         {
