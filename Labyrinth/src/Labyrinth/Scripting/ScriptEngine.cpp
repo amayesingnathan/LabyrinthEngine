@@ -33,14 +33,15 @@ namespace Laby {
 		LAB_CORE_ASSERT(sContext, "Tring to initialize script runtime without setting the scene context!");
 
 		std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
+		Ref<Scene> activeScene = sContext->getActive();
 
-		sContext->getActive()->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
+		activeScene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 		{
 			std::string className(sc.className.data());
 			if (!scriptClasses.contains(className))
 				return;
 
-			Entity entity = { e, sContext->getActive() };
+			Entity entity = { e, activeScene };
 			UUID id = entity.getUUID();
 			sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
 			sc.initialised = true;
@@ -105,10 +106,12 @@ namespace Laby {
 	{
 		auto appAssembly = ScriptEngineInternal::GetAppAssemblyInfo();
 		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", appAssembly->filepath);
+		LAB_CORE_ASSERT(sContext, "No scene manager context!");
+		Ref<Scene> scene = sContext->getActive();
 
-		if (sContext)
+		if (scene)
 		{
-			sContext->getActive()->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
+			scene->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
 			{
 				sc.instance.reset();
 				sc.initialised = false;
@@ -117,16 +120,17 @@ namespace Laby {
 
 		ScriptEngineInternal::LoadAppAssembly(appAssembly->filepath);
 
-		if (sContext)
+		if (scene)
 		{
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
-			sContext->getActive()->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
+
+			scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 			{
 				std::string className(sc.className.data());
 				if (!scriptClasses.contains(className))
 					return;
 
-				Entity entity = { e, sContext->getActive() };
+				Entity entity = { e, scene };
 				UUID id = entity.getUUID();
 				sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
 				sc.initialised = true;
