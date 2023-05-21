@@ -657,6 +657,7 @@ namespace Laby {
 			fs::rename(filepath / "project.lpj", filepath / newProjectFileName);
 		}
 
+		FileUtils::CreateDir(filepath / "assets" / "animations");
 		FileUtils::CreateDir(filepath / "assets" / "scenes");
 		FileUtils::CreateDir(filepath / "assets" / "scripts" / "Source");
 		FileUtils::CreateDir(filepath / "assets" / "textures");
