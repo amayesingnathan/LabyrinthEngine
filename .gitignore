@@ -32,10 +32,8 @@ Makefile.in
 **.json
 !Enigma/enigma.json
 
-#Assets
-assets/
-!Labyrinth/src/Labyrinth/Assets
-!Enigma/SandboxProject/assets/
+#Projects
+projects/
 
 # Directories
 Labyrinth/dependencies/VulkanSDK

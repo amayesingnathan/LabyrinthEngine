@@ -1,5 +1,0 @@
-Project:
-  Name: SandboxProject
-  AssetDirectory: assets
-  AssetRegistry: assets/registry.lreg
-  ScriptModulePath: assets/scripts/Binaries
