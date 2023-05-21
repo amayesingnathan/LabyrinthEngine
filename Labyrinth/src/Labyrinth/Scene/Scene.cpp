@@ -229,7 +229,6 @@ namespace Laby {
 		CreateTilemapEntities();
 		ResetAnimations(true);
 
-		ScriptEngine::SetContext(Ref<Scene>(this));
 		ScriptEngine::OnRuntimeStart();
 	}
 
@@ -239,7 +238,6 @@ namespace Laby {
 		ResetAnimations();
 
 		ScriptEngine::OnRuntimeStop();
-		ScriptEngine::SetContext(nullptr);
 	}
 
 	void Scene::onSimulationStart()

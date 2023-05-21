@@ -39,6 +39,25 @@ namespace Labyrinth
         #region Scene 
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static ulong Scene_PreLoadScene(string path);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Scene_LoadPreLoadedScene();
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Scene_LoadSceneFromID(ulong sceneID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static ulong Scene_LoadSceneFromPath(string path);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static ulong Scene_LoadClonedScene(ulong sceneID);
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
+        internal extern static void Scene_UnloadScene(ulong sceneID);
+
+
+        [MethodImplAttribute(MethodImplOptions.InternalCall)]
         internal extern static ulong Scene_FindEntityByTag(string tag);
 
         [MethodImplAttribute(MethodImplOptions.InternalCall)]

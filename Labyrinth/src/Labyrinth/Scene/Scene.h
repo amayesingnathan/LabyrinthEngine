@@ -21,7 +21,7 @@ namespace Laby {
 		Scene(const std::string& name = "Untitled");
 		~Scene();
 
-		ASSET_METADATA(AssetType::Scene, scenes)
+		ASSET_METADATA(AssetType::Scene, "scenes")
 
 		Entity CreateEntity(const std::string& name);
 		Entity CreateEntity(const std::string& name, Entity parent);

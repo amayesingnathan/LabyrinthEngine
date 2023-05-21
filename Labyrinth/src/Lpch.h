@@ -18,6 +18,7 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <future>
 #include <functional>
 #include <regex>
 #include <variant>

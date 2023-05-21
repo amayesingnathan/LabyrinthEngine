@@ -67,8 +67,12 @@ namespace Laby {
 		mEditorData.camera = Ref<EditorCamera>::Create(30.0f, 1.778f, 0.1f, 1000.0f);;
 		mEditorData.camera->setEventCondition([this]() { return (mEditorData.viewportHovered && (mSceneState == SceneEdit || mSceneState == SceneSimulate)); });
 
-		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", mCurrentScene);
-		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mCurrentScene);
+		mSceneManager = Ref<SceneManager>::Create();
+		mSceneManager->addSceneChangeCallback(std::bind(&EditorLayer::OnSceneChange, this, std::placeholders::_1));
+		ScriptEngine::SetContext(mSceneManager);
+
+		mScenePanel = PanelManager::Register<ScenePanel>("Scene Heirarchy", mSceneManager->getActive());
+		mEntityPanel = PanelManager::Register<EntityPanel>("Properties", mSceneManager->getActive());
 		PanelManager::Register<ContentBrowserPanel>("Content Browser");
 		PanelManager::Register<OptionsPanel>("Options", mEditorData);
 		PanelManager::Register<StatisticsPanel>("Statistics", mEditorData.hoveredEntity);
@@ -102,7 +106,7 @@ namespace Laby {
 			mFramebuffer->resize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 
 			mEditorData.camera->setViewportSize(mEditorData.viewportSize.x, mEditorData.viewportSize.y);
-			mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
+			mSceneManager->getActive()->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 		}
 
 		Renderer2D::ResetStats();
@@ -121,12 +125,12 @@ namespace Laby {
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
 				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateEditor(ts, *mEditorData.camera);
+			mSceneManager->getActive()->onUpdateEditor(ts, *mEditorData.camera);
 			break;
 		}
 		case ScenePlay:
 		{
-			mCurrentScene->onUpdateRuntime(ts);
+			mSceneManager->getActive()->onUpdateRuntime(ts);
 			break;
 		}
 		case SceneSimulate:
@@ -134,7 +138,7 @@ namespace Laby {
 			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
 				mEditorData.camera->onUpdate(ts);
 
-			mCurrentScene->onUpdateSimulation(ts, *mEditorData.camera);
+			mSceneManager->getActive()->onUpdateSimulation(ts, *mEditorData.camera);
 			break;
 		}
 		}
@@ -150,7 +154,7 @@ namespace Laby {
 		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
 		{
 			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY);
-			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, mCurrentScene);
+			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, mSceneManager->getActive());
 		}
 
 		mFramebuffer->unbind();
@@ -321,7 +325,7 @@ namespace Laby {
 
 		case ScenePlay:
 		{
-			Entity camera = mCurrentScene->getPrimaryCameraEntity();
+			Entity camera = mSceneManager->getActive()->getPrimaryCameraEntity();
 			if (!camera) 
 				return;
 
@@ -334,7 +338,7 @@ namespace Laby {
 
 		if (mEditorData.displayColliders)
 		{
-			mCurrentScene->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](auto entity, const auto& tc, const auto& bcc)
+			mSceneManager->getActive()->getEntitiesWith<TransformComponent, BoxColliderComponent>().each([this](auto entity, const auto& tc, const auto& bcc)
 			{
 				glm::vec3 scale = tc.scale * glm::vec3(bcc.halfExtents * 2.0f, 1.0f);
 
@@ -346,7 +350,7 @@ namespace Laby {
 				Renderer2D::DrawRect(transform, mEditorData.colliderColour);
 			});
 
-			mCurrentScene->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](auto entity, const auto& tc, const auto& ccc)
+			mSceneManager->getActive()->getEntitiesWith<TransformComponent, CircleColliderComponent>().each([this](auto entity, const auto& tc, const auto& ccc)
 			{
 				glm::vec3 scale = tc.scale * glm::vec3(ccc.radius * 2.0f);
 
@@ -362,7 +366,7 @@ namespace Laby {
 			const auto& selection = SelectionManager::GetSelections(SelectionDomain::Scene);
 			SelectionManager::ForEach(SelectionDomain::Scene, [this](const UUID& id)
 			{
-				Entity selectedEntity = mCurrentScene->findEntity(id);
+				Entity selectedEntity = mSceneManager->getActive()->findEntity(id);
 				if (selectedEntity && selectedEntity.hasComponent<TransformComponent>())
 				{
 					const auto& transform = selectedEntity.getComponent<TransformComponent>();
@@ -410,7 +414,8 @@ namespace Laby {
 	{
 		// Gizmos
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		Entity firstSelection = mCurrentScene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
+		Ref<Scene> scene = mSceneManager->getActive();
+		Entity firstSelection = scene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
 
 		if (firstSelection && mEditorData.gizmoType != -1 && mEditorData.viewportFocused && firstSelection.hasComponent<TransformComponent>())
 		{
@@ -453,7 +458,7 @@ namespace Laby {
 
 				SelectionManager::ForEach(SelectionDomain::Scene, [&, this](const UUID& id)
 				{
-					Entity entity = mCurrentScene->findEntity(id);
+					Entity entity = scene->findEntity(id);
 					if (entity.hasComponent<TransformComponent>())
 					{
 						TransformComponent& transform = entity.getComponent<TransformComponent>();
@@ -692,6 +697,7 @@ namespace Laby {
 			LAB_WARN("No C# assembly has been provided in the Project Settings, or it wasn't found.");
 
 		PanelManager::ProjectChanged();
+		mSceneManager->reset();
 
 		const fs::path& startScenePath = Project::GetStartScenePath();
 		if (!startScenePath.empty())
@@ -721,14 +727,13 @@ namespace Laby {
 		SaveProject();
 
 		ScriptEngine::UnloadAppAssembly();
-		ScriptEngine::SetContext(nullptr);
-
-		mCurrentScene = nullptr;
 
 		// Check that mEditorScene is the last one (so setting it null here will destroy the scene)
-		if (mEditorScene->getRefCount() != 1)
+		if (mSceneManager->get(mEditorScene)->getRefCount() != 1)
 			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - something is still holding scene refs!");
-		mEditorScene = nullptr;
+		mEditorScene = 0;
+
+		mSceneManager->reset();
 
 		if (unloadProject)
 			Project::SetInactive();
@@ -739,9 +744,9 @@ namespace Laby {
 		if (mSceneState != SceneEdit)
 			return;
 
-		mEditorScene = Ref<Scene>::Create();
+		mEditorScene = mSceneManager->newScene();
 		mEditorData.currentFile = std::string();
-		SetCurrentScene(mEditorScene);
+		mSceneManager->load(mEditorScene);
 	}
 
 	bool EditorLayer::OpenScene()
@@ -764,16 +769,14 @@ namespace Laby {
 			return false;
 		}
 
-		Ref<Scene> newScene = Ref<Scene>::Create("Untitled");
-		SceneSerialiser serialiser(newScene);
-		serialiser.deserialise(path);
-
-		mEditorScene = newScene;
+		UUID sceneID = mSceneManager->load(path);
+		mEditorScene = sceneID;
 		mEditorData.currentFile = path.string();
-		if (!mEditorScene->hasName())
-			mEditorScene->setName(path.stem().string());
 
-		SetCurrentScene(mEditorScene);
+		Ref<Scene> scene = mSceneManager->get(sceneID);
+		if (!scene->hasName())
+			scene->setName(path.stem().string());
+
 		return true;
 	}
 
@@ -783,8 +786,10 @@ namespace Laby {
 
 		if (!mEditorData.currentFile.empty())
 		{
-			SceneSerialiser serialiser(mCurrentScene);
+			Ref<Scene> activeScene = mSceneManager->getActive();
+			SceneSerialiser serialiser(activeScene);
 			serialiser.serialise(mEditorData.currentFile);
+			AssetManager::ReloadData(activeScene->handle);
 		}
 		else SaveSceneAs();
 	}
@@ -796,65 +801,66 @@ namespace Laby {
 		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene" }).string();
 		if (!mEditorData.currentFile.empty())
 		{
-			SceneSerialiser serialiser(mCurrentScene);
+			Ref<Scene> activeScene = mSceneManager->getActive();
+			AssetManager::CreateNewAsset(activeScene->getName(), activeScene);
+			SceneSerialiser serialiser(activeScene);
 			serialiser.serialise(mEditorData.currentFile);
+			AssetManager::ReloadData(activeScene->handle);
 		}
 	}
 
 	void EditorLayer::OnScenePlay()
 	{
-		mCurrentScene = SceneUtils::Clone(mEditorScene);
-		mCurrentScene->onRuntimeStart();
+		UUID sceneID = mSceneManager->loadClone(mEditorScene);
+		Ref<Scene> scene = mSceneManager->get(sceneID);
+		mRuntimeScene = sceneID;
+		scene->onRuntimeStart();
 
 		mSceneState = ScenePlay;
-		mScenePanel->setContext(mCurrentScene);
-		mEntityPanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneSimulate()
 	{
-		mCurrentScene = SceneUtils::Clone(mEditorScene);
-		mCurrentScene->onSimulationStart();
+		UUID sceneID = mSceneManager->loadClone(mEditorScene);
+		Ref<Scene> scene = mSceneManager->get(sceneID);
+		mRuntimeScene = sceneID;
+		scene->onSimulationStart();
 
 		mSceneState = SceneSimulate;
-		mScenePanel->setContext(mCurrentScene);
-		mEntityPanel->setContext(mCurrentScene);
 	}
 
 	void EditorLayer::OnSceneStop()
 	{
+		Ref<Scene> currentScene = mSceneManager->getActive();
 		switch (mSceneState)
 		{
-		case ScenePlay: mCurrentScene->onRuntimeStop(); break;
-		case SceneSimulate: mCurrentScene->onSimulationStop(); break;
+		case ScenePlay: currentScene->onRuntimeStop(); break;
+		case SceneSimulate: currentScene->onSimulationStop(); break;
 		case SceneEdit: break;
 		}
 
-		mCurrentScene = mEditorScene;
+		mSceneManager->load(mEditorScene);
+		mSceneManager->unload(mRuntimeScene);
 
 		mSceneState = SceneEdit;
-		mScenePanel->setContext(mCurrentScene);
-		mEntityPanel->setContext(mCurrentScene);
 	}
 
-	void EditorLayer::SetCurrentScene(const Ref<Scene>& currentScene)
+	void EditorLayer::OnSceneChange(Ref<Scene> scene)
 	{
-		LAB_ASSERT(currentScene, "EditorLayer CurrentScene cannot be null");
+		scene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 
-		mCurrentScene = currentScene;
-		mCurrentScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
-
-		mScenePanel->setContext(mCurrentScene);
-		mEntityPanel->setContext(mCurrentScene);
+		mScenePanel->setContext(scene);
+		mEntityPanel->setContext(scene);
 
 		SelectionManager::DeselectAll(SelectionDomain::Scene);
 
-		SyncWindowTitle();
+		SyncWindowTitle(scene);
 	}
 
-	void EditorLayer::SyncWindowTitle()
+	void EditorLayer::SyncWindowTitle(Ref<Scene> scene)
 	{
-		std::string title = fmt::format("Enigma - {0} ({1})", mCurrentScene->getName(), (mEditorData.currentFile.empty() ? "unsaved" : mEditorData.currentFile));
+		scene = scene ? scene : mSceneManager->getActive();
+		std::string title = fmt::format("Enigma - {0} ({1})", scene->getName(), (mEditorData.currentFile.empty() ? "unsaved" : mEditorData.currentFile));
 
 		Application::Get().getWindow().setTitle(title);
 	}
@@ -864,9 +870,10 @@ namespace Laby {
 		if (mSceneState != SceneEdit)
 			return;
 
+		Ref<Scene> scene = mSceneManager->getActive();
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		Entity firstSelection = mCurrentScene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
+		Entity firstSelection = scene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
 		if (firstSelection)
-			mCurrentScene->CloneEntity(firstSelection);
+			scene->CloneEntity(firstSelection);
 	}
 }

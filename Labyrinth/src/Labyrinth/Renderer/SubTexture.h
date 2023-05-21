@@ -14,7 +14,7 @@ namespace Laby {
 	class Texture2DSheet : public IRenderable, public Asset
 	{
 	public:
-		ASSET_METADATA(AssetType::TextureSheet, spritesheets)
+		ASSET_METADATA(AssetType::TextureSheet, "spritesheets")
 
 	public:
 		Texture2DSheet(const std::string& name, const Ref<Texture2D>& spriteSheet, const glm::vec2& tileSize);
@@ -58,7 +58,7 @@ namespace Laby {
 	class SubTexture2D : public IRenderable, public Asset
 	{
 	public:
-		ASSET_METADATA(AssetType::SubTexture, subtextures)
+		ASSET_METADATA(AssetType::SubTexture, "subtextures")
 
 	public:
 		SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2& spriteSize);

@@ -9,7 +9,7 @@ namespace Laby {
 
 	using AssetHandle = UUID;
 
-#define ASSET_METADATA(type, directory)	static constexpr std::string_view GetAssetDirectory() { return #directory; }\
+#define ASSET_METADATA(type, directory)	static constexpr std::string_view GetAssetDirectory() { return directory; }\
 										static constexpr AssetType GetStaticType() { return type; }\
 										virtual constexpr AssetType getAssetType() const override { return GetStaticType(); }
 

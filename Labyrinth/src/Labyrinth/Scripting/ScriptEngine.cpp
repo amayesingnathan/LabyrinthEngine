@@ -33,14 +33,15 @@ namespace Laby {
 		LAB_CORE_ASSERT(sContext, "Tring to initialize script runtime without setting the scene context!");
 
 		std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
+		Ref<Scene> activeScene = sContext->getActive();
 
-		sContext->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
+		activeScene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 		{
 			std::string className(sc.className.data());
 			if (!scriptClasses.contains(className))
 				return;
 
-			Entity entity = { e, sContext };
+			Entity entity = { e, activeScene };
 			UUID id = entity.getUUID();
 			sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
 			sc.initialised = true;
@@ -51,38 +52,36 @@ namespace Laby {
 
 	void ScriptEngine::OnRuntimeStop()
 	{
-		sContext->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
+		sContext->getActive()->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
 		{
 			sc.instance.reset();
 			sc.initialised = false;
 		});
 	}
 
-	void ScriptEngine::LoadAppAssembly()
+	void ScriptEngine::SetContext(const Ref<SceneManager>& sceneManager)
 	{
-		ScriptEngineInternal::LoadAppAssembly(Project::GetScriptModuleFilePath());
+		sContext = sceneManager;
+		if (sceneManager)
+			sContext->addSceneChangeCallback(ScriptEngine::OnSceneChange);
 	}
 
-	void ScriptEngine::ReloadAssembly()
+	void ScriptEngine::OnSceneChange(Ref<Scene> newScene)
 	{
-		auto appAssembly = ScriptEngineInternal::GetAppAssemblyInfo();
-		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", appAssembly->filepath);
-
-		if (sContext)
+		Ref<Scene> activeScene = sContext->getActive();
+		if (activeScene)
 		{
-			sContext->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
+			activeScene->getEntitiesWith<ScriptComponent>().each([&](auto entity, auto& sc)
 			{
 				sc.instance.reset();
 				sc.initialised = false;
 			});
 		}
 
-		ScriptEngineInternal::LoadAppAssembly(appAssembly->filepath);
-
-		if (sContext)
+		if (newScene)
 		{
 			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
-			sContext->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
+			newScene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
 			{
 				std::string className(sc.className.data());
 				if (!scriptClasses.contains(className))
@@ -98,12 +97,55 @@ namespace Laby {
 		}
 	}
 
+	void ScriptEngine::LoadAppAssembly()
+	{
+		ScriptEngineInternal::LoadAppAssembly(Project::GetScriptModuleFilePath());
+	}
+
+	void ScriptEngine::ReloadAssembly()
+	{
+		auto appAssembly = ScriptEngineInternal::GetAppAssemblyInfo();
+		LAB_CORE_INFO("[ScriptEngine] Reloading {0}", appAssembly->filepath);
+		LAB_CORE_ASSERT(sContext, "No scene manager context!");
+		Ref<Scene> scene = sContext->getActive();
+
+		if (scene)
+		{
+			scene->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
+			{
+				sc.instance.reset();
+				sc.initialised = false;
+			});
+		}
+
+		ScriptEngineInternal::LoadAppAssembly(appAssembly->filepath);
+
+		if (scene)
+		{
+			std::unordered_map<std::string, Ref<ScriptClass>>& scriptClasses = ScriptEngineInternal::GetAppAssemblyInfo()->classes;
+
+			scene->getEntitiesWith<ScriptComponent>().each([&](auto e, auto& sc)
+			{
+				std::string className(sc.className.data());
+				if (!scriptClasses.contains(className))
+					return;
+
+				Entity entity = { e, scene };
+				UUID id = entity.getUUID();
+				sc.instance = Ref<ScriptObject>::Create(scriptClasses[className], id);
+				sc.initialised = true;
+				sc.instance->onStart();
+				sc.instance->setFieldValues(ScriptCache::GetFields(id));
+			});
+		}
+	}
+
 	void ScriptEngine::UnloadAppAssembly()
 	{
 		if (!sContext)
 			return;
 
-		sContext->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
+		sContext->getActive()->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
 			sc.instance.reset();
 			sc.initialised = false;
@@ -139,7 +181,7 @@ namespace Laby {
 		if (!sContext)
 			return nullptr;
 
-		Entity entity = sContext->findEntity(id);
+		Entity entity = sContext->getActive()->findEntity(id);
 		if (!entity.hasComponent<ScriptComponent>())
 			return nullptr;
 

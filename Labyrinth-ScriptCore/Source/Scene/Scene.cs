@@ -8,9 +8,15 @@ namespace Labyrinth
 {
 	public static class Scene
 	{
-		// This entire Scene is currently static, since we can only have one scene at a time right now
+		// This entire Scene is currently static, since only one scene is active at a time.
+		public static ulong PreLoad(string path) => Internal.Scene_PreLoadScene(path);
+        public static void Load() => Internal.Scene_LoadPreLoadedScene();
+        public static void Load(ulong sceneID) => Internal.Scene_LoadSceneFromID(sceneID);
+        public static ulong Load(string path) => Internal.Scene_LoadSceneFromPath(path);
+        public static ulong LoadClone(ulong sceneID) => Internal.Scene_LoadClonedScene(sceneID);
+        public static void Unload(ulong sceneID) => Internal.Scene_UnloadScene(sceneID);
 
-		public static Entity CreateEntity(string tag = "Unnamed") => new Entity(Internal.Scene_CreateEntity(tag));
+        public static Entity CreateEntity(string tag = "Unnamed") => new Entity(Internal.Scene_CreateEntity(tag));
 		public static void DestroyEntity(Entity entity)
 		{
 			if (entity == null)

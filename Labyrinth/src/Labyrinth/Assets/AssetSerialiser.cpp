@@ -160,7 +160,7 @@ namespace Laby {
 
 	bool SceneAssetSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
-		Ref<Scene> scene = Ref<Scene>::Create();
+		Ref<Scene> scene = Ref<Scene>::Create("Untitled");
 		SceneSerialiser serialiser(scene);
 		bool result = serialiser.deserialise(AssetManager::GetFileSystemPath(metadata));
 
