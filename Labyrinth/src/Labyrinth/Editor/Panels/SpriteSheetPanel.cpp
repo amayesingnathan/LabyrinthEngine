@@ -4,6 +4,7 @@
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
+#include <Labyrinth/Editor/Modals/NewSpritesheetModal.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 using imcpp::Widgets;
@@ -38,24 +39,8 @@ namespace Laby {
                 mNewSheetWidth = 0;
                 mNewSheetHeight = 0;
 
-                ModalManager::OpenInline("New Spritesheet...", ModalButtons::OKCancel, [&]()
-                {
-                    Widgets::Label("Enter the tile size for this sprite sheet");
-                    Widgets::NewLine();
-
-                    Widgets::StringEdit("Name", mNewSheetName);
-                    Widgets::UIntEdit("Tile Width (px)", mNewSheetWidth);
-                    Widgets::UIntEdit("Tile Height (px)", mNewSheetHeight);
-                }, [this, var]()
-                {
-                    if (mNewSheetWidth == 0 || mNewSheetHeight == 0)
-                        return;
-
-                    mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mNewSheetName, mNewSheetName, var, glm::vec2{ (f32)mNewSheetWidth, (f32)mNewSheetHeight });
-                    mCurrentSheet->generateTileset();
-
-                    mCurrentSubTex = nullptr;
-                });
+                ModalManager::Open<NewSpritesheetModal>("New Spritesheet...", ModalButtons::OKCancel, mCurrentSheet, var);
+                ModalManager::AddCallback([this] { mCurrentSubTex = nullptr; });
             }
             else if (AssetManager::IsExtensionValid(extension, AssetType::TextureSheet))
             {

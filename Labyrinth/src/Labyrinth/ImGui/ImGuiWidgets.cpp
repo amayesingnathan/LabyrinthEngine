@@ -45,6 +45,25 @@ namespace Laby {
 		Utils::SetCursorPos(tempCursorPos.x, tempCursorPos.y);
 	}
 
+	void LabWidgets::TextureSheet(std::string_view id, Ref<Texture2DSheet> sheet, const glm::vec2& size, Action<const GridPosition&>&& subtexSelected)
+	{
+		glm::vec2 cursorPos = Utils::CursorPos<glm::vec2>();
+
+		LabWidgets::Image(sheet, size);
+
+		if (!sheet)
+			return;
+
+		glm::vec2 tempCursorPos = Utils::CursorPos<glm::vec2>();
+		Utils::SetButtonTransparent();
+		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->getTileCountX(), sheet->getTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
+		{
+			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(GridPosition{ x, y }); });
+		});
+		Utils::ResetButtonTransparency();
+		Utils::SetCursorPos(tempCursorPos.x, tempCursorPos.y);
+	}
+
 	bool LabWidgets::ComponentImpl(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<>&& whileOpen)
 	{
 		flags |= selected ? ImGuiTreeNodeFlags_Selected : 0;

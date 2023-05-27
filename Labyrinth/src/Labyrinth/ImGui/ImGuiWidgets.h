@@ -36,6 +36,7 @@ namespace Laby {
 		static void ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<>&& action = {});
 
 		static void TextureSheet(std::string_view id, Ref<Texture2DSheet> sheet, const glm::vec2& size, Action<AssetHandle>&& subtexSelected = [](AssetHandle) {});
+		static void TextureSheet(std::string_view id, Ref<Texture2DSheet> sheet, const glm::vec2& size, Action<const GridPosition&>&& subtexSelected = [](const GridPosition&) {});
 
 	private:
 		static bool ComponentImpl(void* id, std::string_view text, bool selected, ImGuiTreeNodeFlags flags, Action<>&& whileOpen);
