@@ -559,7 +559,8 @@ namespace Laby {
 		Utils::PushStyle(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 		Utils::PushStyle(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
 
-		Utils::SetButtonTransparent();
+		Utils::SetButtonDefaults();
+		Utils::SetButtonColour(Colour::Transparent);
 
 		Widgets::BeginWindow("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
@@ -587,7 +588,7 @@ namespace Laby {
 			});
 		}
 
-		Utils::ResetButtonTransparency();
+		Utils::PopStyleColour(3);
 
 		Utils::PopStyle(2);
 		Widgets::EndWindow();

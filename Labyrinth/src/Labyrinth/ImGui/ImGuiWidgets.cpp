@@ -36,12 +36,13 @@ namespace Laby {
 			return;
 
 		glm::vec2 tempCursorPos = Utils::CursorPos<glm::vec2>();
-		Utils::SetButtonTransparent();
+		Utils::SetButtonDefaults();
+		Utils::SetButtonColour(Colour::Transparent);
 		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->getTileCountX(), sheet->getTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
 		{
 			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(sheet->getFromPosition({ x, y })); });
 		});
-		Utils::ResetButtonTransparency();
+		Utils::PopStyleColour(3);
 		Utils::SetCursorPos(tempCursorPos.x, tempCursorPos.y);
 	}
 
@@ -55,12 +56,13 @@ namespace Laby {
 			return;
 
 		glm::vec2 tempCursorPos = Utils::CursorPos<glm::vec2>();
-		Utils::SetButtonTransparent();
+		Utils::SetButtonDefaults();
+		Utils::SetButtonColour(Colour::Transparent);
 		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->getTileCountX(), sheet->getTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
 		{
 			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(GridPosition{ x, y }); });
 		});
-		Utils::ResetButtonTransparency();
+		Utils::PopStyleColour(3);
 		Utils::SetCursorPos(tempCursorPos.x, tempCursorPos.y);
 	}
 

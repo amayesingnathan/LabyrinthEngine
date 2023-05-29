@@ -205,7 +205,8 @@ namespace Laby {
             return;
         }
 
-        Utils::SetButtonTransparent();
+        Utils::SetButtonDefaults();
+        Utils::SetButtonColour(Colour::Transparent);
         imcpp::GridFunction<glm::vec2> gridFunc = [this](u32 x, u32 y, const glm::vec2& elementSize)
         {
             GridPosition pos = { x, y };
@@ -224,7 +225,7 @@ namespace Laby {
         };
 
         Widgets::GridControl(pos, imageSize, mMapWidth, mMapHeight, gridFunc);
-        Utils::ResetButtonTransparency();
+        Utils::PopStyleColour(3);
 
         Widgets::EndChild();
     }
@@ -313,7 +314,8 @@ namespace Laby {
         u32 tileCountX = sheet->getTileCountX();
         u32 tileCountY = sheet->getTileCountY();
 
-        Utils::SetButtonTransparent();
+        Utils::SetButtonDefaults();
+        Utils::SetButtonColour(Colour::Transparent);
 
         imcpp::GridFunction<glm::vec2> gridFunc = [this, sheet](u32 x, u32 y, const glm::vec2& elementSize)
         {
@@ -326,6 +328,6 @@ namespace Laby {
         };
         Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, gridFunc);
 
-        Utils::ResetButtonTransparency();
+        Utils::PopStyleColour(3);
     }
 }
