@@ -4,7 +4,9 @@
 
 #include "Platform.h"
 #include "System.h"
+#include "Cast.h"
 #include "Types.h"
+#include "Constants.h"
 
 #define LABYRINTH_VER 0xABBA011
 
