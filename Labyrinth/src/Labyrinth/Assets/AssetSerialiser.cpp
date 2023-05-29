@@ -37,7 +37,6 @@ namespace Laby {
 			out << YAML::BeginMap;
 
 			LAB_SERIALISE_PROPERTY_ASSET(TextureSheet, subtex->getSheet(), out);
-			LAB_SERIALISE_PROPERTY(SheetLocation, subtex->getPosition(), out);
 
 			const glm::vec2* texCoords = subtex->getTextureCoords();
 
@@ -100,7 +99,7 @@ namespace Laby {
 		out << YAML::BeginMap;
 
 		LAB_SERIALISE_PROPERTY_ASSET(Texture, sheet->getBaseTex(), out);
-		LAB_SERIALISE_PROPERTY(Name, sheet->getName(), out);
+		LAB_SERIALISE_PROPERTY(Name, sheet->getName().data(), out);
 		LAB_SERIALISE_PROPERTY(TileSize, sheet->getTileSize(), out);
 
 		out << YAML::Key << "SubTextures";
