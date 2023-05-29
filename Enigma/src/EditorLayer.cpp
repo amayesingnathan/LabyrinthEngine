@@ -786,10 +786,10 @@ namespace Laby {
 
 		if (!mEditorData.currentFile.empty())
 		{
-			Ref<Scene> activeScene = mSceneManager->getActive();
-			SceneSerialiser serialiser(activeScene);
+			Ref<Scene> editorScene = mSceneManager->get(mEditorScene);
+			SceneSerialiser serialiser(editorScene);
 			serialiser.serialise(mEditorData.currentFile);
-			AssetManager::ReloadData(activeScene->handle);
+			AssetManager::ReloadData(editorScene->handle);
 		}
 		else SaveSceneAs();
 	}
@@ -801,11 +801,8 @@ namespace Laby {
 		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene" }).string();
 		if (!mEditorData.currentFile.empty())
 		{
-			Ref<Scene> activeScene = mSceneManager->getActive();
-			AssetManager::CreateNewAsset(activeScene->getName(), activeScene);
-			SceneSerialiser serialiser(activeScene);
-			serialiser.serialise(mEditorData.currentFile);
-			AssetManager::ReloadData(activeScene->handle);
+			Ref<Scene> editorScene = mSceneManager->get(mEditorScene);
+			AssetManager::SaveMemoryOnlyAsset<Scene>(editorScene->getName(), mEditorScene);
 		}
 	}
 
