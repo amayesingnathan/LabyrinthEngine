@@ -37,7 +37,7 @@ namespace Laby {
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
-				CreateSubTex(count++, { x, y });
+				createSubTex(count++, { x, y });
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 		AssetManager::ReloadAssets();
@@ -51,10 +51,25 @@ namespace Laby {
 		mSubTextures.clear();
 	}
 
-	void Texture2DSheet::CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
+	AssetHandle Texture2DSheet::createSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
 	{
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}/{}", mName, index), Ref<Texture2DSheet>(this), coords, spriteSize);
-		mSubTextures.emplace_back(subTex->handle);
+		AssetHandle newTex = 0;
+		if (AssetManager::IsMemoryAsset(handle))
+			newTex = AssetManager::CreateMemoryOnlyAsset<SubTexture2D>(Ref<Texture2DSheet>(this), coords, spriteSize);
+		else
+			newTex = AssetManager::CreateNewAsset<SubTexture2D>(std::format("{}/{}", mName, index), Ref<Texture2DSheet>(this), coords, spriteSize)->handle;
+		mSubTextures.emplace_back(newTex);
+		return newTex;
+	}
+
+	void Texture2DSheet::destroySubTex(AssetHandle subTexHandle)
+	{
+		auto it = std::ranges::find(mSubTextures, subTexHandle);
+		if (it == mSubTextures.end())
+			return;
+
+		mSubTextures.erase(it);
+		AssetManager::DestroyAsset(subTexHandle);
 	}
 
 	/*

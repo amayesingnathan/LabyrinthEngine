@@ -27,7 +27,7 @@ namespace Laby {
 
         static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }
 
-        static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.count(handle) != 0; }
+        static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.contains(handle); }
 
         static AssetType GetAssetTypeFromExtension(const std::string& extension);
         static AssetType GetAssetTypeFromPath(const fs::path& path);
@@ -48,60 +48,18 @@ namespace Laby {
 
         static AssetMetadata& GetMetadataInternal(AssetHandle handle);
 
-        template<IsAsset T>
-        static Ref<T> ShallowCopyCreateAsset(std::string_view filename, AssetHandle existingAsset)
+        template<IsAsset T, typename... Args>
+        static Ref<T> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
         {
-            fs::path directoryPath = T::GetAssetDirectory();
-
-            if (!fs::exists(sAssetDirPath / directoryPath))
-                FileUtils::CreateDir(sAssetDirPath / directoryPath);
-
-            AssetType type = T::GetStaticType();
-            fs::path filenameExt = std::format("{}{}", filename, sAssetCreationMap[type]);
-
             AssetMetadata metadata;
-            metadata.handle = AssetHandle();
-            if (directoryPath.empty() || directoryPath == ".")
-                metadata.filepath = filenameExt;
-            else
-                metadata.filepath = AssetManager::GetRelativePath(directoryPath / filenameExt);
-            metadata.dataLoaded = true;
-            metadata.type = type;
+            metadata.filepath = directory + filename;
+            metadata.handle = handle;
 
-            if (AssetManager::FileExists(metadata))
-            {
-                bool foundAvailableFileName = false;
-                int current = 1;
+            Ref<T> newAsset = Ref<T>::Create(std::forward<Args>(args)...);
+            newAsset->handle = metadata.handle;
 
-                while (!foundAvailableFileName)
-                {
-                    fs::path nextFilePath = directoryPath / metadata.filepath.stem();
-
-                    if (current < 10)
-                        nextFilePath += std::format(" (0{})", current);
-                    else
-                        nextFilePath += std::format(" ({})", current);
-                    nextFilePath += metadata.filepath.extension();
-
-                    if (!fs::exists(nextFilePath))
-                    {
-                        foundAvailableFileName = true;
-                        metadata.filepath = AssetManager::GetRelativePath(nextFilePath);
-                        break;
-                    }
-
-                    current++;
-                }
-            }
-
-            sAssetRegistry[metadata.handle] = metadata;
-
-            Ref<T> asset = GetAsset<T>(existingAsset);
-            asset->handle = metadata.handle;
-            sLoadedAssets[asset->handle] = asset;
-            AssetImporter::Serialise(metadata, asset);
-
-            return asset;
+            sLoadedAssets[metadata.handle] = newAsset;
+            return newAsset;
         }
 
     public:
@@ -200,7 +158,58 @@ namespace Laby {
                 return nullptr;
             }
 
-            return ShallowCopyCreateAsset<T>(filename, handle);
+            fs::path directoryPath = T::GetAssetDirectory();
+
+            AssetType type = T::GetStaticType();
+            fs::path filenameExt = std::format("{}{}", filename, sAssetCreationMap[type]);
+
+            AssetMetadata metadata;
+            metadata.handle = handle;
+            if (directoryPath.empty() || directoryPath == ".")
+                metadata.filepath = filenameExt;
+            else
+                metadata.filepath = AssetManager::GetRelativePath(directoryPath / filenameExt);
+            metadata.dataLoaded = true;
+            metadata.type = type;
+
+            if (AssetManager::FileExists(metadata))
+            {
+                bool foundAvailableFileName = false;
+                int current = 1;
+
+                while (!foundAvailableFileName)
+                {
+                    fs::path nextFilePath = directoryPath / metadata.filepath.stem();
+
+                    if (current < 10)
+                        nextFilePath += std::format(" (0{})", current);
+                    else
+                        nextFilePath += std::format(" ({})", current);
+                    nextFilePath += metadata.filepath.extension();
+
+                    if (!fs::exists(nextFilePath))
+                    {
+                        foundAvailableFileName = true;
+                        metadata.filepath = AssetManager::GetRelativePath(nextFilePath);
+                        break;
+                    }
+
+                    current++;
+                }
+            }
+
+            fs::path assetContainingDir = (sAssetDirPath / metadata.filepath).parent_path();
+            if (!fs::exists(assetContainingDir))
+                FileUtils::CreateDir(assetContainingDir);
+
+            sAssetRegistry[metadata.handle] = metadata;
+
+            Ref<T> asset = GetAsset<T>(handle);
+            sMemoryAssets.erase(asset->handle);
+            sLoadedAssets[asset->handle] = asset;
+            AssetImporter::Serialise(metadata, asset);
+
+            return asset;
         }
 
         static bool FileExists(AssetMetadata& metadata)
@@ -242,21 +251,6 @@ namespace Laby {
 
             sMemoryAssets[asset->handle] = asset;
             return asset->handle;
-        }
-
-    private:
-        template<IsAsset T, typename... Args>
-        static Ref<T> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
-        {
-            AssetMetadata metadata;
-            metadata.filepath = directory + filename;
-            metadata.handle = handle;
-
-            Ref<T> newAsset = Ref<T>::Create(std::forward<Args>(args)...);
-            newAsset->handle = metadata.handle;
-
-            sLoadedAssets[metadata.handle] = newAsset;
-            return newAsset;
         }
 
     private:

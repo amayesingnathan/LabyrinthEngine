@@ -105,6 +105,12 @@ namespace Laby {
 
 	void AssetManager::DestroyAsset(AssetHandle assetHandle)
 	{
+		if (IsMemoryAsset(assetHandle))
+		{
+			sMemoryAssets.erase(assetHandle);
+			return;
+		}
+
 		auto& metadata = GetMetadataInternal(assetHandle);
 		if (!metadata.valid())
 		{

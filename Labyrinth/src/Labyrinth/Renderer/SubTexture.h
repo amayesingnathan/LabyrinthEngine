@@ -38,11 +38,12 @@ namespace Laby {
 
 		AssetHandle getFromPosition(const GridPosition& pos) const { return mSubTextures[getPositionIndex(pos)]; }
 		constexpr u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
+
 		u32 subTexCount() const { return (u32)mSubTextures.size(); }
 		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
 
-	private:
-		void CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
+		AssetHandle createSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
+		void destroySubTex(AssetHandle subTexHandle);
 
 	private:
 		std::string mName;
