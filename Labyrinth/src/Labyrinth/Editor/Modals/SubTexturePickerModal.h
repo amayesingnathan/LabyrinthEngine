@@ -1,5 +1,6 @@
 #pragma once
 
+#include <Labyrinth/Containers/Grid.h>
 #include <Labyrinth/Editor/IEditorModal.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
@@ -18,21 +19,27 @@ namespace Laby {
 			u32 MinY() const;
 			u32 MaxY() const;
 
+			GridPosition pos() const { return { MinX(), MinY() }; }
+			glm::vec2 size() const { return { MaxX() - MinX() + 1, MaxY() - MinY() + 1 }; }
+
 			bool contains(const GridPosition& pos);
 		};
 
 	public:
-		SubTexturePickerModal(Ref<Texture2DSheet> context);
+		SubTexturePickerModal(AssetHandle& returnSheet, AssetHandle sheetInProgress);
 
 		void onImGuiRender() override;
 		void onCustomButtonRender(bool& open) override;
 		void onComplete() override;
 
 	private:
+		AssetHandle* mReturnSheet;
 		Ref<Texture2DSheet> mCurrentSheet;
 
-		std::vector<NewTexture> mTexturesToAdd;
+		Grid<bool> mTextureSelections;
 		NewTexture mCurrentlyAdding;
+
+		std::string mErrorText;
 	};
 
 }

@@ -9,15 +9,17 @@ namespace Laby {
 	class NewSpritesheetModal : public IEditorModal
 	{
 	public:
-		NewSpritesheetModal(Ref<Texture2DSheet>& context, const fs::path& filepath);
+		NewSpritesheetModal(AssetHandle& returnSheet, const fs::path& filepath);
 
 		void onImGuiRender() override;
 		void onCustomButtonRender(bool& open) override;
 		void onComplete() override;
 
 	private:
-		Ref<Texture2DSheet>& mCurrentSheet;
-		const fs::path& mTexturePath;
+		AssetHandle* mReturnSheet;
+		fs::path mTexturePath;
+
+		AssetHandle mInProgressSheet = 0;
 
 		std::string mSheetName;
 		u32 mTileWidth = 0, mTileHeight = 0;

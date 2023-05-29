@@ -2,6 +2,7 @@
 #include "NewSpritesheetModal.h"
 
 #include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/Core/Application.h>
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
@@ -12,8 +13,8 @@ using imcpp::Utils;
 
 namespace Laby {
 
-	NewSpritesheetModal::NewSpritesheetModal(Ref<Texture2DSheet>& context, const fs::path& filepath)
-		: mCurrentSheet(context), mTexturePath(filepath)
+	NewSpritesheetModal::NewSpritesheetModal(AssetHandle& returnSheet, const fs::path& filepath)
+		: mReturnSheet(&returnSheet), mTexturePath(filepath)
 	{
 	}
 
@@ -32,16 +33,24 @@ namespace Laby {
 		Widgets::Button("Generate", [&, this]()
 		{
 			onComplete();
-			mCurrentSheet->generateTileset();
+			Ref<Texture2DSheet> newSheet = AssetManager::SaveMemoryOnlyAsset<Texture2DSheet>(mSheetName, mInProgressSheet);
+			newSheet->generateTileset();
+			*mReturnSheet = newSheet->handle;
 			open = false;
 		});
 
 		Widgets::SameLine();
 
-		Widgets::Button("Pick", [&, this]()
+		Widgets::Button("Pick", [=, &open]()
 		{
 			onComplete();
-			ModalManager::Open<SubTexturePickerModal>("Select subtextures...", ModalButtons::OKCancel, mCurrentSheet);
+
+			AssetHandle* returnSheetCopy = mReturnSheet;
+			AssetHandle inProgressSheetCopy = mInProgressSheet;
+			Application::SubmitActionToMainThread([=]
+			{
+				ModalManager::Open<SubTexturePickerModal>("Select subtextures...", ModalButtons::Custom, *returnSheetCopy, inProgressSheetCopy);
+			});
 			open = false;
 		});
 
@@ -58,6 +67,6 @@ namespace Laby {
 		if (mTileWidth == 0 || mTileHeight == 0)
 			return;
 
-		mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mSheetName, mSheetName, mTexturePath, glm::vec2{ (f32)mTileWidth, (f32)mTileHeight });
+		mInProgressSheet = AssetManager::CreateMemoryOnlyAsset<Texture2DSheet>(mSheetName, mTexturePath, glm::vec2{ (f32)mTileWidth, (f32)mTileHeight });
 	}
 }
