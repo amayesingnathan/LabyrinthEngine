@@ -5,6 +5,8 @@
 #include <Labyrinth/Core/Application.h>
 #include <Labyrinth/Core/UUID.h>
 
+#include <Labyrinth/Animation/Animation.h>
+
 #include <Labyrinth/Assets/AssetManager.h>
 
 #include <Labyrinth/Containers/Buffer.h>
