@@ -47,7 +47,7 @@ namespace Laby {
 #elif defined(LAB_PLATFORM_LINUX)
 		return ".sh";
 #else
-		LAB_STATIC_ASSERT("Cannot get script extension on unsupprted platform!");
+		LAB_STATIC_ASSERT("Cannot get script extension on unsupported platform!");
 		return "";
 #endif
 	}
