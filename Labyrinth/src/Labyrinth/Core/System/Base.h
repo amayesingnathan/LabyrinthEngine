@@ -25,7 +25,8 @@
 #endif
 
 #define LAB_EXPAND_MACRO(x) x
-#define LAB_STRINGIFY_MACRO(x) #x
+#define LAB_STRINGIFY_MACRO_INTERNAL(x) #x
+#define LAB_STRINGIFY_MACRO(x) LAB_STRINGIFY_MACRO_INTERNAL(x)
 
 #define LAB_BIT(x) (1 << x)
 

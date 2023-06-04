@@ -730,8 +730,9 @@ namespace Laby {
 		ScriptEngine::UnloadAppAssembly();
 
 		// Check that mEditorScene is the last one (so setting it null here will destroy the scene)
-		if (mSceneManager->get(mEditorScene)->getRefCount() != 1)
-			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - something is still holding scene refs!");
+		u32 refCount = mSceneManager->get(mEditorScene)->getRefCount();
+		if (refCount != 1)
+			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - still {} references being held!", refCount - 1);
 		mEditorScene = 0;
 
 		mSceneManager->reset();
