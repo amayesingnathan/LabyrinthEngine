@@ -12,6 +12,7 @@
 	path = Labyrinth/dependencies/imgui-cpp
 	url = https://github.com/amayesingnathan/imgui-cpp
 	branch = submodule
+	update = rebase
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
@@ -49,5 +50,10 @@
 [submodule "Labyrinth/dependencies/box2d"]
 	path = Labyrinth/dependencies/box2d
 	url = git@github.com:amayesingnathan/box2d.git
+	branch = submodule
+	update = rebase
+[submodule "Tests/dependencies/gtest"]
+	path = Tests/dependencies/gtest
+	url = git@github.com:amayesingnathan/googletest.git
 	branch = submodule
 	update = rebase
