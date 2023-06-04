@@ -59,6 +59,6 @@ namespace Laby {
 		static void NextBatch();
 
 	private:
-		inline static Renderer2DData sRenderData;
+		inline static Single<Renderer2DData> sRenderData;
 	};
 }
