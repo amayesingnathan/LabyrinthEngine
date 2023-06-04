@@ -14,7 +14,7 @@ namespace Laby {
 
     static constexpr std::string_view NO_NAME = "None";
 
-    using SubTexEntry = imcpp::ComboEntry<Ref<SubTexture2D>>;
+    using SubTexEntry = imcpp::ComboEntry<AssetHandle>;
 
     void SpriteSheetPanel::onImGuiRender()
     {
@@ -52,18 +52,18 @@ namespace Laby {
         });
 
         std::vector<SubTexEntry> comboEntries;
-        comboEntries.emplace_back(NO_NAME, nullptr);
+        comboEntries.emplace_back(NO_NAME, 0);
         if (sheet)
         {
             for (AssetHandle handle : sheet->getSubTextures())
             {
                 Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(handle);
-                comboEntries.emplace_back(subtex->getName(), subtex);
+                comboEntries.emplace_back(subtex->getName(), handle);
             }
         }
 
         std::string_view subTexName = subtex ? subtex->getName() : NO_NAME;
-        Widgets::Combobox<Ref<SubTexture2D>>("Subtextures", subTexName, subtex, comboEntries);
+        Widgets::Combobox<AssetHandle>("Subtextures", subTexName, mCurrentSubTex, comboEntries);
 
         Widgets::NewLine();
 
