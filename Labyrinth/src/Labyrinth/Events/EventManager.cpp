@@ -13,11 +13,15 @@ namespace Laby {
 		{
 			Event& e = sEventQueue.front();
 
-			// Handle imgui events first
+			// Handle app events first
+			if (sAppListener->accept(e.type))
+				sAppListener->onEvent(e);
+
+			// Handle imgui events next
 			if (sImGuiListener->accept(e.type))
 				sImGuiListener->onEvent(e);
 
-			auto filteredListeners = std::views::common(sListeners) | 
+			auto filteredListeners = std::views::common(sGenericListeners) |
 				std::views::filter([=](IEventListener* listener) { return listener->accept(e.type); });
 
 			for (IEventListener* listener : filteredListeners)
@@ -38,12 +42,12 @@ namespace Laby {
 		case ListenerType::Generic:
 		{
 			// Some events may create a new listener while we're iterating through the listeners, so postpone addition till start of new game loop.
-			Application::SubmitActionToMainThread([&, listener]() { sListeners.emplace_back(listener); });
+			Application::SubmitActionToMainThread([&, listener]() { sGenericListeners.emplace_back(listener); });
 			break;
 		}
 		case ListenerType::App:
 		{
-			sListeners.emplace_back(listener);
+			sAppListener = listener;
 			break;
 		}
 		case ListenerType::ImGui:
@@ -54,8 +58,25 @@ namespace Laby {
 		}
 	}
 
-	void EventManager::DeregisterListener(IEventListener* listener)
+	void EventManager::DeregisterListener(IEventListener* listener, ListenerType type)
 	{
-		Application::SubmitActionToMainThread([&, listener]() { std::erase(sListeners, listener); });
+		switch (type)
+		{
+		case ListenerType::Generic:
+		{
+			Application::SubmitActionToMainThread([&, listener]() { std::erase(sGenericListeners, listener); });
+			break;
+		}
+		case ListenerType::App:
+		{
+			sAppListener = nullptr;
+			break;
+		}
+		case ListenerType::ImGui:
+		{
+			sImGuiListener = nullptr;
+			break;
+		}
+		}
 	}
 }

@@ -7,8 +7,8 @@ namespace Laby {
 	class IEventListener
 	{
 	public:
-		IEventListener() { EventManager::RegisterListener(this); }
-		virtual ~IEventListener() { EventManager::DeregisterListener(this); }
+		IEventListener() { EventManager::RegisterListener(this, mType); }
+		virtual ~IEventListener() { EventManager::DeregisterListener(this, mType); }
 
 		virtual constexpr EventTypeFlag getListeningEvents() const = 0;
 		virtual void onEvent(Event& e) = 0;
@@ -21,12 +21,17 @@ namespace Laby {
 		}
 
 	private:
-		IEventListener(ListenerType type) { EventManager::RegisterListener(this, type); }
+		IEventListener(ListenerType type)
+			: mType(type)
+		{ 
+			EventManager::RegisterListener(this, mType);
+		}
 
 		friend class Application;
 		friend class ImGuiHandler;
 
 	private:
+		ListenerType mType = ListenerType::Generic;
 		Predicate<> mAcceptCondition = [](){ return true; };
 	};
 
