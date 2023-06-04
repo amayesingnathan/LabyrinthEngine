@@ -13,8 +13,8 @@ namespace Laby {
         void onImGuiRender() override;
 
     private:
-        Ref<Texture2DSheet> mCurrentSheet = nullptr;
-        Ref<SubTexture2D> mCurrentSubTex = nullptr;
+        AssetHandle mCurrentSheet = 0;
+        AssetHandle mCurrentSubTex = 0;
 
         std::string mNewSheetName;
         usize mNewSheetWidth, mNewSheetHeight;

@@ -68,7 +68,7 @@ namespace Laby {
 
     std::vector<Shape> TileBehaviourLayer::GetContiguousShapes() const
     {
-        Grid<Bool> checkedGrid(mWidth, mHeight);
+        Grid<bool> checkedGrid(mWidth, mHeight);
 
         std::vector<Shape> shapes;
         for (u32 y = 0; y < mHeight; y++)
@@ -86,7 +86,7 @@ namespace Laby {
         return shapes;
     }
 
-    Shape TileBehaviourLayer::FloodFill(u32 x, u32 y, Grid<Bool>& checkedGrid) const
+    Shape TileBehaviourLayer::FloodFill(u32 x, u32 y, Grid<bool>& checkedGrid) const
     {
         Shape shape;
         if (x == Limits<u32>::Max || x >= mWidth || y == Limits<u32>::Max || y >= mHeight)
@@ -95,7 +95,7 @@ namespace Laby {
         if (checkedGrid(x, y))
             return shape;
 
-        checkedGrid(x, y) = Grid::True;
+        checkedGrid(x, y) = true;
 
         if (!At(x, y).solid)
             return shape;

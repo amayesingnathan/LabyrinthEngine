@@ -4,7 +4,9 @@
 
 #include "Platform.h"
 #include "System.h"
+#include "Cast.h"
 #include "Types.h"
+#include "Constants.h"
 
 #define LABYRINTH_VER 0xABBA011
 
@@ -23,7 +25,8 @@
 #endif
 
 #define LAB_EXPAND_MACRO(x) x
-#define LAB_STRINGIFY_MACRO(x) #x
+#define LAB_STRINGIFY_MACRO_INTERNAL(x) #x
+#define LAB_STRINGIFY_MACRO(x) LAB_STRINGIFY_MACRO_INTERNAL(x)
 
 #define LAB_BIT(x) (1 << x)
 

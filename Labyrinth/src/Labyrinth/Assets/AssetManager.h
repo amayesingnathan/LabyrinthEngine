@@ -27,7 +27,7 @@ namespace Laby {
 
         static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }
 
-        static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.count(handle) != 0; }
+        static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.contains(handle); }
 
         static AssetType GetAssetTypeFromExtension(const std::string& extension);
         static AssetType GetAssetTypeFromPath(const fs::path& path);
@@ -47,6 +47,20 @@ namespace Laby {
         static void SaveRegistry();
 
         static AssetMetadata& GetMetadataInternal(AssetHandle handle);
+
+        template<IsAsset T, typename... Args>
+        static Ref<T> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
+        {
+            AssetMetadata metadata;
+            metadata.filepath = directory + filename;
+            metadata.handle = handle;
+
+            Ref<T> newAsset = Ref<T>::Create(std::forward<Args>(args)...);
+            newAsset->handle = metadata.handle;
+
+            sLoadedAssets[metadata.handle] = newAsset;
+            return newAsset;
+        }
 
     public:
         template<IsAsset T, typename... Args>
@@ -106,18 +120,51 @@ namespace Laby {
         }
 
         template<IsAsset T>
-        static Ref<T> CreateNewAsset(std::string_view filename, Ref<T> existingAsset)
+        static Ref<T> GetAsset(AssetHandle assetHandle)
         {
-            fs::path directoryPath = T::GetAssetDirectory();
+            if (IsMemoryAsset(assetHandle))
+                return sMemoryAssets[assetHandle].to<T>();
 
-            if (!fs::exists(sAssetDirPath / directoryPath))
-                FileUtils::CreateDir(sAssetDirPath / directoryPath);
+            auto& metadata = GetMetadataInternal(assetHandle);
+            if (!metadata.valid())
+                return nullptr;
+
+            Ref<Asset> asset = nullptr;
+            if (!metadata.dataLoaded)
+            {
+                metadata.dataLoaded = AssetImporter::Deserialise(metadata, asset);
+                if (!metadata.dataLoaded)
+                    return nullptr;
+
+                sLoadedAssets[assetHandle] = asset;
+            }
+            else asset = sLoadedAssets[assetHandle];
+
+            return asset.to<T>();
+        }
+
+        template<IsAsset T>
+        static Ref<T> GetAsset(const fs::path& filepath)
+        {
+            return GetAsset<T>(GetAssetHandleFromPath(filepath));
+        }
+
+        template<IsAsset T>
+        static Ref<T> SaveMemoryOnlyAsset(std::string_view filename, AssetHandle handle)
+        {
+            if (!IsMemoryAsset(handle))
+            {
+                LAB_CORE_ERROR("Tried to save asset that was not memory only!");
+                return nullptr;
+            }
+
+            fs::path directoryPath = T::GetAssetDirectory();
 
             AssetType type = T::GetStaticType();
             fs::path filenameExt = std::format("{}{}", filename, sAssetCreationMap[type]);
 
             AssetMetadata metadata;
-            metadata.handle = AssetHandle();
+            metadata.handle = handle;
             if (directoryPath.empty() || directoryPath == ".")
                 metadata.filepath = filenameExt;
             else
@@ -151,44 +198,18 @@ namespace Laby {
                 }
             }
 
+            fs::path assetContainingDir = (sAssetDirPath / metadata.filepath).parent_path();
+            if (!fs::exists(assetContainingDir))
+                FileUtils::CreateDir(assetContainingDir);
+
             sAssetRegistry[metadata.handle] = metadata;
 
-            Ref<T> asset = existingAsset;
-            asset->handle = metadata.handle;
+            Ref<T> asset = GetAsset<T>(handle);
+            sMemoryAssets.erase(asset->handle);
             sLoadedAssets[asset->handle] = asset;
             AssetImporter::Serialise(metadata, asset);
 
             return asset;
-        }
-
-        template<IsAsset T>
-        static Ref<T> GetAsset(AssetHandle assetHandle)
-        {
-            if (IsMemoryAsset(assetHandle))
-                return sMemoryAssets[assetHandle].to<T>();
-
-            auto& metadata = GetMetadataInternal(assetHandle);
-            if (!metadata.valid())
-                return nullptr;
-
-            Ref<Asset> asset = nullptr;
-            if (!metadata.dataLoaded)
-            {
-                metadata.dataLoaded = AssetImporter::Deserialise(metadata, asset);
-                if (!metadata.dataLoaded)
-                    return nullptr;
-
-                sLoadedAssets[assetHandle] = asset;
-            }
-            else asset = sLoadedAssets[assetHandle];
-
-            return asset.to<T>();
-        }
-
-        template<IsAsset T>
-        static Ref<T> GetAsset(const fs::path& filepath)
-        {
-            return GetAsset<T>(GetAssetHandleFromPath(filepath));
         }
 
         static bool FileExists(AssetMetadata& metadata)
@@ -230,21 +251,6 @@ namespace Laby {
 
             sMemoryAssets[asset->handle] = asset;
             return asset->handle;
-        }
-
-    private:
-        template<IsAsset T, typename... Args>
-        static Ref<T> CreateAssetWithHandle(const AssetHandle& handle, const std::string& filename, const std::string& directory, Args&&... args)
-        {
-            AssetMetadata metadata;
-            metadata.filepath = directory + filename;
-            metadata.handle = handle;
-
-            Ref<T> newAsset = Ref<T>::Create(std::forward<Args>(args)...);
-            newAsset->handle = metadata.handle;
-
-            sLoadedAssets[metadata.handle] = newAsset;
-            return newAsset;
         }
 
     private:

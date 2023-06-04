@@ -28,7 +28,7 @@ namespace Laby {
 
 	void Project::SetInactive()
 	{
-		sActiveProject = nullptr;
+		ActiveProject::Set(nullptr);
 	}
 
 	void Project::Load(const fs::path& path)

@@ -10,6 +10,8 @@ namespace Laby {
 
 	void ModalManager::Render()
 	{
+        f32 lineSpacing = Utils::FrameHeightWithSpacing();
+
         Utils::SetWindowMoveFromTitleBar();
         for (ModalEntry& modalData : sEditorModals)
         {
@@ -23,8 +25,13 @@ namespace Laby {
             Utils::SetNextWindowPos<glm::vec2>(Utils::GetMainWindowCentre<glm::vec2>(), { 0.5f, 0.5f });
             if (Widgets::BeginWindow(modalData.heading, &modalData.open, ImGuiWindowFlags_NoDocking))
             {
+                Widgets::BeginChild("ModalBody", glm::vec2{ 0, -2 * lineSpacing });
                 modalData.modal->onImGuiRender();
+                Widgets::EndChild();
+
+                Widgets::BeginChild("ModalButtons");
                 RenderButtons(modalData);
+                Widgets::EndChild();
             }
 
             Widgets::EndWindow();

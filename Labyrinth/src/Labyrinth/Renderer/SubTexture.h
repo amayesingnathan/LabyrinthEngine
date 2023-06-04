@@ -22,7 +22,7 @@ namespace Laby {
 
 		u32 getTextureID() const override { return mTexture->getTextureID(); }
 
-		const std::string& getName() const { return mName; }
+		std::string_view getName() const { return mName; }
 		const Ref<Texture2D>& getBaseTex() const { return mTexture; }
 
 		i32 getWidth() const { return mTexture->getWidth(); }
@@ -38,11 +38,12 @@ namespace Laby {
 
 		AssetHandle getFromPosition(const GridPosition& pos) const { return mSubTextures[getPositionIndex(pos)]; }
 		constexpr u32 getPositionIndex(const GridPosition& pos) const { return (pos.y * mTileCountX) + pos.x; }
+
 		u32 subTexCount() const { return (u32)mSubTextures.size(); }
 		const std::vector<AssetHandle>& getSubTextures() const { return mSubTextures; }
 
-	private:
-		void CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
+		AssetHandle createSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize = glm::vec2(1.f));
+		void destroySubTex(AssetHandle subTexHandle);
 
 	private:
 		std::string mName;
@@ -67,7 +68,6 @@ namespace Laby {
 
 		u32 getTextureID() const override { return mSheet->mTexture->getTextureID(); }
 		const glm::vec2* getTextureCoords() const override { return mTexCoords; }
-		const GridPosition& getPosition() const { return mPosition; }
 
 		std::string_view getName() const { return mName; }
 		Ref<Texture2DSheet> getSheet() const { return mSheet; }
@@ -76,7 +76,6 @@ namespace Laby {
 	private:
 		std::string mName;
 		Ref<Texture2DSheet> mSheet;
-		GridPosition mPosition;
 		glm::vec2 mTexCoords[4];
 	};
 

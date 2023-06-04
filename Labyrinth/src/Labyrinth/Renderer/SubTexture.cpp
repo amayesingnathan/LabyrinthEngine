@@ -37,7 +37,7 @@ namespace Laby {
 		for (u32 y = 0; y < mTileCountY; y++)
 		{
 			for (u32 x = 0; x < mTileCountX; x++)
-				CreateSubTex(count++, { x, y });
+				createSubTex(count++, { x, y });
 		}
 		AssetImporter::Serialise(Ref<Texture2DSheet>(this));
 		AssetManager::ReloadAssets();
@@ -51,10 +51,25 @@ namespace Laby {
 		mSubTextures.clear();
 	}
 
-	void Texture2DSheet::CreateSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
+	AssetHandle Texture2DSheet::createSubTex(usize index, const GridPosition& coords, const glm::vec2& spriteSize)
 	{
-		Ref<SubTexture2D> subTex = AssetManager::CreateNewAsset<SubTexture2D>(fmt::format("{}/{}", mName, index), Ref<Texture2DSheet>(this), coords, spriteSize);
-		mSubTextures.emplace_back(subTex->handle);
+		AssetHandle newTex = 0;
+		if (AssetManager::IsMemoryAsset(handle))
+			newTex = AssetManager::CreateMemoryOnlyAsset<SubTexture2D>(Ref<Texture2DSheet>(this), coords, spriteSize);
+		else
+			newTex = AssetManager::CreateNewAsset<SubTexture2D>(std::format("{}/{}", mName, index), Ref<Texture2DSheet>(this), coords, spriteSize)->handle;
+		mSubTextures.emplace_back(newTex);
+		return newTex;
+	}
+
+	void Texture2DSheet::destroySubTex(AssetHandle subTexHandle)
+	{
+		auto it = std::ranges::find(mSubTextures, subTexHandle);
+		if (it == mSubTextures.end())
+			return;
+
+		mSubTextures.erase(it);
+		AssetManager::DestroyAsset(subTexHandle);
 	}
 
 	/*
@@ -62,7 +77,7 @@ namespace Laby {
 	*/
 
 	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2& spriteSize)
-		: mName(fmt::format("{} - ({}, {})", sheet->getName(), pos.x, pos.y)), mSheet(sheet), mPosition(pos)
+		: mName(fmt::format("{} - ({}, {})", sheet->getName(), pos.x, pos.y)), mSheet(sheet)
 	{
 		glm::vec2 coords{ (f32)pos.x, (f32)pos.y };
 		f32 sheetWidth = (f32)sheet->getWidth();
@@ -78,7 +93,7 @@ namespace Laby {
 	}
 
 	SubTexture2D::SubTexture2D(Ref<Texture2DSheet> sheet, const GridPosition& pos, const glm::vec2 coords[4])
-		: mName(fmt::format("{} - ({}, {})", sheet->getName(), pos.x, pos.y)), mSheet(sheet), mPosition(pos)
+		: mName(fmt::format("{} - ({}, {})", sheet->getName(), pos.x, pos.y)), mSheet(sheet)
 	{
 		for (usize i = 0; i < 4; i++)
 			mTexCoords[i] = coords[i];

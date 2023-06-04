@@ -4,6 +4,7 @@
 #include <Labyrinth/Assets/AssetManager.h>
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/Editor/ModalManager.h>
+#include <Labyrinth/Editor/Modals/NewSpritesheetModal.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 using imcpp::Widgets;
@@ -13,14 +14,17 @@ namespace Laby {
 
     static constexpr std::string_view NO_NAME = "None";
 
-    using SubTexEntry = imcpp::ComboEntry<Ref<SubTexture2D>>;
+    using SubTexEntry = imcpp::ComboEntry<AssetHandle>;
 
     void SpriteSheetPanel::onImGuiRender()
     {
+        Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
+        Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(mCurrentSubTex);
+
         const glm::vec2& panelSize = Utils::AvailableRegion<glm::vec2>();
         Ref<IRenderable> sheetImage = EditorResources::NoTexture;
-        if (mCurrentSheet)
-            sheetImage = mCurrentSheet;
+        if (sheet)
+            sheetImage = sheet;
 
         LabWidgets::ImageButton(sheetImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
 
@@ -29,7 +33,7 @@ namespace Laby {
         Widgets::AddContextItem("Delete", [&]() { toDelete = true; });
         Widgets::EndContextPopup();
 
-        Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [this](const fs::path& var)
+        Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [=](const fs::path& var)
         {
             fs::path extension = var.extension();
 
@@ -38,71 +42,55 @@ namespace Laby {
                 mNewSheetWidth = 0;
                 mNewSheetHeight = 0;
 
-                ModalManager::OpenInline("New Spritesheet...", ModalButtons::OKCancel, [&]()
-                {
-                    Widgets::Label("Enter the tile size for this sprite sheet");
-                    Widgets::NewLine();
-
-                    Widgets::StringEdit("Name", mNewSheetName);
-                    Widgets::UIntEdit("Tile Width (px)", mNewSheetWidth);
-                    Widgets::UIntEdit("Tile Height (px)", mNewSheetHeight);
-                }, [this, var]()
-                {
-                    if (mNewSheetWidth == 0 || mNewSheetHeight == 0)
-                        return;
-
-                    mCurrentSheet = AssetManager::CreateNewAsset<Texture2DSheet>(mNewSheetName, mNewSheetName, var, glm::vec2{ (f32)mNewSheetWidth, (f32)mNewSheetHeight });
-                    mCurrentSheet->generateTileset();
-
-                    mCurrentSubTex = nullptr;
-                });
+                ModalManager::Open<NewSpritesheetModal>("New Spritesheet...", ModalButtons::Custom, mCurrentSheet, var);
             }
             else if (AssetManager::IsExtensionValid(extension, AssetType::TextureSheet))
             {
-                mCurrentSheet = AssetManager::GetAsset<Texture2DSheet>(var);
-                mCurrentSubTex = nullptr;
+                mCurrentSheet = AssetManager::GetHandleFromPath(var);
+                mCurrentSubTex = 0;
             }
         });
 
         std::vector<SubTexEntry> comboEntries;
-        comboEntries.emplace_back(NO_NAME, nullptr);
-        if (mCurrentSheet)
+        comboEntries.emplace_back(NO_NAME, 0);
+        if (sheet)
         {
-            for (AssetHandle handle : mCurrentSheet->getSubTextures())
+            for (AssetHandle handle : sheet->getSubTextures())
             {
                 Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(handle);
-                comboEntries.emplace_back(subtex->getName(), subtex);
+                comboEntries.emplace_back(subtex->getName(), handle);
             }
         }
 
-        std::string_view subTexName = mCurrentSubTex ? mCurrentSubTex->getName() : NO_NAME;
-        Widgets::Combobox<Ref<SubTexture2D>>("Subtextures", subTexName, mCurrentSubTex, comboEntries);
+        std::string_view subTexName = subtex ? subtex->getName() : NO_NAME;
+        Widgets::Combobox<AssetHandle>("Subtextures", subTexName, mCurrentSubTex, comboEntries);
 
         Widgets::NewLine();
 
         Ref<IRenderable> subtexImage = EditorResources::NoTexture;
-        if (mCurrentSubTex)
-            subtexImage = mCurrentSubTex;
+        if (subtex)
+            subtexImage = subtex;
         LabWidgets::Image(subtexImage, glm::vec2{panelSize.x - 15.0f, 200.0f});
-        if (mCurrentSubTex)
-            Widgets::AddDragDropSource("SPRITE_SHEET_ITEM", mCurrentSubTex->handle);
+        if (subtex)
+            Widgets::AddDragDropSource("SPRITE_SHEET_ITEM", subtex->handle);
 
         Widgets::AddDragDropTarget<fs::path>("CONTENT_BROWSER_ITEM", [&](const fs::path& var)
         {
             if (AssetManager::IsExtensionValid(var.extension(), AssetType::SubTexture))
             {
-                mCurrentSubTex = AssetManager::GetAsset<SubTexture2D>(var);
-                mCurrentSheet = mCurrentSubTex->getSheet();
+                mCurrentSubTex = AssetManager::GetHandleFromPath(var);
+                Ref<SubTexture2D> newSubtex = AssetManager::GetAsset<SubTexture2D>(mCurrentSubTex);
+                mCurrentSheet = newSubtex ? newSubtex->getSheet()->handle : AssetHandle(0);
             }
         });
 
-        if (toDelete && mCurrentSheet)
+        if (toDelete && sheet)
         {
-            for (AssetHandle subtex : mCurrentSheet->getSubTextures())
+            for (AssetHandle subtex : sheet->getSubTextures())
                 AssetManager::DestroyAsset(subtex);
-            FileUtils::RemoveDir(Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / mCurrentSheet->getName());
-            AssetManager::DestroyAsset(mCurrentSheet->handle);
-            mCurrentSheet = nullptr;
+            FileUtils::RemoveDir(Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / sheet->getName());
+            AssetManager::DestroyAsset(sheet->handle);
+            mCurrentSheet = 0;
         }
     }
 }

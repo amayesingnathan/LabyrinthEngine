@@ -559,7 +559,8 @@ namespace Laby {
 		Utils::PushStyle(ImGuiStyleVar_WindowPadding, ImVec2(0, 2));
 		Utils::PushStyle(ImGuiStyleVar_ItemInnerSpacing, ImVec2(0, 0));
 
-		Utils::SetButtonTransparent();
+		Utils::SetButtonDefaults();
+		Utils::SetButtonColour(Colour::Transparent);
 
 		Widgets::BeginWindow("##toolbar", nullptr, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
@@ -587,7 +588,7 @@ namespace Laby {
 			});
 		}
 
-		Utils::ResetButtonTransparency();
+		Utils::PopStyleColour(3);
 
 		Utils::PopStyle(2);
 		Widgets::EndWindow();
@@ -729,8 +730,9 @@ namespace Laby {
 		ScriptEngine::UnloadAppAssembly();
 
 		// Check that mEditorScene is the last one (so setting it null here will destroy the scene)
-		if (mSceneManager->get(mEditorScene)->getRefCount() != 1)
-			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - something is still holding scene refs!");
+		u32 refCount = mSceneManager->get(mEditorScene)->getRefCount();
+		if (refCount != 1)
+			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - still {} references being held!", refCount - 1);
 		mEditorScene = 0;
 
 		mSceneManager->reset();
@@ -786,10 +788,10 @@ namespace Laby {
 
 		if (!mEditorData.currentFile.empty())
 		{
-			Ref<Scene> activeScene = mSceneManager->getActive();
-			SceneSerialiser serialiser(activeScene);
+			Ref<Scene> editorScene = mSceneManager->get(mEditorScene);
+			SceneSerialiser serialiser(editorScene);
 			serialiser.serialise(mEditorData.currentFile);
-			AssetManager::ReloadData(activeScene->handle);
+			AssetManager::ReloadData(editorScene->handle);
 		}
 		else SaveSceneAs();
 	}
@@ -801,11 +803,8 @@ namespace Laby {
 		mEditorData.currentFile = FileUtils::SaveFile({ "Labyrinth Scene (.lscene)", "*.lscene" }).string();
 		if (!mEditorData.currentFile.empty())
 		{
-			Ref<Scene> activeScene = mSceneManager->getActive();
-			AssetManager::CreateNewAsset(activeScene->getName(), activeScene);
-			SceneSerialiser serialiser(activeScene);
-			serialiser.serialise(mEditorData.currentFile);
-			AssetManager::ReloadData(activeScene->handle);
+			Ref<Scene> editorScene = mSceneManager->get(mEditorScene);
+			AssetManager::SaveMemoryOnlyAsset<Scene>(editorScene->getName(), mEditorScene);
 		}
 	}
 

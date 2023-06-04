@@ -108,8 +108,8 @@ namespace Laby {
 
     UUID SceneManager::newScene()
     {
-        UUID newScene;
-        mScenes[newScene] = Ref<Scene>::Create();
+        UUID newScene = AssetManager::CreateMemoryOnlyAsset<Scene>();
+        mScenes[newScene] = AssetManager::GetAsset<Scene>(newScene);
         return newScene;
     }
 

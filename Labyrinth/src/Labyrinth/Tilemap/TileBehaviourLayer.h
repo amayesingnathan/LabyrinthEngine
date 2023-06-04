@@ -48,7 +48,7 @@ namespace Laby {
 
 	private:
 		std::vector<Shape> GetContiguousShapes() const;
-		Shape FloodFill(u32 x, u32 y, Grid<Bool>& checkedGrid) const;
+		Shape FloodFill(u32 x, u32 y, Grid<bool>& checkedGrid) const;
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const TileBehaviourData& data)
