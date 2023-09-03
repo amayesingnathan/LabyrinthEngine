@@ -99,6 +99,8 @@ namespace Laby {
 
 	void EditorLayer::onUpdate(Timestep ts)
 	{
+		Ref<Scene> activeScene = mSceneManager->getActive();
+
 		if (FramebufferSpec spec = mFramebuffer->getSpecification();
 			mEditorData.viewportSize.x > 0.0f && mEditorData.viewportSize.y > 0.0f && // zero sized framebuffer is invalid
 			(spec.width != mEditorData.viewportSize.x || spec.height != mEditorData.viewportSize.y))
@@ -106,7 +108,9 @@ namespace Laby {
 			mFramebuffer->resize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 
 			mEditorData.camera->setViewportSize(mEditorData.viewportSize.x, mEditorData.viewportSize.y);
-			mSceneManager->getActive()->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
+
+			if (activeScene)
+				activeScene->onViewportResize((u32)mEditorData.viewportSize.x, (u32)mEditorData.viewportSize.y);
 		}
 
 		Renderer2D::ResetStats();
@@ -118,30 +122,8 @@ namespace Laby {
 		// Clear our entity ID attachment to -1
 		mFramebuffer->clearAttachment(1, -1);
 
-		switch (mSceneState)
-		{
-		case SceneEdit:
-		{
-			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
-				mEditorData.camera->onUpdate(ts);
-
-			mSceneManager->getActive()->onUpdateEditor(ts, *mEditorData.camera);
-			break;
-		}
-		case ScenePlay:
-		{
-			mSceneManager->getActive()->onUpdateRuntime(ts);
-			break;
-		}
-		case SceneSimulate:
-		{
-			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
-				mEditorData.camera->onUpdate(ts);
-
-			mSceneManager->getActive()->onUpdateSimulation(ts, *mEditorData.camera);
-			break;
-		}
-		}
+		if (activeScene)
+			DrawScene(activeScene, ts);
 
 		auto [mx, my] = Utils::MousePos();
 		mx -= mEditorData.viewportBounds[0].x;
@@ -151,10 +133,10 @@ namespace Laby {
 		i32 mouseX = (i32)mx;
 		i32 mouseY = (i32)my;
 
-		if (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y)
+		if (activeScene && (mouseX >= 0 && mouseY >= 0 && mouseX < (i32)viewportSize.x && mouseY < (i32)viewportSize.y))
 		{
 			i32 pixelData = mFramebuffer->readPixel(1, mouseX, mouseY);
-			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, mSceneManager->getActive());
+			mEditorData.hoveredEntity = (pixelData == -1) ? Entity() : Entity((EntityID)pixelData, activeScene);
 		}
 
 		mFramebuffer->unbind();
@@ -412,9 +394,12 @@ namespace Laby {
 
 	void EditorLayer::UI_Gizmos()
 	{
+		Ref<Scene> scene = mSceneManager->getActive();
+		if (!scene)
+			return;
+
 		// Gizmos
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		Ref<Scene> scene = mSceneManager->getActive();
 		Entity firstSelection = scene->findEntity(selections.size() != 0 ? selections[0] : UUID(0));
 
 		if (firstSelection && mEditorData.gizmoType != -1 && mEditorData.viewportFocused && firstSelection.hasComponent<TransformComponent>())
@@ -730,10 +715,6 @@ namespace Laby {
 
 		ScriptEngine::UnloadAppAssembly();
 
-		// Check that mEditorScene is the last one (so setting it null here will destroy the scene)
-		u32 refCount = mSceneManager->get(mEditorScene)->getRefCount();
-		if (refCount != 1)
-			LAB_CORE_ERROR("Scene will not be destroyed after project is closed - still {} references being held!", refCount - 1);
 		mEditorScene = 0;
 
 		mSceneManager->reset();
@@ -855,6 +836,34 @@ namespace Laby {
 		SelectionManager::DeselectAll(SelectionDomain::Scene);
 
 		SyncWindowTitle(scene);
+	}
+
+	void EditorLayer::DrawScene(Ref<Scene> scene, Timestep ts)
+	{
+		switch (mSceneState)
+		{
+		case SceneEdit:
+		{
+			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
+				mEditorData.camera->onUpdate(ts);
+
+			scene->onUpdateEditor(ts, *mEditorData.camera);
+			break;
+		}
+		case ScenePlay:
+		{
+			scene->onUpdateRuntime(ts);
+			break;
+		}
+		case SceneSimulate:
+		{
+			if (mEditorData.viewportHovered && mEditorData.viewportFocused)
+				mEditorData.camera->onUpdate(ts);
+
+			scene->onUpdateSimulation(ts, *mEditorData.camera);
+			break;
+		}
+		}
 	}
 
 	void EditorLayer::SyncWindowTitle(Ref<Scene> scene)

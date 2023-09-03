@@ -13,9 +13,4 @@ namespace Laby {
 		: mID(sUniformDistribution(sEngine))
 	{
 	}
-
-	UUID::UUID(u64 id)
-		: mID(id)
-	{
-	}
 }

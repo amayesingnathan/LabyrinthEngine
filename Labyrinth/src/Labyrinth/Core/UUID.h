@@ -9,7 +9,8 @@ namespace Laby {
 	{
 	public:
 		UUID();
-		UUID(u64 id);
+		constexpr UUID(u64 id)
+			: mID(id) {}
 
 		u64 get() const { return mID; }
 

@@ -37,7 +37,7 @@
 #include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Renderer/Camera.h"
 
-#include "Labyrinth/Scene/Scene.h"
+#include "Labyrinth/Scene/SceneManager.h"
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 #include "Labyrinth/Scene/SceneSerialiser.h"

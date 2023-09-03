@@ -24,7 +24,8 @@ namespace Laby {
 		Ref<Scene> get(UUID id) const;
 		Ref<Scene> getActive() const;
 
-		UUID newScene();
+		UUID newScene(bool load = false);
+		void save(const fs::path& filepath, UUID scene = 0);
 
 		void addSceneChangeCallback(Action<Ref<Scene>>&& action);
 

@@ -131,6 +131,12 @@ namespace Laby {
 		sAssetRegistry.remove(assetHandle);
 	}
 
+	void AssetManager::ClearAllAssets()
+	{
+		for (const auto& [handle, _] : sAssetRegistry)
+			DestroyAsset(handle);
+	}
+
 	void AssetManager::LoadRegistry()
 	{
 		if (!fs::exists(sAssetRegPath))

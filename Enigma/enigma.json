@@ -27,6 +27,10 @@
         {
             "Displayed": true,
             "Key": "Tilemaps"
+        },
+        {
+            "Displayed": true,
+            "Key": "Animations"
         }
     ],
     "Startup": {
