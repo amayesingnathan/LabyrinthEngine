@@ -65,13 +65,13 @@ animation, as well as a runtime in order to export projects as full standalone g
   
   I have used the EnTT library to handle the ECS as it is a proven and reliable solution, however Labyrinth wraps this library by providing an Entity class which is a wrapper over the Entity ID that allows a cleaner interface for managing components on an Entity. The Scene class contains the EnTT context and provides helper functions to expose the ECS where necessary. Labyrinth uses YAML to create human readable serialised scenes which allow for saving and loading of different scenes.
   
-  Working with EnTT inspired me to create my own sparse set implementation of an ECS, [found here](github.com/amayesingnathan/LEntity).
+  Working with EnTT inspired me to create my own sparse set implementation of an ECS, [found here](https://github.com/amayesingnathan/LEntity).
   
   ### Projects and Assets ###
   
   Labyrinth comes with a project system that allows users to maintain their work in a structured format. Part of the project structure includes an asset registry and directory, which contains the assets used within that project. The asset manager automatically detects any new assets moved to the asset directory and saves them to the registry if they don't exist when a project is unloaded. New assets can easily be created and will be automatically added to the registry.
   
-  When an asset is requested, the asset manager will check if it has already been loaded, and if not it will import the asset from the registry. One an asset has been requested, it will be kept loaded by the asset manager in anticipation of reuse. Currently all assets persist until the project is unloaded, but I intend to add an asset handler that unloads assets that have been unused for a set period of time.
+  When an asset is requested, the asset manager will check if it has already been loaded, and if not it will import the asset from the registry. Once an asset has been requested, it will be kept loaded by the asset manager in anticipation of reuse. Currently all assets persist until the project is unloaded, but I intend to add an asset handler that unloads assets that have been unused for a set period of time.
   
   ### Scripting ###
   

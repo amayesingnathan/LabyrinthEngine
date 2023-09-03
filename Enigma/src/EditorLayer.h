@@ -56,6 +56,8 @@ namespace Laby {
 		void OnSceneSimulate();
 		void OnSceneStop();
 
+		void DrawScene(Ref<Scene> scene, Timestep ts);
+
 		void OnSceneChange(Ref<Scene> scene);
 		void SyncWindowTitle(Ref<Scene> scene = nullptr);
 

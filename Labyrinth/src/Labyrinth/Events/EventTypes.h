@@ -11,7 +11,7 @@ namespace Laby {
 	namespace EventType {
 
 		enum Flag : u32
-		{	// New events must be added to AllEvents struct in same order
+		{	// New events must be added to AllEvents struct in Event.h in same order
 			None = 0,
 
 			WindowClose			= LAB_BIT(0), 

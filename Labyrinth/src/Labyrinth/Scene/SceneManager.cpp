@@ -1,6 +1,8 @@
 #include "Lpch.h"
 #include "SceneManager.h"
 
+#include "SceneSerialiser.h"
+
 namespace Laby {
 
     void SceneManager::reset()
@@ -106,11 +108,34 @@ namespace Laby {
         return mScenes.at(mCurrentScene);
     }
 
-    UUID SceneManager::newScene()
+    UUID SceneManager::newScene(bool load)
     {
         UUID newScene = AssetManager::CreateMemoryOnlyAsset<Scene>();
         mScenes[newScene] = AssetManager::GetAsset<Scene>(newScene);
         return newScene;
+    }
+
+    void SceneManager::save(const fs::path& filepath, UUID sceneToSave)
+    {
+        if (!sceneToSave)
+            sceneToSave = mCurrentScene;
+
+        if (!mScenes.contains(sceneToSave))
+        {
+            LAB_CORE_ERROR("Scene {} does not exist in scene manager!", sceneToSave);
+            return;
+        }
+
+        Ref<Scene> scene = mScenes.at(sceneToSave);
+        if (AssetManager::IsMemoryAsset(sceneToSave))
+        {
+            AssetManager::SaveMemoryOnlyAsset<Scene>(scene->getName(), sceneToSave);
+            return;
+        }
+;
+        SceneSerialiser serialiser(scene);
+        serialiser.serialise(filepath);
+        AssetManager::ReloadData(sceneToSave);
     }
 
     void SceneManager::addSceneChangeCallback(Action<Ref<Scene>>&& action)

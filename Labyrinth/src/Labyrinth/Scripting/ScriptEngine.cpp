@@ -145,7 +145,11 @@ namespace Laby {
 		if (!sContext)
 			return;
 
-		sContext->getActive()->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
+		Ref<Scene> scene = sContext->getActive();
+		if (!scene)
+			return;
+
+		scene->getEntitiesWith<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
 			sc.instance.reset();
 			sc.initialised = false;

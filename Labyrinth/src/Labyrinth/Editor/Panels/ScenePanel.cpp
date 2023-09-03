@@ -17,6 +17,9 @@ namespace Laby {
 
 	void ScenePanel::onImGuiRender()
 	{
+		if (!mContext)
+			return;
+
 		Widgets::StringEdit("Name", mContext->getName());
 		Widgets::SameLine();
 		Widgets::Button("Create..", []()

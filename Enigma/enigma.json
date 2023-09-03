@@ -27,11 +27,15 @@
         {
             "Displayed": true,
             "Key": "Tilemaps"
+        },
+        {
+            "Displayed": true,
+            "Key": "Animations"
         }
     ],
     "Startup": {
         "Fullscreen": false,
-        "Project": "SandboxProject\\SandboxProject.lpj",
+        "Project": "",
         "Scripting": {
             "CoreAssemblyPath": "resources/Scripts/Labyrinth-ScriptCore.dll"
         },

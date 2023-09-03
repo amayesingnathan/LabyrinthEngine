@@ -5,6 +5,8 @@
 #include <Labyrinth/Core/Application.h>
 #include <Labyrinth/Core/UUID.h>
 
+#include <Labyrinth/Animation/Animation.h>
+
 #include <Labyrinth/Assets/AssetManager.h>
 
 #include <Labyrinth/Containers/Buffer.h>
@@ -35,7 +37,7 @@
 #include "Labyrinth/Renderer/SubTexture.h"
 #include "Labyrinth/Renderer/Camera.h"
 
-#include "Labyrinth/Scene/Scene.h"
+#include "Labyrinth/Scene/SceneManager.h"
 #include "Labyrinth/Scene/Entity.h"
 #include "Labyrinth/Scene/Components.h"
 #include "Labyrinth/Scene/SceneSerialiser.h"

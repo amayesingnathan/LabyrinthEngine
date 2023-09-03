@@ -40,6 +40,7 @@ namespace Laby {
         static bool ReloadData(AssetHandle assetHandle);
 
         static void DestroyAsset(AssetHandle assetHandle);
+        static void ClearAllAssets();
 
     private:
         static void LoadRegistry();

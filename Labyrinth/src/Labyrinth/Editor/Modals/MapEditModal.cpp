@@ -112,7 +112,7 @@ namespace Laby {
         Widgets::Disable(!validCurrentTile);
 
         Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(currentTileData.script);
-        Widgets::Combobox<Ref<ScriptClass>>("Behaviour", currentTileData.script, scriptClass, comboEntries,
+        Widgets::Combobox<Ref<ScriptClass>>("Script", currentTileData.script, scriptClass, comboEntries,
             [&](std::string_view name, Ref<ScriptClass> klass) { currentTileData.script = name; });
 
         Widgets::Checkbox("Solid", currentTileData.solid);

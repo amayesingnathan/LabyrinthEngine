@@ -12,6 +12,7 @@
 	path = Labyrinth/dependencies/imgui-cpp
 	url = https://github.com/amayesingnathan/imgui-cpp
 	branch = submodule
+	update = rebase
 [submodule "Labyrinth/dependencies/ImGuizmo"]
 	path = Labyrinth/dependencies/ImGuizmo
 	url = https://github.com/CedricGuillemet/ImGuizmo
