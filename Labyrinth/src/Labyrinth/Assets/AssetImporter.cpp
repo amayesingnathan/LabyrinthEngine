@@ -34,7 +34,7 @@ namespace Laby {
 			return;
 		}
 
-		sSerialisers[asset->getAssetType()]->serialise(metadata, asset);
+		sSerialisers[asset->GetAssetType()]->Serialise(metadata, asset);
 	}
 
 	void AssetImporter::Serialise(const Ref<Asset>& asset)
@@ -51,6 +51,6 @@ namespace Laby {
 			return false;
 		}
 
-		return sSerialisers[metadata.type]->deserialise(metadata, asset);
+		return sSerialisers[metadata.type]->Deserialise(metadata, asset);
 	}
 }

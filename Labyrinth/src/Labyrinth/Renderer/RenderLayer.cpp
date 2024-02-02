@@ -16,7 +16,7 @@ namespace Laby {
 		: drawType(Circle), transform(trans), colour(crc.colour), tilingFactorOrThickness(crc.thickness),
 		  entityID(entity) {}
 
-	void RenderLayer::draw() const
+	void RenderLayer::Draw() const
 	{
 		for (const DrawData& element : mElements)
 			Renderer2D::DrawElement(element);

@@ -83,7 +83,7 @@ namespace Laby {
 		Buffer fileData = FileUtils::Read(assemblyPath);
 
 		MonoImageOpenStatus status;
-		MonoImage* image = mono_image_open_from_data_full(fileData.as<char>(), (u32)fileData.size(), 1, &status, 0);
+		MonoImage* image = mono_image_open_from_data_full(fileData.As<char>(), (u32)fileData.Size(), 1, &status, 0);
 
 		if (status != MONO_IMAGE_OK)
 		{
@@ -138,7 +138,7 @@ namespace Laby {
 		LAB_CORE_INFO("[ScriptEngine] Successfully loaded core assembly from: {0}", sInternalData->config.coreAssemblyPath);
 
 		sInternalData->entityClass = Ref<ScriptClass>::Create(mono_class_from_name(coreAssemblyInfo->assemblyImage, "Labyrinth", "Entity"));
-		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(sInternalData->entityClass->getClass(), "ID"));
+		sInternalData->entityClass->mFields.emplace_back(ScriptFieldType::UInt64, "ID", mono_class_get_field_from_name(sInternalData->entityClass->GetClass(), "ID"));
 		LAB_CORE_ASSERT(sInternalData->entityClass->valid())
 
 #ifdef LAB_DEBUG
@@ -231,7 +231,7 @@ namespace Laby {
 			if (!monoClass)
 				continue;
 
-			bool isEntity = mono_class_is_subclass_of(monoClass, sInternalData->entityClass->getClass(), false);
+			bool isEntity = mono_class_is_subclass_of(monoClass, sInternalData->entityClass->GetClass(), false);
 
 			if (!isEntity)
 				continue;

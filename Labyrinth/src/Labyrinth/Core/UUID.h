@@ -12,13 +12,13 @@ namespace Laby {
 		constexpr UUID(u64 id)
 			: mID(id) {}
 
-		u64 get() const { return mID; }
+		u64 Get() const { return mID; }
 
 		operator bool() const { return mID != 0; }
 		auto operator<=>(const UUID&) const = default;
 		auto operator<=>(std::unsigned_integral auto val) const { return mID <=> val; }
 
-		std::string to_string() const { return std::to_string(mID); }
+		std::string ToString() const { return std::to_string(mID); }
 
 	private:
 		u64 mID;
@@ -26,7 +26,7 @@ namespace Laby {
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const UUID& data)
 	{
-		mOut << data.get();
+		mOut << data.Get();
 		return mOut;
 	}
 }
@@ -52,7 +52,7 @@ namespace std {
 	{
 		std::size_t operator()(const Laby::UUID& uuid) const
 		{
-			return uuid.get();;
+			return uuid.Get();;
 		}
 	};
 

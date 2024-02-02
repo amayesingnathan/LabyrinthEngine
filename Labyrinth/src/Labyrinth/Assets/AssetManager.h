@@ -25,7 +25,7 @@ namespace Laby {
         static fs::path GetFileSystemPath(AssetHandle handle) { return GetFileSystemPath(GetMetadataInternal(handle)); }
         static std::string GetFileSystemPathString(const AssetMetadata& metadata) { return GetFileSystemPath(metadata).string(); }
 
-        static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).valid(); }
+        static bool IsAssetHandleValid(AssetHandle assetHandle) { return IsMemoryAsset(assetHandle) || GetMetadata(assetHandle).Valid(); }
 
         static bool IsMemoryAsset(AssetHandle handle) { return sMemoryAssets.contains(handle); }
 
@@ -124,10 +124,10 @@ namespace Laby {
         static Ref<T> GetAsset(AssetHandle assetHandle)
         {
             if (IsMemoryAsset(assetHandle))
-                return sMemoryAssets[assetHandle].to<T>();
+                return sMemoryAssets[assetHandle].To<T>();
 
             auto& metadata = GetMetadataInternal(assetHandle);
-            if (!metadata.valid())
+            if (!metadata.Valid())
                 return nullptr;
 
             Ref<Asset> asset = nullptr;
@@ -141,7 +141,7 @@ namespace Laby {
             }
             else asset = sLoadedAssets[assetHandle];
 
-            return asset.to<T>();
+            return asset.To<T>();
         }
 
         template<IsAsset T>

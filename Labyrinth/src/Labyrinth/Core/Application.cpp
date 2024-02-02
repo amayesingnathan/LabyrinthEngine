@@ -1,8 +1,6 @@
 #include "Lpch.h"
 #include "Application.h"
 
-#include "ImGuizmo.h"
-
 #include <Labyrinth/IO/JSON.h>
 #include <Labyrinth/Networking/ServerLayer.h>
 #include <Labyrinth/Networking/ClientLayer.h>
@@ -12,117 +10,14 @@
 
 namespace Laby {
 
-	Application::Application(const ApplicationSpec& spec)
-		: IEventListener(ListenerType::App), mSpecification(spec)
+	Application::Application(ApplicationSpec* spec)
+		: slc::Application(spec)
 	{
-		LAB_CORE_ASSERT(!sInstance, "Application already exists");
-		sInstance = this;
+		if (!spec->workingDir.empty())
+			std::filesystem::current_path(spec->workingDir);
 
-		if (!mSpecification.workingDir.empty())
-			std::filesystem::current_path(mSpecification.workingDir);
-
-		mWindow = Window::Create(WindowProps(mSpecification.name, mSpecification.resolution.width, mSpecification.resolution.height, mSpecification.fullscreen));
-
-		Renderer::Init();
-		ScriptEngine::Init(spec.scriptConfig);
-
-		mImGuiHandler = MakeSingle<ImGuiHandler>();
-	}
-
-	Application::~Application()
-	{
-		for (Layer* layer : mLayerStack)
-		{
-			layer->onDetach();
-			delete layer;
-		}
-		mImGuiHandler.reset();
-
-		ScriptEngine::Shutdown();
-		Renderer::Shutdown();
-		Project::SetInactive();
-	}
-
-	void Application::onEvent(Event& e)
-	{
-		e.dispatch<WindowCloseEvent>(LAB_BIND_EVENT_FUNC(OnWindowClose));
-		e.dispatch<WindowResizeEvent>(LAB_BIND_EVENT_FUNC(OnWindowResize));
-	}
-
-	bool Application::OnWindowClose(WindowCloseEvent& e)
-	{
-		Application::Close();
-		return true;
-	}
-
-	bool Application::OnWindowResize(WindowResizeEvent& e)
-	{
-
-		if (e.width == 0 || e.height == 0)
-		{
-			mState.minimised = true;
-			return false;
-		}
-
-		mState.minimised = false;
-		Renderer::SetViewport(e.width, e.height);
-		return false;
-	}
-
-	void Application::ExecuteMainThread()
-	{
-		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
-
-		for (auto& func : sInstance->mState.mainThreadQueue)
-			func();
-
-		sInstance->mState.mainThreadQueue.clear();
-	}
-
-	void Application::Run(int argc, char** argv)
-	{
-		CreateApplication(argc, argv);
-
-		while (sInstance->mState.running)
-		{
-			f32 time = Stopwatch::GetTime();
-			Timestep timestep = time - sInstance->mState.lastFrameTime;
-			sInstance->mState.lastFrameTime = time;
-
-			sInstance->ExecuteMainThread();
-
-			EventManager::Dispatch();
-
-			if (!sInstance->mState.minimised)
-			{
-				for (Layer* layer : sInstance->mLayerStack)
-					layer->onUpdate(timestep);
-			}
-
-			{
-				imcpp::ImScopedFrame imguiFrame = sInstance->mImGuiHandler->newFrame();
-				ImGuizmo::BeginFrame();
-				for (Layer* layer : sInstance->mLayerStack)
-					layer->onImGuiRender();
-			}
-
-			sInstance->mWindow->onUpdate();
-		}
-
-		delete sInstance;
-	}
-
-	void Application::Close()
-	{
-		if (!sInstance->mState.blockExit) 
-			sInstance->mState.running = false;
-	}
-
-	void Application::SubmitActionToMainThread(Action<>&& function)
-	{
-		std::scoped_lock<std::mutex> lock(sInstance->mState.mainThreadQueueMutex);
-
-		sInstance->mState.mainThreadQueue.emplace_back(std::move(function));
+		RegisterSystem<Renderer>();
+		RegisterSystem<ScriptEngine>(spec->scriptConfig);
 	}
 
 	void Application::SendNetMessage(const Message& msg)
@@ -133,7 +28,7 @@ namespace Laby {
 			return;
 		}
 
-		sInstance->mNetworkLayer->send(msg);
+		sInstance->mNetworkLayer->Send(msg);
 	}
 
 	void Application::ReadSettings(const std::filesystem::path& settingsPath, ApplicationSpec& outSpec)
@@ -168,7 +63,7 @@ namespace Laby {
 		if (settingsJSON.empty())
 			LAB_CORE_WARN("Settings file did not exist, creating from scratch...");
 
-		const ApplicationSpec& spec = Application::GetSpec();
+		const ApplicationSpec& spec = Application::GetSpec<ApplicationSpec>();
 		JsonObj& startupSettings = settingsJSON["Startup"];
 
 		startupSettings["Fullscreen"] = spec.fullscreen;
@@ -181,15 +76,5 @@ namespace Laby {
 		scriptSettings["CoreAssemblyPath"] = spec.scriptConfig.coreAssemblyPath;
 
 		JSON::Write(settingsPath, settingsJSON);
-	}
-
-	void Application::BlockEsc(bool block)
-	{
-		sInstance->mState.blockExit = block;
-	}
-
-	void Application::BlockEvents(bool block)
-	{
-		sInstance->mImGuiHandler->blockEvents(block);
 	}
 }

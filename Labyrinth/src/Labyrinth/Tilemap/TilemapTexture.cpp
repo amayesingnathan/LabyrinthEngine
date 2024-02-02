@@ -19,25 +19,25 @@ namespace Laby {
 		mFramebuffer = Ref<Framebuffer>::Create(fbSpec);
 	}
 
-	void TilemapTexture::removeSheet(AssetHandle handle)
+	void TilemapTexture::RemoveSheet(AssetHandle handle)
 	{
 		std::unordered_map<TileID, TileID> tileMapping;
-		mTilePalette.remove(handle, tileMapping);
+		mTilePalette.Remove(handle, tileMapping);
 		UpdateLayers(tileMapping);
 		RenderTexture();
 	}
 
-	TileRenderData TilemapTexture::getTile(usize layer, const GridPosition& pos) const
+	TileRenderData TilemapTexture::GetTile(usize layer, const GridPosition& pos) const
 	{
-		if (layer >= mLayers.size() || !pos.valid())
+		if (layer >= mLayers.size() || !pos.Valid())
 			return {};
 
 		return mLayers[layer](pos);
 	}
 
-	void TilemapTexture::setTile(usize layer, const GridPosition& pos, const TileRenderData& data)
+	void TilemapTexture::SetTile(usize layer, const GridPosition& pos, const TileRenderData& data)
 	{
-		if (layer >= mLayers.size() || !pos.valid())
+		if (layer >= mLayers.size() || !pos.Valid())
 			return;
 
 		mLayers[layer](pos) = data;
@@ -45,7 +45,7 @@ namespace Laby {
 		RenderTexture();
 	}
 
-	void TilemapTexture::removeLayer(usize layer)
+	void TilemapTexture::RemoveLayer(usize layer)
 	{
 		if (layer >= mLayers.size())
 			return;
@@ -53,7 +53,7 @@ namespace Laby {
 		mLayers.erase(mLayers.begin() + layer);
 	}
 
-	void TilemapTexture::moveLayer(usize layer, LayerMoveDir direction)
+	void TilemapTexture::MoveLayer(usize layer, LayerMoveDir direction)
 	{
 		if (layer >= mLayers.size())
 			return;
@@ -81,7 +81,7 @@ namespace Laby {
 
 	void TilemapTexture::RenderTexture()
 	{
-		mFramebuffer->bind();
+		mFramebuffer->Bind();
 
 		Renderer::SetClearColor({ 0.f, 0.f, 0.f, 1 });
 		Renderer::Clear();
@@ -109,7 +109,7 @@ namespace Laby {
 
 		Renderer2D::EndState();
 		Renderer::EnableDepth();
-		mFramebuffer->unbind();
+		mFramebuffer->Unbind();
 	}
 
 	void TilemapTexture::UpdateLayers(const std::unordered_map<TileID, TileID>& mapping)

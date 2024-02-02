@@ -14,7 +14,7 @@ namespace Laby {
 
 		TileRenderData() = default;
 		TileRenderData(TileID id, f32 r = 0.0f) : textureID(id), rotation(r) {}
-		bool valid() const { return textureID != NullTileID; }
+		bool Valid() const { return textureID != NullTileID; }
 
 		bool operator==(const TileRenderData& other) const { return textureID == other.textureID && rotation == other.rotation; }
 		bool operator!=(const TileRenderData& other) const { return !(*this == other); }

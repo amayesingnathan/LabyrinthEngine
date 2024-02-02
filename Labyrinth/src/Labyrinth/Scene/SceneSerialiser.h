@@ -16,15 +16,15 @@ namespace Laby{
 	public:
 		SceneSerialiser(const Ref<Scene>& scene);
 
-		void serialise(const std::filesystem::path& filepath);
-		void serialiseRuntime(const std::filesystem::path& filepath)
+		void Serialise(const std::filesystem::path& filepath);
+		void SerialiseRuntime(const std::filesystem::path& filepath)
 		{
 			// Not implemented
 			LAB_CORE_ASSERT(false);
 		}
 
-		bool deserialise(const std::filesystem::path& filepath);
-		bool deserialiseRuntime(const std::filesystem::path& filepath)
+		bool Deserialise(const std::filesystem::path& filepath);
+		bool DeserialiseRuntime(const std::filesystem::path& filepath)
 		{
 			// Not implemented
 			LAB_CORE_ASSERT(false);

@@ -10,7 +10,7 @@ namespace Laby {
 	public:
 		OptionsPanel(EditorData& data) : mEditorData(&data) {}
 
-		void onImGuiRender() override;
+		void OnRender() override;
 
 	private:
 		EditorData* mEditorData = nullptr;

@@ -7,12 +7,9 @@
 #include <Labyrinth/Renderer/SubTexture.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
-	using TextureSheetEntry = imcpp::ComboEntry<Ref<Texture2DSheet>>;
+	using TextureSheetEntry = slc::ComboEntry<Ref<Texture2DSheet>>;
 
 	AnimationEditModal::AnimationEditModal(EditingMode mode, Ref<Animation> animation)
 		: mWindowMode(mode)
@@ -34,7 +31,7 @@ namespace Laby {
 		}
 	}
 
-	void AnimationEditModal::onImGuiRender()
+	void AnimationEditModal::OnRender()
 	{
 		if (!mAnimation)
 			return;
@@ -42,7 +39,7 @@ namespace Laby {
 		StepAnimation();
 
 		glm::vec2 availableRegion = Utils::AvailableRegion<glm::vec2>();
-		bool validFrame = mSelectedFrame.valid();
+		bool validFrame = mSelectedFrame.Valid();
 
 		{
 			glm::vec2 currentFrameRegion = 0.75f * availableRegion;
@@ -50,12 +47,12 @@ namespace Laby {
 
 			Ref<SubTexture2D> selectedFrame = AssetManager::GetAsset<SubTexture2D>(mSelectedFrame.sprite);
 			if (selectedFrame)
-				mCurrentSheet = selectedFrame->getSheet();
+				mCurrentSheet = selectedFrame->GetSheet();
 
 			std::vector<TextureSheetEntry> tilemapSheets;
 			for (Ref<Texture2DSheet> sheet : AssetManager::GetAssetsWithType<Texture2DSheet>())
-				tilemapSheets.emplace_back(sheet->getName(), sheet);
-			Widgets::Combobox<Ref<Texture2DSheet>>("Texture Sheets", mCurrentSheet ? mCurrentSheet->getName() : "None", mCurrentSheet, tilemapSheets);
+				tilemapSheets.emplace_back(sheet->GetName(), sheet);
+			Widgets::Combobox<Ref<Texture2DSheet>>("Texture Sheets", mCurrentSheet ? mCurrentSheet->GetName() : "None", mCurrentSheet, tilemapSheets);
 
 			Widgets::BeginChild("SelectedFrame_Sheet", glm::vec2{ 0.5f * currentFrameRegion.x, 0 });
 
@@ -86,12 +83,12 @@ namespace Laby {
 			Widgets::UIntEdit("Length", validFrame ? mSelectedFrame.length : sDisplayOnDisabled);
 
 			if (mFrameMode == EditingMode::Edit)
-				mAnimation->overwriteFrame(mSelectedFrame);
+				mAnimation->OverwriteFrame(mSelectedFrame);
 
 			Widgets::Disable(mFrameMode != EditingMode::Add || mSelectedFrame.length == 0);
 			Widgets::Button("Add", [this]() 
 			{ 
-				mAnimation->addFrame(mSelectedFrame);
+				mAnimation->AddFrame(mSelectedFrame);
 				mSelectedFrame = AnimationFrame();
 				mSelectedFrame.id = UUID();
 			});
@@ -102,7 +99,7 @@ namespace Laby {
 			Widgets::Disable(mFrameMode != EditingMode::Edit);
 			Widgets::Button("Remove", [this]()
 			{
-				auto& frames = mAnimation->getFrames();
+				auto& frames = mAnimation->GetFrames();
 				std::erase_if(frames, [this](const auto& frame) { return frame.id == mSelectedFrame.id; });
 				mSelectedFrame = AnimationFrame();
 				mFrameMode = EditingMode::None;
@@ -124,7 +121,7 @@ namespace Laby {
 			glm::vec2 rightPanelSize = std::invoke([](const glm::vec2& vec) { return glm::vec2{ vec.x, 0.75f * vec.y }; }, Utils::AvailableRegion<glm::vec2>());
 			Widgets::BeginChild("Preview", rightPanelSize, true);
 
-			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->getFrame(mFrameIndex).sprite), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 2 * Utils::FrameHeightWithSpacing() });
+			LabWidgets::Image(AssetManager::GetAsset<SubTexture2D>(mAnimation->GetFrame(mFrameIndex).sprite), glm::vec2{ rightPanelSize.x, rightPanelSize.y - 2 * Utils::FrameHeightWithSpacing() });
 
 			Widgets::StringEdit("Name", mAnimation->mName);
 			Widgets::SameLine();
@@ -138,11 +135,11 @@ namespace Laby {
 
 			glm::vec2 timelineEntrySize = std::invoke([](const glm::vec2& region) { return glm::vec2{ region.y, region.y }; }, 0.9f * Utils::AvailableRegion<glm::vec2>());
 
-			auto& frames = mAnimation->getFrames();
+			auto& frames = mAnimation->GetFrames();
 			for (usize i = 0; i < frames.size(); i++)
 			{
 				AnimationFrame& currFrame = frames[i];
-				Utils::PushID(std::format("{} - Frame {}", mAnimation->getName(), i));
+				Utils::PushID(std::format("{} - Frame {}", mAnimation->GetName(), i));
 				LabWidgets::ImageButton(AssetManager::GetAsset<SubTexture2D>(currFrame.sprite), timelineEntrySize, [this, &currFrame]()
 				{ 
 					mSelectedFrame = currFrame;
@@ -165,7 +162,7 @@ namespace Laby {
 		}
 	}
 
-	void AnimationEditModal::onCustomButtonRender(bool& open)
+	void AnimationEditModal::OnCustomButtonRender(bool& open)
 	{
 		Widgets::Button("New Frame", [this]()
 		{
@@ -177,7 +174,7 @@ namespace Laby {
 
 		Widgets::Button("OK", [&, this]()
 		{
-			onComplete();
+			OnComplete();
 			open = false;
 		});
 
@@ -189,14 +186,14 @@ namespace Laby {
 		});
 	}
 
-	void AnimationEditModal::onComplete()
+	void AnimationEditModal::OnComplete()
 	{
 		switch (mWindowMode)
 		{
 		case EditingMode::Add:
 		{
 			Ref<Animation> newAnimation = AssetManager::CreateNewAsset<Animation>(mAnimation->mName, mAnimation->mName);
-			newAnimation->addFrames(std::move(mAnimation->mFrames));
+			newAnimation->AddFrames(std::move(mAnimation->mFrames));
 			AssetImporter::Serialise(newAnimation);
 			AssetManager::ReloadData(newAnimation->handle);
 			break;
@@ -215,11 +212,11 @@ namespace Laby {
 		if (mAnimation->mFrames.empty() || !mPlaying)
 			return;
 
-		const auto& frame = mAnimation->getFrame(mFrameIndex);
+		const auto& frame = mAnimation->GetFrame(mFrameIndex);
 		if (++mFrameCounter < frame.length)
 			return;
 
-		++mFrameIndex %= mAnimation->getFrameCount();
+		++mFrameIndex %= mAnimation->GetFrameCount();
 		mFrameCounter = 0;
 	}
 }

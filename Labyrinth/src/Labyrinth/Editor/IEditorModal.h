@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Events/IEventListener.h"
+#include "Labyrinth/Events/Event.h"
 #include "Labyrinth/Project/Project.h"
 
 namespace Laby {
@@ -18,9 +18,9 @@ namespace Laby {
         virtual ~IEditorModal();
 
     protected:
-        virtual void onImGuiRender() = 0;
-        virtual void onComplete() {}
-        virtual void onCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
+        virtual void OnRender() = 0;
+        virtual void OnComplete() {}
+        virtual void OnCustomButtonRender(bool& open) { LAB_CORE_ASSERT(false, "You must provide an override for this function if using custom button behaviour!"); }
 
     private:
         friend class ModalManager;
@@ -35,7 +35,7 @@ namespace Laby {
         WarningModal(const std::string& msg)
             : IEditorModal(), mMessage(msg) {}
 
-        void onImGuiRender() override;
+        void OnRender() override;
 
     private:
         std::string mMessage;
@@ -44,14 +44,14 @@ namespace Laby {
     class InlineModal : public IEditorModal
     {
     public:
-        InlineModal(Action<>&& onImGuiRenderLambda, Action<>&& onCompleteLambda)
-            : mOnImGuiRender(std::move(onImGuiRenderLambda)), mOnComplete(std::move(onCompleteLambda))
+        InlineModal(Action<>&& OnRenderLambda, Action<>&& OnCompleteLambda)
+            : mOnRender(std::move(OnRenderLambda)), mOnComplete(std::move(OnCompleteLambda))
         {}
 
-        void onImGuiRender() override { mOnImGuiRender(); }
-        void onComplete() override { mOnComplete(); }
+        void OnRender() override { mOnRender(); }
+        void OnComplete() override { mOnComplete(); }
 
     private:
-        Action<> mOnImGuiRender, mOnComplete;
+        Action<> mOnRender, mOnComplete;
     };
 }

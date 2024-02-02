@@ -1,11 +1,9 @@
 #include "Lpch.h"
 #include "PanelManager.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 #include "Panels/ScenePanel.h"
-
-using imcpp::Widgets;
 
 namespace Laby {
 
@@ -35,7 +33,7 @@ namespace Laby {
 		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel && entry.displayed; }))
 		{
 			Widgets::BeginWindow(panelEntry.key);
-			panelEntry.panel->onImGuiRender();
+			panelEntry.panel->OnRender();
 			Widgets::EndWindow();
 		}
 	}
@@ -43,12 +41,12 @@ namespace Laby {
 	void PanelManager::ProjectChanged()
 	{
 		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel; }))
-			panelEntry.panel->onProjectChange();
+			panelEntry.panel->OnProjectChange();
 	}
 
 	void PanelManager::SelectionChange()
 	{
 		for (PanelEntry& panelEntry : sEditorPanels | std::views::filter([](const PanelEntry& entry) { return entry.panel; }))
-			panelEntry.panel->onSelectionChange();
+			panelEntry.panel->OnSelectionChange();
 	}
 }

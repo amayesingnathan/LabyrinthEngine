@@ -1,14 +1,12 @@
 #include "Lpch.h"
 #include "NewBodyModal.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Tools/EnumUtils.h>
-
-using imcpp::Widgets;
 
 namespace Laby {
 
-	using BodyTypeEntry = imcpp::ComboEntry<RigidBodyComponent::BodyType>;
+	using BodyTypeEntry = slc::ComboEntry<RigidBodyComponent::BodyType>;
 	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
 		BodyTypeEntry{ "Static",			  RigidBodyComponent::BodyType::Static },
@@ -16,7 +14,7 @@ namespace Laby {
 		BodyTypeEntry{ "DynamicSubTexture2D", RigidBodyComponent::BodyType::Dynamic }
 	};
 
-	using ShapeTypeEntry = imcpp::ComboEntry<NewBodyModal::ShapeType>;
+	using ShapeTypeEntry = slc::ComboEntry<NewBodyModal::ShapeType>;
 	static constexpr std::array<ShapeTypeEntry, 2> sShapeTypes =
 	{
 		ShapeTypeEntry{"Box",		NewBodyModal::ShapeType::Box},
@@ -28,7 +26,7 @@ namespace Laby {
 	{
 	}
 
-	void NewBodyModal::onImGuiRender()
+	void NewBodyModal::OnRender()
 	{
 		Widgets::Label("Please enter the specifications for the new rigid body:");
 		Widgets::NewLine();
@@ -67,11 +65,11 @@ namespace Laby {
         });
 	}
 
-	void NewBodyModal::onComplete()
+	void NewBodyModal::OnComplete()
 	{
         mNewEntity = mContext->CreateEntity("Rigid Body");
-        auto& trans = mNewEntity.replaceComponent<TransformComponent>(mNewBodyDef.trans);
-        auto& rbc = mNewEntity.addComponent<RigidBodyComponent>(mNewBodyDef.body);
+        auto& trans = mNewEntity.ReplaceComponent<TransformComponent>(mNewBodyDef.trans);
+        auto& rbc = mNewEntity.AddComponent<RigidBodyComponent>(mNewBodyDef.body);
 
         if (mNewBodyDef.hasShape)
             ConvertShapeOptions();
@@ -116,13 +114,13 @@ namespace Laby {
             using T = std::decay_t<decltype(arg)>;
             if constexpr (std::is_same_v<T, BoxColliderComponent>)
             {
-                mNewEntity.addComponent<BoxColliderComponent>(arg);
-                if (mNewBodyDef.addRender) mNewEntity.addComponent<SpriteRendererComponent>();
+                mNewEntity.AddComponent<BoxColliderComponent>(arg);
+                if (mNewBodyDef.addRender) mNewEntity.AddComponent<SpriteRendererComponent>();
             }
             else if constexpr (std::is_same_v<T, CircleColliderComponent>)
             {
-                mNewEntity.addComponent<CircleColliderComponent>(arg);
-                if (mNewBodyDef.addRender) mNewEntity.addComponent<CircleRendererComponent>();
+                mNewEntity.AddComponent<CircleColliderComponent>(arg);
+                if (mNewBodyDef.addRender) mNewEntity.AddComponent<CircleRendererComponent>();
             }
             else if constexpr (std::is_same_v<T, NoCollider>)
                 ;

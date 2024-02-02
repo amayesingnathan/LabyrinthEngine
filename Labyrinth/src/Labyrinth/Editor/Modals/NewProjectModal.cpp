@@ -1,12 +1,10 @@
 #include "Lpch.h"
 #include "NewProjectModal.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Project/Project.h>
 
 #include "../EditorData.h"
-
-using imcpp::Widgets;
 
 namespace Laby {
 
@@ -20,7 +18,7 @@ namespace Laby {
 			mProjectName = "NewProject";
 	}
 
-	void NewProjectModal::onImGuiRender()
+	void NewProjectModal::OnRender()
 	{
 		fs::path fullProjectPath = mProjectPath / mProjectName;
 		Widgets::Label(std::format("Full Project Path: {}", fullProjectPath.string()));
@@ -38,7 +36,7 @@ namespace Laby {
 		});
 	}
 
-	void NewProjectModal::onComplete()
+	void NewProjectModal::OnComplete()
 	{
 		mEditorData.newProjectFilepath = mProjectPath;
 		mEditorData.newProjectName = mProjectName;

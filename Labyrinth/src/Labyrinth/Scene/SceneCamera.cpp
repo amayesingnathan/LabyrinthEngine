@@ -10,7 +10,7 @@ namespace Laby {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setPerspective(f32 verticalFOV, f32 nearClip, f32 farClip)
+	void SceneCamera::SetPerspective(f32 verticalFOV, f32 nearClip, f32 farClip)
 	{
 		mProjectionType = ProjectionType::Perspective;
 		mPerspectiveFOV = verticalFOV;
@@ -19,7 +19,7 @@ namespace Laby {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setOrthographic(f32 size, f32 nearClip, f32 farClip)
+	void SceneCamera::SetOrthographic(f32 size, f32 nearClip, f32 farClip)
 	{
 		mProjectionType = ProjectionType::Orthographic;
 		mOrthographicSize = size;
@@ -28,7 +28,7 @@ namespace Laby {
 		RecalculateProjection();
 	}
 
-	void SceneCamera::setViewportSize(u32 width, u32 height)
+	void SceneCamera::SetViewportSize(u32 width, u32 height)
 	{
 		LAB_CORE_ASSERT(width > 0 && height > 0);
 		mAspectRatio = (f32)width / (f32)height;

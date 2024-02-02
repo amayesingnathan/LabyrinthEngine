@@ -53,24 +53,24 @@ namespace Laby {
 		Framebuffer(const FramebufferSpec& spec);
 		~Framebuffer();
 
-		void bind();
-		void unbind();
+		void Bind();
+		void Unbind();
 
-		u32 getTextureID() const override { return getColourAttachmentRendererID(); }
+		u32 GetTextureID() const override { return GetColourAttachmentRendererID(); }
 
-		void resize(usize width, usize height);
-		i32 readPixel(u32 attachmentIndex, i32 x, i32 y) const;
+		void Resize(usize width, usize height);
+		i32 ReadPixel(u32 attachmentIndex, i32 x, i32 y) const;
 
-		void clearAttachment(u32 attachmentIndex, i32 value);
+		void ClearAttachment(u32 attachmentIndex, i32 value);
 
-		void bindColourAttachment(u32 index = 0) const;
-		u32 getColourAttachmentRendererID(u32 index = 0) const
+		void BindColourAttachment(u32 index = 0) const;
+		u32 GetColourAttachmentRendererID(u32 index = 0) const
 		{
 			LAB_CORE_ASSERT(index < mColourAttachments.size());
 			return mColourAttachments[index];
 		}
 
-		const FramebufferSpec& getSpecification() const { return mSpecification; }
+		const FramebufferSpec& GetSpecification() const { return mSpecification; }
 
 	private:
 		void Invalidate();

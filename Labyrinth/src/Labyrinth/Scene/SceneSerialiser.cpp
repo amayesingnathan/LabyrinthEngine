@@ -16,19 +16,19 @@ namespace Laby {
 	{
 	}
 
-	void SceneSerialiser::serialise(const std::filesystem::path& filepath)
+	void SceneSerialiser::Serialise(const std::filesystem::path& filepath)
 	{
 		YAML::Emitter out;
 		out << YAML::BeginMap;
 		out << YAML::Key << "Scene";
-		out << YAML::Value << mScene->getName();
+		out << YAML::Value << mScene->GetName();
 
 		out << YAML::Key << "Entities";
 		out << YAML::Value << YAML::BeginSeq;
 
 		// Sort entities by UUID (for better serializing)
 		std::map<UUID, EntityID> sortedEntityMap;
-		mScene->getEntitiesWith<IDComponent>().each([&](auto entity, auto& idComp)
+		mScene->GetEntitiesWith<IDComponent>().each([&](auto entity, auto& idComp)
 		{
 			sortedEntityMap[idComp.id] = entity;
 		});
@@ -44,7 +44,7 @@ namespace Laby {
 		FileUtils::Write(filepath, out.c_str());
 	}
 
-	bool SceneSerialiser::deserialise(const std::filesystem::path& filepath)
+	bool SceneSerialiser::Deserialise(const std::filesystem::path& filepath)
 	{
 		std::string str;
 		FileUtils::Read(filepath, str);
@@ -62,7 +62,7 @@ namespace Laby {
 			sceneName = path.stem().string();
 		}
 
-		mScene->setName(sceneName);
+		mScene->SetName(sceneName);
 
 		auto entities = data["Entities"];
 		if (entities)
@@ -73,26 +73,26 @@ namespace Laby {
 
 	void SceneSerialiser::SerializeEntity(YAML::Emitter& out, Entity entity)
 	{
-		UUID uuid = entity.getComponent<IDComponent>().id;
+		UUID uuid = entity.GetComponent<IDComponent>().id;
 		out << YAML::BeginMap; // Entity
 		out << YAML::Key << "Entity";
 		out << YAML::Value << uuid;
 
-		if (entity.hasComponent<TagComponent>())
+		if (entity.HasComponent<TagComponent>())
 		{
 			out << YAML::Key << "TagComponent";
 			out << YAML::BeginMap; // TagComponent
 
-			const auto& tag = entity.getComponent<TagComponent>().tag;
+			const auto& tag = entity.GetComponent<TagComponent>().tag;
 			out << YAML::Key << "Tag" << YAML::Value << tag;
 
 			out << YAML::EndMap; // TagComponent
 		}
 
 
-		if (entity.hasComponent<NodeComponent>())
+		if (entity.HasComponent<NodeComponent>())
 		{
-			const auto& nodeComponent = entity.getComponent<NodeComponent>();
+			const auto& nodeComponent = entity.GetComponent<NodeComponent>();
 			out << YAML::Key << "Parent" << YAML::Value << nodeComponent.parent;
 
 			out << YAML::Key << "Children";
@@ -107,12 +107,12 @@ namespace Laby {
 			out << YAML::EndSeq;
 		}
 
-		if (entity.hasComponent<TransformComponent>())
+		if (entity.HasComponent<TransformComponent>())
 		{
 			out << YAML::Key << "TransformComponent";
 			out << YAML::BeginMap; // TransformComponent
 
-			const auto& transform = entity.getTransform();
+			const auto& transform = entity.GetTransform();
 			LAB_SERIALISE_PROPERTY(Position, transform.translation, out);
 			LAB_SERIALISE_PROPERTY(Rotation, transform.rotation, out);
 			LAB_SERIALISE_PROPERTY(Scale, transform.scale, out);
@@ -120,12 +120,12 @@ namespace Laby {
 			out << YAML::EndMap; // TransformComponent
 		}
 
-		if (entity.hasComponent<SpriteRendererComponent>())
+		if (entity.HasComponent<SpriteRendererComponent>())
 		{
 			out << YAML::Key << "SpriteRendererComponent";
 			out << YAML::BeginMap; // SpriteRendererComponent
 
-			const auto& sprite = entity.getComponent<SpriteRendererComponent>();
+			const auto& sprite = entity.GetComponent<SpriteRendererComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)sprite.type, out);
 			LAB_SERIALISE_PROPERTY(Layer, (i32)sprite.layer, out);
 			LAB_SERIALISE_PROPERTY(Handle, sprite.handle, out);
@@ -135,22 +135,22 @@ namespace Laby {
 			out << YAML::EndMap; // SpriteRendererComponent
 		}
 
-		if (entity.hasComponent<CameraComponent>())
+		if (entity.HasComponent<CameraComponent>())
 		{
 			out << YAML::Key << "CameraComponent";
 			out << YAML::BeginMap; // CameraComponent
 
-			const auto& cameraComponent = entity.getComponent<CameraComponent>();
+			const auto& cameraComponent = entity.GetComponent<CameraComponent>();
 
 			out << YAML::Key << "Camera";
 			out << YAML::BeginMap; // Camera
-			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera.getProjectionType(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera.getPerspectiveVerticalFOV(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveNear, cameraComponent.camera.getPerspectiveNearClip(), out);
-			LAB_SERIALISE_PROPERTY(PerspectiveFar, cameraComponent.camera.getPerspectiveFarClip(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicSize, cameraComponent.camera.getOrthographicSize(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicNear, cameraComponent.camera.getOrthographicNearClip(), out);
-			LAB_SERIALISE_PROPERTY(OrthographicFar, cameraComponent.camera.getOrthographicFarClip(), out);
+			LAB_SERIALISE_PROPERTY(ProjectionType, (i32)cameraComponent.camera.GetProjectionType(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFOV, cameraComponent.camera.GetPerspectiveVerticalFOV(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveNear, cameraComponent.camera.GetPerspectiveNearClip(), out);
+			LAB_SERIALISE_PROPERTY(PerspectiveFar, cameraComponent.camera.GetPerspectiveFarClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicSize, cameraComponent.camera.GetOrthographicSize(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicNear, cameraComponent.camera.GetOrthographicNearClip(), out);
+			LAB_SERIALISE_PROPERTY(OrthographicFar, cameraComponent.camera.GetOrthographicFarClip(), out);
 			out << YAML::EndMap; // Camera
 
 			LAB_SERIALISE_PROPERTY(Primary, cameraComponent.primary, out);
@@ -159,12 +159,12 @@ namespace Laby {
 			out << YAML::EndMap; // CameraComponent
 		}
 
-		if (entity.hasComponent<RigidBodyComponent>())
+		if (entity.HasComponent<RigidBodyComponent>())
 		{
 			out << YAML::Key << "RigidBodyComponent";
 			out << YAML::BeginMap; // RigidBodyComponent
 
-			const auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+			const auto& rbComponent = entity.GetComponent<RigidBodyComponent>();
 			LAB_SERIALISE_PROPERTY(Type, (i32)rbComponent.type, out);
 			LAB_SERIALISE_PROPERTY(FixedRotation, rbComponent.fixedRotation, out);
 			LAB_SERIALISE_PROPERTY(Mass, rbComponent.mass, out);
@@ -175,12 +175,12 @@ namespace Laby {
 			out << YAML::EndMap; // RigidBodyComponent
 		}
 
-		if (entity.hasComponent<BoxColliderComponent>())
+		if (entity.HasComponent<BoxColliderComponent>())
 		{
 			out << YAML::Key << "BoxColliderComponent";
 			out << YAML::BeginMap; // BoxColliderComponent
 
-			const auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+			const auto& bcComponent = entity.GetComponent<BoxColliderComponent>();
 			LAB_SERIALISE_PROPERTY(HalfExtents, bcComponent.halfExtents, out);
 			LAB_SERIALISE_PROPERTY(Offset, bcComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, bcComponent.density, out);
@@ -191,12 +191,12 @@ namespace Laby {
 			out << YAML::EndMap; // BoxColliderComponent
 		}
 
-		if (entity.hasComponent<CircleColliderComponent>())
+		if (entity.HasComponent<CircleColliderComponent>())
 		{
 			out << YAML::Key << "CircleColliderComponent";
 			out << YAML::BeginMap; // CircleColliderComponent
 
-			const auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+			const auto& ccComponent = entity.GetComponent<CircleColliderComponent>();
 			LAB_SERIALISE_PROPERTY(Radius, ccComponent.radius, out);
 			LAB_SERIALISE_PROPERTY(Offset, ccComponent.offset, out);
 			LAB_SERIALISE_PROPERTY(Density, ccComponent.density, out);
@@ -207,7 +207,7 @@ namespace Laby {
 			out << YAML::EndMap; // CircleColliderComponent
 		}
 
-		if (entity.hasComponent<ChildControllerComponent>())
+		if (entity.HasComponent<ChildControllerComponent>())
 		{
 			out << YAML::Key << "ChildControllerComponent";
 			out << YAML::BeginMap; // ChildControllerComponent
@@ -217,12 +217,12 @@ namespace Laby {
 			out << YAML::EndMap; // ChildControllerComponent
 		}
 
-		if (entity.hasComponent<ScriptComponent>())
+		if (entity.HasComponent<ScriptComponent>())
 		{
 			out << YAML::Key << "ScriptComponent";
 			out << YAML::BeginMap; // ScriptComponent
 
-			const auto& scriptComponent = entity.getComponent<ScriptComponent>();
+			const auto& scriptComponent = entity.GetComponent<ScriptComponent>();
 			LAB_SERIALISE_PROPERTY(ClassName, scriptComponent.className, out);
 
 			out << YAML::Key << "Fields";
@@ -235,21 +235,21 @@ namespace Laby {
 
 				switch(field.type)
 				{
-				case ScriptFieldType::Boolean:	LAB_SERIALISE_PROPERTY(Value, field.value.get<bool>(), out); break;
-				case ScriptFieldType::Int8:		LAB_SERIALISE_PROPERTY(Value, field.value.get<i8>(), out); break;
-				case ScriptFieldType::Int16:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i16>(), out); break;
-				case ScriptFieldType::Int32:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i32>(), out); break;
-				case ScriptFieldType::Int64:	LAB_SERIALISE_PROPERTY(Value, field.value.get<i64>(), out); break;
-				case ScriptFieldType::UInt8:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u8>(), out); break;
-				case ScriptFieldType::UInt16:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u16>(), out); break;
-				case ScriptFieldType::UInt32:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u32>(), out); break;
-				case ScriptFieldType::UInt64:	LAB_SERIALISE_PROPERTY(Value, field.value.get<u64>(), out); break;
-				case ScriptFieldType::Float:	LAB_SERIALISE_PROPERTY(Value, field.value.get<f32>(), out); break;
-				case ScriptFieldType::Double:	LAB_SERIALISE_PROPERTY(Value, field.value.get<f64>(), out); break;
-				case ScriptFieldType::Vector2:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec2>(), out); break;
-				case ScriptFieldType::Vector3:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec3>(), out); break;
-				case ScriptFieldType::Vector4:	LAB_SERIALISE_PROPERTY(Value, field.value.get<glm::vec4>(), out); break;
-				case ScriptFieldType::Entity:	LAB_SERIALISE_PROPERTY(Value, field.value.get<UUID>(), out); break;
+				case ScriptFieldType::Boolean:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<bool>(), out); break;
+				case ScriptFieldType::Int8:		LAB_SERIALISE_PROPERTY(Value, field.value.Get<i8>(), out); break;
+				case ScriptFieldType::Int16:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<i16>(), out); break;
+				case ScriptFieldType::Int32:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<i32>(), out); break;
+				case ScriptFieldType::Int64:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<i64>(), out); break;
+				case ScriptFieldType::UInt8:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<u8>(), out); break;
+				case ScriptFieldType::UInt16:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<u16>(), out); break;
+				case ScriptFieldType::UInt32:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<u32>(), out); break;
+				case ScriptFieldType::UInt64:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<u64>(), out); break;
+				case ScriptFieldType::Float:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<f32>(), out); break;
+				case ScriptFieldType::Double:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<f64>(), out); break;
+				case ScriptFieldType::Vector2:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<glm::vec2>(), out); break;
+				case ScriptFieldType::Vector3:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<glm::vec3>(), out); break;
+				case ScriptFieldType::Vector4:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<glm::vec4>(), out); break;
+				case ScriptFieldType::Entity:	LAB_SERIALISE_PROPERTY(Value, field.value.Get<UUID>(), out); break;
 				default: break;
 				}
 				out << YAML::EndMap;
@@ -259,23 +259,23 @@ namespace Laby {
 			out << YAML::EndMap; // ScriptComponent
 		}
 
-		if (entity.hasComponent<TilemapComponent>())
+		if (entity.HasComponent<TilemapComponent>())
 		{
 			out << YAML::Key << "TilemapComponent";
 			out << YAML::BeginMap; // TilemapComponent
 
-			auto& tilemap = entity.getComponent<TilemapComponent>();
+			auto& tilemap = entity.GetComponent<TilemapComponent>();
 			LAB_SERIALISE_PROPERTY(Tilemap, tilemap.mapHandle, out);
 
 			out << YAML::EndMap; // TilemapComponent
 		}
 
-		if (entity.hasComponent<AnimationComponent>())
+		if (entity.HasComponent<AnimationComponent>())
 		{
 			out << YAML::Key << "AnimationComponent";
 			out << YAML::BeginMap; // AnimationComponent
 
-			const auto& ac = entity.getComponent<AnimationComponent>();
+			const auto& ac = entity.GetComponent<AnimationComponent>();
 			LAB_SERIALISE_PROPERTY(Handle, ac.handle, out);
 			LAB_SERIALISE_PROPERTY(Playing, ac.playing, out);
 			LAB_SERIALISE_PROPERTY(PlayOnce, ac.playOnce, out);
@@ -301,11 +301,11 @@ namespace Laby {
 
 			Entity deserializedEntity = scene->CreateEntityWithID(uuid, name);
 
-			auto& nodeComponent = deserializedEntity.getComponent<NodeComponent>();
+			auto& nodeComponent = deserializedEntity.GetComponent<NodeComponent>();
 			u64 parentHandle = entity["Parent"] ? entity["Parent"].as<u64>() : 0;
 			nodeComponent.parent = parentHandle;
 			if (parentHandle)
-				deserializedEntity.removeComponent<RootComponent>();
+				deserializedEntity.RemoveComponent<RootComponent>();
 
 			auto children = entity["Children"];
 			if (children)
@@ -320,29 +320,29 @@ namespace Laby {
 			auto transformComponent = entity["TransformComponent"];
 			if (transformComponent)
 			{
-				auto& transform = deserializedEntity.getTransform();
+				auto& transform = deserializedEntity.GetTransform();
 				LAB_DESERIALISE_PROPERTY_DEF(Position, transform.translation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY_DEF(Rotation, transform.rotation, transformComponent, glm::vec3{ 1.f });
 				LAB_DESERIALISE_PROPERTY_DEF(Scale, transform.scale, transformComponent, glm::vec3{ 1.f });
 			}
 			else
-				deserializedEntity.removeComponent<TransformComponent>();
+				deserializedEntity.RemoveComponent<TransformComponent>();
 
 			auto cameraComponent = entity["CameraComponent"];
 			if (cameraComponent)
 			{
 				auto cameraProps = cameraComponent["Camera"];
 
-				auto& cc = deserializedEntity.addComponent<CameraComponent>();
-				cc.camera.setProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
+				auto& cc = deserializedEntity.AddComponent<CameraComponent>();
+				cc.camera.SetProjectionType((SceneCamera::ProjectionType)cameraProps["ProjectionType"].as<i32>());
 
-				cc.camera.setPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
-				cc.camera.setPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
-				cc.camera.setPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
+				cc.camera.SetPerspectiveVerticalFOV(cameraProps["PerspectiveFOV"].as<f32>());
+				cc.camera.SetPerspectiveNearClip(cameraProps["PerspectiveNear"].as<f32>());
+				cc.camera.SetPerspectiveFarClip(cameraProps["PerspectiveFar"].as<f32>());
 
-				cc.camera.setOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
-				cc.camera.setOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
-				cc.camera.setOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
+				cc.camera.SetOrthographicSize(cameraProps["OrthographicSize"].as<f32>());
+				cc.camera.SetOrthographicNearClip(cameraProps["OrthographicNear"].as<f32>());
+				cc.camera.SetOrthographicFarClip(cameraProps["OrthographicFar"].as<f32>());
 
 				cc.primary = cameraComponent["Primary"].as<bool>();
 				cc.fixedAspectRatio = cameraComponent["FixedAspectRatio"].as<bool>();
@@ -351,7 +351,7 @@ namespace Laby {
 			auto spriteRendererComponent = entity["SpriteRendererComponent"];
 			if (spriteRendererComponent)
 			{
-				auto& src = deserializedEntity.addComponent<SpriteRendererComponent>();
+				auto& src = deserializedEntity.AddComponent<SpriteRendererComponent>();
 
 				src.type = (RenderType)spriteRendererComponent["Type"].as<i32>();
 				src.layer = spriteRendererComponent["Layer"].as<u8>();
@@ -362,7 +362,7 @@ namespace Laby {
 			auto circleRendererComponent = entity["CircleRendererComponent"];
 			if (circleRendererComponent)
 			{
-				auto& src = deserializedEntity.addComponent<CircleRendererComponent>();
+				auto& src = deserializedEntity.AddComponent<CircleRendererComponent>();
 
 				src.layer = circleRendererComponent["Layer"].as<u8>();
 				src.colour = circleRendererComponent["Colour"].as<glm::vec4>();
@@ -372,7 +372,7 @@ namespace Laby {
 			auto rigidBodyComponent = entity["RigidBodyComponent"];
 			if (rigidBodyComponent)
 			{
-				auto& rbc = deserializedEntity.addComponent<RigidBodyComponent>();
+				auto& rbc = deserializedEntity.AddComponent<RigidBodyComponent>();
 				rbc.type = (RigidBodyComponent::BodyType)rigidBodyComponent["Type"].as<i32>();
 				rbc.fixedRotation = rigidBodyComponent["FixedRotation"].as<bool>();
 				rbc.mass = rigidBodyComponent["Mass"].as<f32>();
@@ -385,7 +385,7 @@ namespace Laby {
 			if (boxColliderComponent)
 			{
 
-				auto& bcc = deserializedEntity.addComponent<BoxColliderComponent>();
+				auto& bcc = deserializedEntity.AddComponent<BoxColliderComponent>();
 				bcc.halfExtents = boxColliderComponent["HalfExtents"].as<glm::vec2>();
 				bcc.offset = boxColliderComponent["Offset"].as<glm::vec2>();
 				bcc.density = boxColliderComponent["Density"].as<f32>();
@@ -397,7 +397,7 @@ namespace Laby {
 			auto circleColliderComponent = entity["CircleColliderComponent"];
 			if (circleColliderComponent)
 			{
-				auto& ccc = deserializedEntity.addComponent<CircleColliderComponent>();
+				auto& ccc = deserializedEntity.AddComponent<CircleColliderComponent>();
 				ccc.radius = circleColliderComponent["Radius"].as<f32>();
 				ccc.offset = circleColliderComponent["Offset"].as<glm::vec2>();
 				ccc.density = circleColliderComponent["Density"].as<f32>();
@@ -408,12 +408,12 @@ namespace Laby {
 
 			auto childControllerComponent = entity["ChildControllerComponent"];
 			if (childControllerComponent)
-				deserializedEntity.addComponent<ChildControllerComponent>();
+				deserializedEntity.AddComponent<ChildControllerComponent>();
 
 			auto scriptComponent = entity["ScriptComponent"];
 			if (scriptComponent)
 			{
-				auto& sc = deserializedEntity.addComponent<ScriptComponent>();
+				auto& sc = deserializedEntity.AddComponent<ScriptComponent>();
 				sc.className = scriptComponent["ClassName"].as<std::string>();
 
 				if (!sc.className.empty())
@@ -457,7 +457,7 @@ namespace Laby {
 			auto tmComponent = entity["TilemapComponent"];
 			if (tmComponent)
 			{
-				auto& tmc = deserializedEntity.addComponent<TilemapComponent>();
+				auto& tmc = deserializedEntity.AddComponent<TilemapComponent>();
 
 				u64 handle;
 				LAB_DESERIALISE_PROPERTY_DEF(Tilemap, handle, tmComponent, 0);
@@ -467,7 +467,7 @@ namespace Laby {
 			auto animationComponent = entity["AnimationComponent"];
 			if (animationComponent)
 			{
-				auto& ac = deserializedEntity.addComponent<AnimationComponent>();
+				auto& ac = deserializedEntity.AddComponent<AnimationComponent>();
 				ac.handle = animationComponent["Handle"].as<AssetHandle>();
 				ac.playing = animationComponent["Playing"].as<bool>();
 				ac.playOnce = animationComponent["PlayOnce"].as<bool>();

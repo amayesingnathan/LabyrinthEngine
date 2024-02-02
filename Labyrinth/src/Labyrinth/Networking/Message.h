@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Containers/StreamlineTypes.h>
 
 #include "NetCommon.h"
 
@@ -19,9 +19,9 @@ namespace Laby {
 		MessageHeader header{};
 		Buffer body;
 
-		u32 size() const
+		u32 Size() const
 		{
-			return StaticCast<u32>(body.size());
+			return StaticCast<u32>(body.Size());
 		}
 
 		friend std::ostream& operator << (std::ostream& os, const Message& msg)
@@ -30,21 +30,21 @@ namespace Laby {
 			return os;
 		}
 
-		template<IsStandard DataType>
+		template<slc::IsStandard DataType>
 		friend Message& operator<< (Message& msg, const DataType& data)
 		{
-			usize i = msg.body.size();
-			msg.body.set(data, i);
-			msg.header.size = msg.size();
+			usize i = msg.body.Size();
+			msg.body.Set(data, i);
+			msg.header.size = msg.Size();
 
 			return msg;
 		}
 
-		template<IsStandard DataType>
+		template<slc::IsStandard DataType>
 		friend Message& operator>> (Message& msg, DataType& data)
 		{
-			msg.body.pop(data);
-			msg.header.size = msg.size();
+			msg.body.Pop(data);
+			msg.header.size = msg.Size();
 
 			return msg;
 		}

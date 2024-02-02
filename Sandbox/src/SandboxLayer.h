@@ -4,17 +4,17 @@
 
 namespace Laby {
 
-	class SandboxLayer : public Layer
+	class SandboxLayer : public slc::ApplicationLayer
 	{
 	public:
 		SandboxLayer() = default;
 
-		virtual void onAttach() override;
-		virtual void onDetach() override;
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
 
-		void onUpdate(Timestep ts) override;
-		virtual void onImGuiRender() override;
-		void onEvent(Event& e) override;
+		void OnUpdate(Timestep ts) override;
+		virtual void OnRender() override;
+		void OnEvent(Event& e) override;
 		LISTENING_EVENTS(KeyPressed)
 
 	private:

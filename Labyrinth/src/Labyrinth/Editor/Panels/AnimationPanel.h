@@ -9,7 +9,7 @@ namespace Laby {
 	public:
 		AnimationPanel() = default;
 
-		void onImGuiRender() override;
+		void OnRender() override;
 
 	private:
 		f32 mPadding = 16.0f;

@@ -9,9 +9,9 @@ namespace Laby {
 	public:
 		NewMapModal() = default;
 
-		void onImGuiRender() override;
-		void onCustomButtonRender(bool& open) override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnCustomButtonRender(bool& open) override;
+		void OnComplete() override;
 
 	private:
 		std::string mMapName;

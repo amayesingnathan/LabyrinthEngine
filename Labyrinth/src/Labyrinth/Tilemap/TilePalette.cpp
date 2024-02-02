@@ -16,24 +16,24 @@ namespace Laby {
 		return mTileset.at(textureID);
 	}
 
-	void TilePalette::add(AssetHandle sheetHandle)
+	void TilePalette::Add(AssetHandle sheetHandle)
 	{
 		if (Contains(sheetHandle, mSpriteSheets))
 			return;
 
 		bool hasSheet = !mSpriteSheets.empty();
 		const SheetData& last = hasSheet ? mSpriteSheets.back() : SheetData();
-		u32 sheetTexCount = hasSheet ? last.sheet->subTexCount() : 0;
+		u32 sheetTexCount = hasSheet ? last.sheet->SubTexCount() : 0;
 
 		Ref<Texture2DSheet> spriteSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
 		TileID nextIndex = last.startIndex + sheetTexCount;
 		mSpriteSheets.emplace_back(spriteSheet, nextIndex);
 
-		for (AssetHandle subtex : spriteSheet->getSubTextures())
+		for (AssetHandle subtex : spriteSheet->GetSubTextures())
 			mTileset[nextIndex++] = AssetManager::GetAsset<SubTexture2D>(subtex);
 	}
 
-	void TilePalette::add(AssetHandle sheetHandle, TileID nextIndex)
+	void TilePalette::Add(AssetHandle sheetHandle, TileID nextIndex)
 	{
 		if (Contains(sheetHandle, mSpriteSheets))
 			return;
@@ -41,11 +41,11 @@ namespace Laby {
 		Ref<Texture2DSheet> spriteSheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
 		mSpriteSheets.emplace_back(spriteSheet, nextIndex);
 
-		for (AssetHandle subtex : spriteSheet->getSubTextures())
+		for (AssetHandle subtex : spriteSheet->GetSubTextures())
 			mTileset[nextIndex++] = AssetManager::GetAsset<SubTexture2D>(subtex);
 	}
 
-	void TilePalette::remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping)
+	void TilePalette::Remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping)
 	{
 		if (!Contains(sheetHandle, mSpriteSheets))
 			return;
@@ -61,14 +61,14 @@ namespace Laby {
 			data.startIndex = lastIndex + lastSize;
 
 			lastIndex = data.startIndex;
-			lastSize = data.sheet->subTexCount();
+			lastSize = data.sheet->SubTexCount();
 		}
 
 		mTileset.clear();
 		TileID nextIndex = 0;
 		for (const SheetData& data : mSpriteSheets)
 		{
-			for (AssetHandle subtex : data.sheet->getSubTextures())
+			for (AssetHandle subtex : data.sheet->GetSubTextures())
 				mTileset.emplace(nextIndex++, AssetManager::GetAsset<SubTexture2D>(subtex));
 		}
 

@@ -31,8 +31,8 @@ namespace Laby {
 	public:
 		NewBodyModal(const Ref<Scene>& scene);
 
-		void onImGuiRender() override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnComplete() override;
 
 	private:
 		void ShapeOptions();

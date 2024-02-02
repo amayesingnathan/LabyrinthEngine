@@ -12,7 +12,7 @@ namespace Laby {
 		StatisticsPanel(Entity& entity)
 			: mHoveredEntity(entity) {}
 
-		void onImGuiRender() override;
+		void OnRender() override;
 
 	private:
 		Entity& mHoveredEntity;

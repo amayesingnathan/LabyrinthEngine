@@ -17,7 +17,7 @@ namespace Laby {
 		AnimationFrame(UUID id, AssetHandle subtex, usize frameLength)
 			: id(id), sprite(subtex), length(frameLength) {}
 
-		bool valid() const { return id && sprite; }
+		bool Valid() const { return id && sprite; }
 	};
 
 	inline YAML::Emitter& operator<<(YAML::Emitter& mOut, const AnimationFrame& data)

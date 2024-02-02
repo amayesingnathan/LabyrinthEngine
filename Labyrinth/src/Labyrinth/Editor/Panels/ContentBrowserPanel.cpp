@@ -4,9 +4,6 @@
 #include <Labyrinth/Editor/EditorResources.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
 	ContentBrowserPanel::ContentBrowserPanel()
@@ -19,7 +16,7 @@ namespace Laby {
 		}
 	}
 
-	void ContentBrowserPanel::onImGuiRender()
+	void ContentBrowserPanel::OnRender()
 	{
 		if (!Project::IsActive())
 			return;
@@ -75,7 +72,7 @@ namespace Laby {
 		Widgets::FloatEdit("Padding", mPadding, 1.0f, 0, 32);
 	}
 
-	void ContentBrowserPanel::onProjectChange()
+	void ContentBrowserPanel::OnProjectChange()
 	{
 		if (!Project::IsActive())
 			return;

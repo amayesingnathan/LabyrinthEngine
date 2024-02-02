@@ -39,7 +39,7 @@ namespace Laby {
 
         }
 
-        static void OpenInline(std::string_view title, ModalButtons type, Action<>&& onImGuiRender, Action<>&& onComplete = [] {}) { Open<InlineModal>(title, type, std::move(onImGuiRender), std::move(onComplete)); }
+        static void OpenInline(std::string_view title, ModalButtons type, Action<>&& OnRender, Action<>&& OnComplete = [] {}) { Open<InlineModal>(title, type, std::move(OnRender), std::move(OnComplete)); }
         static void OpenWarning(std::string_view title, const std::string& msg) { Open<WarningModal>(title, ModalButtons::OK, msg); }
 
         static void AddCallback(std::function<void()> function) { sModalCallbacks[sLastAdded].emplace_back(function); }

@@ -1,17 +1,15 @@
 #include "Lpch.h"
 #include "StatisticsPanel.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
 #include <Labyrinth/Scene/Entity.h>
 
-using imcpp::Widgets;
-
 namespace Laby {
 
-	void StatisticsPanel::onImGuiRender()
+	void StatisticsPanel::OnRender()
 	{
-		Widgets::Label(std::format("Hovered Entity: {}", mHoveredEntity ? mHoveredEntity.getTag() : "None"));
+		Widgets::Label(std::format("Hovered Entity: {}", mHoveredEntity ? mHoveredEntity.GetTag() : "None"));
 
 		auto stats = Renderer2D::GetStats();
 		Widgets::Label("Renderer2D Stats:");

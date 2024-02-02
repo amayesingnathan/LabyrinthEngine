@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Labyrinth/Core/Layer.h"
+#include "Labyrinth/Core/Application.h"
 #include "Labyrinth/Editor/EditorData.h"
 #include <Labyrinth/Editor/Panels/ScenePanel.h>
 #include <Labyrinth/Editor/Panels/EntityPanel.h>
@@ -9,19 +9,19 @@
 
 namespace Laby {
 
-	class EditorLayer : public Layer
+	class EditorLayer : public slc::ApplicationLayer
 	{
 	public:
 		EditorLayer();
 		virtual ~EditorLayer() = default;
 
-		virtual void onAttach() override;
-		virtual void onDetach() override;
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
 
-		virtual void onUpdate(Timestep ts) override;
-		virtual void onImGuiRender() override;
+		virtual void OnUpdate(slc::Timestep ts) override;
+		virtual void OnRender() override;
 
-		virtual void onEvent(Event& e) override;
+		virtual void OnEvent(slc::Event& e) override;
 		LISTENING_EVENTS(KeyPressed, MouseButtonPressed)
 
 	private:

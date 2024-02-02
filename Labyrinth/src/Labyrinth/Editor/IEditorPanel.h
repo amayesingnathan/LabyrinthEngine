@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Core/Timestep.h>
-#include <Labyrinth/Events/IEventListener.h>
+#include "Labyrinth/Events/Event.h"
 #include <Labyrinth/Project/Project.h>
 
 namespace Laby {
@@ -11,11 +11,11 @@ namespace Laby {
 	public:
 		virtual ~IEditorPanel() {}
 
-		virtual void onImGuiRender() = 0;
-		virtual void onProjectChange() {}
-		virtual void onSelectionChange() {}
+		virtual void OnRender() = 0;
+		virtual void OnProjectChange() {}
+		virtual void OnSelectionChange() {}
 
-		virtual void onEvent(Event& e) override {}
+		virtual void OnEvent(Event& e) override {}
 		LISTENING_EVENTS(None)
 	};
 

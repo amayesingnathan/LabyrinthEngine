@@ -24,7 +24,7 @@ namespace Laby {
 			return y < other.y;
 		}
 
-		bool valid() const { return x != NullCoord && y != NullCoord;}
+		bool Valid() const { return x != NullCoord && y != NullCoord;}
 	};
 
 	using GridPosition = Coordinate<u32>;
@@ -70,7 +70,7 @@ namespace Laby {
 			return mData[pos.x + (mWidth * pos.y)];
 		}
 
-		void set(usize index, const T& data) 
+		void Set(usize index, const T& data) 
 		{ 
 			if constexpr (IsBool)
 				mData[index] = data ? True : False;
@@ -78,11 +78,11 @@ namespace Laby {
 				mData[index] = data; 
 		}
 
-		usize getWidth() const { return mWidth; }
-		usize getHeight() const { return mHeight; }
+		usize GetWidth() const { return mWidth; }
+		usize GetHeight() const { return mHeight; }
 
-		void resize(usize width, usize height) { mData.clear(); mData.resize(width * height); }
-		void reset() { mData.clear(); mData.resize(mWidth * mHeight); }
+		void Resize(usize width, usize height) { mData.clear(); mData.resize(width * height); }
+		void Reset() { mData.clear(); mData.resize(mWidth * mHeight); }
 
 		auto begin() { return mData.begin(); }
 		auto begin() const { return mData.cbegin(); }

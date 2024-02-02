@@ -9,7 +9,7 @@ namespace Laby {
 	class SandboxApp : public Application
 	{
 	public:
-		SandboxApp(const ApplicationSpec& spec)
+		SandboxApp(ApplicationSpec* spec)
 			: Application(spec)
 		{
 			PushLayer<SandboxLayer>();
@@ -20,15 +20,15 @@ namespace Laby {
 		}
 	};
 
-	Application* CreateApplication(int argc, char** argv)
-	{
-		ApplicationSpec spec;
-		spec.name = "Sandbox";
-		spec.fullscreen = false;
-		spec.resolution = { 1600, 900 };
-		spec.workingDir = "../Enigma";
+}
 
-		return new SandboxApp(spec);
-	}
+slc::Application* CreateApplication(int argc, char** argv)
+{
+	Laby::ApplicationSpec* spec = new Laby::ApplicationSpec;
+	spec->name = "Sandbox";
+	spec->fullscreen = false;
+	spec->resolution = { 1600, 900 };
+	spec->workingDir = "../Enigma";
 
+	return new Laby::SandboxApp(spec);
 }

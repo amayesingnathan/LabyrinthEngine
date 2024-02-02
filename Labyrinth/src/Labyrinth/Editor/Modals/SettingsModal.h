@@ -11,8 +11,8 @@ namespace Laby {
 	public:
 		SettingsModal();
 
-		void onImGuiRender() override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnComplete() override;
 
 	private:
 		ApplicationSpec mSettings;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Containers/StreamlineTypes.h>
 #include <Labyrinth/Tools/FileWatcher.h>
 
 namespace Laby {

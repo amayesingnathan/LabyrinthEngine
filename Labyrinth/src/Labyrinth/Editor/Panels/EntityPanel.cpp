@@ -12,15 +12,12 @@
 #include <Labyrinth/Tilemap/Tilemap.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
-	using ParentEntityEntry = imcpp::ComboEntry<Entity>;
-	using ScriptClassEntry = imcpp::ComboEntry<Ref<ScriptClass>>;
+	using ParentEntityEntry = slc::ComboEntry<Entity>;
+	using ScriptClassEntry = slc::ComboEntry<Ref<ScriptClass>>;
 
-	using TexTypeEntry = imcpp::ComboEntry<RenderType>;
+	using TexTypeEntry = slc::ComboEntry<RenderType>;
 	static constexpr std::array<TexTypeEntry, 4> sTextureTypes =
 	{
 		TexTypeEntry{ "Colour",			RenderType::None },
@@ -29,14 +26,14 @@ namespace Laby {
 		TexTypeEntry{ "Tilemap",		RenderType::Tilemap }
 	};
 
-	using CameraProjectionEntry = imcpp::ComboEntry<SceneCamera::ProjectionType>;
+	using CameraProjectionEntry = slc::ComboEntry<SceneCamera::ProjectionType>;
 	static constexpr std::array<CameraProjectionEntry, 2> sCameraProjections =
 	{
 		CameraProjectionEntry{ "Perspective",  SceneCamera::ProjectionType::Perspective },
 		CameraProjectionEntry{ "Orthographic", SceneCamera::ProjectionType::Orthographic }
 	};
 
-	using BodyTypeEntry = imcpp::ComboEntry<RigidBodyComponent::BodyType>;
+	using BodyTypeEntry = slc::ComboEntry<RigidBodyComponent::BodyType>;
 	static constexpr std::array<BodyTypeEntry, 3> sBodyTypes =
 	{
 		BodyTypeEntry{ "Static",		RigidBodyComponent::BodyType::Static },
@@ -49,7 +46,7 @@ namespace Laby {
 	{
 	}
 
-	void EntityPanel::onImGuiRender()
+	void EntityPanel::OnRender()
 	{
 		if (!mSelectedEntity)
 			return;
@@ -57,10 +54,10 @@ namespace Laby {
 		DrawComponents();
 	}
 
-	void EntityPanel::onSelectionChange()
+	void EntityPanel::OnSelectionChange()
 	{
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
+		mSelectedEntity = selections.size() != 0 ? mContext->FindEntity(selections[0]) : Entity{};
 
 		if (mSelectedEntity && (!mPreviousEntity || mPreviousEntity != mSelectedEntity))
 			mPreviousEntity = mSelectedEntity;
@@ -76,7 +73,7 @@ namespace Laby {
 				Entity holdSelected = mSelectedEntity;
 
 				SelectionManager::DeselectAll(SelectionDomain::Scene);
-				SelectionManager::Select(SelectionDomain::Scene, holdPrevious.getUUID());
+				SelectionManager::Select(SelectionDomain::Scene, holdPrevious.GetUUID());
 			});
 		}
 
@@ -84,15 +81,15 @@ namespace Laby {
 
 		Widgets::Button("Destroy", [&]()
 		{
-			mSelectedEntity.destroy();
+			mSelectedEntity.Destroy();
 			SelectionManager::DeselectAll(SelectionDomain::Scene);
 		});
 
 		if (!mSelectedEntity)
 			return; // In case of deletion
 
-		if (mSelectedEntity.hasComponent<TagComponent>())
-			Widgets::StringEdit("##Tag", mSelectedEntity.getTag());
+		if (mSelectedEntity.HasComponent<TagComponent>())
+			Widgets::StringEdit("##Tag", mSelectedEntity.GetTag());
 
 		Widgets::SameLine();
 
@@ -114,11 +111,11 @@ namespace Laby {
 		DrawAddComponentEntry<AnimationComponent>("Animation");
 		Widgets::EndPopup();
 
-		if (mSelectedEntity.hasComponent<NodeComponent>())
+		if (mSelectedEntity.HasComponent<NodeComponent>())
 		{
 			std::vector<ParentEntityEntry> comboEntries;
 
-			auto view = mContext->getEntitiesWith<TagComponent, IDComponent>();
+			auto view = mContext->GetEntitiesWith<TagComponent, IDComponent>();
 			comboEntries.reserve(view.size_hint() + 1);
 			comboEntries.emplace_back("None", Entity{});
 
@@ -126,13 +123,13 @@ namespace Laby {
 			view.each([&](auto entityID, auto& tc, auto& idc)
 			{
 				if (mSelectedEntity != entityID)
-					comboEntries.emplace_back(fmt::format("{}\rID = ({})", tc.tag, idc.id.to_string()), Entity{entityID, mContext});
+					comboEntries.emplace_back(std::format("{}\rID = ({})", tc.tag, idc.id.ToString()), Entity{entityID, mContext});
 			});
 
 			std::sort(comboEntries.begin(), comboEntries.end());
 
-			Entity parent = mSelectedEntity.getParent();
-			std::string currentParentString = parent ? fmt::format("{}\tID = ({})", parent.getComponent<TagComponent>().tag, parent.getUUID()) : "None";
+			Entity parent = mSelectedEntity.GetParent();
+			std::string currentParentString = parent ? std::format("{}\tID = ({})", parent.GetComponent<TagComponent>().tag, parent.GetUUID().Get()) : "None";
 
 			Widgets::Combobox<Entity>("Parent", currentParentString.c_str(), mSelectedEntity, comboEntries);
 		}
@@ -155,7 +152,7 @@ namespace Laby {
 				if (!component.primary)
 					return;
 
-				mContext->getEntitiesWith<CameraComponent>().each([&](EntityID entity, auto& component)
+				mContext->GetEntitiesWith<CameraComponent>().each([&](EntityID entity, auto& component)
 				{
 					if (mSelectedEntity == Entity{ entity, mContext })
 						return;
@@ -164,34 +161,34 @@ namespace Laby {
 				});
 			});
 
-			const SceneCamera::ProjectionType& projectionType = camera.getProjectionType();
+			const SceneCamera::ProjectionType& projectionType = camera.GetProjectionType();
 			Widgets::Combobox<SceneCamera::ProjectionType>("Projection", Enum::ToString(projectionType), projectionType, sCameraProjections,
-				[&](std::string_view, SceneCamera::ProjectionType projType) { camera.setProjectionType(projType); });
+				[&](std::string_view, SceneCamera::ProjectionType projType) { camera.SetProjectionType(projType); });
 
 			switch (projectionType)
 			{
 			case SceneCamera::ProjectionType::Perspective:
 			{
-				Widgets::FloatEdit("Vertical FOV", glm::degrees(camera.getPerspectiveVerticalFOV()), 
-					[&](f32 var) { camera.setPerspectiveVerticalFOV(glm::radians(var)); });
+				Widgets::FloatEdit("Vertical FOV", glm::degrees(camera.GetPerspectiveVerticalFOV()), 
+					[&](f32 var) { camera.SetPerspectiveVerticalFOV(glm::radians(var)); });
 
-				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
-					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+				Widgets::FloatEdit("Near", camera.GetPerspectiveNearClip(),
+					[&](f32 var) { camera.SetPerspectiveNearClip(var); });
 
-				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
-					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+				Widgets::FloatEdit("Far", camera.GetPerspectiveFarClip(),
+					[&](f32 var) { camera.SetPerspectiveFarClip(var); });
 				break;
 			}
 			case SceneCamera::ProjectionType::Orthographic:
 			{
-				Widgets::FloatEdit("Size", camera.getOrthographicSize(),
-					[&](f32 var) { camera.setOrthographicSize(var); });
+				Widgets::FloatEdit("Size", camera.GetOrthographicSize(),
+					[&](f32 var) { camera.SetOrthographicSize(var); });
 
-				Widgets::FloatEdit("Near", camera.getPerspectiveNearClip(),
-					[&](f32 var) { camera.setPerspectiveNearClip(var); });
+				Widgets::FloatEdit("Near", camera.GetPerspectiveNearClip(),
+					[&](f32 var) { camera.SetPerspectiveNearClip(var); });
 
-				Widgets::FloatEdit("Far", camera.getPerspectiveFarClip(),
-					[&](f32 var) { camera.setPerspectiveFarClip(var); });
+				Widgets::FloatEdit("Far", camera.GetPerspectiveFarClip(),
+					[&](f32 var) { camera.SetPerspectiveFarClip(var); });
 
 				Widgets::Checkbox("Fixed Aspect Ratio", component.fixedAspectRatio);
 				break;
@@ -297,7 +294,7 @@ namespace Laby {
 			for (const auto& [key, klass] : ScriptEngine::GetAppClasses())
 				comboEntries.emplace_back(key, klass);
 
-			UUID id = mSelectedEntity.getUUID();
+			UUID id = mSelectedEntity.GetUUID();
 			Ref<ScriptClass> scriptClass = ScriptEngine::GetAppClass(component.className.data());
 			Widgets::Combobox<Ref<ScriptClass>>("Class", component.className, scriptClass, comboEntries, [&](std::string_view name, Ref<ScriptClass> klass) 
 			{				
@@ -322,9 +319,9 @@ namespace Laby {
 			Widgets::AddDragDropTarget<AssetHandle>("TILEMAP_ITEM", [&](const AssetHandle& map) 
 			{
 				component.mapHandle = map; 
-				if (mSelectedEntity.hasComponent<SpriteRendererComponent>())
+				if (mSelectedEntity.HasComponent<SpriteRendererComponent>())
 				{
-					auto& sprite = mSelectedEntity.getComponent<SpriteRendererComponent>();
+					auto& sprite = mSelectedEntity.GetComponent<SpriteRendererComponent>();
 					sprite.type = RenderType::Tilemap;
 					sprite.handle = map;	
 				} 
@@ -334,9 +331,9 @@ namespace Laby {
 				return;
 
 			Utils::PushStyleColour(ImGuiCol_ButtonHovered, Utils::ToImVec<ImVec4>(EditorResources::HoveredColour));
-			Widgets::GridControl<glm::vec2>(cursorPos, imageSize, tilemap->getWidth(), tilemap->getHeight(), [this, tilemap](u32 x, u32 y, const glm::vec2& elementSize)
+			Widgets::GridControl<glm::vec2>(cursorPos, imageSize, tilemap->GetWidth(), tilemap->GetHeight(), [this, tilemap](u32 x, u32 y, const glm::vec2& elementSize)
 			{
-				const auto& behaviour = tilemap->getTileBehaviour({ x, y });
+				const auto& behaviour = tilemap->GetTileBehaviour({ x, y });
 				bool hasScript = !behaviour.script.empty();
 				const glm::vec4& buttonColour = hasScript ? EditorResources::HighlightedColour : EditorResources::ClearColour;
 				Utils::PushStyleColour(ImGuiCol_Button, Utils::ToImVec<ImVec4>(buttonColour));
@@ -344,14 +341,14 @@ namespace Laby {
 				Widgets::Button(elementSize, std::format("##SelectTile({}, {})", x, y), [&, this]()
 				{
 					Entity scriptEntity = mSelectedEntity
-						.findChild("Scripts")
-						.findChild(std::format("{}-Script({}, {} - {})", tilemap->getName(), x, y, behaviour.script));
+						.FindChild("Scripts")
+						.FindChild(std::format("{}-Script({}, {} - {})", tilemap->GetName(), x, y, behaviour.script));
 
 					if (!scriptEntity)
 						return;
 
 					SelectionManager::DeselectAll(SelectionDomain::Scene);
-					SelectionManager::Select(SelectionDomain::Scene, scriptEntity.getUUID());
+					SelectionManager::Select(SelectionDomain::Scene, scriptEntity.GetUUID());
 				});
 
 				Utils::PopStyleColour();
@@ -365,7 +362,7 @@ namespace Laby {
 			imageSize = { imageSize.x - 80.0f, 150.0f };
 
 			Ref<Animation> animation = AssetManager::GetAsset<Animation>(component.handle);
-			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->getFrame(component.frameIndex).sprite) : nullptr;
+			Ref<SubTexture2D> subtex = animation ? AssetManager::GetAsset<SubTexture2D>(animation->GetFrame(component.frameIndex).sprite) : nullptr;
 
 			Widgets::Button(animation&& component.playing ? "Stop" : "Play", [&component]() { component.playing = !component.playing; });
 			Widgets::SameLine();
@@ -385,7 +382,7 @@ namespace Laby {
 
 	void EntityPanel::DrawScriptClassFields(Entity entity)
 	{
-		UUID entID = entity.getUUID();
+		UUID entID = entity.GetUUID();
 		for (auto& [name, fieldValue] : ScriptCache::GetFields(entID))
 		{
 			switch (fieldValue.type)
@@ -435,7 +432,7 @@ namespace Laby {
 			case ScriptFieldType::Entity:
 			{
 				UUID& fieldEntity = ScriptCache::GetFieldValue<UUID>(entID, name);
-				std::string_view entName = fieldEntity ? mContext->findEntity(fieldEntity).getTag() : "No Entity";
+				std::string_view entName = fieldEntity ? mContext->FindEntity(fieldEntity).GetTag() : "No Entity";
 				Widgets::Button(entName.data());
 				Widgets::AddDragDropTarget<UUID>("ENTITY_ITEM", [&](const UUID& entity)
 				{
@@ -451,9 +448,9 @@ namespace Laby {
 
 	void EntityPanel::DrawScriptInstanceFields(Entity entity)
 	{
-		auto& script = entity.getComponent<ScriptComponent>();
+		auto& script = entity.GetComponent<ScriptComponent>();
 
-		const auto& fields = script.instance->getScriptClass()->getFields();
+		const auto& fields = script.instance->GetScriptClass()->GetFields();
 		for (const auto& [type, name, field] : fields)
 		{
 			switch (type)
@@ -461,106 +458,106 @@ namespace Laby {
 			case ScriptFieldType::Boolean:
 			{
 				bool data;
-				script.instance->getFieldValue(name, data);
-				Widgets::Checkbox(name, data, [&]() { script.instance->setFieldValue(name, data); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::Checkbox(name, data, [&]() { script.instance->SetFieldValue(name, data); });
 				break;
 			}
 			case ScriptFieldType::Int8:
 			{
 				i8 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::IntEdit<i8>(name, data, [&](i8 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::IntEdit<i8>(name, data, [&](i8 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Int16:
 			{
 				i16 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::IntEdit<i16>(name, data, [&](i16 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::IntEdit<i16>(name, data, [&](i16 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Int32:
 			{
 				i32 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::IntEdit<i32>(name, data, [&](i32 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::IntEdit<i32>(name, data, [&](i32 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Int64:
 			{
 				i64 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::IntEdit<i64>(name, data, [&](i64 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::IntEdit<i64>(name, data, [&](i64 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::UInt8:
 			{
 				u8 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::UIntEdit<u8>(name, data, [&](u8 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::UIntEdit<u8>(name, data, [&](u8 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::UInt16:
 			{
 				u16 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::UIntEdit<u16>(name, data, [&](u16 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::UIntEdit<u16>(name, data, [&](u16 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::UInt32:
 			{
 				u32 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::UIntEdit<u32>(name, data, [&](u32 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::UIntEdit<u32>(name, data, [&](u32 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::UInt64:
 			{
 				u64 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::UIntEdit<u64>(name, data, [&](u64 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::UIntEdit<u64>(name, data, [&](u64 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Float:
 			{
 				f32 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::FloatEdit(name, data, [&](f32 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::FloatEdit(name, data, [&](f32 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Double:
 			{
 				f64 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::DoubleEdit(name, data, [&](f64 val) { script.instance->setFieldValue(name, val); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::DoubleEdit(name, data, [&](f64 val) { script.instance->SetFieldValue(name, val); });
 				break;
 			}
 			case ScriptFieldType::Vector2:
 			{
 				glm::vec2 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::Vector2Edit(name, data, [&](const ImVec2& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec2>(val)); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::Vector2Edit(name, data, [&](const ImVec2& val) { script.instance->SetFieldValue(name, Utils::FromImVec<glm::vec2>(val)); });
 				break;
 			}
 			case ScriptFieldType::Vector3:
 			{
 				glm::vec3 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::Vector3Edit(name, data, [&](const ImVec3& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec3>(val)); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::Vector3Edit(name, data, [&](const ImVec3& val) { script.instance->SetFieldValue(name, Utils::FromImVec<glm::vec3>(val)); });
 				break;
 			}
 			case ScriptFieldType::Vector4:
 			{
 				glm::vec4 data;
-				script.instance->getFieldValue(name, data);
-				Widgets::Vector4Edit(name, data, [&](const ImVec4& val) { script.instance->setFieldValue(name, Utils::FromImVec<glm::vec4>(val)); });
+				script.instance->GetFieldValue(name, data);
+				Widgets::Vector4Edit(name, data, [&](const ImVec4& val) { script.instance->SetFieldValue(name, Utils::FromImVec<glm::vec4>(val)); });
 				break;
 			}
 			case ScriptFieldType::Entity:
 			{
 				UUID data = 0;
-				script.instance->getEntityFieldValue(name, data);
-				std::string_view entName = data ? mContext->findEntity(data).getTag() : "No Entity";
+				script.instance->GetEntityFieldValue(name, data);
+				std::string_view entName = data ? mContext->FindEntity(data).GetTag() : "No Entity";
 
 				Widgets::Button(entName.data());
 				Widgets::SameLine();

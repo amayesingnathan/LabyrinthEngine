@@ -34,17 +34,17 @@ namespace Laby {
 		LoadFields();
 	}
 
-	MonoObject* ScriptClass::instantiate() const
+	MonoObject* ScriptClass::Instantiate() const
 	{
 		return ScriptUtils::InstantiateClass(ScriptEngineInternal::GetAppDomain(), mMonoClass);
 	}
 
-	MonoMethod* ScriptClass::getMethod(const std::string& name, int argc)
+	MonoMethod* ScriptClass::GetMethod(const std::string& name, int argc)
 	{
 		return mono_class_get_method_from_name(mMonoClass, name.c_str(), argc);
 	}
 
-	const ScriptField* ScriptClass::getField(std::string_view name) const
+	const ScriptField* ScriptClass::GetField(std::string_view name) const
 	{
 		auto it = std::find_if(mFields.begin(), mFields.end(), [&name](const ScriptField& field) { return field.name == name; });
 
@@ -70,7 +70,7 @@ namespace Laby {
 
 	MonoObject* ScriptClass::InstantiateInternal(void** argv, int argc)
 	{
-		MonoMethod* constructor = ScriptEngineInternal::GetCoreEntityClass()->getMethod(".ctor", 1);
+		MonoMethod* constructor = ScriptEngineInternal::GetCoreEntityClass()->GetMethod(".ctor", 1);
 		return ScriptUtils::InstantiateClassInternal(ScriptEngineInternal::GetAppDomain(), mMonoClass, constructor, argv);
 	}
 

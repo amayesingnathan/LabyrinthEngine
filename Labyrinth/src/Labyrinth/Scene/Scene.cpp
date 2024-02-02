@@ -9,7 +9,7 @@
 #include <box2d/b2_chain_shape.h>
 
 #include <Labyrinth/Animation/Animation.h>
-#include <Labyrinth/Assets/AssetManager.h>
+#include <Labyrinth/AsSets/AsSetManager.h>
 #include <Labyrinth/Physics/ContactListener.h>
 #include <Labyrinth/Physics/Utils.h>
 #include <Labyrinth/Renderer/Renderer2D.h>
@@ -31,7 +31,7 @@ namespace Laby {
 
 		toCopy->mRegistry.view<IDComponent, TagComponent>().each([&](auto e, const auto& idComp, const auto& tagComp)
 		{
-			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp).getEntID();
+			entMap[idComp] = newScene->CreateEntityWithID(idComp, tagComp).GetEntID();
 		});
 
 		CopyAllComponents(toCopy->mRegistry, newScene->mRegistry, entMap);
@@ -41,7 +41,7 @@ namespace Laby {
 			if (nodeComp.parent)
 			{
 				Entity entity{ e, newScene };
-				entity.removeComponent<RootComponent>();
+				entity.RemoveComponent<RootComponent>();
 			}
 		});
 
@@ -105,33 +105,33 @@ namespace Laby {
 	{
 		Entity newEnt(mRegistry.create(), Ref<Scene>(this));
 
-		newEnt.addComponent<IDComponent>().id = id;
-		newEnt.addComponent<TransformComponent>();
+		newEnt.AddComponent<IDComponent>().id = id;
+		newEnt.AddComponent<TransformComponent>();
 
-		newEnt.addComponent<RootComponent>();
-		auto& node = newEnt.addComponent<NodeComponent>();
-		newEnt.setParent(parent, node);
+		newEnt.AddComponent<RootComponent>();
+		auto& node = newEnt.AddComponent<NodeComponent>();
+		newEnt.SetParent(parent, node);
 
-		auto& tag = newEnt.addComponent<TagComponent>();
+		auto& tag = newEnt.AddComponent<TagComponent>();
 		tag = name.empty() ? "Entity" : name;
 
-		mEntityMap[id] = (EntityID)newEnt.getEntID();
+		mEntityMap[id] = (EntityID)newEnt.GetEntID();
 
 		return newEnt;
 	}
 
 	Entity Scene::CloneEntity(Entity copy)
 	{
-		auto& tag = copy.getComponent<TagComponent>();
+		auto& tag = copy.GetComponent<TagComponent>();
 		Entity newEnt = CreateEntity(tag.tag);
 
-		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(findEntity(nodeCopy.parent));
+		auto nodeCopy = copy.GetComponent<NodeComponent>();
+		newEnt.SetParent(FindEntity(nodeCopy.parent));
 
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
 
 		CopyAllComponents(copy, newEnt);
 
@@ -140,16 +140,16 @@ namespace Laby {
 
 	Entity Scene::CloneChild(Entity copy, Entity newParent)
 	{
-		auto& tag = copy.getComponent<TagComponent>();
+		auto& tag = copy.GetComponent<TagComponent>();
 		Entity newEnt = CreateEntity(tag.tag);
 
-		auto nodeCopy = copy.getComponent<NodeComponent>();
-		newEnt.setParent(newParent);
+		auto nodeCopy = copy.GetComponent<NodeComponent>();
+		newEnt.SetParent(newParent);
 
 		// Use counting loop to prevent iterator invalidation
 		usize copyChildCount = nodeCopy.children.size();
 		for (usize i = 0; i < copyChildCount; i++)
-			CloneChild(findEntity(nodeCopy.children[i]), newEnt);
+			CloneChild(FindEntity(nodeCopy.children[i]), newEnt);
 
 		CopyAllComponents(copy, newEnt);
 
@@ -158,10 +158,10 @@ namespace Laby {
 
 	void Scene::DestroyEntity(Entity entity, bool linkChildren)
 	{
-		Entity parent = entity.getParent();
+		Entity parent = entity.GetParent();
 
 		if (parent)  //Remove entity from parents list of children
-			parent.removeChild(entity);
+			parent.RemoveChild(entity);
 
 		DestroyEntityR(entity, parent, linkChildren);
 	}
@@ -169,34 +169,34 @@ namespace Laby {
 	void Scene::DestroyEntityR(Entity entity, Entity parent, bool linkChildren)
 	{
 		// Set the parent of all entity's children (will be null entity if no parent)
-		auto& children = entity.getChildren();
+		auto& children = entity.GetChildren();
 
 		for (auto& child : children)
 		{
-			Entity childEnt = findEntity(child);
+			Entity childEnt = FindEntity(child);
 			if (linkChildren)
 			{
 				if (parent)
-					childEnt.setParent(parent);
+					childEnt.SetParent(parent);
 				else
 					DestroyEntityR(childEnt, entity);
 			}
 			else DestroyEntityR(childEnt, entity);
 		}
 
-		mEntityMap.erase(entity.getUUID());
-		mRegistry.destroy(entity.getEntID());
+		mEntityMap.erase(entity.GetUUID());
+		mRegistry.destroy(entity.GetEntID());
 	}
 
-	Entity Scene::findEntity(UUID findID)
+	Entity Scene::FindEntity(UUID FindID)
 	{
-		if (!mEntityMap.contains(findID))
+		if (!mEntityMap.contains(FindID))
 			return Entity();
 
-		return { mEntityMap.at(findID), Ref<Scene>(this) };
+		return { mEntityMap.at(FindID), Ref<Scene>(this) };
 	}
 
-	Entity Scene::getEntityByTag(std::string_view tag)
+	Entity Scene::GetEntityByTag(std::string_view tag)
 	{
 		auto entities = mRegistry.view<TagComponent>();
 		for (auto e : entities)
@@ -208,15 +208,15 @@ namespace Laby {
 		return Entity{};
 	}
 
-	Entity Scene::getChildByTag(std::string_view tag, Entity parent)
+	Entity Scene::GetChildByTag(std::string_view tag, Entity parent)
 	{
-		for (auto e : parent.getChildren())
+		for (auto e : parent.GetChildren())
 		{
-			Entity entity = findEntity(e);
-			if (entity.getComponent<TagComponent>().tag == tag)
+			Entity entity = FindEntity(e);
+			if (entity.GetComponent<TagComponent>().tag == tag)
 				return entity;
 
-			Entity checkChildren = getChildByTag(tag, entity);
+			Entity checkChildren = GetChildByTag(tag, entity);
 			if (checkChildren)
 				return checkChildren;
 		}
@@ -224,7 +224,7 @@ namespace Laby {
 		return Entity{};
 	}
 
-	void Scene::onRuntimeStart()
+	void Scene::OnRuntimeStart()
 	{
 		CreateTilemapEntities();
 		ResetAnimations(true);
@@ -232,7 +232,7 @@ namespace Laby {
 		ScriptEngine::OnRuntimeStart();
 	}
 
-	void Scene::onRuntimeStop()
+	void Scene::OnRuntimeStop()
 	{
 		CleanupTilemapEntities();
 		ResetAnimations();
@@ -240,25 +240,25 @@ namespace Laby {
 		ScriptEngine::OnRuntimeStop();
 	}
 
-	void Scene::onSimulationStart()
+	void Scene::OnSimulationStart()
 	{
 		CreateTilemapEntities();
 		ResetAnimations(true);
 	}
 
-	void Scene::onSimulationStop()
+	void Scene::OnSimulationStop()
 	{
 		CleanupTilemapEntities();
 		ResetAnimations();
 	}
 
-	void Scene::onUpdateRuntime(Timestep ts)
+	void Scene::OnUpdateRuntime(Timestep ts)
 	{
 		UpdateScripts(ts);
 		StepPhysics2D(ts);
 		UpdateAnimation();
 
-		Entity camera = getPrimaryCameraEntity();
+		Entity camera = GetPrimaryCameraEntity();
 		if (!camera)
 		{
 			LAB_CORE_WARN("No camera in scene to use!");
@@ -266,10 +266,10 @@ namespace Laby {
 		}
 
 		BuildScene();
-		DrawScene(camera.getComponent<CameraComponent>(), camera.getTransform());
+		DrawScene(camera.GetComponent<CameraComponent>(), camera.GetTransform());
 	}
 
-	void Scene::onUpdateSimulation(Timestep ts, EditorCamera& camera)
+	void Scene::OnUpdateSimulation(Timestep ts, EditorCamera& camera)
 	{
 		StepPhysics2D(ts);
 		UpdateAnimation();
@@ -278,7 +278,7 @@ namespace Laby {
 		DrawScene(camera);
 	}
 
-	void Scene::onUpdateEditor(Timestep ts, EditorCamera& camera)
+	void Scene::OnUpdateEditor(Timestep ts, EditorCamera& camera)
 	{
 		UpdateAnimation();
 
@@ -286,7 +286,7 @@ namespace Laby {
 		DrawScene(camera);
 	}
 
-	void Scene::onViewportResize(u32 width, u32 height)
+	void Scene::OnViewportResize(u32 width, u32 height)
 	{
 		mViewportWidth = width;
 		mViewportHeight = height;
@@ -295,11 +295,11 @@ namespace Laby {
 		mRegistry.view<CameraComponent>().each([this](auto entity, auto& cameraComponent)
 		{
 			if (!cameraComponent.fixedAspectRatio)
-				cameraComponent.camera.setViewportSize(mViewportWidth, mViewportHeight);
+				cameraComponent.camera.SetViewportSize(mViewportWidth, mViewportHeight);
 		});
 	}
 
-	Entity Scene::getPrimaryCameraEntity()
+	Entity Scene::GetPrimaryCameraEntity()
 	{
 		Entity primaryCam;
 		mRegistry.view<CameraComponent>().each([this, &primaryCam](auto entity, const auto& cameraComponent) 
@@ -310,24 +310,24 @@ namespace Laby {
 		return primaryCam;
 	}
 
-	void Scene::transformChildren()
+	void Scene::TransformChildren()
 	{
 		auto view = mRegistry.view<ChildControllerComponent, NodeComponent>();
 		for (auto e : view)
 		{
 			Entity entity{ e, Ref<Scene>(this) };
-			ChildControllerComponent& childController = entity.getComponent<ChildControllerComponent>();
-			NodeComponent& node = entity.getComponent<NodeComponent>();
+			ChildControllerComponent& childController = entity.GetComponent<ChildControllerComponent>();
+			NodeComponent& node = entity.GetComponent<NodeComponent>();
 
 			if (childController.isZero())
 				continue;
 
 			for (UUID id : node.children)
 			{
-				Entity child = findEntity(id);
-				if (child.hasComponent<TransformComponent>())
+				Entity child = FindEntity(id);
+				if (child.HasComponent<TransformComponent>())
 				{
-					TransformComponent& transform = child.getTransform();
+					TransformComponent& transform = child.GetTransform();
 					transform.translation += childController.deltaTranslation;
 					transform.rotation += glm::radians(childController.deltaRotation);
 					transform.scale += childController.deltaScale;
@@ -357,31 +357,31 @@ namespace Laby {
 			return;
 		}
 
-		const std::string& mapName = tilemap->getName();
-		usize width = tilemap->getWidth();
-		usize height = tilemap->getHeight();
+		const std::string& mapName = tilemap->GetName();
+		usize width = tilemap->GetWidth();
+		usize height = tilemap->GetHeight();
 
-		const auto& mapTransform = mapEntity.getTransform();
+		const auto& mapTransform = mapEntity.GetTransform();
 		glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
 
 		Entity shapesEntity = CreateEntity("Shapes", mapEntity);
-		shapesEntity.removeComponent<TransformComponent>();
+		shapesEntity.RemoveComponent<TransformComponent>();
 
 		usize i = 1;
-		for (const ChainShape& shape : tilemap->getPhysicsShapes())
+		for (const ChainShape& shape : tilemap->GetPhysicsShapes())
 		{
 			Entity shapeEntity = CreateEntity(fmt::format("{}-Shape{}", mapName, i), shapesEntity);
-			auto& shapeTransform = shapeEntity.getTransform();
+			auto& shapeTransform = shapeEntity.GetTransform();
 
-			const glm::vec2& centroid = shape.centroid();
+			const glm::vec2& centroid = shape.Centroid();
 			const glm::vec2& extents = shape.extents;
 
 			shapeTransform.translation.x = tileSize.x * (centroid.x - 0.5f * (f32)(width - 1));
 			shapeTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - centroid.y);
 			shapeTransform.scale = { tileSize.x * extents.x, tileSize.y * extents.y, tileSize.z };
 
-			shapeEntity.addComponent<RigidBodyComponent>();
-			shapeEntity.addComponent<ChainColliderComponent>(shape);
+			shapeEntity.AddComponent<RigidBodyComponent>();
+			shapeEntity.AddComponent<ChainColliderComponent>(shape);
 		}
 	}
 
@@ -394,28 +394,28 @@ namespace Laby {
 			return;
 		}
 
-		const std::string& mapName = tilemap->getName();
-		usize width = tilemap->getWidth();
-		usize height = tilemap->getHeight();
+		const std::string& mapName = tilemap->GetName();
+		usize width = tilemap->GetWidth();
+		usize height = tilemap->GetHeight();
 
-		const auto& mapTransform = mapEntity.getTransform();
+		const auto& mapTransform = mapEntity.GetTransform();
 		glm::vec3 tileSize = glm::vec3{ mapTransform.scale.x / width, mapTransform.scale.y / height, 1.0f };
 
 		Entity scriptsEntity = CreateEntity("Scripts", mapEntity);
-		scriptsEntity.removeComponent<TransformComponent>();
+		scriptsEntity.RemoveComponent<TransformComponent>();
 
-		for (const TileScriptData& tileData : tilemap->getTileScripts())
+		for (const TileScriptData& tileData : tilemap->GetTileScripts())
 		{
 			Entity scriptEntity = CreateEntity(fmt::format("{}-Script({}, {} - {})", mapName, tileData.pos.x, tileData.pos.y, tileData.script), scriptsEntity);
-			auto& scriptTransform = scriptEntity.getTransform();
+			auto& scriptTransform = scriptEntity.GetTransform();
 
 			scriptTransform.translation.x = tileSize.x * (tileData.pos.x - 0.5f * (f32)(width - 1));
 			scriptTransform.translation.y = tileSize.y * (0.5f * (f32)(height - 1) - tileData.pos.y);
 			scriptTransform.scale = tileSize;
 
-			scriptEntity.addComponent<ScriptComponent>(tileData.script);
-			scriptEntity.addComponent<RigidBodyComponent>();
-			auto& collider = scriptEntity.addComponent<BoxColliderComponent>();
+			scriptEntity.AddComponent<ScriptComponent>(tileData.script);
+			scriptEntity.AddComponent<RigidBodyComponent>();
+			auto& collider = scriptEntity.AddComponent<BoxColliderComponent>();
 			collider.sensor = true;
 		}
 	}
@@ -426,11 +426,11 @@ namespace Laby {
 		{
 			Entity mapEntity = { e, this };
 
-			Entity shapesEntity = getChildByTag("Shapes", mapEntity);
+			Entity shapesEntity = GetChildByTag("Shapes", mapEntity);
 			if (shapesEntity)
 				DestroyEntity(shapesEntity);
 
-			Entity scriptsEntity = getChildByTag("Scripts", mapEntity);
+			Entity scriptsEntity = GetChildByTag("Scripts", mapEntity);
 			if (scriptsEntity)
 				DestroyEntity(scriptsEntity);
 		});
@@ -448,7 +448,7 @@ namespace Laby {
 			ac.frameIndex = 0;
 			ac.playing = start;
 
-			src.handle = animation->getFrame(ac.frameIndex).sprite;
+			src.handle = animation->GetFrame(ac.frameIndex).sprite;
 			src.type = RenderType::SubTexture;
 		});
 	}
@@ -457,37 +457,37 @@ namespace Laby {
 	{
 		mGroups->each<ECS::Sprites>([this](auto entity, const auto& srComponent, const auto& trComponent)
 		{
-			mRenderStack->addQuad(trComponent, srComponent, (i32)entity);
+			mRenderStack->AddQuad(trComponent, srComponent, (i32)entity);
 		});
 		mGroups->each<ECS::Circles>([this](auto entity, const auto& crComponent, const auto& trComponent)
 		{
-			mRenderStack->addCircle(trComponent, crComponent, (i32)entity);
+			mRenderStack->AddCircle(trComponent, crComponent, (i32)entity);
 		});
 	}
 
 	void Scene::DrawScene(EditorCamera& camera)
 	{
 		Renderer2D::BeginState(camera);
-		mRenderStack->draw();
+		mRenderStack->Draw();
 		Renderer2D::EndState();
 
-		mRenderStack->clearItems();
+		mRenderStack->ClearItems();
 	}
 
 	void Scene::DrawScene(Camera& camera, const glm::mat4& transform)
 	{
 		Renderer2D::BeginState(camera, transform);
-		mRenderStack->draw();
+		mRenderStack->Draw();
 		Renderer2D::EndState();
 
-		mRenderStack->clearItems();
+		mRenderStack->ClearItems();
 	}
 
 	void Scene::StepPhysics2D(Timestep ts)
 	{
 		// Physics
 		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
-		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		auto* world = sceneEntity.GetComponent<Box2DWorldComponent>().world;
 		if (!world)
 			return;
 
@@ -510,7 +510,7 @@ namespace Laby {
 		mRegistry.view<ScriptComponent>().each([=](auto entity, auto& sc)
 		{
 			if (sc.instance) 
-				sc.instance->onUpdate(ts);
+				sc.instance->OnUpdate(ts);
 		});
 	}
 
@@ -525,11 +525,11 @@ namespace Laby {
 			if (!animation)
 				return;
 
-			const auto& frame = animation->getFrame(ac.frameIndex);
+			const auto& frame = animation->GetFrame(ac.frameIndex);
 			if (++ac.frameCounter < frame.length)
 				return;
 
-			if (++ac.frameIndex == animation->getFrameCount())
+			if (++ac.frameIndex == animation->GetFrameCount())
 			{
 				ac.frameIndex = 0;
 				ac.playing = !ac.playOnce;
@@ -544,12 +544,12 @@ namespace Laby {
 	void Scene::OnRigidBodyComponentConstruct(entt::registry& registry, entt::entity e)
 	{
 		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
-		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		auto* world = sceneEntity.GetComponent<Box2DWorldComponent>().world;
 
 		Entity entity(e, Ref<Scene>(this));
-		UUID entityID = entity.getComponent<IDComponent>().id;
-		TransformComponent& transform = entity.getComponent<TransformComponent>();
-		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
+		UUID entityID = entity.GetComponent<IDComponent>().id;
+		TransformComponent& transform = entity.GetComponent<TransformComponent>();
+		auto& rbComponent = entity.GetComponent<RigidBodyComponent>();
 
 		b2BodyDef bodyDef;
 		bodyDef.type = PhysicsUtils::BodyTypeToBox2D(rbComponent.type);
@@ -576,13 +576,13 @@ namespace Laby {
 	void Scene::OnBoxColliderComponentConstruct(entt::registry& registry, entt::entity e)
 	{
 		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
-		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		auto* world = sceneEntity.GetComponent<Box2DWorldComponent>().world;
 
 		Entity entity(e, Ref<Scene>(this));
-		UUID entityID = entity.getComponent<IDComponent>().id;
-		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
-		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
-		auto& bcComponent = entity.getComponent<BoxColliderComponent>();
+		UUID entityID = entity.GetComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.GetComponent<TransformComponent>();
+		auto& rbComponent = entity.GetComponent<RigidBodyComponent>();
+		auto& bcComponent = entity.GetComponent<BoxColliderComponent>();
 
 		LAB_CORE_ASSERT(rbComponent.runtimeBody);
 		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
@@ -605,13 +605,13 @@ namespace Laby {
 	void Scene::OnCircleColliderComponentConstruct(entt::registry& registry, entt::entity e)
 	{
 		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
-		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		auto* world = sceneEntity.GetComponent<Box2DWorldComponent>().world;
 
 		Entity entity(e, Ref<Scene>(this));
-		UUID entityID = entity.getComponent<IDComponent>().id;
-		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
-		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
-		auto& ccComponent = entity.getComponent<CircleColliderComponent>();
+		UUID entityID = entity.GetComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.GetComponent<TransformComponent>();
+		auto& rbComponent = entity.GetComponent<RigidBodyComponent>();
+		auto& ccComponent = entity.GetComponent<CircleColliderComponent>();
 
 		LAB_CORE_ASSERT(rbComponent.runtimeBody);
 		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
@@ -634,20 +634,20 @@ namespace Laby {
 	void Scene::OnChainColliderComponentConstruct(entt::registry& registry, entt::entity e)
 	{
 		Entity sceneEntity(mSceneEntity, Ref<Scene>(this));
-		auto* world = sceneEntity.getComponent<Box2DWorldComponent>().world;
+		auto* world = sceneEntity.GetComponent<Box2DWorldComponent>().world;
 
 		Entity entity(e, Ref<Scene>(this));
-		UUID entityID = entity.getComponent<IDComponent>().id;
-		TransformComponent& trComponent = entity.getComponent<TransformComponent>();
-		auto& rbComponent = entity.getComponent<RigidBodyComponent>();
-		auto& ccComponent = entity.getComponent<ChainColliderComponent>();
+		UUID entityID = entity.GetComponent<IDComponent>().id;
+		TransformComponent& trComponent = entity.GetComponent<TransformComponent>();
+		auto& rbComponent = entity.GetComponent<RigidBodyComponent>();
+		auto& ccComponent = entity.GetComponent<ChainColliderComponent>();
 
 		LAB_CORE_ASSERT(rbComponent.runtimeBody);
 		b2Body* body = StaticCast<b2Body>(rbComponent.runtimeBody);
 
 		LAB_CORE_ASSERT(ccComponent.vertexCount);
 		b2ChainShape chainShape;
-		chainShape.CreateLoop(ccComponent.getVertices(), ccComponent.vertexCount);
+		chainShape.CreateLoop(ccComponent.GetVertices(), ccComponent.vertexCount);
 
 		b2FixtureDef fixtureDef;
 		fixtureDef.shape = &chainShape;

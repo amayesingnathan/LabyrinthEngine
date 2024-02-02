@@ -20,107 +20,107 @@ namespace Laby {
 		~Entity() {}
 
 		template<typename T, typename... Args>
-		T& addComponent(Args&&... args)
+		T& AddComponent(Args&&... args)
 		{
 			LAB_CORE_ASSERT(!hasComponent<T>(), "Can't add component that already exists on entity");
 
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			T& component = scene->mRegistry.emplace<T>(mEntID, std::forward<Args>(args)...);
 			return component;
 		}
 
 		template<typename T, typename... Args>
-		T& addOrReplaceComponent(Args&&... args)
+		T& AddOrReplaceComponent(Args&&... args)
 		{
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			T& component = scene->mRegistry.emplace_or_replace<T>(mEntID, std::forward<Args>(args)...);
 			return component;
 		}
 
 		template<typename T, typename... Args>
-		T& replaceComponent(Args&&... args)
+		T& ReplaceComponent(Args&&... args)
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't replace component that doesn't exist on entity");
 
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			T& component = scene->mRegistry.replace<T>(mEntID, std::forward<Args>(args)...);
 			return component;
 		}
 
 		template<typename T>
-		void removeComponent()
+		void RemoveComponent()
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't remove component that doesn't exist on entity");
 
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			scene->mRegistry.erase<T>(mEntID);
 		}
 
 		template<typename T>
-		T& getComponent()
+		T& GetComponent()
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
 
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			return scene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
-		const T& getComponent() const
+		const T& GetComponent() const
 		{
 			LAB_CORE_ASSERT(hasComponent<T>(), "Can't get component that doesn't exist on entity");
 
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			return scene->mRegistry.get<T>(mEntID);
 		}
 
 		template<typename T>
-		bool hasComponent() const
+		bool HasComponent() const
 		{
-			Ref<Scene> scene = mScene.lock();
+			Ref<Scene> scene = mScene.Lock();
 			return scene->mRegistry.all_of<T>(mEntID);
 		}
 
-		EntityID getEntID() const { return mEntID; }
+		EntityID GetEntID() const { return mEntID; }
 
-		UUID getUUID() const;
+		UUID GetUUID() const;
 
-		TransformComponent& getTransform();
-		const TransformComponent& getTransform() const;
+		TransformComponent& GetTransform();
+		const TransformComponent& GetTransform() const;
 
-		std::string& getTag();
-		const std::string& getTag() const;
+		std::string& GetTag();
+		const std::string& GetTag() const;
 
-		operator bool() const { return valid(); }
-		bool valid() const { return mEntID != NullEntity && mScene.valid() && mScene->mRegistry.valid(mEntID); }
+		operator bool() const { return Valid(); }
+		bool Valid() const { return mEntID != NullEntity && mScene.Valid() && mScene->mRegistry.valid(mEntID); }
 
-		auto operator<=>(const Entity& other) const { return getUUID() <=> other.getUUID(); }
-		bool operator==(const Entity& other) const { return getUUID() == other.getUUID(); }
+		auto operator<=>(const Entity& other) const { return GetUUID() <=> other.GetUUID(); }
+		bool operator==(const Entity& other) const { return GetUUID() == other.GetUUID(); }
 		
-		void destroy();
-		Ref<Scene> getScene() { return mScene.lock(); }
+		void Destroy();
+		Ref<Scene> GetScene() { return mScene.Lock(); }
 
-		Entity getParent() const;
-		bool hasParent();
+		Entity GetParent() const;
+		bool HasParent();
 
-		bool setParent(Entity newParent, NodeComponent& node);
-		bool setParent(Entity newParent);
+		bool SetParent(Entity newParent, NodeComponent& node);
+		bool SetParent(Entity newParent);
 
-		std::vector<UUID>& getChildren();
-		const std::vector<UUID>& getChildren() const;
-		void removeChildren();
+		std::vector<UUID>& GetChildren();
+		const std::vector<UUID>& GetChildren() const;
+		void RemoveChildren();
 
-		Entity findChild(std::string_view tag);
+		Entity FindChild(std::string_view tag);
 
-		const usize getChildCount() const { return getChildren().size(); }
-		bool hasChild(Entity child) const;
+		const usize GetChildCount() const { return GetChildren().size(); }
+		bool HasChild(Entity child) const;
 
-		bool isRelated(Entity filter) const;
+		bool IsRelated(Entity filter) const;
 
 	private:
-		void addChild(Entity child, NodeComponent& node);
-		void addChild(Entity child);
-		void removeChild(Entity child);
+		void AddChild(Entity child, NodeComponent& node);
+		void AddChild(Entity child);
+		void RemoveChild(Entity child);
 
 	private:
 		EntityID mEntID{ NullEntity };

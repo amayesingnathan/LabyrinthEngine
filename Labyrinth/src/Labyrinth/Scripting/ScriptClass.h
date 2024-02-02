@@ -19,29 +19,29 @@ namespace Laby {
 		ScriptClass(MonoClass* klass);
 		ScriptClass(MonoObject* instance);
 
-		MonoObject* instantiate() const;
+		MonoObject* Instantiate() const;
 		template<typename... Args>
-		MonoObject* instantiate(Args&&... args)
+		MonoObject* Instantiate(Args&&... args)
 		{
 			return ScriptUtils::WrapArgs<MonoObject*>([=](void** argv, int argc) {
 				return InstantiateInternal(argv, argc);
 				}, std::forward<Args>(args)...);
 		}
 
-		MonoMethod* getMethod(const std::string& name, int argc);
+		MonoMethod* GetMethod(const std::string& name, int argc);
 
 		template<typename... Args>
-		MonoObject* invokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
+		MonoObject* InvokeMethod(MonoObject* instance, const std::string& name, Args&&... args)
 		{
-			return ScriptUtils::CallMethod(instance, getMethod(name), std::forward<Args>(args)...);
+			return ScriptUtils::CallMethod(instance, GetMethod(name), std::forward<Args>(args)...);
 		}
 
-		MonoClass* getClass() { return mMonoClass; }
+		MonoClass* GetClass() { return mMonoClass; }
 
-		const ScriptField* getField(std::string_view name) const;
-		const std::vector<ScriptField>& getFields() const { return mFields; }
+		const ScriptField* GetField(std::string_view name) const;
+		const std::vector<ScriptField>& GetFields() const { return mFields; }
 
-		bool valid() { return mMonoClass; }
+		bool Valid() { return mMonoClass; }
 
 	private:
 		void LoadFields();

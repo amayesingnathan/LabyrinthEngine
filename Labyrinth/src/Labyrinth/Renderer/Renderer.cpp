@@ -75,20 +75,20 @@ namespace Laby {
 
 	void Renderer::DrawIndexed(const Ref<VertexArray>& vertexArray, u32 indexCount)
 	{
-		u32 count = indexCount ? indexCount : vertexArray->getIndexBuffer()->getCount();
-		vertexArray->bind();
+		u32 count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		vertexArray->Bind();
 		glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, nullptr);
 #if LAB_DEBUG
-		vertexArray->unbind();
+		vertexArray->Unbind();
 #endif
 	}
 
 	void Renderer::DrawLines(const Ref<VertexArray>& vertexArray, u32 vertexCount)
 	{
-		vertexArray->bind();
+		vertexArray->Bind();
 		glDrawArrays(GL_LINES, 0, vertexCount);
 #if LAB_DEBUG
-		vertexArray->unbind();
+		vertexArray->Unbind();
 #endif
 	}
 

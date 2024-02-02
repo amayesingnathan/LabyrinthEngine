@@ -10,7 +10,7 @@ namespace Laby {
     public:
         SpriteSheetPanel() = default;
 
-        void onImGuiRender() override;
+        void OnRender() override;
 
     private:
         AssetHandle mCurrentSheet = 0;

@@ -23,7 +23,7 @@ namespace Laby {
 		}
 	}
 
-	void Connection::connectToClient(ServerLayer* server, u32 uid)
+	void Connection::ConnectToClient(ServerLayer* server, u32 uid)
 	{
 		if (mOwnerType != Owner::Server)
 			return;
@@ -37,7 +37,7 @@ namespace Laby {
 		ReadValidation(server);
 	}
 
-	void Connection::connectToServer(const asio::ip::tcp::resolver::results_type& endpoints)
+	void Connection::ConnectToServer(const asio::ip::tcp::resolver::results_type& endpoints)
 	{
 		if (mOwnerType != Owner::Client) 
 			return;
@@ -51,13 +51,13 @@ namespace Laby {
 		});
 	}
 
-	void Connection::disconnect()
+	void Connection::Disconnect()
 	{
-		if (isConnected()) 
+		if (IsConnected()) 
 			asio::post(mIOContext, [this]() { mSocket.close(); });
 	}
 
-	void Connection::send(const Message& msg)
+	void Connection::Send(const Message& msg)
 	{
 		asio::post(mIOContext, [this, msg]()
 		{
@@ -77,7 +77,7 @@ namespace Laby {
 			{
 				if (!ec)
 				{
-					if (mQMessagesOut.front().body.size() > 0)
+					if (mQMessagesOut.front().body.Size() > 0)
 						WriteBody();
 					else
 					{
@@ -97,7 +97,7 @@ namespace Laby {
 
 	void Connection::WriteBody()
 	{
-		asio::async_write(mSocket, asio::buffer(mQMessagesOut.front().body.data(), mQMessagesOut.front().body.size()),
+		asio::async_write(mSocket, asio::buffer(mQMessagesOut.front().body.Data(), mQMessagesOut.front().body.Size()),
 			[this](std::error_code ec, usize length)
 			{
 				if (!ec)
@@ -123,7 +123,7 @@ namespace Laby {
 			{
 				if (mMsgTemporaryIn.header.size > 0)
 				{
-					mMsgTemporaryIn.body.resize(mMsgTemporaryIn.header.size);
+					mMsgTemporaryIn.body.Resize(mMsgTemporaryIn.header.size);
 					ReadBody();
 				}
 				else
@@ -139,7 +139,7 @@ namespace Laby {
 
 	void Connection::ReadBody()
 	{
-		asio::async_read(mSocket, asio::buffer(mMsgTemporaryIn.body.data(), mMsgTemporaryIn.body.size()), [this](std::error_code ec, usize length)
+		asio::async_read(mSocket, asio::buffer(mMsgTemporaryIn.body.Data(), mMsgTemporaryIn.body.Size()), [this](std::error_code ec, usize length)
 		{
 			if (!ec)
 			AddToIncomingMessageQueue();

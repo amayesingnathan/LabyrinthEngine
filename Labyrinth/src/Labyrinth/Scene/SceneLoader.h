@@ -21,7 +21,7 @@ namespace Laby {
 		{
 		}
 
-		Ref<Scene> get()
+		Ref<Scene> Get()
 		{
 			return mResult.get();
 		}

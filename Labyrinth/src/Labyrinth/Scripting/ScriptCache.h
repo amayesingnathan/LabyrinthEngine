@@ -17,7 +17,7 @@ namespace Laby {
 		{
 			FieldInitialiser& init = sCachedFields[entID][field];
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(init.type), "Template parameter is not a valid type for this field!");
-			init.value.set(val);
+			init.value.Set(val);
 		}
 		static void UnsetField(UUID entID, const std::string& field);
 
@@ -32,7 +32,7 @@ namespace Laby {
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(fieldValue.type), "Template parameter is not a valid type for this field!");
 			LAB_CORE_ASSERT(ScriptFieldTypes::IsValidType<T>(fieldValue.value), "Field buffer does not contain value!");
 
-			return fieldValue.value.get<T>();
+			return fieldValue.value.Get<T>();
 		}
 
 	private:

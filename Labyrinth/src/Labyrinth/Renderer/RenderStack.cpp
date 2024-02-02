@@ -12,24 +12,24 @@ namespace Laby {
 			delete layer;
 	}
 
-	bool RenderStack::hasLayer(RenderLayer* layer)
+	bool RenderStack::HasLayer(RenderLayer* layer)
 	{
 		return std::ranges::find(mLayers, layer) != mLayers.end();
 	}
 
-	bool RenderStack::hasLayer(u8 layer)
+	bool RenderStack::HasLayer(u8 layer)
 	{
 		return std::ranges::find_if(mLayers, [&](const RenderLayer* rLayer)
 		{
-			return rLayer->getDepth() == layer;
+			return rLayer->GetDepth() == layer;
 		}) != mLayers.end();
 	}
 
-	RenderLayer* RenderStack::getLayer(u8 layer)
+	RenderLayer* RenderStack::GetLayer(u8 layer)
 	{
 		auto it = std::ranges::find_if(mLayers, [&](const RenderLayer* rLayer)
 		{
-			return rLayer->getDepth() == layer;
+			return rLayer->GetDepth() == layer;
 		});
 		
 		if (it == mLayers.end())
@@ -38,20 +38,20 @@ namespace Laby {
 		return *it;
 	}
 
-	void RenderStack::pushLayer(RenderLayer* layer)
+	void RenderStack::PushLayer(RenderLayer* layer)
 	{
-		if (!hasLayer(layer))
+		if (!HasLayer(layer))
 			mLayers.emplace_back(layer);
 	}
 
-	void RenderStack::popLayer(RenderLayer* layer)
+	void RenderStack::PopLayer(RenderLayer* layer)
 	{
 		auto it = std::find(mLayers.begin(), mLayers.end(), layer);
 		if (it != mLayers.end())
 			mLayers.erase(it);
 	}
 
-	void RenderStack::clearLayers()
+	void RenderStack::ClearLayers()
 	{
 		for (RenderLayer* layer : mLayers)
 			delete layer;
@@ -59,46 +59,46 @@ namespace Laby {
 		mLayers.clear();
 	}
 
-	void RenderStack::clearItems()
+	void RenderStack::ClearItems()
 	{
 		for (RenderLayer* layer : mLayers)
-			layer->clear();
+			layer->Clear();
 	}
 
-	void RenderStack::addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID)
+	void RenderStack::AddQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID)
 	{
-		RenderLayer* targetLayer = getLayer(srComp.layer);
+		RenderLayer* targetLayer = GetLayer(srComp.layer);
 
 		if (!targetLayer)
 		{
 			targetLayer = new RenderLayer(srComp.layer);
-			pushLayer(targetLayer);
+			PushLayer(targetLayer);
 		}
 
-		targetLayer->addQuad(trComp, srComp, entID);
+		targetLayer->AddQuad(trComp, srComp, entID);
 	}
 
-	void RenderStack::addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID)
+	void RenderStack::AddCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID)
 	{
-		RenderLayer* targetLayer = getLayer(crComp.layer);
+		RenderLayer* targetLayer = GetLayer(crComp.layer);
 
 		if (!targetLayer)
 		{
 			targetLayer = new RenderLayer(crComp.layer);
-			pushLayer(targetLayer);
+			PushLayer(targetLayer);
 		}
 
-		targetLayer->addCircle(trComp, crComp, entID);
+		targetLayer->AddCircle(trComp, crComp, entID);
 	}
 
-	void RenderStack::draw()
+	void RenderStack::Draw()
 	{
 		std::sort(mLayers.begin(), mLayers.end(), [](const auto& lhs, const auto& rhs)
 		{
-			return lhs->getDepth() < rhs->getDepth();
+			return lhs->GetDepth() < rhs->GetDepth();
 		});
 
 		for (RenderLayer* layer : mLayers)
-			layer->draw();
+			layer->Draw();
 	}
 }

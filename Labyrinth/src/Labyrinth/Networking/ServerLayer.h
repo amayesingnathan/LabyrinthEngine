@@ -17,13 +17,14 @@ namespace Laby {
 		virtual ~ServerLayer() = default;
 
 	public: //Layer overrides
-		void onAttach() override { Start(); }
-		void onDetach() override { Stop(); }
+		void OnAttach() override { Start(); }
+		void OnDetach() override { Stop(); }
 
-		// onUpdate() should generally not be overriden, but can override if you wish to limit the number
+		// OnUpdate() should generally not be overriden, but can override if you wish to limit the number
 		// of messages read from the queue per game tick. Just call Update(usize maxMessages) within onUpdate().
-		void onUpdate(Timestep ts) override { Update(); }
-		void onEvent(Event& e) override {}
+		void OnUpdate(slc::Timestep ts) override { Update(); }
+		void OnEvent(slc::Event& e) override {}
+		void OnRender() override {}
 
 		LISTENING_EVENTS(None)
 

@@ -11,7 +11,7 @@ namespace Laby {
 
 #define ASSET_METADATA(type, directory)	static constexpr std::string_view GetAssetDirectory() { return directory; }\
 										static constexpr AssetType GetStaticType() { return type; }\
-										virtual constexpr AssetType getAssetType() const override { return GetStaticType(); }
+										virtual constexpr AssetType GetAssetType() const override { return GetStaticType(); }
 
 	class Asset : public virtual RefCounted
 	{
@@ -23,12 +23,12 @@ namespace Laby {
 
 		static constexpr std::string_view GetAssetDirectory() { return ""; }
 		static constexpr AssetType GetStaticType() { return AssetType::None; }
-		virtual constexpr AssetType getAssetType() const { return GetStaticType(); };
+		virtual constexpr AssetType GetAssetType() const { return GetStaticType(); };
 
-		bool valid() const { return ((flags & (u16)AssetFlag::Missing) | (flags & (u16)AssetFlag::Invalid)) == 0; }
+		bool Valid() const { return ((flags & (u16)AssetFlag::Missing) | (flags & (u16)AssetFlag::Invalid)) == 0; }
 
-		bool isFlagSet(AssetFlag flag) const { return (u16)flag & flags; }
-		void setFlag(AssetFlag flag, bool value = true)
+		bool IsFlagSet(AssetFlag flag) const { return (u16)flag & flags; }
+		void SetFlag(AssetFlag flag, bool value = true)
 		{
 			if (value)
 				flags |= (u16)flag;

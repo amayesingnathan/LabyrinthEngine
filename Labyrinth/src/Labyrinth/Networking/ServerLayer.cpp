@@ -42,7 +42,7 @@ namespace Laby {
 		while (messageCount < maxMessages && !mQMessagesIn.empty())
 		{
 			auto msg = mQMessagesIn.pop();
-			EventManager::Post<NetMessageEvent>(msg.remote->getID(), std::move(msg.msg));
+			//EventManager::Post<NetMessageEvent>(msg.remote->getID(), std::move(msg.msg));
 			messageCount++;
 		}
 	}
@@ -60,9 +60,9 @@ namespace Laby {
 				if (OnClientConnect(newConn))
 				{
 					mConnections.push_back(std::move(newConn));
-					mConnections.back()->connectToClient(this, mIDCounter++);
+					mConnections.back()->ConnectToClient(this, mIDCounter++);
 
-					LAB_CORE_TRACE("[{0}] Connection Approved", mConnections.back()->getID());
+					LAB_CORE_TRACE("[{0}] Connection Approved", mConnections.back()->GetID());
 				}
 				else
 				{
@@ -79,7 +79,7 @@ namespace Laby {
 	void ServerLayer::MessageClient(UUID clientID, const Message& msg)
 	{
 		auto it = std::find_if(mConnections.begin(), mConnections.end(),
-			[clientID](const Ref<Connection>& client) { return clientID == client->getID(); });
+			[clientID](const Ref<Connection>& client) { return clientID == client->GetID(); });
 
 		if (it == mConnections.end())
 		{
@@ -89,16 +89,16 @@ namespace Laby {
 
 		Ref<Connection> client = *it;
 
-		if (!client || !client->isConnected())
+		if (!client || !client->IsConnected())
 		{
 			LAB_CORE_ERROR("Client not connected! Disconnecting...");
 			OnClientDisconnect(client);
-			client.reset();
+			client.Reset();
 			std::erase(mConnections, client);
 			return;
 		}
 
-		(*it)->send(msg);
+		(*it)->Send(msg);
 	}
 
 	void ServerLayer::BroadcastToClients(const Message& msg, UUID ignoreClient)
@@ -111,16 +111,16 @@ namespace Laby {
 
 	void ServerLayer::MessageEachClient(Ref<Connection> client, const Message& msg, UUID ignoreClient)
 	{
-		if (!client || !client->isConnected())
+		if (!client || !client->IsConnected())
 		{
 			OnClientDisconnect(client);
-			client.reset();
+			client.Reset();
 			return;
 		}
 
-		if (client->getID() == ignoreClient)
+		if (client->GetID() == ignoreClient)
 			return;
 
-		client->send(msg);
+		client->Send(msg);
 	}
 }

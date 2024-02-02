@@ -9,7 +9,7 @@ namespace Laby {
 	class EnigmaEditor : public Application
 	{
 	public:
-		EnigmaEditor(const ApplicationSpec& spec)
+		EnigmaEditor(ApplicationSpec* spec)
 			: Application(spec)
 		{
 			PushLayer<EditorLayer>();
@@ -20,14 +20,15 @@ namespace Laby {
 		}
 	};
 
-	Application* CreateApplication(int argc, char** argv)
-	{
-		ApplicationSpec spec;
-		spec.name = "Enigma";
 
-		Application::ReadSettings("enigma.json", spec);
+}
 
-		return new EnigmaEditor(spec);
-	}
+slc::Application* CreateApplication(int argc, char** argv)
+{
+	Laby::ApplicationSpec* spec = new Laby::ApplicationSpec;
+	spec->name = "Enigma";
 
+	Laby::Application::ReadSettings("enigma.json", *spec);
+
+	return new Laby::EnigmaEditor(spec);
 }

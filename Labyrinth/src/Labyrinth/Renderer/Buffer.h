@@ -47,7 +47,7 @@ namespace Laby {
 			: name(n), type(t), size(ShaderDataTypeSize(t)), offset(0), normalised(norm)
 		{}
 
-		u32 getComponentCount() const
+		u32 GetComponentCount() const
 		{
 			switch (type)
 			{
@@ -79,8 +79,8 @@ namespace Laby {
 			CalculateOffsetsAndStride();
 		}
 
-		const std::vector<BufferElement>& getElements() const { return mElements; }
-		u32 getStride() const { return mStride; }
+		const std::vector<BufferElement>& GetElements() const { return mElements; }
+		u32 GetStride() const { return mStride; }
 
 		std::vector<BufferElement>::iterator begin() { return mElements.begin(); }
 		std::vector<BufferElement>::iterator end() { return mElements.end(); }
@@ -117,13 +117,13 @@ namespace Laby {
 		VertexBuffer(f32* vertices, u32 size);
 		~VertexBuffer();
 
-		void bind() const;
-		void unbind() const;
+		void Bind() const;
+		void Unbind() const;
 
-		void setData(const void* data, u32 size);
+		void SetData(const void* data, u32 size);
 
-		const BufferLayout& getLayout() const { return mLayout; }
-		void setLayout(const BufferLayout& layout) { mLayout = layout; }
+		const BufferLayout& GetLayout() const { return mLayout; }
+		void SetLayout(const BufferLayout& layout) { mLayout = layout; }
 
 	private:
 		u32 mRendererID;
@@ -136,10 +136,10 @@ namespace Laby {
 		IndexBuffer(u32* indices, u32 count);
 		~IndexBuffer();
 
-		void bind() const;
-		void unbind() const;
+		void Bind() const;
+		void Unbind() const;
 
-		u32 getCount() const { return mCount; }
+		u32 GetCount() const { return mCount; }
 
 	private:
 		u32 mRendererID;

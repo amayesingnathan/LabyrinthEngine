@@ -13,19 +13,19 @@ namespace Laby {
 		if (!scene)
 			return;
 
-		Entity entA = scene->findEntity(*(UUID*)contact->GetFixtureA()->GetUserData().pointer);
-		Entity entB = scene->findEntity(*(UUID*)contact->GetFixtureB()->GetUserData().pointer);
+		Entity entA = scene->FindEntity(*(UUID*)contact->GetFixtureA()->GetUserData().pointer);
+		Entity entB = scene->FindEntity(*(UUID*)contact->GetFixtureB()->GetUserData().pointer);
 
 		auto onCollisionBegin = [](Entity entity, Entity other)
 		{
-			if (!entity.hasComponent<ScriptComponent>())
+			if (!entity.HasComponent<ScriptComponent>())
 				return;
 
-			const auto& sc = entity.getComponent<ScriptComponent>();
+			const auto& sc = entity.GetComponent<ScriptComponent>();
 			if (!sc.instance)
 				return;
 
-			sc.instance->onCollisionBegin(other);
+			sc.instance->OnCollisionBegin(other);
 		};
 
 		onCollisionBegin(entA, entB);
@@ -39,19 +39,19 @@ namespace Laby {
 		if (!scene)
 			return;
 
-		Entity entA = scene->findEntity(*(UUID*)contact->GetFixtureA()->GetUserData().pointer);
-		Entity entB = scene->findEntity(*(UUID*)contact->GetFixtureB()->GetUserData().pointer);
+		Entity entA = scene->FindEntity(*(UUID*)contact->GetFixtureA()->GetUserData().pointer);
+		Entity entB = scene->FindEntity(*(UUID*)contact->GetFixtureB()->GetUserData().pointer);
 
 		auto onCollisionEnd = [](Entity entity, Entity other)
 		{
-			if (!entity.hasComponent<ScriptComponent>())
+			if (!entity.HasComponent<ScriptComponent>())
 				return;
 
-			const auto& sc = entity.getComponent<ScriptComponent>();
+			const auto& sc = entity.GetComponent<ScriptComponent>();
 			if (!sc.instance)
 				return;
 
-			sc.instance->onCollisionEnd(other);
+			sc.instance->OnCollisionEnd(other);
 		};
 
 		onCollisionEnd(entA, entB);

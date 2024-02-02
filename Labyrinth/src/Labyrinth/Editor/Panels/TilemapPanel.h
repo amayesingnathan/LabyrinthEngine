@@ -10,7 +10,7 @@ namespace Laby {
 	public:
 		TilemapPanel() = default;
 
-		void onImGuiRender() override;
+		void OnRender() override;
 
 	private:
 		AssetHandle mSelected = 0;

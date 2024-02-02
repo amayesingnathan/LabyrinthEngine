@@ -13,8 +13,8 @@ namespace Laby {
 	public:
 		NewProjectModal(EditorData& editorData);
 
-		void onImGuiRender() override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnComplete() override;
 
 	private:
 		EditorData& mEditorData;

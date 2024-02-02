@@ -11,8 +11,8 @@ namespace Laby {
 	public:
 		GraphicsContext(GLFWwindow* windowHandle);
 
-		virtual void init();
-		virtual void swapBuffers();
+		virtual void Init();
+		virtual void SwapBuffers();
 
 		static Single<GraphicsContext> Create(void* window) { return MakeSingle<GraphicsContext>((GLFWwindow*)window); }
 

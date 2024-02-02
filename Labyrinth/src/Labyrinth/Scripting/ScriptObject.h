@@ -15,48 +15,48 @@ namespace Laby {
 		ScriptObject(MonoObject* instance)
 			: mClass(Ref<ScriptClass>::Create(instance)), mInstance(instance)
 		{
-			mOnStartMethod = mClass->getMethod("OnCreate", 0);
-			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
-			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
-			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
+			mOnStartMethod = mClass->GetMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->GetMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->GetMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->GetMethod("OnCollisionEnd", 1);
 		}
 
 		ScriptObject(const Ref<ScriptClass>& type)
 			: mClass(type)
 		{
-			mInstance = mClass->instantiate();
+			mInstance = mClass->Instantiate();
 
-			mOnStartMethod = mClass->getMethod("OnCreate", 0);
-			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
-			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
-			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
+			mOnStartMethod = mClass->GetMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->GetMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->GetMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->GetMethod("OnCollisionEnd", 1);
 		}
 		template<typename... Args>
 		ScriptObject(const Ref<ScriptClass>& type, Args&&... args)
 			: mClass(type)
 		{
-			mInstance = mClass->instantiate(std::forward<Args>(args)...);
+			mInstance = mClass->Instantiate(std::forward<Args>(args)...);
 
-			mOnStartMethod = mClass->getMethod("OnCreate", 0);
-			mOnUpdateMethod = mClass->getMethod("OnUpdate", 1);
-			mOnCollisionBeginMethod = mClass->getMethod("OnCollisionBegin", 1);
-			mOnCollisionEndMethod = mClass->getMethod("OnCollisionEnd", 1);
+			mOnStartMethod = mClass->GetMethod("OnCreate", 0);
+			mOnUpdateMethod = mClass->GetMethod("OnUpdate", 1);
+			mOnCollisionBeginMethod = mClass->GetMethod("OnCollisionBegin", 1);
+			mOnCollisionEndMethod = mClass->GetMethod("OnCollisionEnd", 1);
 		}
 
-		void onStart() const { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }
-		void onUpdate(float ts) const { ScriptUtils::CallMethod(mInstance, mOnUpdateMethod, ts); }
-		void onCollisionBegin(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionBeginMethod, entity.getUUID()); }
-		void onCollisionEnd(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionEndMethod, entity.getUUID()); }
+		void OnStart() const { ScriptUtils::CallMethod(mInstance, mOnStartMethod); }
+		void OnUpdate(float ts) const { ScriptUtils::CallMethod(mInstance, mOnUpdateMethod, ts); }
+		void OnCollisionBegin(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionBeginMethod, entity.GetUUID()); }
+		void OnCollisionEnd(Entity entity) const { ScriptUtils::CallMethod(mInstance, mOnCollisionEndMethod, entity.GetUUID()); }
 
 		bool valid() const { return mInstance; }
 		MonoObject* obj() { return mInstance; }
 
-		Ref<ScriptClass> getScriptClass() const { return mClass; }
+		Ref<ScriptClass> GetScriptClass() const { return mClass; }
 
 		template<typename... Args>
-		ScriptObject invokeMethod(std::string_view name, Args&&... args) const
+		ScriptObject InvokeMethod(std::string_view name, Args&&... args) const
 		{
-			MonoObject* result = mClass->invokeMethod(mInstance, name, std::forward<Args>(args)...);
+			MonoObject* result = mClass->InvokeMethod(mInstance, name, std::forward<Args>(args)...);
 
 			// If no return value return nullptr literal so std::nullptr_t constructor is called for ScriptObject
 			if (!result)
@@ -65,9 +65,9 @@ namespace Laby {
 		}
 
 		template<typename T>
-		void getFieldValue(std::string_view fieldName, T& result) const
+		void GetFieldValue(std::string_view fieldName, T& result) const
 		{
-			const ScriptField* scriptField = mClass->getField(fieldName);
+			const ScriptField* scriptField = mClass->GetField(fieldName);
 			if (!scriptField)
 				return;
 
@@ -75,9 +75,9 @@ namespace Laby {
 			GetFieldValueInternal(scriptField, &result);
 		}
 		template<typename T>
-		T getFieldValue(std::string_view fieldName) const
+		T GetFieldValue(std::string_view fieldName) const
 		{
-			const ScriptField* scriptField = mClass->getField(fieldName);
+			const ScriptField* scriptField = mClass->GetField(fieldName);
 			if (!scriptField)
 				return;
 
@@ -88,12 +88,12 @@ namespace Laby {
 
 			return result;
 		}
-		void getEntityFieldValue(std::string_view fieldName, UUID& result) const;
+		void GetEntityFieldValue(std::string_view fieldName, UUID& result) const;
 
 		template<typename T>
-		void setFieldValue(std::string_view fieldName, const T& fieldVal)
+		void SetFieldValue(std::string_view fieldName, const T& fieldVal)
 		{
-			const ScriptField* scriptField = mClass->getField(fieldName);
+			const ScriptField* scriptField = mClass->GetField(fieldName);
 			if (!scriptField)
 				return;
 
@@ -102,7 +102,7 @@ namespace Laby {
 			SetFieldValueInternal(scriptField, &fieldVal);
 		}
 
-		void setFieldValues(const FieldValues& fieldVals);
+		void SetFieldValues(const FieldValues& fieldVals);
 
 	private:
 		void GetFieldValueInternal(const ScriptField* scriptField, void* result) const;

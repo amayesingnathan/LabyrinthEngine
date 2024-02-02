@@ -12,8 +12,8 @@ namespace Laby{
 	public:
 		ContentBrowserPanel();
 
-		void onImGuiRender() override;
-		void onProjectChange() override;
+		void OnRender() override;
+		void OnProjectChange() override;
 
 	private:
 		fs::path mCurrentDirectory;

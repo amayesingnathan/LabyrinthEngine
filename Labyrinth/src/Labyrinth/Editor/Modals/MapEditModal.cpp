@@ -7,13 +7,10 @@
 #include <Labyrinth/Scripting/ScriptEngine.h>
 #include <Labyrinth/Tools/EnumUtils.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
-    using SheetEntry = imcpp::ComboEntry<AssetHandle>;
-    using ScriptClassEntry = imcpp::ComboEntry<Ref<ScriptClass>>;
+    using SheetEntry = slc::ComboEntry<AssetHandle>;
+    using ScriptClassEntry = slc::ComboEntry<Ref<ScriptClass>>;
 
     static bool HasSheetEntry(AssetHandle sheet, const std::vector<SheetEntry>& entries)
     {
@@ -30,11 +27,11 @@ namespace Laby {
     }
 
     MapEditModal::MapEditModal(const Ref<Tilemap>& map)
-        : mTilemap(TilemapUtils::Clone(map)), mMapWidth(map->getWidth()), mMapHeight(map->getHeight())
+        : mTilemap(TilemapUtils::Clone(map)), mMapWidth(map->GetWidth()), mMapHeight(map->GetHeight())
     {
     }
 
-    void MapEditModal::onImGuiRender()
+    void MapEditModal::OnRender()
     {
         if (Utils::IsKeyPressed(Key::LeftControl) || Utils::IsKeyPressed(Key::RightControl))
         {
@@ -47,8 +44,8 @@ namespace Laby {
         if (mEditMode == EditMode::Paint && Utils::IsMouseDown(Mouse::ButtonLeft))
         {
             mCurrentlyPainting = true;
-            if (mHoveredTile.valid() && mHoveredSubtex != mBrushSubtex)
-                mTilemap->setTileData(mCurrentLayer, mHoveredTile, mBrushSubtex);
+            if (mHoveredTile.Valid() && mHoveredSubtex != mBrushSubtex)
+                mTilemap->SetTileData(mCurrentLayer, mHoveredTile, mBrushSubtex);
         }
         if (mCurrentlyPainting && Utils::IsMouseReleased(Mouse::ButtonLeft))
             mCurrentlyPainting = false;
@@ -62,7 +59,7 @@ namespace Laby {
         RightPane();
     }
 
-    void MapEditModal::onComplete()
+    void MapEditModal::OnComplete()
     {
         AssetImporter::Serialise(mTilemap);
         AssetManager::ReloadData(mTilemap->handle);
@@ -78,7 +75,7 @@ namespace Laby {
         Widgets::Separator();
         Widgets::BeginChild("Layers", glm::vec2{ 0, -20 * mFrameHeightWithSpacing });
         usize layerIndex = 0;
-        for (const auto& layer : mTilemap->getLayers())
+        for (const auto& layer : mTilemap->GetLayers())
         {
             std::string layerLit = fmt::format("Layer {}", layerIndex + 1);
             Widgets::Selectable(layerLit.c_str(), mCurrentLayer == layerIndex, [this, layerIndex]() { mCurrentLayer = layerIndex; });
@@ -86,13 +83,13 @@ namespace Laby {
         }
         Widgets::EndChild(); // Layers
 
-        Widgets::Button("Add", [this]() { mTilemap->addLayer(); });
+        Widgets::Button("Add", [this]() { mTilemap->AddLayer(); });
         Widgets::SameLine();
-        Widgets::Button("Remove", [this]() { mTilemap->removeLayer(mCurrentLayer); });
+        Widgets::Button("Remove", [this]() { mTilemap->RemoveLayer(mCurrentLayer); });
         Widgets::SameLine();
-        Widgets::Button("Move Up", [this]() { mTilemap->moveLayer(mCurrentLayer, LayerMoveDir::Up); });
+        Widgets::Button("Move Up", [this]() { mTilemap->MoveLayer(mCurrentLayer, LayerMoveDir::Up); });
         Widgets::SameLine();
-        Widgets::Button("Move Down", [this]() { mTilemap->moveLayer(mCurrentLayer, LayerMoveDir::Down); });
+        Widgets::Button("Move Down", [this]() { mTilemap->MoveLayer(mCurrentLayer, LayerMoveDir::Down); });
 
         Widgets::EndGroup();
 
@@ -101,8 +98,8 @@ namespace Laby {
         Widgets::BeginChild("Selected", glm::vec2{ 0, -10 * mFrameHeightWithSpacing });
         Widgets::Label(fmt::format("Tile: ({}, {})", mCurrentTile.x, mCurrentTile.y));
 
-        bool validCurrentTile = mCurrentTile.valid();
-        TileBehaviourData currentTileData = mTilemap->getTileBehaviour(mCurrentTile);
+        bool validCurrentTile = mCurrentTile.Valid();
+        TileBehaviourData currentTileData = mTilemap->GetTileBehaviour(mCurrentTile);
 
         std::vector<ScriptClassEntry> comboEntries;
         comboEntries.emplace_back("##NoScript", nullptr);
@@ -117,16 +114,16 @@ namespace Laby {
 
         Widgets::Checkbox("Solid", currentTileData.solid);
         if (validCurrentTile)
-            mTilemap->setTileBehaviour(mCurrentTile, currentTileData);
+            mTilemap->SetTileBehaviour(mCurrentTile, currentTileData);
 
         Widgets::EndDisable();
 
         {
             Ref<IRenderable> image = EditorResources::NoTexture;
             f32 rotation = 0.0f;
-            if (mCurrentTile.valid())
+            if (mCurrentTile.Valid())
             {
-                image = mTilemap->getTileTex(mCurrentSubtex.textureID);
+                image = mTilemap->GetTileTex(mCurrentSubtex.textureID);
                 rotation = mCurrentSubtex.rotation;
             }
 
@@ -151,14 +148,14 @@ namespace Laby {
         {
             Ref<IRenderable> image = EditorResources::NoTexture;
             f32 rotation = 0.0f;
-            if (mHoveredTile.valid())
+            if (mHoveredTile.Valid())
             {
-                image = mTilemap->getTileTex(mHoveredSubtex.textureID);
+                image = mTilemap->GetTileTex(mHoveredSubtex.textureID);
                 rotation = mHoveredSubtex.rotation;
             }
             if (mCurrentlyPainting)
             {
-                image = mTilemap->getTileTex(mBrushSubtex.textureID);
+                image = mTilemap->GetTileTex(mBrushSubtex.textureID);
                 rotation = mBrushSubtex.rotation;
             }
 
@@ -199,7 +196,7 @@ namespace Laby {
         Utils::SetCursorPosX(pos.x + (0.75f * imageSize.x));
         Widgets::Checkbox("Colliders", mDisplayColliders);
 
-        if (!mTilemap->hasLayers())
+        if (!mTilemap->HasLayers())
         {
             Widgets::EndChild();
             return;
@@ -207,20 +204,20 @@ namespace Laby {
 
         Utils::SetButtonDefaults();
         Utils::SetButtonColour(Colour::Transparent);
-        imcpp::GridFunction<glm::vec2> gridFunc = [this](u32 x, u32 y, const glm::vec2& elementSize)
+        slc::GridFunction<glm::vec2> gridFunc = [this](u32 x, u32 y, const glm::vec2& elementSize)
         {
             GridPosition pos = { x, y };
             Widgets::Button(elementSize, std::format("##MapTiles({}, {})", x, y), [&]()
             { 
                 mCurrentTile = pos;
-                mCurrentSubtex = mTilemap->getTileData(mCurrentLayer, pos);
-                mCurrentBehaviour = mTilemap->getTileBehaviour(pos);
+                mCurrentSubtex = mTilemap->GetTileData(mCurrentLayer, pos);
+                mCurrentBehaviour = mTilemap->GetTileBehaviour(pos);
             });
             Widgets::OnWidgetHovered([&]()
             {
                 mHoveredTile = pos;
-                mHoveredSubtex = mTilemap->getTileData(mCurrentLayer, pos);
-                mHoveredBehaviour = mTilemap->getTileBehaviour(pos);
+                mHoveredSubtex = mTilemap->GetTileData(mCurrentLayer, pos);
+                mHoveredBehaviour = mTilemap->GetTileBehaviour(pos);
             });
         };
 
@@ -237,11 +234,11 @@ namespace Laby {
 
         {   // Sheets on Tilemap
             std::vector<SheetEntry> tilemapSheets;
-            for (const SheetData& sheetData : mTilemap->getSheets())
-                tilemapSheets.emplace_back(sheetData.sheet->getName(), sheetData.sheet->handle);
+            for (const SheetData& sheetData : mTilemap->GetSheets())
+                tilemapSheets.emplace_back(sheetData.sheet->GetName(), sheetData.sheet->handle);
 
             Ref<Texture2DSheet> tilemapSheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
-            Widgets::Combobox<AssetHandle>("Tilemap Sheets", tilemapSheet ? tilemapSheet->getName() : "None", mCurrentSheet, tilemapSheets);
+            Widgets::Combobox<AssetHandle>("Tilemap Sheets", tilemapSheet ? tilemapSheet->GetName() : "None", mCurrentSheet, tilemapSheets);
 
             // All Sheets
             std::vector<SheetEntry> allSheets;
@@ -251,13 +248,13 @@ namespace Laby {
                     continue;
 
                 Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(sheetHandle);
-                allSheets.emplace_back(sheet->getName(), sheetHandle);
+                allSheets.emplace_back(sheet->GetName(), sheetHandle);
             }
 
             Ref<Texture2DSheet> sheetToAdd = AssetManager::GetAsset<Texture2DSheet>(mSheetToAdd);
-            Widgets::Combobox<AssetHandle>("Add", sheetToAdd ? sheetToAdd->getName() : "None", mSheetToAdd, allSheets);
+            Widgets::Combobox<AssetHandle>("Add", sheetToAdd ? sheetToAdd->GetName() : "None", mSheetToAdd, allSheets);
             Widgets::SameLine();
-            Widgets::Button("+", [this]() { mTilemap->addSheet(mSheetToAdd); mSheetToAdd = 0; });
+            Widgets::Button("+", [this]() { mTilemap->AddSheet(mSheetToAdd); mSheetToAdd = 0; });
         }
         Widgets::EndChild();
 
@@ -285,8 +282,8 @@ namespace Laby {
         subtexImageSize.y -= (3 * mFrameHeightWithSpacing + 0.25f * subtexImageSize.y);
 
         Ref<IRenderable> subTexImage = EditorResources::NoTexture;
-        if (mBrushSubtex.valid())
-            subTexImage = mTilemap->getTileTex(mBrushSubtex.textureID);
+        if (mBrushSubtex.Valid())
+            subTexImage = mTilemap->GetTileTex(mBrushSubtex.textureID);
 
         glm::vec2 pos = Utils::CursorPos<glm::vec2>();
         pos.x += 0.25f * subtexImageSize.x;
@@ -311,19 +308,19 @@ namespace Laby {
             return;
 
         // Selection Buttons
-        u32 tileCountX = sheet->getTileCountX();
-        u32 tileCountY = sheet->getTileCountY();
+        u32 tileCountX = sheet->GetTileCountX();
+        u32 tileCountY = sheet->GetTileCountY();
 
         Utils::SetButtonDefaults();
         Utils::SetButtonColour(Colour::Transparent);
 
-        imcpp::GridFunction<glm::vec2> gridFunc = [this, sheet](u32 x, u32 y, const glm::vec2& elementSize)
+        slc::GridFunction<glm::vec2> gridFunc = [this, sheet](u32 x, u32 y, const glm::vec2& elementSize)
         {
             GridPosition pos = { x,y };
             std::string name = fmt::format("##SheetTile({}, {})", x, y);
             Widgets::Button(elementSize, name, [&]()
             {
-                mBrushSubtex = TileRenderData(GetStartIndex(sheet, mTilemap->getSheets()) + sheet->getPositionIndex(pos));
+                mBrushSubtex = TileRenderData(GetStartIndex(sheet, mTilemap->GetSheets()) + sheet->GetPositionIndex(pos));
             });
         };
         Widgets::GridControl(startPos, sheetImageSize, tileCountX, tileCountY, gridFunc);

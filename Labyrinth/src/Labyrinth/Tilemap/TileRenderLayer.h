@@ -23,8 +23,8 @@ namespace Laby {
 	{
 		mOut << YAML::BeginMap; // TileRenderLayer
 
-		LAB_SERIALISE_PROPERTY(Width, layer.getWidth(), mOut);
-		LAB_SERIALISE_PROPERTY(Height, layer.getHeight(), mOut);
+		LAB_SERIALISE_PROPERTY(Width, layer.GetWidth(), mOut);
+		LAB_SERIALISE_PROPERTY(Height, layer.GetHeight(), mOut);
 
 		mOut << YAML::Key << "Tiles";
 		mOut << YAML::Value << YAML::BeginSeq;
@@ -71,7 +71,7 @@ namespace YAML {
 
 			Laby::usize index = 0;
 			for (auto tile : tiles)
-				rhs.set(index++, tile.as<Laby::TileRenderData>());
+				rhs.Set(index++, tile.as<Laby::TileRenderData>());
 
 			return true;
 		}

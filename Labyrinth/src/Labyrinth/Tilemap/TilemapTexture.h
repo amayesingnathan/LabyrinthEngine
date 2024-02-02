@@ -19,27 +19,27 @@ namespace Laby {
 	public:
 		TilemapTexture(u32 width, u32 height);
 
-		void addSheet(AssetHandle handle) { mTilePalette.add(handle); }
-		void addSheet(AssetHandle handle, TileID startIndex) { mTilePalette.add(handle, startIndex); }
-		void removeSheet(AssetHandle handle);
+		void AddSheet(AssetHandle handle) { mTilePalette.Add(handle); }
+		void AddSheet(AssetHandle handle, TileID startIndex) { mTilePalette.Add(handle, startIndex); }
+		void RemoveSheet(AssetHandle handle);
 
-		Ref<SubTexture2D> getTileTex(TileID id) const { return mTilePalette[id]; }
+		Ref<SubTexture2D> GetTileTex(TileID id) const { return mTilePalette[id]; }
 
-		TileRenderData getTile(usize layer, const GridPosition& pos) const;
-		void setTile(usize layer, const GridPosition& pos, const TileRenderData& renderData);
+		TileRenderData GetTile(usize layer, const GridPosition& pos) const;
+		void SetTile(usize layer, const GridPosition& pos, const TileRenderData& renderData);
 
-		bool hasLayers() const { return !mLayers.empty(); }
+		bool HasLayers() const { return !mLayers.empty(); }
 
-		void addLayer() { mLayers.emplace_back(mWidth, mHeight); RenderTexture(); }
-		void removeLayer(usize layer);
-		void moveLayer(usize layer, LayerMoveDir direction);
+		void AddLayer() { mLayers.emplace_back(mWidth, mHeight); RenderTexture(); }
+		void RemoveLayer(usize layer);
+		void MoveLayer(usize layer, LayerMoveDir direction);
 
-		const std::vector<TileRenderLayer>& getLayers() const { return mLayers; }
-		const std::vector<SheetData>& getSheets() const { return mTilePalette.getSheets(); }
+		const std::vector<TileRenderLayer>& GetLayers() const { return mLayers; }
+		const std::vector<SheetData>& GetSheets() const { return mTilePalette.GetSheets(); }
 
 	private:
-		void addLayer(const TileRenderLayer& layer) { mLayers.emplace_back(layer); RenderTexture();}
-		void addLayer(TileRenderLayer&& layer) { mLayers.emplace_back(std::move(layer)); RenderTexture();}
+		void AddLayer(const TileRenderLayer& layer) { mLayers.emplace_back(layer); RenderTexture();}
+		void AddLayer(TileRenderLayer&& layer) { mLayers.emplace_back(std::move(layer)); RenderTexture();}
 
 	private:
 		void RenderTexture();
