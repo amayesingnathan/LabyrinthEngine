@@ -1,6 +1,7 @@
 project "Labyrinth"
     language "C++"
     cppdialect "C++20"
+    staticruntime "off"
 		
     targetdir 	("%{wks.location}/bin/%{prj.name}/" .. outputDir)
     objdir 		("%{wks.location}/obj/%{prj.name}/" .. outputDir)
@@ -15,8 +16,6 @@ project "Labyrinth"
         "dependencies/stb_image/**.h",
         "dependencies/stb_image/**.cpp",
         "dependencies/glm/glm/**.hpp",
-        "dependencies/ImGuizmo/ImGuizmo.h",
-        "dependencies/ImGuizmo/ImGuizmo.cpp",
     }
 	
 	defines
@@ -35,7 +34,7 @@ project "Labyrinth"
         "%{IncludeDir.glfw}",
         "%{IncludeDir.glm}",
         "%{IncludeDir.imgui}",
-        "%{IncludeDir.imgui_cpp}",
+        "%{IncludeDir.StreamlineCore}",
         "%{IncludeDir.ImGuizmo}",
         "%{IncludeDir.json}",
         "%{IncludeDir.magic_enum}",
@@ -53,7 +52,7 @@ project "Labyrinth"
 		"asio",
 		"box2d",
 		"glad",
-		"imgui-cpp",
+		"StreamlineCore",
 		"yaml-cpp",
          "%{Library.mono}"
 	}
@@ -63,7 +62,6 @@ project "Labyrinth"
 	
     filter "system:windows"
         kind "StaticLib"
-        staticruntime "off"
         systemversion "latest"
         links 
         {
@@ -77,7 +75,6 @@ project "Labyrinth"
 		
 	filter "system:linux"
         kind "SharedLib"
-        staticruntime "off"
         defines "LAB_SHARED"
         pic "On"
         systemversion "latest"

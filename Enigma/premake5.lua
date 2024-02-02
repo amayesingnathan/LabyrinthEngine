@@ -21,18 +21,18 @@ project "Enigma"
         "%{IncludeDir.asio}",
 		"%{IncludeDir.entt}",
         "%{IncludeDir.glm}",
-		"%{IncludeDir.imgui_cpp}",
+		"%{IncludeDir.imgui}",
 		"%{IncludeDir.ImGuizmo}",
 		"%{IncludeDir.json}",
 		"%{IncludeDir.magic_enum}",
         "%{IncludeDir.spdlog}",
+        "%{IncludeDir.StreamlineCore}",
         "%{IncludeDir.yaml_cpp}",
     }
 	
     links
     {
         "Labyrinth",
-        "imgui-cpp",
     }
 
     filter "system:windows"
