@@ -10,8 +10,8 @@ namespace Laby {
 	public:
 		MapEditModal(const Ref<Tilemap>& map);
 
-		void onImGuiRender() override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnComplete() override;
 
 	private:
 		void LeftPane();

@@ -2,9 +2,7 @@
 #include "IEditorModal.h"
 
 #include <Labyrinth/Core/Application.h>
-#include <Labyrinth/ImGui/ImGuiCpp.h>
-
-using imcpp::Widgets;
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 namespace Laby {
 
@@ -18,7 +16,7 @@ namespace Laby {
 		Application::BlockEsc(false);
 	}
 
-	void WarningModal::onImGuiRender()
+	void WarningModal::OnRender()
 	{
 		Widgets::Label(mMessage);
 	}

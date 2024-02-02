@@ -7,7 +7,11 @@ libraries, and coding techniques, and much more.
 Labyrinth is early in development but supports many core engine features including an event system, rendering, scene management, 
 scripting, project management, asset management, physics, and networking, as well as many other minor features. It also 
 comes with an editor, Enigma, that supports these features. There are still several core features still to add however, such as sound and 
-animation, as well as a runtime in order to export projects as full standalone games.
+more complex animation, as well as a runtime in order to export projects as full standalone games.
+
+Many features originally developed in Labyrinth have been extracted into their own standalone library, [streamline-cpp](https://github.com/amayesingnathan/streamline-cpp),
+which Labyrinth now depends on. This includes the event system, application base, Dear ImGui wrappers, while also providing a handful of other utilities 
+developed for streamline-cpp, such as Result/Option types and various functional tools such as do notation and macro based pattern matching.
 
 ***
 
@@ -57,7 +61,7 @@ animation, as well as a runtime in order to export projects as full standalone g
   
   Users can easily add listeners to the system by inheriting from the `IEventListener` class and must implement `void onEvent(Event& e)`. Layers in the application automatically inherit from IEventListener but do not implement onEvent. Any class that inherits from IEventListener (including Layers) must specify the individual events to listen for using the `LISTENING_EVENTS(...)` macro, which takes in a variable number of values from the `EventType::Flag` enum, separated by commas, e.g. `LISTENING_EVENTS(WindowResize, MouseMoved)`.
   
-  A dispatch function is also included on the Event to allow users to simplify the `onEvent` function of any listener. Specific event types can easily be dispatched to other functions by doing `e.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(FooBar))` where FooBar is a member function that takes a `KeyPresedEvent&` as a parameter and returns a bool indicating if the event was handled. LAB_BIND_EVENT_FUNC can be omitted if providing a non-member function.
+  A dispatch function is also included on the Event to allow users to simplify the `OnEvent` function of any listener. Specific event types can easily be dispatched to other functions by doing `e.Dispatch<KeyPressedEvent>(SLC_BIND_EVENT_FUNC(FooBar))` where FooBar is a member function that takes a `KeyPresedEvent&` as a parameter and returns a bool indicating if the event was handled. SLC_BIND_EVENT_FUNC can be omitted if providing a non-member function.
   
   ### Scene Management ###
   

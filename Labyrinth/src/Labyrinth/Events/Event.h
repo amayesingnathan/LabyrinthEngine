@@ -1,49 +1,34 @@
 #pragma once
 
-#include <Labyrinth/Core/System/Reflection.h>
-
-#include "ApplicationEvent.h"
-#include "KeyEvent.h"
-#include "MouseEvent.h"
-#include "NetworkEvent.h"
+#include "Events/IEventListener.h"
 
 namespace Laby {
 
-	using AllEvents = TypeList<
-		WindowCloseEvent, WindowResizeEvent, WindowFocusEvent, WindowFocusLostEvent, WindowMovedEvent,
-		AppTickEvent, AppUpdateEvent, AppRenderEvent,
-		KeyPressedEvent, KeyReleasedEvent, KeyTypedEvent,
-		MouseButtonPressedEvent, MouseButtonReleasedEvent,
-		MouseMovedEvent, MouseScrolledEvent,
-		NetMessageEvent
-	>;
+	using EventManager = slc::EventManager;
+	using IEventListener = slc::IEventListener;
 
-	template<typename T>
-	concept IsEvent = AllEvents::Contains<T>;
+	using Event = slc::Event;
+	using EventTypeFlag = slc::EventTypeFlag;
+	namespace EventType = slc::EventType;
 
-	struct Event
-	{
-		bool handled = false;
-		EventTypeFlag type = EventType::None;
-		AllEvents::VariantType data;
+	using WindowCloseEvent = slc::WindowCloseEvent;
+	using WindowResizeEvent = slc::WindowResizeEvent;
+	using WindowFocusEvent = slc::WindowFocusEvent;
+	using WindowFocusLostEvent = slc::WindowFocusLostEvent;
+	using WindowMovedEvent = slc::WindowMovedEvent;
 
-		template<IsEvent TEvent, typename... TArgs>
-		void init(TArgs&&... args) 
-		{
-			type = LAB_BIT(AllEvents::Index<TEvent>);
-			data = TEvent(std::forward<TArgs>(args)...);
-		}
+	using AppTickEvent = slc::AppTickEvent;
+	using AppUpdateEvent = slc::AppUpdateEvent;
+	using AppRenderEvent = slc::AppRenderEvent;
 
-		template<IsEvent T>
-		void dispatch(Predicate<T&>&& func)
-		{
-			if (type != T::GetStaticType())
-				return;
+	using KeyPressedEvent = slc::KeyPressedEvent;
+	using KeyReleasedEvent = slc::KeyReleasedEvent;
+	using KeyTypedEvent = slc::KeyTypedEvent;
 
-			if (handled)
-				return;
+	using MouseButtonPressedEvent = slc::MouseButtonPressedEvent;
+	using MouseButtonReleasedEvent = slc::MouseButtonReleasedEvent;
 
-			handled = func(std::get<T>(data));
-		}
-	};
+	using MouseMovedEvent = slc::MouseMovedEvent;
+	using MouseScrolledEvent = slc::MouseScrolledEvent;
+
 }

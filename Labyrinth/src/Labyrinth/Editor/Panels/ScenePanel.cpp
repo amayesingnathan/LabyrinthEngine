@@ -4,9 +4,7 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/SelectionManager.h>
 #include <Labyrinth/Editor/Modals/NewBodyModal.h>
-#include <Labyrinth/ImGui/ImGuiCpp.h>
-
-using imcpp::Widgets;
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 namespace Laby {
 
@@ -15,12 +13,12 @@ namespace Laby {
 	{
 	}
 
-	void ScenePanel::onImGuiRender()
+	void ScenePanel::OnRender()
 	{
 		if (!mContext)
 			return;
 
-		Widgets::StringEdit("Name", mContext->getName());
+		Widgets::StringEdit("Name", mContext->GetName());
 		Widgets::SameLine();
 		Widgets::Button("Create..", []()
 		{
@@ -35,7 +33,7 @@ namespace Laby {
 		Widgets::AddPopupItem("Camera", [this]()
 		{
 			mSelectedEntity = mContext->CreateEntity("New Camera");
-			mSelectedEntity.addComponent<CameraComponent>();
+			mSelectedEntity.AddComponent<CameraComponent>();
 		});
 		Widgets::AddPopupItem("Rigid Body", [this]()
 		{
@@ -43,7 +41,7 @@ namespace Laby {
 		});
 		Widgets::EndPopup();
 
-		mContext->getEntitiesWith<RootComponent>().each([&](auto entityID, auto& rc)
+		mContext->GetEntitiesWith<RootComponent>().each([&](auto entityID, auto& rc)
 		{
 			Entity entity{ entityID , mContext };
 			DrawEntityNode(entity);
@@ -54,10 +52,10 @@ namespace Laby {
 		mToRemove.clear();
 	}
 
-	void ScenePanel::onSelectionChange()
+	void ScenePanel::OnSelectionChange()
 	{
 		const auto& selections = SelectionManager::GetSelections(SelectionDomain::Scene);
-		mSelectedEntity = selections.size() != 0 ? mContext->findEntity(selections[0]) : Entity{};
+		mSelectedEntity = selections.size() != 0 ? mContext->FindEntity(selections[0]) : Entity{};
 
 		if (mSelectedEntity && (!mPreviousEntity || mPreviousEntity != mSelectedEntity))
 			mPreviousEntity = mSelectedEntity;
@@ -65,29 +63,29 @@ namespace Laby {
 
 	void ScenePanel::DrawEntityNode(Entity entity)
 	{
-		std::string& tag = entity.getComponent<TagComponent>();
-		auto& node = entity.getComponent<NodeComponent>();
+		std::string& tag = entity.GetComponent<TagComponent>();
+		auto& node = entity.GetComponent<NodeComponent>();
 
-		Widgets::TreeNode((void*)&entity.getComponent<IDComponent>().id, tag, mSelectedEntity == entity, [&]()
+		Widgets::TreeNode((void*)&entity.GetComponent<IDComponent>().id, tag, mSelectedEntity == entity, [&]()
 		{
 			// Range for loop iterators may become invalidated if a new entity is added
 			// to this node's children during looping, so ignore new additions for now
 			// and they'll be drawn next render.
 			size_t fixedSize = node.children.size();
 			for (size_t i = 0; i < fixedSize; i++)
-				DrawEntityNode(mContext->findEntity(node.children[i]));
+				DrawEntityNode(mContext->FindEntity(node.children[i]));
 		});
 		Widgets::OnWidgetSelected([=]() 
 		{
 			SelectionManager::DeselectAll(SelectionDomain::Scene);
-			SelectionManager::Select(SelectionDomain::Scene, entity.getUUID());
+			SelectionManager::Select(SelectionDomain::Scene, entity.GetUUID());
 		});
-		Widgets::AddDragDropSource("ENTITY_ITEM", entity.getUUID());
+		Widgets::AddDragDropSource("ENTITY_ITEM", entity.GetUUID());
 		Widgets::AddDragDropTarget<UUID>("ENTITY_ITEM", [=](const UUID& id)
 		{
-			Entity dragEntity = mContext->findEntity(id);
+			Entity dragEntity = mContext->FindEntity(id);
 			if (dragEntity != entity)
-				dragEntity.setParent(entity);
+				dragEntity.SetParent(entity);
 		});
 
 		Widgets::BeginContextPopup();

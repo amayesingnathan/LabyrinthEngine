@@ -4,14 +4,12 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Tilemap/Tilemap.h>
-
-using imcpp::Widgets;
 
 namespace Laby {
 
-    void NewMapModal::onImGuiRender()
+    void NewMapModal::OnRender()
     {
         Widgets::Label("Please enter the specifications for the tilemap:");
         Widgets::NewLine();
@@ -21,11 +19,11 @@ namespace Laby {
         Widgets::UIntEdit("Height", mMapHeight);
     }
 
-    void NewMapModal::onCustomButtonRender(bool& open)
+    void NewMapModal::OnCustomButtonRender(bool& open)
     {
         Widgets::Button("Create", [&, this]()
         {
-            onComplete();
+            OnComplete();
             open = false;
         });
 
@@ -37,7 +35,7 @@ namespace Laby {
         });
     }
 
-    void NewMapModal::onComplete()
+    void NewMapModal::OnComplete()
     {
         AssetManager::CreateNewAsset<Tilemap>(mMapName, mMapName, mMapWidth, mMapHeight);
     }

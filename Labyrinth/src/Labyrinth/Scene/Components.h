@@ -113,7 +113,7 @@ namespace Laby {
 		TransformComponent(const glm::vec3& trans, const glm::vec3& rot, const glm::vec3& sc)
 			: translation(trans), rotation(rot), scale(sc) {}
 
-		glm::mat4 getTransform() const
+		glm::mat4 GetTransform() const
 		{
 			glm::mat4 rot = glm::toMat4(glm::quat(rotation));
 
@@ -255,7 +255,7 @@ namespace Laby {
 			vertices(shape.vertices), vertexCount(shape.vertexCount) {}
 		~ChainColliderComponent() { delete[] vertices; }
 
-		const b2Vec2* getVertices() const { return (b2Vec2*)vertices; }
+		const b2Vec2* GetVertices() const { return (b2Vec2*)vertices; }
 	};
 
 
@@ -325,8 +325,8 @@ namespace Laby {
 	{
 		([&]()
 		{
-			if (src.hasComponent<Component>())
-			dest.addOrReplaceComponent<Component>(src.getComponent<Component>());
+			if (src.HasComponent<Component>())
+			dest.AddOrReplaceComponent<Component>(src.GetComponent<Component>());
 		}(), ...);
 	}
 	static void CopyAllComponents(Entity src, Entity dest)

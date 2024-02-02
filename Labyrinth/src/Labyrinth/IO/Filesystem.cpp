@@ -48,7 +48,7 @@ namespace Laby {
 		}
 
 		Buffer buffer(size);
-		stream.read(buffer.as<char>(), size);
+		stream.read(buffer.As<char>(), size);
 		stream.close();
 
 		return buffer;
@@ -92,10 +92,10 @@ namespace Laby {
 			return;
 		}
 
-		if (buffer.size() == 0)
+		if (buffer.Size() == 0)
 			return;
 
-		stream.write(buffer.as<char>(), buffer.size());
+		stream.write(buffer.As<char>(), buffer.Size());
 	}
 
 	void FileUtils::Write(const fs::path& filepath, std::string_view string)

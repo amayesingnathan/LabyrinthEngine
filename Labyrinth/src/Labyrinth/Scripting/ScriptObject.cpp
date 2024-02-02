@@ -8,14 +8,14 @@
 
 namespace Laby{
 
-	void ScriptObject::setFieldValues(const FieldValues& fieldVals)
+	void ScriptObject::SetFieldValues(const FieldValues& fieldVals)
 	{
 		if (!mInstance)
 			return;
 
 		for (auto& [name, field] : fieldVals)
 		{
-			const ScriptField* scriptField = mClass->getField(name);
+			const ScriptField* scriptField = mClass->GetField(name);
 			if (!scriptField)
 			{
 				LAB_CORE_WARN("Cached field name did not match class field name!");
@@ -25,11 +25,11 @@ namespace Laby{
 			if (!field.value)
 				continue;
 
-			void* data = (void*)field.value.data();
+			void* data = (void*)field.value.Data();
 			Ref<ScriptObject> entity = nullptr;
 			if (field.type == ScriptFieldType::Entity)
 			{
-				entity = Ref<ScriptObject>::Create(ScriptEngine::GetEntityClass(), field.value.read<UUID>());
+				entity = Ref<ScriptObject>::Create(ScriptEngine::GetEntityClass(), field.value.Read<UUID>());
 				data = entity->obj();
 			}
 
@@ -37,9 +37,9 @@ namespace Laby{
 		}
 	}
 
-	void ScriptObject::getEntityFieldValue(std::string_view fieldName, UUID& id) const
+	void ScriptObject::GetEntityFieldValue(std::string_view fieldName, UUID& id) const
 	{
-		const ScriptField* scriptField = mClass->getField(fieldName);
+		const ScriptField* scriptField = mClass->GetField(fieldName);
 		if (!scriptField)
 			return;
 
@@ -49,7 +49,7 @@ namespace Laby{
 		if (!obj)
 			return;
 
-		MonoClassField* idField = ScriptEngine::GetEntityClass()->getField("ID")->field;
+		MonoClassField* idField = ScriptEngine::GetEntityClass()->GetField("ID")->field;
 		if (!idField)
 			return;
 

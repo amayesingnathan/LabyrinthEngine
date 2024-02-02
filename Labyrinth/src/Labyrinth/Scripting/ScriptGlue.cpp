@@ -14,7 +14,6 @@
 
 #include <Labyrinth/Animation/Animation.h>
 #include <Labyrinth/Assets/AssetManager.h>
-#include <Labyrinth/Containers/Buffer.h>
 #include <Labyrinth/IO/Input.h>
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
@@ -23,9 +22,9 @@ namespace Laby {
 
 	static inline Entity GetEntity(UUID entityID)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
-		return scene->findEntity(entityID);
+		return scene->FindEntity(entityID);
 	}; 
 
 	static std::unordered_map<MonoType*, Action<Entity&>> sCreateComponentFuncs;
@@ -39,9 +38,9 @@ namespace Laby {
 			MonoType* managedType = mono_reflection_type_from_name((char*)"Labyrinth." #Type, ScriptEngineInternal::GetCoreAssemblyInfo()->assemblyImage);\
 			if (managedType)\
 			{\
-				sCreateComponentFuncs[managedType] = [](Entity& entity) { entity.addComponent<Type>(); };\
-				sHasComponentFuncs[managedType] = [](Entity& entity) { return entity.hasComponent<Type>(); };\
-				sRemoveComponentFuncs[managedType] = [](Entity& entity){ entity.removeComponent<Type>(); };\
+				sCreateComponentFuncs[managedType] = [](Entity& entity) { entity.AddComponent<Type>(); };\
+				sHasComponentFuncs[managedType] = [](Entity& entity) { return entity.HasComponent<Type>(); };\
+				sRemoveComponentFuncs[managedType] = [](Entity& entity){ entity.RemoveComponent<Type>(); };\
 			}\
 			else\
 			{\
@@ -189,21 +188,21 @@ namespace Laby {
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
 		fs::path scenePath = MarshalUtils::MonoStringToUTF8(path);
-		return sceneManager->preload(scenePath);
+		return sceneManager->Preload(scenePath);
 	}
 
 	void GlueFunctions::Scene_LoadPreLoadedScene()
 	{
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
-		sceneManager->load();
+		sceneManager->Load();
 	}
 
 	void GlueFunctions::Scene_LoadSceneFromID(UUID sceneID)
 	{
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
-		sceneManager->load(sceneID);
+		sceneManager->Load(sceneID);
 	}
 
 	u64 GlueFunctions::Scene_LoadSceneFromPath(MonoString* path)
@@ -211,33 +210,33 @@ namespace Laby {
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
 		fs::path scenePath = MarshalUtils::MonoStringToUTF8(path);
-		return sceneManager->load(scenePath);
+		return sceneManager->Load(scenePath);
 	}
 
 	u64 GlueFunctions::Scene_LoadClonedScene(UUID sceneID)
 	{
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
-		return sceneManager->loadClone(sceneID);
+		return sceneManager->LoadClone(sceneID);
 	}
 
 	void GlueFunctions::Scene_UnloadScene(UUID sceneID)
 	{
 		Ref<SceneManager> sceneManager = ScriptEngine::GetContext();
 		LAB_CORE_ASSERT(sceneManager, "No scene manager context!");
-		sceneManager->unload(sceneID);
+		sceneManager->Unload(sceneID);
 	}
 
 	u64 GlueFunctions::Scene_FindEntityByTag(MonoString* tag)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
-		Entity entity = scene->getEntityByTag(MarshalUtils::MonoStringToUTF8(tag));
+		Entity entity = scene->GetEntityByTag(MarshalUtils::MonoStringToUTF8(tag));
 
 		if (!entity)
 			return 0;
 
-		return entity.getUUID();
+		return entity.GetUUID();
 	}
 
 	bool GlueFunctions::Scene_IsEntityValid(UUID entityID)
@@ -245,16 +244,16 @@ namespace Laby {
 		if (!entityID)
 			return false;
 
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
-		return scene->findEntity(entityID);
+		return scene->FindEntity(entityID);
 	}
 
 	u64 GlueFunctions::Scene_CreateEntity(MonoString* tag)
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
-		return scene->CreateEntity(MarshalUtils::MonoStringToUTF8(tag)).getUUID();
+		return scene->CreateEntity(MarshalUtils::MonoStringToUTF8(tag)).GetUUID();
 	}
 
 	void GlueFunctions::Scene_DestroyEntity(UUID entityID)
@@ -263,22 +262,22 @@ namespace Laby {
 		if (!entity)
 			return;
 
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		scene->DestroyEntity(entity);
 	}
 
 	MonoArray* GlueFunctions::Scene_GetEntities()
 	{
-		Ref<Scene> scene = ScriptEngine::GetContext()->getActive();
+		Ref<Scene> scene = ScriptEngine::GetContext()->GetActive();
 		LAB_CORE_ASSERT(scene, "No active scene!");
 
-		auto entities = scene->getEntitiesWith<IDComponent>();
+		auto entities = scene->GetEntitiesWith<IDComponent>();
 		auto entityClass = ScriptEngineInternal::GetCoreEntityClass();
-		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->getClass(), entities.size());
+		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->GetClass(), entities.size());
 		u32 i = 0;
 		entities.each([&i, result, &entityClass](auto entity, const auto& idComp)
 			{
-				MonoObject* boxed = entityClass->instantiate(idComp.id);
+				MonoObject* boxed = entityClass->Instantiate(idComp.id);
 		mono_array_setref(result, i++, boxed);
 			});
 
@@ -294,7 +293,7 @@ namespace Laby {
 		auto entity = GetEntity(entityID);
 		if (!entity)
 			return 0;
-		return entity.getParent().getUUID();
+		return entity.GetParent().GetUUID();
 	}
 
 	void GlueFunctions::Entity_SetParent(UUID entityID, UUID parentID)
@@ -314,7 +313,7 @@ namespace Laby {
 			return;
 		}
 
-		child.setParent(parent);
+		child.SetParent(parent);
 	}
 
 	MonoArray* GlueFunctions::Entity_GetChildren(u64 entityID)
@@ -326,12 +325,12 @@ namespace Laby {
 			return nullptr;
 		}
 
-		const auto& children = entity.getChildren();
+		const auto& children = entity.GetChildren();
 		auto entityClass = ScriptEngineInternal::GetCoreEntityClass();
-		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->getClass(), children.size());
+		MonoArray* result = mono_array_new(ScriptEngineInternal::GetAppDomain(), entityClass->GetClass(), children.size());
 		for (uint32_t i = 0; i < children.size(); i++)
 		{
-			MonoObject* boxed = entityClass->instantiate(children[i]);
+			MonoObject* boxed = entityClass->Instantiate(children[i]);
 			mono_array_setref(result, i, boxed);
 		}
 
@@ -417,7 +416,7 @@ namespace Laby {
 
 		if (!sHasComponentFuncs.at(managedType)(entity))
 		{
-			LAB_CORE_WARN("Tried to remove component '{0}' from Entity '{1}' even though it doesn't have that component.", typeName, entity.getComponent<TagComponent>().tag);
+			LAB_CORE_WARN("Tried to remove component '{0}' from Entity '{1}' even though it doesn't have that component.", typeName, entity.GetComponent<TagComponent>().tag);
 			return false;
 		}
 
@@ -437,7 +436,7 @@ namespace Laby {
 			return nullptr;
 		}
 
-		const auto& tagComponent = entity.getComponent<TagComponent>();
+		const auto& tagComponent = entity.GetComponent<TagComponent>();
 		return MarshalUtils::UTF8StringToMono(tagComponent.tag);
 	}
 
@@ -450,7 +449,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& tagComponent = entity.getComponent<TagComponent>();
+		auto& tagComponent = entity.GetComponent<TagComponent>();
 		tagComponent.tag = MarshalUtils::MonoStringToUTF8(inTag);
 	}
 #pragma endregion
@@ -465,7 +464,7 @@ namespace Laby {
 			return;
 		}
 
-		*outTranslation = entity.getTransform();
+		*outTranslation = entity.GetTransform();
 	}
 	void GlueFunctions::Transform_SetTransform(UUID id, TransformComponent* translation)
 	{
@@ -476,7 +475,7 @@ namespace Laby {
 			return;
 		}
 
-		entity.getTransform() = *translation;
+		entity.GetTransform() = *translation;
 	}
 	void GlueFunctions::Transform_GetTranslation(UUID id, glm::vec3* outTranslation)
 	{
@@ -487,7 +486,7 @@ namespace Laby {
 			return;
 		}
 
-		*outTranslation = entity.getTransform().translation;
+		*outTranslation = entity.GetTransform().translation;
 	}
 	void GlueFunctions::Transform_SetTranslation(UUID id, glm::vec3* translation)
 	{
@@ -498,7 +497,7 @@ namespace Laby {
 			return;
 		}
 
-		entity.getTransform().translation = *translation;
+		entity.GetTransform().translation = *translation;
 	}
 	void GlueFunctions::Transform_GetRotation(UUID id, glm::vec3* rotation)
 	{
@@ -509,7 +508,7 @@ namespace Laby {
 			return;
 		}
 
-		*rotation = entity.getTransform().rotation;
+		*rotation = entity.GetTransform().rotation;
 	}
 	void GlueFunctions::Transform_SetRotation(UUID id, glm::vec3* rotation)
 	{
@@ -520,7 +519,7 @@ namespace Laby {
 			return;
 		}
 
-		entity.getTransform().rotation = *rotation;
+		entity.GetTransform().rotation = *rotation;
 	}
 	void GlueFunctions::Transform_GetScale(UUID id, glm::vec3* outScale)
 	{
@@ -531,7 +530,7 @@ namespace Laby {
 			return;
 		}
 
-		*outScale = entity.getTransform().scale;
+		*outScale = entity.GetTransform().scale;
 	}
 	void GlueFunctions::Transform_SetScale(UUID id, glm::vec3* scale)
 	{
@@ -542,7 +541,7 @@ namespace Laby {
 			return;
 		}
 
-		entity.getTransform().scale = *scale;
+		entity.GetTransform().scale = *scale;
 	}
 #pragma endregion
 
@@ -558,14 +557,14 @@ namespace Laby {
 			return 0.0f;
 		}
 
-		if (!entity.hasComponent<CameraComponent>())
+		if (!entity.HasComponent<CameraComponent>())
 		{
 			LAB_CORE_ERROR("CameraComponent.GetVerticalFOV - Entity doesn't have a CameraComponent");
 			return 0.0f;
 		}
 
-		const auto& component = entity.getComponent<CameraComponent>();
-		return component.camera.getPerspectiveVerticalFOV();
+		const auto& component = entity.GetComponent<CameraComponent>();
+		return component.camera.GetPerspectiveVerticalFOV();
 	}
 
 	void GlueFunctions::Camera_SetVerticalFOV(UUID entityID, float verticalFOV)
@@ -578,14 +577,14 @@ namespace Laby {
 			return;
 		}
 
-		if (!entity.hasComponent<CameraComponent>())
+		if (!entity.HasComponent<CameraComponent>())
 		{
 			LAB_CORE_ERROR("CameraComponent.SetVerticalFOV - Entity doesn't have a CameraComponent");
 			return;
 		}
 
-		auto& component = entity.getComponent<CameraComponent>();
-		return component.camera.setPerspectiveVerticalFOV(verticalFOV);
+		auto& component = entity.GetComponent<CameraComponent>();
+		return component.camera.SetPerspectiveVerticalFOV(verticalFOV);
 	}
 
 #pragma endregion
@@ -601,13 +600,13 @@ namespace Laby {
 			return nullptr;
 		}
 
-		if (!entity.hasComponent<ScriptComponent>())
+		if (!entity.HasComponent<ScriptComponent>())
 		{
 			LAB_CORE_ERROR("ScriptComponent.Instance - Entity doesn't have a ScriptComponent?");
 			return nullptr;
 		}
 
-		auto& component = entity.getComponent<ScriptComponent>();
+		auto& component = entity.GetComponent<ScriptComponent>();
 
 		if (!ScriptEngineInternal::GetAppAssemblyInfo()->classes.count(component.className.data()) != 0)
 		{
@@ -617,7 +616,7 @@ namespace Laby {
 
 		if (!component.initialised || !component.instance->valid())
 		{
-			LAB_CORE_ERROR("ScriptComponent.Instance - Entity '{0}' isn't instantiated?", entity.getComponent<TagComponent>().tag);
+			LAB_CORE_ERROR("ScriptComponent.Instance - Entity '{0}' isn't instantiated?", entity.GetComponent<TagComponent>().tag);
 			return nullptr;
 		}
 
@@ -636,7 +635,7 @@ namespace Laby {
 			return RigidBodyComponent::BodyType::None;
 		}
 
-		return entity.getComponent<RigidBodyComponent>().type;
+		return entity.GetComponent<RigidBodyComponent>().type;
 	}
 
 	void GlueFunctions::RigidBody_SetBodyType(u64 entityID, RigidBodyComponent::BodyType inType)
@@ -648,7 +647,7 @@ namespace Laby {
 			return;
 		}
 
-		entity.getComponent<RigidBodyComponent>().type = inType;
+		entity.GetComponent<RigidBodyComponent>().type = inType;
 	}
 
 	void GlueFunctions::RigidBody_GetTranslation(u64 entityID, glm::vec2* outTranslation)
@@ -661,7 +660,7 @@ namespace Laby {
 			return;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.GetTranslation - No b2Body exists for this entity!");
@@ -684,7 +683,7 @@ namespace Laby {
 			return;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.SetTranslation - No b2Body exists for this entity!");
@@ -704,7 +703,7 @@ namespace Laby {
 			return 0.0f;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.GetRotation - No b2Body exists for this entity!");
@@ -723,7 +722,7 @@ namespace Laby {
 			return;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.SetRotation - No b2Body exists for this entity!");
@@ -743,7 +742,7 @@ namespace Laby {
 			return 0.0f;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.GetMass - No b2Body exists for this entity!");
@@ -762,7 +761,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.SetMass - No b2Body exists for this entity!");
@@ -786,7 +785,7 @@ namespace Laby {
 			return;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.GetLinearVelocity - No b2Body exists for this entity!");
@@ -808,7 +807,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.SetLinearVelocity - No b2Body exists for this entity!");
@@ -828,7 +827,7 @@ namespace Laby {
 			return 0.0f;
 		}
 
-		const auto& component = entity.getComponent<RigidBodyComponent>();
+		const auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.GetGravityScale - No b2Body exists for this entity!");
@@ -847,7 +846,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.SetGravityScale - No b2Body exists for this entity!");
@@ -868,7 +867,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.ApplyLinearImpulse - No b2Body exists for this entity!");
@@ -894,7 +893,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.ApplyAngularImpulse - No b2Body exists for this entity!");
@@ -920,7 +919,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.AddForce - No b2Body exists for this entity!");
@@ -946,7 +945,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& component = entity.getComponent<RigidBodyComponent>();
+		auto& component = entity.GetComponent<RigidBodyComponent>();
 		if (component.runtimeBody == nullptr)
 		{
 			LAB_CORE_ERROR("RigidBodyComponent.AddTorque - No b2Body exists for this entity!");
@@ -976,13 +975,13 @@ namespace Laby {
 			return;
 		}
 
-		if (!entity.hasComponent<AnimationComponent>())
+		if (!entity.HasComponent<AnimationComponent>())
 		{
 			LAB_CORE_ERROR("Animation.PlayAnimation called on entity with no animation!");
 			return;
 		}
 
-		auto& animationComp = entity.getComponent<AnimationComponent>();
+		auto& animationComp = entity.GetComponent<AnimationComponent>();
 		Ref<Animation> animation = AssetManager::GetAsset<Animation>(animationComp.handle);
 		if (!animation)
 		{
@@ -1015,7 +1014,7 @@ namespace Laby {
 			return;
 		}
 
-		auto& animationComp = entity.getComponent<AnimationComponent>();
+		auto& animationComp = entity.GetComponent<AnimationComponent>();
 		animationComp.handle = animationHandle;
 		Ref<Animation> animation = AssetManager::GetAsset<Animation>(animationHandle);
 		if (!animation)
@@ -1039,12 +1038,12 @@ namespace Laby {
 			return;
 		}
 
-		if (!entity.hasComponent<AnimationComponent>())
+		if (!entity.HasComponent<AnimationComponent>())
 		{
 			LAB_CORE_ERROR("Animation.PlayAnimation tried to stop Entity without animation component!");
 			return;
 		}
-		entity.getComponent<AnimationComponent>().playing = false;
+		entity.GetComponent<AnimationComponent>().playing = false;
 	}
 
 #pragma endregion

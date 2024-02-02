@@ -13,5 +13,5 @@ int main(int argc, char** argv)
 {
 	Laby::Log::Init(LAB_APP_NAME_STR);
 
-	Laby::Application::Run(argc, argv);
+	slc::Application::Run(argc, argv);
 }

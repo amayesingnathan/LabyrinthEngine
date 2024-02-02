@@ -1,13 +1,11 @@
 #include "SandboxLayer.h"
 
-using imcpp::Widgets;
-
 namespace Laby {
 
 	static constexpr glm::vec<2, i32> TileSize = glm::vec<2, i32>{ 64 };
 	static constexpr glm::vec2 TileSizeF = glm::vec2{ 64.0f };
 
-	void SandboxLayer::onAttach()
+	void SandboxLayer::OnAttach()
 	{
 		FramebufferSpec fbSpec;
 		fbSpec.width = 16 * TileSize.x;
@@ -19,18 +17,18 @@ namespace Laby {
 		mCamera = OrthographicCamera(0.0f, StaticCast<f32>(fbSpec.width), 0.0f, StaticCast<f32>(fbSpec.height));
 	}
 
-	void SandboxLayer::onDetach()
+	void SandboxLayer::OnDetach()
 	{
 	}
 
-	void SandboxLayer::onUpdate(Timestep ts)
+	void SandboxLayer::OnUpdate(Timestep ts)
 	{
-		mFramebuffer->bind();
+		mFramebuffer->Bind();
 
 		Renderer::SetClearColor({ 1, 0, 1, 1 });
 		Renderer::Clear();
 
-		const auto& spec = mFramebuffer->getSpecification();
+		const auto& spec = mFramebuffer->GetSpecification();
 
 		Renderer2D::BeginState();
 		//for (f32 y = 0; y < spec.height; y += 16.0f)
@@ -43,10 +41,10 @@ namespace Laby {
 		//}
 		Renderer2D::EndState();
 
-		mFramebuffer->unbind();
+		mFramebuffer->Unbind();
 	}
 
-	void SandboxLayer::onImGuiRender()
+	void SandboxLayer::OnRender()
 	{
 		Renderer2D::ResetStats();
 
@@ -56,15 +54,15 @@ namespace Laby {
 		static bool demo = true; //Enable demo
 		ImGui::ShowDemoWindow(&demo);
 
-		ImGui::Image((ImTextureID)(uintptr_t)mFramebuffer->getTextureID(), ImVec2{ 1280, 720 });
+		ImGui::Image((ImTextureID)(uintptr_t)mFramebuffer->GetTextureID(), ImVec2{ 1280, 720 });
 
 		ImGui::End();
 		Widgets::EndDockspace();
 	}
 
-	void SandboxLayer::onEvent(Event& e)
+	void SandboxLayer::OnEvent(Event& e)
 	{
-		e.dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressedEvent));
+		e.Dispatch<KeyPressedEvent>(LAB_BIND_EVENT_FUNC(OnKeyPressedEvent));
 	}
 
 	bool SandboxLayer::OnKeyPressedEvent(KeyPressedEvent& e)

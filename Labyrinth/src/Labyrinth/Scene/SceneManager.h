@@ -11,23 +11,23 @@ namespace Laby {
 		SceneManager(const SceneManager&) = delete;
 		SceneManager& operator=(const SceneManager&) = delete;
 
-		void reset();
+		void Reset();
 
-		UUID preload(const fs::path& scenePath);
-		void unload(UUID id);
+		UUID Preload(const fs::path& scenePath);
+		void Unload(UUID id);
 
-		void load();
-		void load(UUID sceneID);
-		UUID load(const fs::path& scenePath);
-		UUID loadClone(UUID cloneID);
+		void Load();
+		void Load(UUID sceneID);
+		UUID Load(const fs::path& scenePath);
+		UUID LoadClone(UUID cloneID);
 
-		Ref<Scene> get(UUID id) const;
-		Ref<Scene> getActive() const;
+		Ref<Scene> Get(UUID id) const;
+		Ref<Scene> GetActive() const;
 
-		UUID newScene(bool load = false);
-		void save(const fs::path& filepath, UUID scene = 0);
+		UUID NewScene(bool load = false);
+		void Save(const fs::path& filepath, UUID scene = 0);
 
-		void addSceneChangeCallback(Action<Ref<Scene>>&& action);
+		void AddSceneChangeCallback(Action<Ref<Scene>>&& action);
 
 	private:
 		void SetCurrentScene(UUID scene);

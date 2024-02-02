@@ -15,7 +15,7 @@ namespace Laby {
 		bool dataLoaded = false;
 		bool memoryAsset = false;
 
-		bool valid() const { return handle && !memoryAsset; }
+		bool Valid() const { return handle && !memoryAsset; }
 	};
 
 }

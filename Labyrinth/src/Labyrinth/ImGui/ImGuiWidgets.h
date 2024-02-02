@@ -1,11 +1,14 @@
 #pragma once
 
+#include "ImGui/Widgets.h"
+
 #include <Labyrinth/Scene/Entity.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
-#include "ImGuiCpp.h"
-
 namespace Laby {
+
+	using Widgets = slc::Widgets;
+	using Utils = slc::Utils;
 
 	class LabWidgets
 	{
@@ -15,21 +18,21 @@ namespace Laby {
 		{
 			const ImGuiTreeNodeFlags treeNodeFlags = 0b110000100110;
 			// ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Framed | ImGuiTreeNodeFlags_SpanAvailWidth | ImGuiTreeNodeFlags_AllowItemOverlap | ImGuiTreeNodeFlags_FramePadding;
-			if (!entity.hasComponent<T>())
+			if (!entity.HasComponent<T>())
 				return;
 
-			auto& component = entity.getComponent<T>();
-			const glm::vec2& contentRegionAvailable = imcpp::Utils::AvailableRegion<glm::vec2>();
+			auto& component = entity.GetComponent<T>();
+			const glm::vec2& contentRegionAvailable = Utils::AvailableRegion<glm::vec2>();
 
-			imcpp::Utils::PushStyle(11, imcpp::Utils::ToImVec<ImVec2>(glm::vec2{ 4, 4 })); //ImGuiStyleVar_FramePadding
-			f32 lineHeight = imcpp::Utils::FontSize() + imcpp::Utils::FramePadding().y * 2.0f;
-			imcpp::Widgets::Separator();
+			Utils::PushStyle(11, Utils::ToImVec<ImVec2>(glm::vec2{ 4, 4 })); //ImGuiStyleVar_FramePadding
+			f32 lineHeight = Utils::FontSize() + Utils::FramePadding().y * 2.0f;
+			Widgets::Separator();
 
 			bool removeComponent = ComponentImpl((void*)typeid(T).hash_code(), name, false, treeNodeFlags, [&]() { uiFunction(component); });
 			if (removeComponent)
-				entity.removeComponent<T>();
+				entity.RemoveComponent<T>();
 
-			imcpp::Utils::PopStyle();
+			Utils::PopStyle();
 		}
 
 		static void Image(Ref<IRenderable> image, const glm::vec2& size, float rotation = 0.0f);

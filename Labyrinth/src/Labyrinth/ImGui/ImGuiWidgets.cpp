@@ -3,9 +3,6 @@
 
 #include <Labyrinth/Editor/EditorResources.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
 	void LabWidgets::Image(Ref<IRenderable> image, const glm::vec2& size, float rotation)
@@ -13,8 +10,8 @@ namespace Laby {
 		if (!image)
 			image = EditorResources::NoTexture;
 
-		const glm::vec2* coords = image->getTextureCoords();
-		Widgets::Image(image->getTextureID(), size, rotation, coords[3], coords[1]);
+		const glm::vec2* coords = image->GetTextureCoords();
+		Widgets::Image(image->GetTextureID(), size, rotation, coords[3], coords[1]);
 	}
 
 	void LabWidgets::ImageButton(Ref<IRenderable> image, const glm::vec2& size, Action<>&& action)
@@ -22,8 +19,8 @@ namespace Laby {
 		if (!image)
 			image = EditorResources::NoTexture;
 
-		const glm::vec2* coords = image->getTextureCoords();
-		Widgets::ImageButton(image->getTextureID(), size, std::move(action), coords[3], coords[1]);
+		const glm::vec2* coords = image->GetTextureCoords();
+		Widgets::ImageButton(image->GetTextureID(), size, std::move(action), coords[3], coords[1]);
 	}
 
 	void LabWidgets::TextureSheet(std::string_view id, Ref<Texture2DSheet> sheet, const glm::vec2& size, Action<AssetHandle>&& subtexSelected)
@@ -38,9 +35,9 @@ namespace Laby {
 		glm::vec2 tempCursorPos = Utils::CursorPos<glm::vec2>();
 		Utils::SetButtonDefaults();
 		Utils::SetButtonColour(Colour::Transparent);
-		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->getTileCountX(), sheet->getTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
+		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->GetTileCountX(), sheet->GetTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
 		{
-			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(sheet->getFromPosition({ x, y })); });
+			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(sheet->GetFromPosition({ x, y })); });
 		});
 		Utils::PopStyleColour(3);
 		Utils::SetCursorPos(tempCursorPos.x, tempCursorPos.y);
@@ -58,7 +55,7 @@ namespace Laby {
 		glm::vec2 tempCursorPos = Utils::CursorPos<glm::vec2>();
 		Utils::SetButtonDefaults();
 		Utils::SetButtonColour(Colour::Transparent);
-		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->getTileCountX(), sheet->getTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
+		Widgets::GridControl<glm::vec2>(cursorPos, size, sheet->GetTileCountX(), sheet->GetTileCountY(), [=](u32 x, u32 y, const glm::vec2& tileSize)
 		{
 			Widgets::Button(tileSize, std::format("##{}({}, {})", id, x, y), [=]() { subtexSelected(GridPosition{ x, y }); });
 		});

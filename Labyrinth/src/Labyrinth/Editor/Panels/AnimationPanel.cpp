@@ -8,12 +8,9 @@
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Renderer/SubTexture.h>
 
-using imcpp::Utils;
-using imcpp::Widgets;
-
 namespace Laby {
 
-	void AnimationPanel::onImGuiRender()
+	void AnimationPanel::OnRender()
 	{
 		f32 cellSize = mThumbnailSize + mPadding;
 		f32 panelWidth = Utils::AvailableRegion().x;
@@ -30,7 +27,7 @@ namespace Laby {
 
 		for (Ref<Animation> animation : AssetManager::GetAssetsWithType<Animation>())
 		{
-			LabWidgets::ImageButton(AssetManager::GetAsset<SubTexture2D>(animation->hasFrames() ? animation->getFrame(0).sprite : AssetHandle(0)),
+			LabWidgets::ImageButton(AssetManager::GetAsset<SubTexture2D>(animation->HasFrames() ? animation->GetFrame(0).sprite : AssetHandle(0)),
 				imageSize, [=]() { ModalManager::Open<AnimationEditModal>("Edit Animation...", ModalButtons::Custom, EditingMode::Edit, animation); });
 			Widgets::AddDragDropSource("ANIMATION_ITEM", animation->handle);
 

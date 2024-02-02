@@ -10,14 +10,14 @@ namespace Laby {
 		VertexArray();
 		virtual ~VertexArray();
 
-		virtual void bind() const;
-		virtual void unbind() const;
+		virtual void Bind() const;
+		virtual void Unbind() const;
 
-		virtual void addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer);
-		virtual void setIndexBuffer(const Ref<IndexBuffer>& indexBuffer);
+		virtual void AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer);
+		virtual void SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer);
 
-		virtual const std::vector<Ref<VertexBuffer>>& getVertexBuffers() const { return mVertexBuffers; }
-		virtual const Ref<IndexBuffer>& getIndexBuffer() const { return mIndexBuffer; }
+		virtual const std::vector<Ref<VertexBuffer>>& GetVertexBuffers() const { return mVertexBuffers; }
+		virtual const Ref<IndexBuffer>& GetIndexBuffer() const { return mIndexBuffer; }
 
 	private:
 		u32 mRendererID;

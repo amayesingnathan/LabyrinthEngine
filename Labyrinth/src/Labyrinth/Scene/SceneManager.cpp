@@ -5,7 +5,7 @@
 
 namespace Laby {
 
-    void SceneManager::reset()
+    void SceneManager::Reset()
     {
         mScenes.clear();
         mSceneLoaders.clear();
@@ -13,7 +13,7 @@ namespace Laby {
         mLoadingScene = 0;
     }
 
-    UUID SceneManager::preload(const fs::path& scenePath)
+    UUID SceneManager::Preload(const fs::path& scenePath)
     {
         UUID newScene;
         mSceneLoaders.emplace(newScene, scenePath);
@@ -22,7 +22,7 @@ namespace Laby {
         return newScene;
     }
 
-    void SceneManager::load()
+    void SceneManager::Load()
     {
         if (!mLoadingScene)
         {
@@ -35,13 +35,13 @@ namespace Laby {
             return;
         }
 
-        mScenes[mLoadingScene] = mSceneLoaders[mLoadingScene].get();
+        mScenes[mLoadingScene] = mSceneLoaders[mLoadingScene].Get();
         mSceneLoaders.erase(mLoadingScene);
         SetCurrentScene(mLoadingScene);
         mLoadingScene = 0;
     }
 
-    void SceneManager::load(UUID sceneID)
+    void SceneManager::Load(UUID sceneID)
     {
         bool preloaded = mSceneLoaders.contains(sceneID);
         bool loaded = mScenes.contains(sceneID);
@@ -54,22 +54,22 @@ namespace Laby {
 
         if (preloaded)
         {
-            mScenes[sceneID] = mSceneLoaders[sceneID].get();
+            mScenes[sceneID] = mSceneLoaders[sceneID].Get();
             mSceneLoaders.erase(sceneID);
         }
 
         SetCurrentScene(sceneID);
     }
 
-    UUID SceneManager::load(const fs::path& scenePath)
+    UUID SceneManager::Load(const fs::path& scenePath)
     {
         UUID newSceneID;
-        mScenes[newSceneID] = SceneLoader(scenePath).get();
+        mScenes[newSceneID] = SceneLoader(scenePath).Get();
         SetCurrentScene(newSceneID);
         return newSceneID;
     }
 
-    UUID SceneManager::loadClone(UUID cloneID)
+    UUID SceneManager::LoadClone(UUID cloneID)
     {
         UUID newSceneID;
         Ref<Scene> toClone = mScenes[cloneID];
@@ -78,12 +78,12 @@ namespace Laby {
         return newSceneID;
     }
 
-    void SceneManager::unload(UUID id)
+    void SceneManager::Unload(UUID id)
     {
         mScenes.erase(id);
     }
 
-    Ref<Scene> SceneManager::get(UUID id) const
+    Ref<Scene> SceneManager::Get(UUID id) const
     {
         if (!mScenes.contains(id))
         {
@@ -94,7 +94,7 @@ namespace Laby {
         return mScenes.at(id);
     }
 
-    Ref<Scene> SceneManager::getActive() const
+    Ref<Scene> SceneManager::GetActive() const
     {
         if (!mCurrentScene)
             return nullptr;
@@ -108,14 +108,14 @@ namespace Laby {
         return mScenes.at(mCurrentScene);
     }
 
-    UUID SceneManager::newScene(bool load)
+    UUID SceneManager::NewScene(bool load)
     {
         UUID newScene = AssetManager::CreateMemoryOnlyAsset<Scene>();
         mScenes[newScene] = AssetManager::GetAsset<Scene>(newScene);
         return newScene;
     }
 
-    void SceneManager::save(const fs::path& filepath, UUID sceneToSave)
+    void SceneManager::Save(const fs::path& filepath, UUID sceneToSave)
     {
         if (!sceneToSave)
             sceneToSave = mCurrentScene;
@@ -129,16 +129,16 @@ namespace Laby {
         Ref<Scene> scene = mScenes.at(sceneToSave);
         if (AssetManager::IsMemoryAsset(sceneToSave))
         {
-            AssetManager::SaveMemoryOnlyAsset<Scene>(scene->getName(), sceneToSave);
+            AssetManager::SaveMemoryOnlyAsset<Scene>(scene->GetName(), sceneToSave);
             return;
         }
 ;
         SceneSerialiser serialiser(scene);
-        serialiser.serialise(filepath);
+        serialiser.Serialise(filepath);
         AssetManager::ReloadData(sceneToSave);
     }
 
-    void SceneManager::addSceneChangeCallback(Action<Ref<Scene>>&& action)
+    void SceneManager::AddSceneChangeCallback(Action<Ref<Scene>>&& action)
     {
         mOnChangeCallbacks.emplace_back(std::move(action));
     }

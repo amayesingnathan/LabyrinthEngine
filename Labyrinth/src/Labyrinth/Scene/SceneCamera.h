@@ -15,27 +15,27 @@ namespace Laby {
 		SceneCamera();
 		virtual ~SceneCamera() = default;
 
-		void setPerspective(f32 verticalFOV, f32 nearClip, f32 farClip);
-		void setOrthographic(f32 size, f32 nearClip, f32 farClip);
+		void SetPerspective(f32 verticalFOV, f32 nearClip, f32 farClip);
+		void SetOrthographic(f32 size, f32 nearClip, f32 farClip);
 
-		void setViewportSize(u32 width, u32 height);
+		void SetViewportSize(u32 width, u32 height);
 
-		f32 getPerspectiveVerticalFOV() const { return mPerspectiveFOV; }
-		void setPerspectiveVerticalFOV(f32 verticalFov) { mPerspectiveFOV = verticalFov; RecalculateProjection(); }
-		f32 getPerspectiveNearClip() const { return mPerspectiveNear; }
-		void setPerspectiveNearClip(f32 nearClip) { mPerspectiveNear = nearClip; RecalculateProjection(); }
-		f32 getPerspectiveFarClip() const { return mPerspectiveFar; }
-		void setPerspectiveFarClip(f32 farClip) { mPerspectiveFar = farClip; RecalculateProjection(); }
+		f32 GetPerspectiveVerticalFOV() const { return mPerspectiveFOV; }
+		void SetPerspectiveVerticalFOV(f32 verticalFov) { mPerspectiveFOV = verticalFov; RecalculateProjection(); }
+		f32 GetPerspectiveNearClip() const { return mPerspectiveNear; }
+		void SetPerspectiveNearClip(f32 nearClip) { mPerspectiveNear = nearClip; RecalculateProjection(); }
+		f32 GetPerspectiveFarClip() const { return mPerspectiveFar; }
+		void SetPerspectiveFarClip(f32 farClip) { mPerspectiveFar = farClip; RecalculateProjection(); }
 
-		f32 getOrthographicSize() const { return mOrthographicSize; }
-		void setOrthographicSize(f32 size) { mOrthographicSize = size; RecalculateProjection(); }
-		f32 getOrthographicNearClip() const { return mOrthographicNear; }
-		void setOrthographicNearClip(f32 nearClip) { mOrthographicNear = nearClip; RecalculateProjection(); }
-		f32 getOrthographicFarClip() const { return mOrthographicFar; }
-		void setOrthographicFarClip(f32 farClip) { mOrthographicFar = farClip; RecalculateProjection(); }
+		f32 GetOrthographicSize() const { return mOrthographicSize; }
+		void SetOrthographicSize(f32 size) { mOrthographicSize = size; RecalculateProjection(); }
+		f32 GetOrthographicNearClip() const { return mOrthographicNear; }
+		void SetOrthographicNearClip(f32 nearClip) { mOrthographicNear = nearClip; RecalculateProjection(); }
+		f32 GetOrthographicFarClip() const { return mOrthographicFar; }
+		void SetOrthographicFarClip(f32 farClip) { mOrthographicFar = farClip; RecalculateProjection(); }
 
-		const ProjectionType& getProjectionType() const { return mProjectionType; }
-		void setProjectionType(ProjectionType type) { mProjectionType = type; RecalculateProjection(); }
+		const ProjectionType& GetProjectionType() const { return mProjectionType; }
+		void SetProjectionType(ProjectionType type) { mProjectionType = type; RecalculateProjection(); }
 
 	private:
 		void RecalculateProjection();

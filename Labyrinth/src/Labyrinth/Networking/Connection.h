@@ -25,16 +25,16 @@ namespace Laby {
 		Connection(Owner parent, asio::io_context& asioContext, asio::ip::tcp::socket socket, TSQueue<OwnedMessage>& qIn);
 		virtual ~Connection() {}
 
-		UUID getID() const { return mID; }
+		UUID GetID() const { return mID; }
 
 	public:
-		void connectToClient(ServerLayer* server, u32 uid = 0);
-		void connectToServer(const asio::ip::tcp::resolver::results_type& endpoints);
-		void disconnect();
-		bool isConnected() const { return mSocket.is_open(); }
+		void ConnectToClient(ServerLayer* server, u32 uid = 0);
+		void ConnectToServer(const asio::ip::tcp::resolver::results_type& endpoints);
+		void Disconnect();
+		bool IsConnected() const { return mSocket.is_open(); }
 
 	public:
-		void send(const Message& msg); // ASYNC
+		void Send(const Message& msg); // ASYNC
 
 	private:
 		void WriteHeader(); // ASYNC

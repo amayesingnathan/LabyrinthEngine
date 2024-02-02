@@ -16,42 +16,42 @@ namespace Laby {
 	public:
 		Tilemap(const std::string& name, u32 width, u32 height);
 
-		const std::string& getName() const { return mName; }
+		const std::string& GetName() const { return mName; }
 
-		u32 getWidth() const { return mTexture.mWidth; }
-		u32 getHeight() const { return mTexture.mHeight; }
+		u32 GetWidth() const { return mTexture.mWidth; }
+		u32 GetHeight() const { return mTexture.mHeight; }
 
-		void addSheet(AssetHandle handle) { mTexture.addSheet(handle); }
-		void addSheet(AssetHandle handle, TileID startIndex) { mTexture.addSheet(handle, startIndex); }
-		void removeSheet(AssetHandle handle) { mTexture.removeSheet(handle); }
+		void AddSheet(AssetHandle handle) { mTexture.AddSheet(handle); }
+		void AddSheet(AssetHandle handle, TileID startIndex) { mTexture.AddSheet(handle, startIndex); }
+		void RemoveSheet(AssetHandle handle) { mTexture.RemoveSheet(handle); }
 
-		Ref<SubTexture2D> getTileTex(TileID id) const { return mTexture.getTileTex(id); }
+		Ref<SubTexture2D> GetTileTex(TileID id) const { return mTexture.GetTileTex(id); }
 
-		TileRenderData getTileData(usize layer, const GridPosition& pos) const { return mTexture.getTile(layer, pos); }
-		void setTileData(usize layer, const GridPosition& pos, const TileRenderData& renderData) { mTexture.setTile(layer, pos, renderData); }
+		TileRenderData GetTileData(usize layer, const GridPosition& pos) const { return mTexture.GetTile(layer, pos); }
+		void SetTileData(usize layer, const GridPosition& pos, const TileRenderData& renderData) { mTexture.SetTile(layer, pos, renderData); }
 
-		bool hasLayers() const { return mTexture.hasLayers(); }
+		bool HasLayers() const { return mTexture.HasLayers(); }
 
-		TileBehaviourData getTileBehaviour(const GridPosition& pos) const;
-		void setTileBehaviour(const GridPosition& pos, const TileBehaviourData& behaviour) { mBehaviour(pos) = behaviour; }
+		TileBehaviourData GetTileBehaviour(const GridPosition& pos) const;
+		void SetTileBehaviour(const GridPosition& pos, const TileBehaviourData& behaviour) { mBehaviour(pos) = behaviour; }
 
-		void addLayer() { mTexture.addLayer(); }
-		void removeLayer(usize layer) { mTexture.removeLayer(layer); }
-		void moveLayer(usize layer, LayerMoveDir direction) { mTexture.moveLayer(layer, direction); }
+		void AddLayer() { mTexture.AddLayer(); }
+		void RemoveLayer(usize layer) { mTexture.RemoveLayer(layer); }
+		void MoveLayer(usize layer, LayerMoveDir direction) { mTexture.MoveLayer(layer, direction); }
 
-		u32 getTextureID() const override { return mTexture.mFramebuffer->getTextureID(); }
+		u32 GetTextureID() const override { return mTexture.mFramebuffer->GetTextureID(); }
 
-		std::vector<ChainShape> getPhysicsShapes() const { return mBehaviour.getShapes(); }
-		std::vector<TileScriptData> getTileScripts() const { return mBehaviour.getScripts(); }
+		std::vector<ChainShape> GetPhysicsShapes() const { return mBehaviour.GetShapes(); }
+		std::vector<TileScriptData> GetTileScripts() const { return mBehaviour.GetScripts(); }
 
-		void addLayer(const TileRenderLayer& layer) { mTexture.addLayer(layer); }
-		void addLayer(TileRenderLayer&& layer) { mTexture.addLayer(std::move(layer)); }
-		void setBehaviour(const TileBehaviourLayer& layer) { mBehaviour = layer; }
-		void setBehaviour(TileBehaviourLayer&& layer) { mBehaviour = std::move(layer); }
+		void AddLayer(const TileRenderLayer& layer) { mTexture.AddLayer(layer); }
+		void AddLayer(TileRenderLayer&& layer) { mTexture.AddLayer(std::move(layer)); }
+		void SetBehaviour(const TileBehaviourLayer& layer) { mBehaviour = layer; }
+		void SetBehaviour(TileBehaviourLayer&& layer) { mBehaviour = std::move(layer); }
 
-		const std::vector<TileRenderLayer>& getLayers() const { return mTexture.getLayers(); }
-		const std::vector<SheetData>& getSheets() const { return mTexture.getSheets(); }
-		const TileBehaviourLayer& getBehaviour() const { return mBehaviour; }
+		const std::vector<TileRenderLayer>& GetLayers() const { return mTexture.GetLayers(); }
+		const std::vector<SheetData>& GetSheets() const { return mTexture.GetSheets(); }
+		const TileBehaviourLayer& GetBehaviour() const { return mBehaviour; }
 
 	private:
 		std::string mName;

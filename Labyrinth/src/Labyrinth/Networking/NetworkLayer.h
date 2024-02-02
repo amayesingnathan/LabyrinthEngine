@@ -1,12 +1,12 @@
 #pragma once
 
-#include <Labyrinth/Core/Layer.h>
+#include "Common/Application.h"
 
 namespace Laby {
 
-	class NetworkLayer : public Layer
+	class NetworkLayer : public slc::ApplicationLayer
 	{
 	public:
-		virtual void send(const Message& msg) = 0;
+		virtual void Send(const Message& msg) = 0;
 	};
 }

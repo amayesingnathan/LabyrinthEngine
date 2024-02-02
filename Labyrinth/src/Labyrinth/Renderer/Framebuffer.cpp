@@ -175,18 +175,18 @@ namespace Laby {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void Framebuffer::bind()
+	void Framebuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, mRendererID);
 		glViewport(0, 0, mSpecification.width, mSpecification.height);
 	}
 
-	void Framebuffer::unbind()
+	void Framebuffer::Unbind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 
-	void Framebuffer::resize(usize width, usize height)
+	void Framebuffer::Resize(usize width, usize height)
 	{
 		mSpecification.width = (i32)width;
 		mSpecification.height = (i32)height;
@@ -194,7 +194,7 @@ namespace Laby {
 		Invalidate();
 	}
 
-	i32 Framebuffer::readPixel(u32 attachmentIndex, i32 x, i32 y) const
+	i32 Framebuffer::ReadPixel(u32 attachmentIndex, i32 x, i32 y) const
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
@@ -204,7 +204,7 @@ namespace Laby {
 		return pixelData;
 	}
 
-	void Framebuffer::clearAttachment(u32 attachmentIndex, i32 value)
+	void Framebuffer::ClearAttachment(u32 attachmentIndex, i32 value)
 	{
 		LAB_CORE_ASSERT(attachmentIndex < mColourAttachments.size());
 
@@ -213,7 +213,7 @@ namespace Laby {
 			Utils::LabyrinthFBTextureFormatToGL(spec.textureFormat), GL_INT, &value);
 	}
 
-	void Framebuffer::bindColourAttachment(u32 index) const
+	void Framebuffer::BindColourAttachment(u32 index) const
 	{
 		LAB_CORE_ASSERT(index < mColourAttachments.size(), "Binding attachment out of range!");
 

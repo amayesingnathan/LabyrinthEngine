@@ -330,17 +330,17 @@ namespace Laby {
 		}
 	}
 
-	void Shader::bind() const
+	void Shader::Bind() const
 	{
 		glUseProgram(mRendererID);
 	}
 
-	void Shader::unbind() const
+	void Shader::Unbind() const
 	{
 		glUseProgram(0);
 	}
 
-	void Shader::setInt(const std::string& name, i32 value)
+	void Shader::SetInt(const std::string& name, i32 value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -348,13 +348,13 @@ namespace Laby {
 		glUniform1i(location, value);
 	}
 
-	void Shader::setIntArray(const std::string& name, i32* values, u32 count)
+	void Shader::SetIntArray(const std::string& name, i32* values, u32 count)
 	{
 		GLint location = glGetUniformLocation(mRendererID, name.c_str());
 		glUniform1iv(location, count, values);
 	}
 
-	void Shader::setMat4(const std::string& name, const glm::mat4& value)
+	void Shader::SetMat4(const std::string& name, const glm::mat4& value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -362,7 +362,7 @@ namespace Laby {
 		glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(value));
 	}
 
-	void Shader::setFloat(const std::string& name, f32 value)
+	void Shader::SetFloat(const std::string& name, f32 value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -370,7 +370,7 @@ namespace Laby {
 		glUniform1f(location, value);
 	}
 
-	void Shader::setFloat3(const std::string& name, const glm::vec3& value)
+	void Shader::SetFloat3(const std::string& name, const glm::vec3& value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;
@@ -378,7 +378,7 @@ namespace Laby {
 		glUniform3f(location, value.x, value.y, value.z);
 	}
 
-	void Shader::setFloat4(const std::string& name, const glm::vec4& value)
+	void Shader::SetFloat4(const std::string& name, const glm::vec4& value)
 	{
 		GLint location = GetUniformLocation(name);
 		if (location == -1) return;

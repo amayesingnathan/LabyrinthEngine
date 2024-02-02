@@ -73,33 +73,33 @@ namespace Laby {
 		glDeleteTextures(1, &mRendererID);
 	}
 
-	u32 Texture2D::getSize() const
+	u32 Texture2D::GetSize() const
 	{
 		u32 bpp = mDataFormat == GL_RGBA ? 4 : 3;
 		return mWidth * mHeight * bpp;
 	}
 
-	void Texture2D::setData(void* data, usize size)
+	void Texture2D::SetData(void* data, usize size)
 	{
 		u32 bpp = mDataFormat == GL_RGBA ? 4 : 3;
 		LAB_CORE_ASSERT(size == mWidth * mHeight * bpp, "Data must be entire texture!");
 		glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, mDataFormat, GL_UNSIGNED_BYTE, data);
 	}
 
-	void Texture2D::setData(Buffer buffer)
+	void Texture2D::SetData(Buffer buffer)
 	{
 		u32 bpp = mDataFormat == GL_RGBA ? 4 : 3;
 		LAB_CORE_ASSERT(buffer.size == mWidth * mHeight * bpp, "Data must be entire texture!");
-		glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, mDataFormat, GL_UNSIGNED_BYTE, buffer.data());
+		glTextureSubImage2D(mRendererID, 0, 0, 0, mWidth, mHeight, mDataFormat, GL_UNSIGNED_BYTE, buffer.Data());
 	}
 
-	Buffer Texture2D::getData()
+	Buffer Texture2D::GetData()
 	{
 		u32 bpp = mDataFormat == GL_RGBA ? 4 : 3;
 		i32 size = mWidth * mHeight * bpp;
 
 		Buffer buffer(size);
-		glGetTextureImage(mRendererID, GL_TEXTURE_2D, mDataFormat, GL_UNSIGNED_BYTE, size, buffer.data());
+		glGetTextureImage(mRendererID, GL_TEXTURE_2D, mDataFormat, GL_UNSIGNED_BYTE, size, buffer.Data());
 		return buffer;
 	}
 }

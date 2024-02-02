@@ -39,24 +39,24 @@ namespace Laby {
 		glDeleteVertexArrays(1, &mRendererID);
 	}
 
-	void VertexArray::bind() const
+	void VertexArray::Bind() const
 	{
 		glBindVertexArray(mRendererID);
 	}
 
-	void VertexArray::unbind() const
+	void VertexArray::Unbind() const
 	{
 		glBindVertexArray(0);
 	}
 
-	void VertexArray::addVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
+	void VertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
 		LAB_CORE_ASSERT(vertexBuffer->getLayout().getElements().size(), "Vertex buffer has no layout!");
 
 		glBindVertexArray(mRendererID);
-		vertexBuffer->bind();
+		vertexBuffer->Bind();
 
-		const auto& layout = vertexBuffer->getLayout();
+		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
 			switch (element.type)
@@ -68,10 +68,10 @@ namespace Laby {
 			{
 				glEnableVertexAttribArray(mVertexBufferIndex);
 				glVertexAttribPointer(mVertexBufferIndex,
-					element.getComponentCount(),
+					element.GetComponentCount(),
 					ShaderDataTypetoOpenGLType(element.type),
 					element.normalised ? GL_TRUE : GL_FALSE,
-					layout.getStride(),
+					layout.GetStride(),
 					(const void*)element.offset);
 				mVertexBufferIndex++;
 				break;
@@ -84,9 +84,9 @@ namespace Laby {
 			{
 				glEnableVertexAttribArray(mVertexBufferIndex);
 				glVertexAttribIPointer(mVertexBufferIndex,
-					element.getComponentCount(),
+					element.GetComponentCount(),
 					ShaderDataTypetoOpenGLType(element.type),
-					layout.getStride(),
+					layout.GetStride(),
 					(const void*)element.offset);
 				mVertexBufferIndex++;
 				break;
@@ -94,7 +94,7 @@ namespace Laby {
 			case ShaderDataType::Mat3:
 			case ShaderDataType::Mat4:
 			{
-				u8 count = element.getComponentCount();
+				u8 count = element.GetComponentCount();
 				for (u8 i = 0; i < count; i++)
 				{
 					glEnableVertexAttribArray(mVertexBufferIndex);
@@ -102,7 +102,7 @@ namespace Laby {
 						count,
 						ShaderDataTypetoOpenGLType(element.type),
 						element.normalised ? GL_TRUE : GL_FALSE,
-						layout.getStride(),
+						layout.GetStride(),
 						(const void*)(sizeof(f32) * count * i));
 					glVertexAttribDivisor(mVertexBufferIndex, 1);
 					mVertexBufferIndex++;
@@ -117,10 +117,10 @@ namespace Laby {
 		mVertexBuffers.push_back(vertexBuffer);
 	}
 
-	void VertexArray::setIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
+	void VertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		glBindVertexArray(mRendererID);
-		indexBuffer->bind();
+		indexBuffer->Bind();
 
 		mIndexBuffer = indexBuffer;
 	}

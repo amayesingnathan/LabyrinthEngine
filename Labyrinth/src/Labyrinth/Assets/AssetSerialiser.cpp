@@ -13,22 +13,22 @@
 
 namespace Laby {
 
-	bool TextureSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool TextureSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		asset = Ref<Texture2D>::Create(AssetManager::GetFileSystemPathString(metadata));
 		asset->handle = metadata.handle;
 
-		bool result = asset.to<Texture2D>()->loaded();
+		bool result = asset.To<Texture2D>()->Loaded();
 
 		if (!result)
-			asset->setFlag(AssetFlag::Invalid);
+			asset->SetFlag(AssetFlag::Invalid);
 
 		return result;
 	}
 
-	void SubTextureSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SubTextureSerialiser::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
-		Ref<SubTexture2D> subtex = asset.to<SubTexture2D>();
+		Ref<SubTexture2D> subtex = asset.To<SubTexture2D>();
 
 		YAML::Emitter out;
 		out << YAML::BeginMap; // SubTexture
@@ -36,9 +36,9 @@ namespace Laby {
 		{
 			out << YAML::BeginMap;
 
-			LAB_SERIALISE_PROPERTY_ASSET(TextureSheet, subtex->getSheet(), out);
+			LAB_SERIALISE_PROPERTY_ASSET(TextureSheet, subtex->GetSheet(), out);
 
-			const glm::vec2* texCoords = subtex->getTextureCoords();
+			const glm::vec2* texCoords = subtex->GetTextureCoords();
 
 			LAB_SERIALISE_PROPERTY(0, texCoords[0], out);
 			LAB_SERIALISE_PROPERTY(1, texCoords[1], out);
@@ -53,7 +53,7 @@ namespace Laby {
 		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
-	bool SubTextureSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool SubTextureSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
 		std::string str;
@@ -83,9 +83,9 @@ namespace Laby {
 		return true;
 	}
 
-	void TextureSheetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void TextureSheetSerialiser::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
-		Ref<Texture2DSheet> sheet = asset.to<Texture2DSheet>();
+		Ref<Texture2DSheet> sheet = asset.To<Texture2DSheet>();
 
 		fs::path sheetPath = "assets" / metadata.filepath.parent_path();
 		if (!fs::exists(sheetPath))
@@ -98,13 +98,13 @@ namespace Laby {
 		out << YAML::Key << "TextureSheet" << YAML::Value;
 		out << YAML::BeginMap;
 
-		LAB_SERIALISE_PROPERTY_ASSET(Texture, sheet->getBaseTex(), out);
-		LAB_SERIALISE_PROPERTY(Name, sheet->getName().data(), out);
-		LAB_SERIALISE_PROPERTY(TileSize, sheet->getTileSize(), out);
+		LAB_SERIALISE_PROPERTY_ASSET(Texture, sheet->GetBaseTex(), out);
+		LAB_SERIALISE_PROPERTY(Name, sheet->GetName().data(), out);
+		LAB_SERIALISE_PROPERTY(TileSize, sheet->GetTileSize(), out);
 
 		out << YAML::Key << "SubTextures";
 		out << YAML::Value << YAML::BeginSeq;
-		for (AssetHandle handle : sheet->getSubTextures())
+		for (AssetHandle handle : sheet->GetSubTextures())
 			out << handle;
 		out << YAML::EndSeq;
 		out << YAML::EndMap; // SubTextures
@@ -114,7 +114,7 @@ namespace Laby {
 		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
-	bool TextureSheetSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool TextureSheetSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
 		std::string str;
@@ -142,7 +142,7 @@ namespace Laby {
 			sheet->mSubTextures.emplace_back(subTexNode.as<AssetHandle>());
 
 		if (sheet->mSubTextures.empty())
-			sheet->generateTileset();
+			sheet->GenerateTileset();
 
 		asset = sheet;
 		asset->handle = metadata.handle;
@@ -150,18 +150,18 @@ namespace Laby {
 		return true;
 	}
 
-	void SceneAssetSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void SceneAssetSerialiser::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
-		Ref<Scene> scene = asset.to<Scene>();
+		Ref<Scene> scene = asset.To<Scene>();
 		SceneSerialiser serialiser(scene);
-		serialiser.serialise(AssetManager::GetFileSystemPath(metadata));
+		serialiser.Serialise(AssetManager::GetFileSystemPath(metadata));
 	}
 
-	bool SceneAssetSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool SceneAssetSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		Ref<Scene> scene = Ref<Scene>::Create("Untitled");
 		SceneSerialiser serialiser(scene);
-		bool result = serialiser.deserialise(AssetManager::GetFileSystemPath(metadata));
+		bool result = serialiser.Deserialise(AssetManager::GetFileSystemPath(metadata));
 
 		if (!result)
 			return false;
@@ -171,9 +171,9 @@ namespace Laby {
 		return true;
 	}
 
-	void TilemapSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void TilemapSerialiser::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
-		Ref<Tilemap> tilemap = asset.to<Tilemap>();
+		Ref<Tilemap> tilemap = asset.To<Tilemap>();
 
 		fs::path sheetPath = "assets" / metadata.filepath.parent_path();
 		if (!fs::exists(sheetPath))
@@ -185,24 +185,24 @@ namespace Laby {
 		{
 			out << YAML::BeginMap;
 
-			LAB_SERIALISE_PROPERTY(Name, tilemap->getName(), out);
-			LAB_SERIALISE_PROPERTY(Width, tilemap->getWidth(), out);
-			LAB_SERIALISE_PROPERTY(Height, tilemap->getHeight(), out);
+			LAB_SERIALISE_PROPERTY(Name, tilemap->GetName(), out);
+			LAB_SERIALISE_PROPERTY(Width, tilemap->GetWidth(), out);
+			LAB_SERIALISE_PROPERTY(Height, tilemap->GetHeight(), out);
 
 			out << YAML::Key << "SpriteSheets";
 			out << YAML::Value << YAML::BeginSeq;
-			for (const SheetData& data : tilemap->getSheets())
+			for (const SheetData& data : tilemap->GetSheets())
 				out << data;
 			out << YAML::EndSeq;
 
 			out << YAML::Key << "TextureLayers";
 			out << YAML::Value << YAML::BeginSeq;
-			for (const TileRenderLayer& layer : tilemap->getLayers())
+			for (const TileRenderLayer& layer : tilemap->GetLayers())
 				out << layer;
 
 			out << YAML::EndSeq;
 
-			LAB_SERIALISE_PROPERTY(BehaviourLayer, tilemap->getBehaviour(), out);
+			LAB_SERIALISE_PROPERTY(BehaviourLayer, tilemap->GetBehaviour(), out);
 
 			out << YAML::EndMap;
 		}
@@ -212,7 +212,7 @@ namespace Laby {
 		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
-	bool TilemapSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool TilemapSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
 		std::string str;
@@ -233,19 +233,19 @@ namespace Laby {
 		for (auto sheet : mapSheets)
 		{
 			const SheetData& sheetData = sheet.as<SheetData>();
-			tilemap->addSheet(sheetData.sheet->handle, sheetData.startIndex);
+			tilemap->AddSheet(sheetData.sheet->handle, sheetData.startIndex);
 		}
 
 		auto mapLayers = mapNode["TextureLayers"];
 		for (auto texLayer : mapLayers)
 		{
 			TileRenderLayer renderLayer = texLayer.as<TileRenderLayer>();
-			tilemap->addLayer(std::move(renderLayer));
+			tilemap->AddLayer(std::move(renderLayer));
 		}
 
 		TileBehaviourLayer behaviourLayer;
 		LAB_DESERIALISE_PROPERTY(BehaviourLayer, behaviourLayer, mapNode);
-		tilemap->setBehaviour(std::move(behaviourLayer));
+		tilemap->SetBehaviour(std::move(behaviourLayer));
 
 		asset = tilemap;
 		asset->handle = metadata.handle;
@@ -253,9 +253,9 @@ namespace Laby {
 		return true;
 	}
 
-	void AnimationSerialiser::serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
+	void AnimationSerialiser::Serialise(const AssetMetadata& metadata, const Ref<Asset>& asset) const
 	{
-		Ref<Animation> animation = asset.to<Animation>();
+		Ref<Animation> animation = asset.To<Animation>();
 
 		YAML::Emitter out;
 		out << YAML::BeginMap; // Animation
@@ -263,11 +263,11 @@ namespace Laby {
 		{
 			out << YAML::BeginMap;
 
-			LAB_SERIALISE_PROPERTY(Name, animation->getName().data(), out);
+			LAB_SERIALISE_PROPERTY(Name, animation->GetName().data(), out);
 
 			out << YAML::Key << "Frames";
 			out << YAML::Value << YAML::BeginSeq;
-			for (const AnimationFrame& frame : animation->getFrames())
+			for (const AnimationFrame& frame : animation->GetFrames())
 				out << frame;
 			out << YAML::EndSeq;
 
@@ -279,7 +279,7 @@ namespace Laby {
 		FileUtils::Write(AssetManager::GetFileSystemPath(metadata), out.c_str());
 	}
 
-	bool AnimationSerialiser::deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
+	bool AnimationSerialiser::Deserialise(const AssetMetadata& metadata, Ref<Asset>& asset) const
 	{
 		fs::path assetPath = AssetManager::GetFileSystemPath(metadata);
 		std::string str;
@@ -296,7 +296,7 @@ namespace Laby {
 		for (auto frameNode : frames )
 		{
 			AnimationFrame frame = frameNode.as<AnimationFrame>();
-			animation->addFrame(std::move(frame));
+			animation->AddFrame(std::move(frame));
 		}
 
 		asset = animation;

@@ -10,111 +10,111 @@ namespace Laby {
 	{
 	}
 
-	Entity Entity::getParent() const { return mScene.lock()->findEntity(getComponent<NodeComponent>().parent); }
-	UUID Entity::getUUID() const 
+	Entity Entity::GetParent() const { return mScene.Lock()->FindEntity(GetComponent<NodeComponent>().parent); }
+	UUID Entity::GetUUID() const 
 	{ 
-		if (!valid())
+		if (!Valid())
 			return 0;
 
-		return getComponent<IDComponent>().id; 
+		return GetComponent<IDComponent>().id; 
 	}
 
-	TransformComponent& Entity::getTransform() { return getComponent<TransformComponent>(); }
-	const TransformComponent& Entity::getTransform() const { return getComponent<TransformComponent>(); }
+	TransformComponent& Entity::GetTransform() { return GetComponent<TransformComponent>(); }
+	const TransformComponent& Entity::GetTransform() const { return GetComponent<TransformComponent>(); }
 
-	std::string& Entity::getTag() { return getComponent<TagComponent>().tag; }
-	const std::string& Entity::getTag() const { return getComponent<TagComponent>().tag; }
+	std::string& Entity::GetTag() { return GetComponent<TagComponent>().tag; }
+	const std::string& Entity::GetTag() const { return GetComponent<TagComponent>().tag; }
 
-	void Entity::destroy()
+	void Entity::Destroy()
 	{
 		mScene->DestroyEntity(*this);
 		mEntID = NullEntity;
 		mScene = nullptr;
 	}
 
-	bool Entity::hasParent() { return getComponent<NodeComponent>().parent; }
+	bool Entity::HasParent() { return GetComponent<NodeComponent>().parent; }
 
-	bool Entity::setParent(Entity newParent, NodeComponent& node)
+	bool Entity::SetParent(Entity newParent, NodeComponent& node)
 	{
-		Entity currentParent = mScene->findEntity(node.parent);
+		Entity currentParent = mScene->FindEntity(node.parent);
 		if (currentParent == newParent) return false;
 
 		if (newParent)
 		{
-			if (!isRelated(newParent)) // Can only add to new parent's list of children if we're not already related.
-				newParent.addChild(*this);
+			if (!IsRelated(newParent)) // Can only Add to new parent's list of children if we're not already related.
+				newParent.AddChild(*this);
 			else { LAB_CORE_WARN("Cannot create circular ownership of entities!"); return false; }
 		}
-		else { addComponent<RootComponent>(); };
+		else { AddComponent<RootComponent>(); };
 
 		if (currentParent)
-			currentParent.removeChild(*this);
+			currentParent.RemoveChild(*this);
 		else
-			removeComponent<RootComponent>(); //No longer root entity (will have parent)
+			RemoveComponent<RootComponent>(); //No longer root entity (will have parent)
 
-		node.parent = newParent.getUUID();
+		node.parent = newParent.GetUUID();
 		return true;
 	}
 
-	bool Entity::setParent(Entity newParent)
+	bool Entity::SetParent(Entity newParent)
 	{
-		return setParent(newParent, getComponent<NodeComponent>());
+		return SetParent(newParent, GetComponent<NodeComponent>());
 	}
 
-	std::vector<UUID>& Entity::getChildren() { return getComponent<NodeComponent>().children; }
-	const std::vector<UUID>& Entity::getChildren() const { return getComponent<NodeComponent>().children; }
+	std::vector<UUID>& Entity::GetChildren() { return GetComponent<NodeComponent>().children; }
+	const std::vector<UUID>& Entity::GetChildren() const { return GetComponent<NodeComponent>().children; }
 
-	bool Entity::hasChild(Entity child) const
+	bool Entity::HasChild(Entity child) const
 	{
-		const std::vector<UUID>& children = getChildren();
-		auto it = std::find(children.begin(), children.end(), child.getUUID());
-		return it != getChildren().end();
+		const std::vector<UUID>& children = GetChildren();
+		auto it = std::find(children.begin(), children.end(), child.GetUUID());
+		return it != GetChildren().end();
 	}
 
-	void Entity::addChild(Entity child, NodeComponent& node)
+	void Entity::AddChild(Entity child, NodeComponent& node)
 	{
-		node.children.emplace_back(child.getUUID());
+		node.children.emplace_back(child.GetUUID());
 	}
 
-	void Entity::addChild(Entity child)
+	void Entity::AddChild(Entity child)
 	{
-		addChild(child, getComponent<NodeComponent>());
+		AddChild(child, GetComponent<NodeComponent>());
 	}
 
-	void Entity::removeChild(Entity child)
+	void Entity::RemoveChild(Entity child)
 	{
-		std::vector<UUID>& children = getChildren();
-		auto it = std::find(children.begin(), children.end(), child.getUUID());
+		std::vector<UUID>& children = GetChildren();
+		auto it = std::find(children.begin(), children.end(), child.GetUUID());
 		if (it != children.end())
 			children.erase(it);
 	}
 
-	void Entity::removeChildren()
+	void Entity::RemoveChildren()
 	{
-		std::vector<UUID>& children = getChildren();
+		std::vector<UUID>& children = GetChildren();
 		for (UUID id : children)
 		{
-			Entity child = mScene->findEntity(id);
-			child.addComponent<RootComponent>();
+			Entity child = mScene->FindEntity(id);
+			child.AddComponent<RootComponent>();
 
-			child.getComponent<NodeComponent>().parent = 0;
+			child.GetComponent<NodeComponent>().parent = 0;
 		}
 
 		children.clear();
 	}
 
-	Entity Entity::findChild(std::string_view tag)
+	Entity Entity::FindChild(std::string_view tag)
 	{
-		if (!valid())
+		if (!Valid())
 			return Entity{};
 
-		for (auto e : getChildren())
+		for (auto e : GetChildren())
 		{
-			Entity entity = mScene.lock()->findEntity(e);
-			if (entity.getComponent<TagComponent>().tag == tag)
+			Entity entity = mScene.Lock()->FindEntity(e);
+			if (entity.GetComponent<TagComponent>().tag == tag)
 				return entity;
 
-			Entity checkChildren = entity.findChild(tag);
+			Entity checkChildren = entity.FindChild(tag);
 			if (checkChildren)
 				return checkChildren;
 		}
@@ -122,19 +122,19 @@ namespace Laby {
 		return Entity{};
 	}
 
-	bool Entity::isRelated(Entity filter) const
+	bool Entity::IsRelated(Entity filter) const
 	{
-		const auto& children = getComponent<NodeComponent>().children;
+		const auto& children = GetComponent<NodeComponent>().children;
 		// Cycles every child
 		for (const auto& child : children)
 		{
-			Entity childEnt = mScene.lock()->findEntity(child);
+			Entity childEnt = mScene.Lock()->FindEntity(child);
 			if (childEnt == filter)
 			{
 				// Found the child
 				return true;
 			}
-			bool found = childEnt.isRelated(filter);
+			bool found = childEnt.IsRelated(filter);
 			if (found)
 				return found;
 		}

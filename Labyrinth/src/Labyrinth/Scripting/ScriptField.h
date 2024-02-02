@@ -2,7 +2,7 @@
 
 #include "ScriptDefinitions.h"
 
-#include "Labyrinth/Containers/Buffer.h"
+#include "Labyrinth/Containers/StreamlineTypes.h"
 #include <Labyrinth/Scene/Entity.h>
 
 #include <typeindex>
@@ -90,24 +90,24 @@ namespace Laby {
 		FieldBuffer(ScriptFieldType type);
 
 		template<IsFieldType T>
-		void set(const T& val = T())
+		void Set(const T& val = T())
 		{
 			constexpr usize newSize = sizeof(T);
-			if (size() != newSize)
+			if (Size() != newSize)
 			{
-				release();
-				allocate(newSize);
+				Release();
+				Allocate(newSize);
 			}
 
 			memcpy(mData, &val, newSize);
 		}
 
 		template<IsFieldType T>
-		T& get() { return read<T>(); }
+		T& Get() { return Read<T>(); }
 		template<IsFieldType T>
-		const T& get() const { return read<T>(); }
+		const T& Get() const { return Read<T>(); }
 
-		void clear() { release(); }
+		void Clear() { Release(); }
 	};
 
 	struct FieldInitialiser

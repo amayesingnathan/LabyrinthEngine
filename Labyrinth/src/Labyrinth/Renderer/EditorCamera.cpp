@@ -14,14 +14,14 @@ namespace Laby {
 		UpdateView();
 	}
 
-	void EditorCamera::resetPosition()
+	void EditorCamera::ResetPosition()
 	{
 		mFocalPoint = glm::vec3(0.f);
 		mDistance = 10.f;
 		UpdateView();
 	}
 
-	void EditorCamera::resetAngle()
+	void EditorCamera::ResetAngle()
 	{
 		mPitch = 0.0f;
 		mYaw = 0.0f;
@@ -39,7 +39,7 @@ namespace Laby {
 		// mYaw = mPitch = 0.0f; // Lock the camera's rotation
 		mPosition = CalculatePosition();
 
-		glm::quat orientation = getOrientation();
+		glm::quat orientation = GetOrientation();
 		mView = glm::translate(glm::mat4(1.0f), mPosition) * glm::toMat4(orientation);
 		mView = glm::inverse(mView);
 	}
@@ -69,7 +69,7 @@ namespace Laby {
 		return speed;
 	}
 
-	void EditorCamera::onUpdate(Timestep ts)
+	void EditorCamera::OnUpdate(Timestep ts)
 	{
 		if (Input::IsKeyPressed(Key::LeftShift))
 		{
@@ -88,9 +88,9 @@ namespace Laby {
 		UpdateView();
 	}
 
-	void EditorCamera::onEvent(Event& e)
+	void EditorCamera::OnEvent(Event& e)
 	{
-		e.dispatch<MouseScrolledEvent>(LAB_BIND_EVENT_FUNC(EditorCamera::OnMouseScroll));
+		e.Dispatch<MouseScrolledEvent>(LAB_BIND_EVENT_FUNC(EditorCamera::OnMouseScroll));
 	}
 
 	bool EditorCamera::OnMouseScroll(MouseScrolledEvent& e)
@@ -104,13 +104,13 @@ namespace Laby {
 	void EditorCamera::MousePan(const glm::vec2& delta)
 	{
 		glm::vec2 speed = PanSpeed();
-		mFocalPoint += -getRightDirection() * delta.x * speed.x * mDistance;
-		mFocalPoint += getUpDirection() * delta.y * speed.y * mDistance;
+		mFocalPoint += -GetRightDirection() * delta.x * speed.x * mDistance;
+		mFocalPoint += GetUpDirection() * delta.y * speed.y * mDistance;
 	}
 
 	void EditorCamera::MouseRotate(const glm::vec2& delta)
 	{
-		f32 yawSign = getUpDirection().y < 0 ? -1.0f : 1.0f;
+		f32 yawSign = GetUpDirection().y < 0 ? -1.0f : 1.0f;
 		mYaw += yawSign * delta.x * RotationSpeed();
 		mPitch += delta.y * RotationSpeed();
 	}
@@ -120,32 +120,32 @@ namespace Laby {
 		mDistance -= delta * ZoomSpeed();
 		if (mDistance < 1.0f)
 		{
-			mFocalPoint += getForwardDirection();
+			mFocalPoint += GetForwardDirection();
 			mDistance = 1.0f;
 		}
 	}
 
-	glm::vec3 EditorCamera::getUpDirection() const
+	glm::vec3 EditorCamera::GetUpDirection() const
 	{
-		return glm::rotate(getOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 
-	glm::vec3 EditorCamera::getRightDirection() const
+	glm::vec3 EditorCamera::GetRightDirection() const
 	{
-		return glm::rotate(getOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
+		return glm::rotate(GetOrientation(), glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 
-	glm::vec3 EditorCamera::getForwardDirection() const
+	glm::vec3 EditorCamera::GetForwardDirection() const
 	{
-		return glm::rotate(getOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
+		return glm::rotate(GetOrientation(), glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
 	glm::vec3 EditorCamera::CalculatePosition() const
 	{
-		return mFocalPoint - getForwardDirection() * mDistance;
+		return mFocalPoint - GetForwardDirection() * mDistance;
 	}
 
-	glm::quat EditorCamera::getOrientation() const
+	glm::quat EditorCamera::GetOrientation() const
 	{
 		return glm::quat(glm::vec3(-mPitch, -mYaw, 0.0f));
 	}

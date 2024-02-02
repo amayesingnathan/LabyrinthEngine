@@ -34,40 +34,40 @@ namespace Laby {
 
 		void DestroyEntity(Entity entity, bool linkChildren = false);
 
-		Entity findEntity(UUID id);
-		Entity getEntityByTag(std::string_view tag);
-		Entity getChildByTag(std::string_view tag, Entity parent);
+		Entity FindEntity(UUID id);
+		Entity GetEntityByTag(std::string_view tag);
+		Entity GetChildByTag(std::string_view tag, Entity parent);
 
 		template<typename... Components>
-		auto getEntitiesWith() { return mRegistry.view<Components...>(); }
+		auto GetEntitiesWith() { return mRegistry.view<Components...>(); }
 		template<typename... Components>
-		const auto getEntitiesWith() const { return mRegistry.view<Components...>(); }
+		const auto GetEntitiesWith() const { return mRegistry.view<Components...>(); }
 
 		template<typename T, typename... R>
 		auto group() { return mRegistry.group<T>(entt::get<R...>); }
 		template<typename T, typename... R>
 		const auto group() const { return mRegistry.group<T>(entt::get<R...>); }
 
-		void onRuntimeStart();
-		void onRuntimeStop();
+		void OnRuntimeStart();
+		void OnRuntimeStop();
 
-		void onSimulationStart();
-		void onSimulationStop();
+		void OnSimulationStart();
+		void OnSimulationStop();
 
-		void onUpdateRuntime(Timestep ts);
-		void onUpdateSimulation(Timestep ts, EditorCamera& camera);
-		void onUpdateEditor(Timestep ts, EditorCamera& camera);
+		void OnUpdateRuntime(Timestep ts);
+		void OnUpdateSimulation(Timestep ts, EditorCamera& camera);
+		void OnUpdateEditor(Timestep ts, EditorCamera& camera);
 
-		void onViewportResize(u32 width, u32 height);
+		void OnViewportResize(u32 width, u32 height);
 
-		Entity getPrimaryCameraEntity();
+		Entity GetPrimaryCameraEntity();
 
-		void setName(const std::string& name) { mName = name; }
-		std::string& getName() { return mName; }
-		const std::string& getName() const { return mName; }
-		bool hasName() const { return (mName != "Untitled" && mName != ""); }
+		void SetName(const std::string& name) { mName = name; }
+		std::string& GetName() { return mName; }
+		const std::string& GetName() const { return mName; }
+		bool HasName() const { return (mName != "Untitled" && mName != ""); }
 
-		void transformChildren();
+		void TransformChildren();
 
 	private:
 		void DestroyEntityR(Entity entity, Entity parent, bool linkChildren = false);

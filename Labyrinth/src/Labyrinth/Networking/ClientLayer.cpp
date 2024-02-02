@@ -7,14 +7,14 @@ namespace Laby {
 
 	ClientLayer::~ClientLayer()
 	{
-		if (isConnected())
+		if (IsConnected())
 			Disconnect();
 	}
 
-	void ClientLayer::send(const Message& msg)
+	void ClientLayer::Send(const Message& msg)
 	{
-		if (isConnected())
-			mConnection->send(msg);
+		if (IsConnected())
+			mConnection->Send(msg);
 	}
 
 	void ClientLayer::Connect(const std::string& host, const u16 port)
@@ -26,7 +26,7 @@ namespace Laby {
 
 			mConnection = MakeSingle<Connection>(Connection::Owner::Client, mIOContext, asio::ip::tcp::socket(mIOContext), mQMessagesIn);
 
-			mConnection->connectToServer(endpoints);
+			mConnection->ConnectToServer(endpoints);
 
 			mIOContextThread = std::thread([this]() { mIOContext.run(); });
 		}
@@ -41,8 +41,8 @@ namespace Laby {
 
 	void ClientLayer::Disconnect()
 	{
-		if (isConnected())
-			mConnection->disconnect();
+		if (IsConnected())
+			mConnection->Disconnect();
 
 		mIOContext.stop();
 
@@ -54,22 +54,22 @@ namespace Laby {
 
 	void ClientLayer::Update(usize maxMessages)
 	{
-		if (!isConnected())
+		if (!IsConnected())
 			return;
 
 		usize messageCount = 0;
 		while (messageCount < maxMessages && !mQMessagesIn.empty())
 		{
 			auto msg = mQMessagesIn.pop();
-			EventManager::Post<NetMessageEvent>(msg.remote->getID(), std::move(msg.msg));
+			//EventManager::Post<NetMessageEvent>(msg.remote->getID(), std::move(msg.msg));
 			messageCount++;
 		}
 	}
 
-	bool ClientLayer::isConnected() const
+	bool ClientLayer::IsConnected() const
 	{
 		if (mConnection)
-			return mConnection->isConnected();
+			return mConnection->IsConnected();
 
 		return false;
 	}

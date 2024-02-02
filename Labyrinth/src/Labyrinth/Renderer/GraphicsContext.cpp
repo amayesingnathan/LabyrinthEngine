@@ -12,7 +12,7 @@ namespace Laby {
 		LAB_CORE_ASSERT(windowHandle, "Window handle is null!");
 	}
 
-	void GraphicsContext::init()
+	void GraphicsContext::Init()
 	{
 		glfwMakeContextCurrent(mWindowHandle);
 		i32 status = gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -30,7 +30,7 @@ namespace Laby {
 		LAB_CORE_ASSERT(GLVersion.major > 4 || (GLVersion.major == 4 && GLVersion.minor >= 5), "Labyrinth requires at least OpenGL version 4.5!");
 	}
 
-	void GraphicsContext::swapBuffers()
+	void GraphicsContext::SwapBuffers()
 	{
 		glfwSwapBuffers(mWindowHandle);
 	}

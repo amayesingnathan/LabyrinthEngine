@@ -37,16 +37,16 @@ namespace Laby {
 		RenderLayer(u8 layer) : mDepth(layer) {}
 		virtual ~RenderLayer() = default;
 
-		u8 getDepth() const { return mDepth; }
-		void clear() { mElements.clear(); }
+		u8 GetDepth() const { return mDepth; }
+		void Clear() { mElements.clear(); }
 
-		void draw() const;
+		void Draw() const;
 
-		void addQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, i32 entID)
+		void AddQuad(const TransformComponent& trans, const SpriteRendererComponent& sprite, i32 entID)
 		{
 			mElements.emplace_back(trans, sprite, entID);
 		}
-		void addCircle(const TransformComponent& trans, const CircleRendererComponent& circle, i32 entID)
+		void AddCircle(const TransformComponent& trans, const CircleRendererComponent& circle, i32 entID)
 		{
 			mElements.emplace_back(trans, circle, entID);
 		}

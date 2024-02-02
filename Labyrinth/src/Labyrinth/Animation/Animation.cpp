@@ -3,7 +3,7 @@
 
 namespace Laby {
 
-	void Animation::overwriteFrame(const AnimationFrame& overwritingFrame)
+	void Animation::OverwriteFrame(const AnimationFrame& overwritingFrame)
 	{
 		auto it = std::ranges::find_if(mFrames, [&](const auto& frame) { return frame.id == overwritingFrame.id; });
 		if (it == mFrames.end())

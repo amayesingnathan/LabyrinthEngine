@@ -5,8 +5,8 @@
 
 namespace Laby {
 
-	void IRenderable::bindTexture(u32 slot) const
+	void IRenderable::BindTexture(u32 slot) const
 	{
-		glBindTextureUnit(slot, getTextureID());
+		glBindTextureUnit(slot, GetTextureID());
 	};
 }

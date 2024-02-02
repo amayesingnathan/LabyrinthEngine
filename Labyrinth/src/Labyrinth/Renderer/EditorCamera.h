@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 #include "Labyrinth/Core/Timestep.h"
-#include "Labyrinth/Events/IEventListener.h"
+#include "Labyrinth/Events/Event.h"
 
 namespace Laby {
 
@@ -12,30 +12,30 @@ namespace Laby {
 		EditorCamera() = default;
 		EditorCamera(f32 fov, f32 aspectRatio, f32 nearClip, f32 farClip);
 
-		void onUpdate(Timestep ts);
+		void OnUpdate(Timestep ts);
 
-		void onEvent(Event& e) override;
+		void OnEvent(Event& e) override;
 		LISTENING_EVENTS(MouseScrolled)
 
-		const glm::mat4& getViewMatrix() const { return mView; }
-		glm::mat4 getViewProjection() const override { return mProjection * mView; }
+		const glm::mat4& GetViewMatrix() const { return mView; }
+		glm::mat4 GetViewProjection() const override { return mProjection * mView; }
 
-		inline f32 getDistance() const { return mDistance; }
-		inline void setDistance(f32 distance) { mDistance = distance; }
+		inline f32 GetDistance() const { return mDistance; }
+		inline void SetDistance(f32 distance) { mDistance = distance; }
 
-		inline void setViewportSize(f32 width, f32 height) { mViewportWidth = width; mViewportHeight = height; UpdateProjection(); }
+		inline void SetViewportSize(f32 width, f32 height) { mViewportWidth = width; mViewportHeight = height; UpdateProjection(); }
 
-		glm::vec3 getUpDirection() const;
-		glm::vec3 getRightDirection() const;
-		glm::vec3 getForwardDirection() const;
-		const glm::vec3& getPosition() const { return mPosition; }
-		glm::quat getOrientation() const;
+		glm::vec3 GetUpDirection() const;
+		glm::vec3 GetRightDirection() const;
+		glm::vec3 GetForwardDirection() const;
+		const glm::vec3& GetPosition() const { return mPosition; }
+		glm::quat GetOrientation() const;
 
-		f32 getPitch() const { return mPitch; }
-		f32 getYaw() const { return mYaw; }
+		f32 GetPitch() const { return mPitch; }
+		f32 GetYaw() const { return mYaw; }
 
-		void resetPosition();
-		void resetAngle();
+		void ResetPosition();
+		void ResetAngle();
 
 	private:
 		void UpdateProjection();

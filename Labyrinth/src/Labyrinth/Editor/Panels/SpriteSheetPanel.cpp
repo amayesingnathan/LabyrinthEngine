@@ -6,17 +6,13 @@
 #include <Labyrinth/Editor/ModalManager.h>
 #include <Labyrinth/Editor/Modals/NewSpritesheetModal.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
-
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
     static constexpr std::string_view NO_NAME = "None";
 
-    using SubTexEntry = imcpp::ComboEntry<AssetHandle>;
+    using SubTexEntry = slc::ComboEntry<AssetHandle>;
 
-    void SpriteSheetPanel::onImGuiRender()
+    void SpriteSheetPanel::OnRender()
     {
         Ref<Texture2DSheet> sheet = AssetManager::GetAsset<Texture2DSheet>(mCurrentSheet);
         Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(mCurrentSubTex);
@@ -55,14 +51,14 @@ namespace Laby {
         comboEntries.emplace_back(NO_NAME, 0);
         if (sheet)
         {
-            for (AssetHandle handle : sheet->getSubTextures())
+            for (AssetHandle handle : sheet->GetSubTextures())
             {
                 Ref<SubTexture2D> subtex = AssetManager::GetAsset<SubTexture2D>(handle);
-                comboEntries.emplace_back(subtex->getName(), handle);
+                comboEntries.emplace_back(subtex->GetName(), handle);
             }
         }
 
-        std::string_view subTexName = subtex ? subtex->getName() : NO_NAME;
+        std::string_view subTexName = subtex ? subtex->GetName() : NO_NAME;
         Widgets::Combobox<AssetHandle>("Subtextures", subTexName, mCurrentSubTex, comboEntries);
 
         Widgets::NewLine();
@@ -80,15 +76,15 @@ namespace Laby {
             {
                 mCurrentSubTex = AssetManager::GetHandleFromPath(var);
                 Ref<SubTexture2D> newSubtex = AssetManager::GetAsset<SubTexture2D>(mCurrentSubTex);
-                mCurrentSheet = newSubtex ? newSubtex->getSheet()->handle : AssetHandle(0);
+                mCurrentSheet = newSubtex ? newSubtex->GetSheet()->handle : AssetHandle(0);
             }
         });
 
         if (toDelete && sheet)
         {
-            for (AssetHandle subtex : sheet->getSubTextures())
+            for (AssetHandle subtex : sheet->GetSubTextures())
                 AssetManager::DestroyAsset(subtex);
-            FileUtils::RemoveDir(Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / sheet->getName());
+            FileUtils::RemoveDir(Project::GetAssetDirectory() / SubTexture2D::GetAssetDirectory() / sheet->GetName());
             AssetManager::DestroyAsset(sheet->handle);
             mCurrentSheet = 0;
         }

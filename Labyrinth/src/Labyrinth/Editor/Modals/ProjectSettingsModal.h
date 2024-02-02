@@ -11,7 +11,7 @@ namespace Laby {
 	public:
 		ProjectSettingsModal(const Ref<Project>& project);
 
-		void onImGuiRender() override;
+		void OnRender() override;
 
 	private:
 		Ref<Project> mProject;

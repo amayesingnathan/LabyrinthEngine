@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Assets/Asset.h>
-#include <Labyrinth/Containers/Buffer.h>
+#include <Labyrinth/Containers/StreamlineTypes.h>
 
 #include "IRenderable.h"
 
@@ -19,17 +19,17 @@ namespace Laby {
 		Texture2D(const std::string& path);
 		~Texture2D();
 
-		bool loaded() const { return mRendererID != -1; }
+		bool Loaded() const { return mRendererID != -1; }
 
-		u32 getTextureID() const override { return mRendererID; }
+		u32 GetTextureID() const override { return mRendererID; }
 
-		i32 getWidth() const { return mWidth; }
-		i32 getHeight() const { return mHeight; }
-		u32 getSize() const;
+		i32 GetWidth() const { return mWidth; }
+		i32 GetHeight() const { return mHeight; }
+		u32 GetSize() const;
 
-		void setData(void* data, usize size);
-		void setData(Buffer buffer);
-		Buffer getData();
+		void SetData(void* data, usize size);
+		void SetData(Buffer buffer);
+		Buffer GetData();
 
 	private:
 		i32 mWidth, mHeight;

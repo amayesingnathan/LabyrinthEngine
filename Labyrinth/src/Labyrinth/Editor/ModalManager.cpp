@@ -1,10 +1,7 @@
 #include "Lpch.h"
 #include "ModalManager.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
-
-using imcpp::Widgets;
-using imcpp::Utils;
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 namespace Laby {
 
@@ -26,7 +23,7 @@ namespace Laby {
             if (Widgets::BeginWindow(modalData.heading, &modalData.open, ImGuiWindowFlags_NoDocking))
             {
                 Widgets::BeginChild("ModalBody", glm::vec2{ 0, -2 * lineSpacing });
-                modalData.modal->onImGuiRender();
+                modalData.modal->OnRender();
                 Widgets::EndChild();
 
                 Widgets::BeginChild("ModalButtons");
@@ -67,7 +64,7 @@ namespace Laby {
         {
             Widgets::Button("OK", [&]()
             {
-                modalData.modal->onComplete();
+                modalData.modal->OnComplete();
                 modalData.open = false;
             });
             break;
@@ -76,7 +73,7 @@ namespace Laby {
         {
             Widgets::Button("OK", [&]()
             {
-                modalData.modal->onComplete();
+                modalData.modal->OnComplete();
                 modalData.open = false;
             });
 
@@ -90,7 +87,7 @@ namespace Laby {
         {
             Widgets::Button("Yes", [&]()
             {
-                modalData.modal->onComplete();
+                modalData.modal->OnComplete();
                 modalData.open = false;
             });
 
@@ -101,7 +98,7 @@ namespace Laby {
             break;
         }
         case ModalButtons::Custom:
-            modalData.modal->onCustomButtonRender(modalData.open);
+            modalData.modal->OnCustomButtonRender(modalData.open);
             break;
         }
 	}

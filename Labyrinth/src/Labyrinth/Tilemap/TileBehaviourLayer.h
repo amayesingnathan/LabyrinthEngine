@@ -33,7 +33,7 @@ namespace Laby {
 		glm::vec2 extents;
 
 		ChainShape(const Shape& shape, const glm::vec2& ex);
-		glm::vec2 centroid() const;
+		glm::vec2 Centroid() const;
 	};
 
 	class TileBehaviourLayer : public TileBehaviourGrid
@@ -43,8 +43,8 @@ namespace Laby {
 		TileBehaviourLayer(usize width, usize height)
 			: TileBehaviourGrid(width, height) {}
 
-		std::vector<ChainShape> getShapes() const;
-		std::vector<TileScriptData> getScripts() const;
+		std::vector<ChainShape> GetShapes() const;
+		std::vector<TileScriptData> GetScripts() const;
 
 	private:
 		std::vector<Shape> GetContiguousShapes() const;
@@ -67,8 +67,8 @@ namespace Laby {
 	{
 		mOut << YAML::BeginMap; // TileBehaviourLayer
 
-		LAB_SERIALISE_PROPERTY(Width, layer.getWidth(), mOut);
-		LAB_SERIALISE_PROPERTY(Height, layer.getHeight(), mOut);
+		LAB_SERIALISE_PROPERTY(Width, layer.GetWidth(), mOut);
+		LAB_SERIALISE_PROPERTY(Height, layer.GetHeight(), mOut);
 
 		mOut << YAML::Key << "Tiles";
 		mOut << YAML::Value << YAML::BeginSeq;
@@ -125,7 +125,7 @@ namespace YAML {
 
 			Laby::usize index = 0;
 			for (auto tile : tiles)
-				rhs.set(index++, tile.as<Laby::TileBehaviourData>());
+				rhs.Set(index++, tile.as<Laby::TileBehaviourData>());
 
 			return true;
 		}

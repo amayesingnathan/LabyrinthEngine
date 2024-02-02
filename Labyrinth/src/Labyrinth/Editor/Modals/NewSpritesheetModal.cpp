@@ -8,9 +8,6 @@
 
 #include "SubTexturePickerModal.h"
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
 	NewSpritesheetModal::NewSpritesheetModal(AssetHandle& returnSheet, const fs::path& filepath)
@@ -18,7 +15,7 @@ namespace Laby {
 	{
 	}
 
-	void NewSpritesheetModal::onImGuiRender()
+	void NewSpritesheetModal::OnRender()
 	{
 		Widgets::Label("Enter the tile size for this sprite sheet");
 		Widgets::NewLine();
@@ -28,13 +25,13 @@ namespace Laby {
 		Widgets::UIntEdit("Tile Height (px)", mTileHeight);
 	}
 
-	void NewSpritesheetModal::onCustomButtonRender(bool& open)
+	void NewSpritesheetModal::OnCustomButtonRender(bool& open)
 	{
 		Widgets::Button("Generate", [&, this]()
 		{
-			onComplete();
+			OnComplete();
 			Ref<Texture2DSheet> newSheet = AssetManager::SaveMemoryOnlyAsset<Texture2DSheet>(mSheetName, mInProgressSheet);
-			newSheet->generateTileset();
+			newSheet->GenerateTileset();
 			*mReturnSheet = newSheet->handle;
 			open = false;
 		});
@@ -43,7 +40,7 @@ namespace Laby {
 
 		Widgets::Button("Pick", [=, &open]()
 		{
-			onComplete();
+			OnComplete();
 
 			AssetHandle* returnSheetCopy = mReturnSheet;
 			AssetHandle inProgressSheetCopy = mInProgressSheet;
@@ -62,7 +59,7 @@ namespace Laby {
 		});
 	}
 
-	void NewSpritesheetModal::onComplete()
+	void NewSpritesheetModal::OnComplete()
 	{
 		if (mTileWidth == 0 || mTileHeight == 0)
 			return;

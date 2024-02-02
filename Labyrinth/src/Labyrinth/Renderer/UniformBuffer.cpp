@@ -17,7 +17,7 @@ namespace Laby {
 		glDeleteBuffers(1, &mRendererID);
 	}
 
-	void UniformBuffer::setData(const void* data, u32 size, u32 offset)
+	void UniformBuffer::SetData(const void* data, u32 size, u32 offset)
 	{
 		glNamedBufferSubData(mRendererID, offset, size, data);
 	}

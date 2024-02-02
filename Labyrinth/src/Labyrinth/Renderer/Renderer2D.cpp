@@ -19,7 +19,7 @@ namespace Laby {
 			sRenderData->quadVertexArray = Ref<VertexArray>::Create();
 
 			sRenderData->quadVertexBuffer = Ref<VertexBuffer>::Create(Renderer2DData::MaxVertices * (u32)sizeof(QuadVertex));
-			sRenderData->quadVertexBuffer->setLayout({
+			sRenderData->quadVertexBuffer->SetLayout({
 				{ ShaderDataType::Float3, "aPosition"	  },
 				{ ShaderDataType::Float4, "aColour"		  },
 				{ ShaderDataType::Float2, "aTexCoord"	  },
@@ -28,7 +28,7 @@ namespace Laby {
 				{ ShaderDataType::Int,    "aEntityID"	  }
 				});
 
-			sRenderData->quadVertexArray->addVertexBuffer(sRenderData->quadVertexBuffer);
+			sRenderData->quadVertexArray->AddVertexBuffer(sRenderData->quadVertexBuffer);
 
 			sRenderData->quadVertexBufferBase = new QuadVertex[Renderer2DData::MaxVertices];
 
@@ -49,7 +49,7 @@ namespace Laby {
 			}
 
 			Ref<IndexBuffer> quadIB = Ref<IndexBuffer>::Create(quadIndices, Renderer2DData::MaxIndices);
-			sRenderData->quadVertexArray->setIndexBuffer(quadIB);
+			sRenderData->quadVertexArray->SetIndexBuffer(quadIB);
 			delete[] quadIndices;
 
 			sRenderData->quadShader = Ref<Shader>::Create("resources/shaders/Renderer2DQuad.glsl");
@@ -60,7 +60,7 @@ namespace Laby {
 			sRenderData->circleVertexArray = Ref<VertexArray>::Create();
 
 			sRenderData->circleVertexBuffer = Ref<VertexBuffer>::Create(sRenderData->MaxVertices * (u32)sizeof(QuadVertex));
-			sRenderData->circleVertexBuffer->setLayout({
+			sRenderData->circleVertexBuffer->SetLayout({
 				{ ShaderDataType::Float3, "aWorldPosition" },
 				{ ShaderDataType::Float,  "aThickness"     },
 				{ ShaderDataType::Float2, "aLocalPosition" },
@@ -68,10 +68,10 @@ namespace Laby {
 				{ ShaderDataType::Int,    "aEntityID"      }
 				});
 
-			sRenderData->circleVertexArray->addVertexBuffer(sRenderData->circleVertexBuffer);
+			sRenderData->circleVertexArray->AddVertexBuffer(sRenderData->circleVertexBuffer);
 
 			sRenderData->circleVertexBufferBase = new CircleVertex[sRenderData->MaxVertices];
-			sRenderData->circleVertexArray->setIndexBuffer(sRenderData->quadVertexArray->getIndexBuffer()); // Reuse quad index buffer
+			sRenderData->circleVertexArray->SetIndexBuffer(sRenderData->quadVertexArray->GetIndexBuffer()); // Reuse quad index buffer
 
 			sRenderData->circleShader = Ref<Shader>::Create("resources/shaders/Renderer2DCircle.glsl");
 		}
@@ -81,13 +81,13 @@ namespace Laby {
 			sRenderData->lineVertexArray = Ref<VertexArray>::Create();
 
 			sRenderData->lineVertexBuffer = Ref<VertexBuffer>::Create(sRenderData->MaxVertices * (u32)sizeof(QuadVertex));
-			sRenderData->lineVertexBuffer->setLayout({
+			sRenderData->lineVertexBuffer->SetLayout({
 				{ ShaderDataType::Float3, "aPosition" },
 				{ ShaderDataType::Float4, "aColour"   },
 				{ ShaderDataType::Int,    "aEntityID" }
 				});
 
-			sRenderData->lineVertexArray->addVertexBuffer(sRenderData->lineVertexBuffer);
+			sRenderData->lineVertexArray->AddVertexBuffer(sRenderData->lineVertexBuffer);
 			sRenderData->lineVertexBufferBase = new LineVertex[sRenderData->MaxVertices];
 
 			sRenderData->lineShader = Ref<Shader>::Create("resources/shaders/Renderer2DLine.glsl");
@@ -96,7 +96,7 @@ namespace Laby {
 		// White Texture
 		sRenderData->whiteTexture = Ref<Texture2D>::Create(1, 1);
 		u32 whiteTextureData = 0xffffffff;
-		sRenderData->whiteTexture->setData(&whiteTextureData, sizeof(u32));
+		sRenderData->whiteTexture->SetData(&whiteTextureData, sizeof(u32));
 
 		sRenderData->textureSlots[0] = sRenderData->whiteTexture;
 
@@ -119,18 +119,18 @@ namespace Laby {
 
 	void Renderer2D::BeginState(const Camera& camera, const glm::mat4& transform)
 	{
-		BeginState(camera.getProjection() * glm::inverse(transform));
+		BeginState(camera.GetProjection() * glm::inverse(transform));
 	}
 
 	void Renderer2D::BeginState(const Camera& camera)
 	{
-		BeginState(camera.getViewProjection());
+		BeginState(camera.GetViewProjection());
 	}
 
 	void Renderer2D::BeginState(const glm::mat4& cameraTransform)
 	{
 		sRenderData->cameraMatrix = cameraTransform;
-		sRenderData->cameraUniformBuffer->setData(&sRenderData->cameraMatrix, sizeof(Renderer2DData::CameraData));
+		sRenderData->cameraUniformBuffer->SetData(&sRenderData->cameraMatrix, sizeof(Renderer2DData::CameraData));
 
 		StartBatch();
 	}
@@ -202,7 +202,7 @@ namespace Laby {
 	void Renderer2D::DrawQuad(const glm::mat4& transform, const Ref<IRenderable>& textureSlot, f32 tilingFactor, const glm::vec4& tintColour, i32 entityID)
 	{
 		constexpr usize quadVertexCount = 4;
-		const glm::vec2* textureCoords = textureSlot->getTextureCoords();
+		const glm::vec2* textureCoords = textureSlot->GetTextureCoords();
 
 		if (sRenderData->quadIndexCount >= Renderer2DData::MaxIndices)
 			NextBatch();
@@ -244,7 +244,7 @@ namespace Laby {
 
 	void Renderer2D::DrawSprite(const TransformComponent& transform, const SpriteRendererComponent& src, i32 entityID)
 	{
-		DrawQuad(transform.getTransform(), src.type, src.handle, src.colour, src.tilingFactor, entityID);
+		DrawQuad(transform.GetTransform(), src.type, src.handle, src.colour, src.tilingFactor, entityID);
 	}
 
 	void Renderer2D::DrawCircle(const TransformComponent& transform, const CircleRendererComponent& crc, i32 entityID)
@@ -340,12 +340,12 @@ namespace Laby {
 		if (sRenderData->quadIndexCount)
 		{
 			u32 quadDataSize = (u32)((u8*)sRenderData->quadVertexBufferPtr - (u8*)sRenderData->quadVertexBufferBase);
-			sRenderData->quadVertexBuffer->setData(sRenderData->quadVertexBufferBase, quadDataSize);
+			sRenderData->quadVertexBuffer->SetData(sRenderData->quadVertexBufferBase, quadDataSize);
 
 			for (u32 i = 0; i < sRenderData->textureSlotIndex; i++)
-				sRenderData->textureSlots[i]->bindTexture(i);
+				sRenderData->textureSlots[i]->BindTexture(i);
 
-			sRenderData->quadShader->bind();
+			sRenderData->quadShader->Bind();
 			Renderer::DrawIndexed(sRenderData->quadVertexArray, sRenderData->quadIndexCount);
 			sRenderData->stats.drawCalls++;
 		}
@@ -354,9 +354,9 @@ namespace Laby {
 		if (sRenderData->circleIndexCount)
 		{
 			u32 circleDataSize = (u32)((u8*)sRenderData->circleVertexBufferPtr - (u8*)sRenderData->circleVertexBufferBase);
-			sRenderData->circleVertexBuffer->setData(sRenderData->circleVertexBufferBase, circleDataSize);
+			sRenderData->circleVertexBuffer->SetData(sRenderData->circleVertexBufferBase, circleDataSize);
 
-			sRenderData->circleShader->bind();
+			sRenderData->circleShader->Bind();
 			Renderer::DrawIndexed(sRenderData->circleVertexArray, sRenderData->circleIndexCount);
 			sRenderData->stats.drawCalls++;
 		}
@@ -365,9 +365,9 @@ namespace Laby {
 		if (sRenderData->lineVertexCount)
 		{
 			u32 lineDataSize = (u32)((u8*)sRenderData->lineVertexBufferPtr - (u8*)sRenderData->lineVertexBufferBase);
-			sRenderData->lineVertexBuffer->setData(sRenderData->lineVertexBufferBase, lineDataSize);
+			sRenderData->lineVertexBuffer->SetData(sRenderData->lineVertexBufferBase, lineDataSize);
 
-			sRenderData->lineShader->bind();
+			sRenderData->lineShader->Bind();
 			Renderer::SetLineWidth(sRenderData->lineWidth);
 			Renderer::DrawLines(sRenderData->lineVertexArray, sRenderData->lineVertexCount);
 			sRenderData->stats.drawCalls++;

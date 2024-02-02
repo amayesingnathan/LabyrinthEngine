@@ -63,7 +63,7 @@ namespace Laby {
 	{
 		fs::path path = GetRelativePath(filepath);
 
-		if (auto& metadata = GetMetadata(path); metadata.valid())
+		if (auto& metadata = GetMetadata(path); metadata.Valid())
 			return metadata.handle;
 
 		AssetType type = GetAssetTypeFromPath(path);
@@ -82,7 +82,7 @@ namespace Laby {
 	bool AssetManager::ReloadData(AssetHandle assetHandle)
 	{
 		auto& metadata = GetMetadataInternal(assetHandle);
-		if (!metadata.valid())
+		if (!metadata.Valid())
 		{
 			LAB_CORE_ERROR("Trying to reload invalid asset");
 			return false;
@@ -112,7 +112,7 @@ namespace Laby {
 		}
 
 		auto& metadata = GetMetadataInternal(assetHandle);
-		if (!metadata.valid())
+		if (!metadata.Valid())
 		{
 			LAB_CORE_ERROR("Trying to destroy invalid asset");
 			return;

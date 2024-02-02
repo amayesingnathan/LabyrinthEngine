@@ -10,7 +10,7 @@ namespace Laby {
 		UniformBuffer(u32 size, u32 binding);
 		virtual ~UniformBuffer();
 
-		void setData(const void* data, u32 size, u32 offset = 0);
+		void SetData(const void* data, u32 size, u32 offset = 0);
 
 	private:
 		u32 mRendererID = 0;

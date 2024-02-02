@@ -16,18 +16,18 @@ namespace Laby {
 	public:
 		Animation(std::string_view name) : mName(name) {}
 
-		std::string_view getName() const { return mName; }
+		std::string_view GetName() const { return mName; }
 
-		const AnimationFrame& getFrame(u32 frameIndex) const { return mFrames[frameIndex]; }
-		std::vector<AnimationFrame>& getFrames() { return mFrames; }
-		const std::vector<AnimationFrame>& getFrames() const { return mFrames; }
-		usize getFrameCount() const { return mFrames.size(); }
-		bool hasFrames() const { return !mFrames.empty(); }
+		const AnimationFrame& GetFrame(u32 frameIndex) const { return mFrames[frameIndex]; }
+		std::vector<AnimationFrame>& GetFrames() { return mFrames; }
+		const std::vector<AnimationFrame>& GetFrames() const { return mFrames; }
+		usize GetFrameCount() const { return mFrames.size(); }
+		bool HasFrames() const { return !mFrames.empty(); }
 
-		void addFrame(const AnimationFrame& frame) { mFrames.push_back(frame); }
-		void addFrames(std::vector<AnimationFrame>&& frames) { mFrames = std::move(frames); }
+		void AddFrame(const AnimationFrame& frame) { mFrames.push_back(frame); }
+		void AddFrames(std::vector<AnimationFrame>&& frames) { mFrames = std::move(frames); }
 
-		void overwriteFrame(const AnimationFrame& overwritingFrame);
+		void OverwriteFrame(const AnimationFrame& overwritingFrame);
 
 		auto begin() { return mFrames.begin(); }
 		auto begin() const { return mFrames.cbegin(); }

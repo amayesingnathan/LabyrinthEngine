@@ -22,12 +22,12 @@ namespace Laby {
 	public:
 		TilePalette() = default;
 
-		const std::vector<SheetData>& getSheets() const { return mSpriteSheets; }
-		const std::unordered_map<TileID, Ref<SubTexture2D>>& getTileset() const { return mTileset; }
+		const std::vector<SheetData>& GetSheets() const { return mSpriteSheets; }
+		const std::unordered_map<TileID, Ref<SubTexture2D>>& GetTileset() const { return mTileset; }
 
-		void add(AssetHandle sheetHandle);
-		void add(AssetHandle sheetHandle, TileID nextIndex);
-		void remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping);
+		void Add(AssetHandle sheetHandle);
+		void Add(AssetHandle sheetHandle, TileID nextIndex);
+		void Remove(AssetHandle sheetHandle, std::unordered_map<TileID, TileID>& mapping);
 
 		Ref<SubTexture2D> operator[](TileID textureID) const;
 

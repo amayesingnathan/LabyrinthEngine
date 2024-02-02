@@ -40,15 +40,15 @@ namespace Laby {
 
 		static void Shutdown()
 		{
-			PlayIcon.reset();
-			StopIcon.reset();
-			SimulateIcon.reset();
+			PlayIcon.Reset();
+			StopIcon.Reset();
+			SimulateIcon.Reset();
 
-			FileIcon.reset();
-			DirectoryIcon.reset();
-			GroupIcon.reset();
+			FileIcon.Reset();
+			DirectoryIcon.Reset();
+			GroupIcon.Reset();
 
-			NoTexture.reset();
+			NoTexture.Reset();
 		}
 
 	private:

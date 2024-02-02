@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Labyrinth/Editor/IEditorPanel.h>
-#include <Labyrinth/ImGui/ImGuiCpp.h>
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 #include <Labyrinth/Renderer/Framebuffer.h>
 #include <Labyrinth/Scene/Scene.h>
 #include <Labyrinth/Scene/Entity.h>
@@ -16,10 +16,10 @@ namespace Laby {
 	public:
 		EntityPanel(const Ref<Scene>& scene);
 
-		void setContext(const Ref<Scene>& scene) { mContext = scene; }
+		void SetContext(const Ref<Scene>& scene) { mContext = scene; }
 
-		void onImGuiRender() override;
-		void onSelectionChange() override;
+		void OnRender() override;
+		void OnSelectionChange() override;
 
 	private:
 		void DrawComponents();
@@ -27,10 +27,10 @@ namespace Laby {
 		template<typename T>
 		void DrawAddComponentEntry(std::string_view text)
 		{
-			if (mSelectedEntity.hasComponent<T>())
+			if (mSelectedEntity.HasComponent<T>())
 				return;
 
-			imcpp::Widgets::AddPopupItem(text, [&]() { mSelectedEntity.addComponent<T>(); });
+			Widgets::AddPopupItem(text, [&]() { mSelectedEntity.AddComponent<T>(); });
 		}
 
 		void DrawChildControllerElement(const std::string& name, glm::vec3& componentElement, glm::vec3& displayElement, glm::vec3& lastDisplay, float min, float max, ImGuiSliderFlags flags = 0);

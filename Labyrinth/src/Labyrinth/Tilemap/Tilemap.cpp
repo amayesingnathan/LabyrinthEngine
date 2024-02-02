@@ -8,9 +8,9 @@ namespace Laby {
 	{
 	}
 
-	TileBehaviourData Tilemap::getTileBehaviour(const GridPosition& pos) const
+	TileBehaviourData Tilemap::GetTileBehaviour(const GridPosition& pos) const
 	{
-		if (!pos.valid())
+		if (!pos.Valid())
 			return {};
 
 		return mBehaviour(pos);
@@ -18,14 +18,14 @@ namespace Laby {
 
 	Ref<Tilemap> TilemapUtils::Clone(Ref<Tilemap> other)
 	{
-		Ref<Tilemap> copy = Ref<Tilemap>::Create(other->mName, other->getWidth(), other->getHeight());
+		Ref<Tilemap> copy = Ref<Tilemap>::Create(other->mName, other->GetWidth(), other->GetHeight());
 
-		for (const auto& sheetData : other->mTexture.getSheets())
-			copy->addSheet(sheetData.sheet->handle, sheetData.startIndex);
+		for (const auto& sheetData : other->mTexture.GetSheets())
+			copy->AddSheet(sheetData.sheet->handle, sheetData.startIndex);
 		for (const auto& layer : other->mTexture.mLayers)
-			copy->addLayer(layer);
+			copy->AddLayer(layer);
 
-		copy->setBehaviour(other->mBehaviour);
+		copy->SetBehaviour(other->mBehaviour);
 		copy->handle = other->handle;
 
 		return copy;

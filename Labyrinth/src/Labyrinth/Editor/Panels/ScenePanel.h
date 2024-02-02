@@ -11,10 +11,10 @@ namespace Laby {
 	public:
 		ScenePanel(const Ref<Scene>& scene);
 
-		void setContext(const Ref<Scene>& scene) { mContext = scene; }
+		void SetContext(const Ref<Scene>& scene) { mContext = scene; }
 
-		void onImGuiRender() override;
-		void onSelectionChange() override;
+		void OnRender() override;
+		void OnSelectionChange() override;
 
 	private:
 		void DrawEntityNode(Entity entity);

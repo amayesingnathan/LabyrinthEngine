@@ -10,19 +10,19 @@ namespace Laby {
 		RenderStack() = default;
 		virtual ~RenderStack();
 
-		void pushLayer(RenderLayer* layer);
-		void popLayer(RenderLayer* layer);
-		void clearLayers();
-		void clearItems();
+		void PushLayer(RenderLayer* layer);
+		void PopLayer(RenderLayer* layer);
+		void ClearLayers();
+		void ClearItems();
 
-		bool hasLayer(RenderLayer* layer);
-		bool hasLayer(u8 layer);
-		RenderLayer* getLayer(u8 layer);
+		bool HasLayer(RenderLayer* layer);
+		bool HasLayer(u8 layer);
+		RenderLayer* GetLayer(u8 layer);
 
-		void addQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID = -1);
-		void addCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID = -1);
+		void AddQuad(const TransformComponent& trComp, const SpriteRendererComponent& srComp, i32 entID = -1);
+		void AddCircle(const TransformComponent& trComp, const CircleRendererComponent& crComp, i32 entID = -1);
 
-		void draw();
+		void Draw();
 
 		std::vector<RenderLayer*>::iterator begin() { return mLayers.begin(); }
 		std::vector<RenderLayer*>::iterator end() { return mLayers.end(); }

@@ -13,9 +13,9 @@ namespace Laby {
 	public:
 		AnimationEditModal(EditingMode mode, Ref<Animation> animation = nullptr);
 
-		void onImGuiRender() override;
-		void onCustomButtonRender(bool& open) override;
-		void onComplete() override;
+		void OnRender() override;
+		void OnCustomButtonRender(bool& open) override;
+		void OnComplete() override;
 
 	private:
 		void StepAnimation();

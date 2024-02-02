@@ -6,12 +6,9 @@
 #include <Labyrinth/Editor/Modals/MapEditModal.h>
 #include <Labyrinth/ImGui/ImGuiWidgets.h>
 
-using imcpp::Widgets;
-using imcpp::Utils;
-
 namespace Laby {
 
-	void TilemapPanel::onImGuiRender()
+	void TilemapPanel::OnRender()
 	{
 		float cellSize = mThumbnailSize + mPadding;
 

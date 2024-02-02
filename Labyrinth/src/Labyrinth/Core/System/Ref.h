@@ -14,11 +14,11 @@ namespace Laby {
 	class RefCounted
 	{
 	public:
-		u32 getRefCount() const { return mRefCount; }
+		u32 GetRefCount() const { return mRefCount; }
 
 	private:
-		void incRefCount() const { ++mRefCount; }
-		void decRefCount() const { --mRefCount; }
+		void IncRefCount() const { ++mRefCount; }
+		void DecRefCount() const { --mRefCount; }
 
 	private:
 		mutable u32 mRefCount = 0;
@@ -118,20 +118,20 @@ namespace Laby {
 		T& operator*() { return *mData; }
 		const T& operator*() const { return *mData; }
 
-		T* data() { return mData; }
-		const T* data() const { return mData; }
+		T* Data() { return mData; }
+		const T* Data() const { return mData; }
 
 		bool operator==(const Ref<T>& other) const { return mData == other.mData; }
 		bool operator==(std::nullptr_t) const { return mData == nullptr; }
 
-		void reset()
+		void Reset()
 		{
 			DecRef();
 			mData = nullptr;
 		}
 
 		template<typename Other>
-		Ref<Other> to() const
+		Ref<Other> To() const
 		{
 			return Ref<Other>(*this);
 		}
@@ -148,7 +148,7 @@ namespace Laby {
 			if (!mData) 
 				return;
 
-			mData->incRefCount();
+			mData->IncRefCount();
 			RefTracker::AddToTrackedRefs((void*)mData);
 		}
 
@@ -157,8 +157,8 @@ namespace Laby {
 			if (!mData) 
 				return;
 
-			mData->decRefCount();
-			if (mData->getRefCount() == 0)
+			mData->DecRefCount();
+			if (mData->GetRefCount() == 0)
 			{
 				delete mData;
 				RefTracker::RemoveFromTrackedRefs(mData);
@@ -182,7 +182,7 @@ namespace Laby {
 
 		WeakRef(Ref<T> ref)
 		{
-			mData = ref.data();
+			mData = ref.Data();
 		}
 
 		WeakRef(T* instance)
@@ -196,10 +196,10 @@ namespace Laby {
 		T& operator*() { return *mData; }
 		const T& operator*() const { return *mData; }
 
-		bool valid() const { return mData ? RefTracker::IsTracked(mData) : false; }
-		operator bool() const { return valid(); }
+		bool Valid() const { return mData ? RefTracker::IsTracked(mData) : false; }
+		operator bool() const { return Valid(); }
 
-		Ref<T> lock() const
+		Ref<T> Lock() const
 		{
 			return Ref<T>(mData);
 		}
@@ -217,7 +217,7 @@ namespace std {
 	{
 		std::size_t operator()(const Laby::Ref<T>& ref) const
 		{
-			return std::hash<const void*>()((const void*)ref.data());
+			return std::hash<const void*>()((const void*)ref.Data());
 		}
 	};
 

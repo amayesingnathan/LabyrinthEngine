@@ -1,13 +1,11 @@
 #include "Lpch.h"
 #include "SettingsModal.h"
 
-#include <Labyrinth/ImGui/ImGuiCpp.h>
-
-using imcpp::Widgets;
+#include <Labyrinth/ImGui/ImGuiWidgets.h>
 
 namespace Laby {
 
-    using ResolutionEntry = imcpp::ComboEntry<Resolution>;
+    using ResolutionEntry = slc::ComboEntry<Resolution>;
 
     static constexpr std::array<ResolutionEntry, 3> sResolutionTable
     {
@@ -17,18 +15,18 @@ namespace Laby {
     };
 
     SettingsModal::SettingsModal() 
-        : mSettings(Application::GetSpec())
+        : mSettings(slc::Application::GetSpec<ApplicationSpec>())
     {
     }
 
-    void SettingsModal::onImGuiRender()
+    void SettingsModal::OnRender()
     {
         Widgets::Label("Settings");
 
         Widgets::Checkbox("Fullscreen", mSettings.fullscreen);
         Widgets::PathEdit("Working Directory", mSettings.workingDir);
         Widgets::PathEdit("Core Assembly Path", mSettings.scriptConfig.coreAssemblyPath);
-        Widgets::Combobox<Resolution>("Resolution", mSettings.resolution.toString(), mSettings.resolution, sResolutionTable);
+        Widgets::Combobox<Resolution>("Resolution", mSettings.resolution.ToString(), mSettings.resolution, sResolutionTable);
 
         Widgets::PathEdit("Startup Project", mSettings.startupProject);
         Widgets::SameLine();
@@ -40,9 +38,9 @@ namespace Laby {
         });
     }
 
-    void SettingsModal::onComplete()
+    void SettingsModal::OnComplete()
     {
-        Application::Get().mSpecification = mSettings;
+        Application::SetSpec(mSettings);
         Application::WriteSettings("enigma.json");
     }
 }

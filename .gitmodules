@@ -8,16 +8,6 @@
 	url = https://github.com/g-truc/glm
 	branch = master
 	update = rebase
-[submodule "Labyrinth/dependencies/imgui-cpp"]
-	path = Labyrinth/dependencies/imgui-cpp
-	url = https://github.com/amayesingnathan/imgui-cpp
-	branch = submodule
-	update = rebase
-[submodule "Labyrinth/dependencies/ImGuizmo"]
-	path = Labyrinth/dependencies/ImGuizmo
-	url = https://github.com/CedricGuillemet/ImGuizmo
-	branch = master
-	update = rebase
 [submodule "Labyrinth/dependencies/yaml-cpp"]
 	path = Labyrinth/dependencies/yaml-cpp
 	url = git@github.com:amayesingnathan/yaml-cpp.git
@@ -52,3 +42,6 @@
 	url = git@github.com:amayesingnathan/box2d.git
 	branch = submodule
 	update = rebase
+[submodule "Labyrinth/dependencies/streamline-cpp"]
+	path = Labyrinth/dependencies/streamline-cpp
+	url = git@github.com:amayesingnathan/streamline-cpp.git

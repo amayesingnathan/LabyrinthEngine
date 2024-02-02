@@ -26,7 +26,7 @@ namespace Laby {
         }
     }
 
-    glm::vec2 ChainShape::centroid() const
+    glm::vec2 ChainShape::Centroid() const
     {
         glm::vec2 sum = Zero::Vec2;
         if (!vertices)
@@ -38,7 +38,7 @@ namespace Laby {
         return (1 / (f32)vertexCount) * sum;
     }
 
-    std::vector<ChainShape> TileBehaviourLayer::getShapes() const
+    std::vector<ChainShape> TileBehaviourLayer::GetShapes() const
     {
         std::vector<ChainShape> mapShapes;
         const std::vector<Shape>& contiguousShapes = GetContiguousShapes();
@@ -49,7 +49,7 @@ namespace Laby {
         return std::vector<ChainShape>(mapShapes.rbegin(), mapShapes.rend());
     }
 
-    std::vector<TileScriptData> TileBehaviourLayer::getScripts() const
+    std::vector<TileScriptData> TileBehaviourLayer::GetScripts() const
     {
         std::vector<TileScriptData> mapScripts;
 
