@@ -1,13 +1,13 @@
 # Labyrinth #
-Labyrinth is a game engine built for building 2D games.
-Originally created as a learning experiment following along to The Cherno's Game Engine Series on YouTube in late 2021, it has since
-diverged quite significantly to become a fun personal project which has become a platform for me to learn new technology,
-libraries, and coding techniques, and much more.
+Labyrinth is a game engine created for building 2D games.
+Originally started as a learning experiment following along to The Cherno's Game Engine Series on YouTube in late 2021, it
+diverged quite significantly to become a fun personal project which has become a platform for me to learn new technologies,
+libraries, and coding techniques, and more.
 
-Labyrinth is early in development but supports many core engine features including an event system, rendering, scene management, 
-scripting, project management, asset management, physics, and networking, as well as many other minor features. It also 
-comes with an editor, Enigma, that supports these features. There are still several core features still to add however, such as sound and 
-animation, as well as a runtime in order to export projects as full standalone games.
+Many of Labyrinth's core features have since been refactored into my general purpose C++ library [streamline-cpp](https://github.com/njmayes/streamline-cpp), which is under more active development.
+
+Labyrinth supports several additional systems specific to game engines such as scene management, C# scripting, project management,and asset management. It also 
+comes with an editor, Enigma, that supports these features. There are several core features missing, such as a sound engine, as well as a runtime in order to export projects as full standalone games.
 
 ***
 
